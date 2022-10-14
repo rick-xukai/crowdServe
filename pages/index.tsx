@@ -1,10 +1,10 @@
-import type { NextPage } from 'next'
-import { useEffect } from 'react'
-import Head from 'next/head'
-import Image from 'next/image'
+import type { NextPage } from 'next';
+import React, { useEffect } from 'react';
+import Head from 'next/head';
+import Image from 'next/image';
 import styled from 'styled-components';
-import styles from '../styles/Home.module.css'
-import TestService from '../services/API/Test'
+import styles from '../styles/Home.module.css';
+import TestService from '../services/API/Test';
 
 const Container = styled.div`
   padding: 0 2rem;
@@ -129,7 +129,7 @@ const Home: NextPage = () => {
         </a>
       </footer>
     </Container>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
