@@ -1,0 +1,19 @@
+{
+  "name": "jet_email_transform",
+  "version": "1.0.0",
+  "description": "transform css in style to inline css",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "generate": "node generate.js",
+    "export": "node export.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "chase",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-html-parser": "^1.2.16",
+    "serve-favicon": "^2.5.0"
+  }
+}
