@@ -1,0 +1,45 @@
+body a {
+  color: #1d6bcb;
+}
+div,
+table,
+td,
+p,
+a,
+.btn {
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: Roboto, PT Sans, Source Sans Pro, Open Sans, Arial, Helvetica,
+    sans-serif;
+}
+.demo-container {
+  padding: 40px 0 0;
+  background-color: #f7fafc;
+  font-family: Roboto, PT Sans, Source Sans Pro, Open Sans, Arial, Helvetica,
+    sans-serif;
+  color: rgba(26, 32, 44, 0.8);
+}
+
+.bet-center {
+  margin: 0 auto;
+}
+
+.demo-max-width {
+  max-width: 600px;
+}
+
+.demo-header {
+  margin: 0 auto;
+}
+
+.demo-logo img {
+  height: 60px;
+  margin-bottom: 16px;
+}
+
+.demo-footer {
+  text-align: center;
+  margin-top: 32px;
+  padding-bottom: 40px;
+}

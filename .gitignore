@@ -36,3 +36,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#e emtail template auto generate
+/emailTemplates/autoScript/node_modules
