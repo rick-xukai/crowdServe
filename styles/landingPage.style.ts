@@ -10,6 +10,7 @@ const LandingPageContainer = styled.div`
   background-size: cover;
   padding-left: 120px;
   padding-right: 120px;
+  min-height: 100vh;
   .page-hearder {
     height: 90px;
     span {
