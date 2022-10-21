@@ -12,7 +12,6 @@ import ButtonVerify from '../static/images/button-verify.png';
 import LandingPageBackground from '../static/images/landing-page-background.png';
 import PhoneDetail from '../static/images/phone-detail.png';
 
-
 const Images = {
   Safety,
   Success,
