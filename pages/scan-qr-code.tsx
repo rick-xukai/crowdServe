@@ -3,15 +3,25 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
+import TicketService from '../services/API/Ticket/Ticket.service';
 import { ScanQrCodePageContainers } from '../styles/scanQrCode.style';
 import { Images } from '../theme';
+import { verificationApi } from '../utils/func';
+import Messages from '../constants/Messages';
 
 interface ScanQrCodeDetail {
-  participant: string;
-  type: string;
-  ticketNumber: string;
-  email: string;
-  seatNumber: string;
+  ticket: {
+    id: number;
+    no: string;
+    seat: number;
+    status: number;
+    type: number;
+  };
+  user: {
+    email: string;
+    id: number;
+    name: string;
+  }
 }
 
 interface VerifyMessage {
@@ -22,10 +32,12 @@ interface VerifyMessage {
 
 const ScanQrCodeResult = ({
   result,
-  setResult
+  setResult,
+  setShowQrReader,
 }: {
   result: string;
-  setResult: (value: string) => void
+  setResult: (value: string) => void;
+  setShowQrReader: (value: boolean) => void;
 }) => {
   const [detail, setDatail] = useState<ScanQrCodeDetail | null>(null);
   const [verify, setVerify] = useState(false);
@@ -35,137 +47,157 @@ const ScanQrCodeResult = ({
     success: false,
   });
 
-  const handleGetScanQrCodeDetail = (value: string) => {
-    if (value) {
-      setTimeout(() => {
-        setDatail({
-          participant: 'Rick',
-          type: 'VIP',
-          ticketNumber: 'K0J2947294759275',
-          email: 'rick.xu@imaginato.com',
-          seatNumber: '04',
+  const checkStatusType = (statusCode: number) => {
+    switch (statusCode) {
+      case Messages.success.code:
+        setVerifyMessage({
+          message: Messages.success.text,
+          image: Images.Success,
+          success: true,
         });
-      }, 2000);
+        break;
+      case Messages.invalid.code:
+        setVerifyMessage({
+          message: Messages.invalid.text,
+          image: Images.Dissatisfaction,
+          success: false,
+        });
+        break;
+      case Messages.redeemed.code:
+        setVerifyMessage({
+          message: Messages.redeemed.text,
+          image: Images.Safety,
+          success: false,
+        });
+        break;
+      case Messages.networkError.code:
+        setVerifyMessage({
+          message: Messages.networkError.text,
+          image: Images.NetworkError,
+          success: false,
+        });
+        break;
+      default:
+        setVerifyMessage({
+          message: Messages.invalid.text,
+          image: Images.Dissatisfaction,
+          success: false,
+        });
+        break;
     }
+  };
+
+  const handleGetScanQrCodeDetail = async (value: string) => {
+    try {
+      const ticketToken = await TicketService.doGetTicketToken();
+      const response = await TicketService.doVerifyTicket({ code: ticketToken && ticketToken.data || '' });
+      if (verificationApi(response)) {
+        setDatail(response.data);
+      } else {
+        checkStatusType(response.code);
+        setVerify(true);
+        setDatail({} as ScanQrCodeDetail);
+      }
+    } catch (error: any) {
+      checkStatusType(Messages.networkError.code);
+      setVerify(true);
+      setDatail({} as ScanQrCodeDetail);
+    }
+  };
+  
+  const handleVerify = async (value: string) => {
+    try {
+      const response = await TicketService.doRedeemTicket({
+        user_id: detail?.user.id,
+        ticket_id: detail?.ticket.id,
+      });
+      if (response) {
+        checkStatusType(response.code);
+      }
+    } catch (error: any) {
+      checkStatusType(Messages.networkError.code);
+    }
+    setVerify(true);
   };
 
   useEffect(() => {
     handleGetScanQrCodeDetail(result);
   }, [result]);
 
-  const handleVerify = (value: string) => {
-    switch (value) {
-      case 'case1':
-        setVerifyMessage({
-          message: 'Ticket is verified successfully!',
-          image: Images.Success,
-          success: true,
-        });
-      break;
-      case 'case2':
-        setVerifyMessage({
-          message: 'Invalid QR code, please refresh the code and try again.',
-          image: Images.Dissatisfaction,
-          success: false,
-        });
-      break;
-      case 'case3':
-        setVerifyMessage({
-          message: 'Network error, please try again.',
-          image: Images.NetworkError,
-          success: false,
-        });
-      break;
-      case 'case4':
-        setVerifyMessage({
-          message: 'This ticket has been verified at 2022/09/12 13:32:35.',
-          image: Images.Safety,
-          success: false,
-        });
-      break;
-      default:
-        setVerifyMessage({
-          message: 'Invalid QR code, please refresh the code and try again.',
-          image: Images.Dissatisfaction,
-          success: false,
-        });
-      break;
-    }
-    setVerify(true);
-  };
-
   return (
     <div className="scan-result">
       {detail && (
         <>
+          <div className="scan-back" onClick={() => setResult('')}>
+            <Image src={Images.BackArrow} alt="" />
+            <span style={{ marginLeft: 8 }}>BACK</span>
+          </div>
           {!verify && (
-            <div style={{ padding: 20 }}>
-              <div className="scan-back" onClick={() => setResult('')}>
-                <Image src={Images.BackArrow} alt="" />
-                <span style={{ marginLeft: 8 }}>BACK</span>
-              </div>
-              <div className="result-logo">
-                <Image src={Images.Logo} alt="" />
-              </div>
-              <div className="border-box">
-                <div className="result-container">
-                  <div className="result-items">
-                    <p className="items-title">
-                      Participant
-                    </p>
-                    <p className="items-value">
-                      {detail.participant}
-                    </p>
-                  </div>
-                  <div className="result-items">
-                    <p className="items-title">
-                      Email
-                    </p>
-                    <p className="items-value">
-                      {detail.email}
-                    </p>
-                  </div>
-                  <div className="result-items display-flex">
-                    <div style={{ width: '50%' }}>
-                      <p className="items-title">
-                        Type
-                      </p>
-                      <p className="items-value">
-                        {detail.type}
-                      </p>
-                    </div>
-                    <div style={{ width: '50%' }}>
-                      <p className="items-title">
-                        Seat Number
-                      </p>
-                      <p className="items-value">
-                        {detail.seatNumber}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="result-items">
-                    <p className="items-title">
-                      Ticket Nmuber
-                    </p>
-                    <p className="items-value">
-                      {detail.ticketNumber}
-                    </p>
-                  </div>
+            <div className="result-detail">
+              <div style={{ width: '100%', marginTop: -50 }}>
+                <div className="result-logo">
+                  <Image src={Images.Logo} alt="" />
                 </div>
-                <div
-                  className="action-button"
-                  onClick={() => handleVerify(result)}
-                >
-                  <Image src={Images.ButtonVerify} alt="" />
-                  <p className="button-text">
-                    VERIFY
-                  </p>
+                <div className="border-box">
+                  <div className="result-container">
+                    <div className="result-items">
+                      <p className="items-title">
+                        Participant
+                      </p>
+                      <p className="items-value">
+                        {detail.user.name}
+                      </p>
+                    </div>
+                    <div className="result-items">
+                      <p className="items-title">
+                        Email
+                      </p>
+                      <p className="items-value">
+                        {detail.user.email}
+                      </p>
+                    </div>
+                    <div className="result-items display-flex">
+                      <div style={{ width: '50%' }}>
+                        <p className="items-title">
+                          Ticket Type
+                        </p>
+                        <p className="items-value">
+                          {detail.ticket.type}
+                        </p>
+                      </div>
+                      <div style={{ width: '50%' }}>
+                        <p className="items-title">
+                          Seat Number
+                        </p>
+                        <p className="items-value">
+                          {detail.ticket.seat}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="result-items">
+                      <p className="items-title">
+                        Ticket Number
+                      </p>
+                      <p className="items-value">
+                        {detail.ticket.no}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className="action-button"
+                    onClick={() => handleVerify(result)}
+                  >
+                    <Image src={Images.ButtonVerify} alt="" />
+                    <p className="button-text">
+                      VERIFY
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           ) || (
             <div className="verify-container">
-              <div className="items">
+              <div className="items" style={{ width: '100%' }}>
                 <div style={{ textAlign: 'center' }}>
                   <Image src={verifyMessage.image} alt="" />
                 </div>
@@ -176,15 +208,18 @@ const ScanQrCodeResult = ({
                 </div>
                 <div>
                   <button onClick={() => setResult('')}>
-                    {verifyMessage.success && 'DONE' || 'Scan QR Code'}
+                    {verifyMessage.success && 'CONTINUE TO SCAN' || 'SCAN QR CODE'}
                   </button>
+                  {verifyMessage.success && (
+                    <button className="back-home" onClick={() => setShowQrReader(false)}>
+                      BACK TO HOME
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           )}
         </>
-      ) || (
-        <div>Loading...</div>
       )}
     </div>
   );
@@ -222,18 +257,21 @@ const ScanQrCodePage: NextPage = () => {
             <ScanQrCodeResult
               result={result}
               setResult={setResult}
+              setShowQrReader={setShowQrReader}
             />
           )}
         </>
       ) || (
         <div className="scan-start">
           <div className="scan-start-mask" />
-          <p>
-            <Image src={Images.Logo} alt="" />
-          </p>
-          <button onClick={() => setShowQrReader(true)}>
-            SCAN QR CODE
-          </button>
+          <div className="scan-start-container">
+            <p>
+              <Image src={Images.Logo} alt="" />
+            </p>
+            <button onClick={() => setShowQrReader(true)}>
+              SCAN QR CODE
+            </button>
+          </div>
         </div>
       )}
     </ScanQrCodePageContainers>
