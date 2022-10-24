@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
+import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
 import { ScanQrCodePageContainers } from '../styles/scanQrCode.style';
@@ -195,6 +196,9 @@ const ScanQrCodePage: NextPage = () => {
 
   return (
     <ScanQrCodePageContainers>
+      <Head>
+        <title>Scan QR Code</title>
+      </Head>
       {showQrReader && (
         <>
           {!result && (

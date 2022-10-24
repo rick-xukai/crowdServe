@@ -1,12 +1,15 @@
 import type { NextPage } from 'next';
 import React from 'react';
+import Head from 'next/head';
 import Image from 'next/image';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
 
-const LandingPage: NextPage = () => {
-  return (
+const LandingPage: NextPage = () => (
     <LandingPageContainer>
+      <Head>
+        <title>Download CrowdServe App</title>
+      </Head>
       <div className="page-hearder">
         <Image className="logo" src={Images.Logo} alt="" />
       </div>
@@ -56,6 +59,5 @@ const LandingPage: NextPage = () => {
       </div>
     </LandingPageContainer>
   );
-};
 
 export default LandingPage;
