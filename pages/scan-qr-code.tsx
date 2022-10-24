@@ -88,24 +88,26 @@ const ScanQrCodeResult = ({
   };
 
   const handleGetScanQrCodeDetail = async (value: string) => {
-    try {
-      const ticketToken = await TicketService.doGetTicketToken();
-      const response = await TicketService.doVerifyTicket({ code: ticketToken && ticketToken.data || '' });
-      if (verificationApi(response)) {
-        setDatail(response.data);
-      } else {
-        checkStatusType(response.code);
+    if (value) {
+      try {
+        const ticketToken = await TicketService.doGetTicketToken();
+        const response = await TicketService.doVerifyTicket({ code: ticketToken && ticketToken.data || '' });
+        if (verificationApi(response)) {
+          setDatail(response.data);
+        } else {
+          checkStatusType(response.code);
+          setVerify(true);
+          setDatail({} as ScanQrCodeDetail);
+        }
+      } catch (error: any) {
+        checkStatusType(Messages.networkError.code);
         setVerify(true);
         setDatail({} as ScanQrCodeDetail);
       }
-    } catch (error: any) {
-      checkStatusType(Messages.networkError.code);
-      setVerify(true);
-      setDatail({} as ScanQrCodeDetail);
     }
   };
   
-  const handleVerify = async (value: string) => {
+  const handleVerify = async () => {
     try {
       const response = await TicketService.doRedeemTicket({
         user_id: detail?.user.id,
@@ -185,7 +187,7 @@ const ScanQrCodeResult = ({
                   </div>
                   <div
                     className="action-button"
-                    onClick={() => handleVerify(result)}
+                    onClick={handleVerify}
                   >
                     <Image src={Images.ButtonVerify} alt="" />
                     <p className="button-text">
