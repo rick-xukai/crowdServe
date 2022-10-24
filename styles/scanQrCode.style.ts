@@ -5,6 +5,7 @@ const ScanQrCodePageContainers = styled.div`
   height: 100%;
   width: 100%;
   background: ${Colors.backgorund};
+  min-height: 100vh;
   .scan-back {
     position: absolute;
     top: 30px;
@@ -37,8 +38,14 @@ const ScanQrCodePageContainers = styled.div`
     }
   }
   .scan-result {
+    min-height: 100vh;
+    .result-detail {
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+    }
     .result-logo {
-      padding-top: 50px;
       text-align: center;
       margin-bottom: 15px;
       img {
@@ -54,7 +61,7 @@ const ScanQrCodePageContainers = styled.div`
       .action-button,
       .button-text {
         position: absolute;
-        bottom: -50px;
+        bottom: -55px;
         width: 100%;
         text-align: center;
       }
@@ -64,7 +71,7 @@ const ScanQrCodePageContainers = styled.div`
           height: 103px !important;
         }
         .button-text {
-          top: 25px;
+          top: 22px;
           font-size: 18px;
           color: ${Colors.white};
           font-weight: 700;
@@ -111,6 +118,8 @@ const ScanQrCodePageContainers = styled.div`
     background-position: center;
 	  background-repeat: no-repeat;
     background-size: 100% 100%;
+    display: flex;
+    align-items: center;
     .scan-start-mask {
       width: 100%;
       height: 100%;
@@ -122,8 +131,11 @@ const ScanQrCodePageContainers = styled.div`
     }
     p {
       text-align: center;
-      margin-top: 130px;
+      margin-top: 0px;
       margin-bottom: 130px;
+    }
+    .scan-start-container {
+      width: 100%;
     }
   }
   button {
@@ -143,9 +155,8 @@ const ScanQrCodePageContainers = styled.div`
     width: 100%;
     position: fixed;
     height: 100%;
-    .items {
-      transform: translate(0%, 38%);
-    }
+    display: flex;
+    align-items: center;
     .verify-message {
       font-weight: 700;
       font-size: 22px;
@@ -153,6 +164,11 @@ const ScanQrCodePageContainers = styled.div`
       text-align: center;
       margin-top: 20px;
       margin-bottom: 69px;
+    }
+    .back-home {
+      border: 1px solid #fff;
+      background: unset;
+      margin-top: 15px;
     }
   }
 `;
