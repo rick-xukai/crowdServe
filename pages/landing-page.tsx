@@ -1,11 +1,38 @@
 import type { NextPage } from 'next';
-import React from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
 
-const LandingPage: NextPage = () => (
+const LandingPage: NextPage = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const CallApp = require('callapp-lib');
+    const options = {
+      scheme: {
+        protocol: 'deeplinkcrowdserve',
+      },
+      intent: {
+        package: 'com.crowdserve.mobile.dev',
+        scheme: 'deeplinkcrowdserve',
+      },
+      appstore: '',
+    };
+    const callLib = new CallApp(options);
+    callLib.open({ 
+      path: 'email.activated.cn/account',
+      param: {
+        email: router.query.email,
+        verificationcode: router.query.verificationcode,
+      },
+      callback: () => {},
+    });
+  }, []);
+
+  return (
     <LandingPageContainer>
       <Head>
         <title>Download CrowdServe App</title>
@@ -59,5 +86,6 @@ const LandingPage: NextPage = () => (
       </div>
     </LandingPageContainer>
   );
+};
 
 export default LandingPage;
