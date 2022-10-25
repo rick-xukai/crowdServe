@@ -106,7 +106,7 @@ const ScanQrCodeResult = ({
       }
     }
   };
-  
+
   const handleVerify = async () => {
     try {
       const response = await TicketService.doRedeemTicket({

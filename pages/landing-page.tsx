@@ -22,7 +22,7 @@ const LandingPage: NextPage = () => {
       appstore: '',
     };
     const callLib = new CallApp(options);
-    callLib.open({ 
+    callLib.open({
       path: 'email.activated.cn/account',
       param: {
         email: router.query.email,
