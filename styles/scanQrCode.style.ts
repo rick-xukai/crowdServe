@@ -34,7 +34,7 @@ const ScanQrCodePageContainers = styled.div`
     }
     video {
       position: unset !important;
-      object-fit:fill;
+      object-fit: cover;
     }
   }
   .scan-result {
