@@ -117,7 +117,7 @@ const ScanQrCodePageContainers = styled.div`
     background-image: url('../static/images/background.png');
     background-position: center;
 	  background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: cover;
     display: flex;
     align-items: center;
     .scan-start-mask {
@@ -136,6 +136,7 @@ const ScanQrCodePageContainers = styled.div`
     }
     .scan-start-container {
       width: 100%;
+      text-align: center;
     }
   }
   button {
@@ -149,6 +150,7 @@ const ScanQrCodePageContainers = styled.div`
     font-weight: 700;
     font-size: 15px;
     color: ${Colors.grayScale10};
+    max-width: 500px;
   }
   .verify-container {
     padding: 20px;

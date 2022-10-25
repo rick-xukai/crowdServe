@@ -120,10 +120,8 @@ const LandingPageContainer = styled.div`
         }
         .download-link {
           margin-top: 22px;
-          display: flex;
           padding-left: 19px;
           padding-right: 19px;
-          justify-content: space-between;
           > :last-child {
             margin-right: 0 !important;
           }
@@ -151,6 +149,12 @@ const LandingPageContainer = styled.div`
           min-height: 362px !important;
         }
       }
+    }
+  }
+  @media (max-width: 414px) {
+    .download-link {
+      display: flex;
+      justify-content: space-between;
     }
   }
 `;
