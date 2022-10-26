@@ -13,7 +13,6 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-
 # Rebuild the source code only when needed
 FROM node:16-alpine AS builder
 WORKDIR /app
@@ -49,10 +48,18 @@ COPY --from=builder /app/static ./static
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+COPY --chown=nextjs:nodejs ssl /app/ssl
+COPY --chown=nextjs:nodejs server.js /app/
+
 USER nextjs
 
-EXPOSE 3001
+EXPOSE 8080
 
-ENV PORT 3001
+ENV NODE_ENV=prod \
+    HOST=0.0.0.0 \
+    PORT=8080 \
+    https=1 \
+    ssl_key=/app/ssl/key \
+    ssl_cert=/app/ssl/cert
 
 CMD ["node", "server.js"]
