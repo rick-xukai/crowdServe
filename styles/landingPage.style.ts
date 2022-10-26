@@ -8,10 +8,10 @@ const LandingPageContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  padding-left: 120px;
-  padding-right: 120px;
   min-height: 100vh;
   .page-hearder {
+    max-width: 1140px;
+    margin: auto;
     height: 90px;
     span {
       height: 100% !important;
@@ -25,6 +25,8 @@ const LandingPageContainer = styled.div`
     }
   }
   .page-content {
+    max-width: 1140px;
+    margin: auto;
     display: flex;
     justify-content: space-between;
     .content-download {
@@ -54,8 +56,30 @@ const LandingPageContainer = styled.div`
       .download-link {
         margin-top: 70px;
         a {
-          margin-right: 16px !important;
+          margin-right: 16px;
         }
+        .google-play-link {
+          width: 168px;
+          height: 50px;
+          display: inline-block;
+          span, img {
+            height: 100% !important;
+          }
+        }
+        .google-play {
+          width: 168px !important;
+          min-width: 168px !important;
+        }
+      }
+    }
+    .content-detail {
+      height: 580px;
+      span, img {
+        height: 100% !important;
+      }
+      .phone-detail {
+        width: 462px !important;
+        min-width: 462px !important;
       }
     }
   }
@@ -125,14 +149,48 @@ const LandingPageContainer = styled.div`
           > :last-child {
             margin-right: 0 !important;
           }
-          .app-store,
-          .google-play {
-            height: 40px !important;
-            min-height: 40px !important;
+        }
+      }
+      .content-detail {
+        margin-top: 25px;
+      }
+    }
+  }
+  @media (max-width: 414px) {
+    .page-content {
+      .content-detail {
+        height: 363px !important;
+        .phone-detail {
+          width: 290px !important;
+          min-width: 290px !important;
+        }
+      }
+      .content-download {
+        .download-description {
+          margin-bottom: 20px;
+        }
+        .download-link {
+          max-width: 275px;
+          margin: auto;
+          padding-left: 0;
+          padding-right: 0;
+          display: flex;
+          justify-content: space-between;
+          a {
+            width: 134px;
+            height: 40px;
+            margin-right: 0;
+          }
+          .google-play-link {
+            width: 134px;
+            height: 40px;
+            margin-top: 2px;
           }
           .app-store {
             width: 120px !important;
             min-width: 120px !important;
+            height: 40px !important;
+            min-height: 40px !important;
           }
           .google-play {
             width: 134px !important;
@@ -140,21 +198,6 @@ const LandingPageContainer = styled.div`
           }
         }
       }
-      .content-detail {
-        margin-top: 25px;
-        .phone-detail {
-          width: 295px !important;
-          height: 362px !important;
-          min-width: 295px !important;
-          min-height: 362px !important;
-        }
-      }
-    }
-  }
-  @media (max-width: 414px) {
-    .download-link {
-      display: flex;
-      justify-content: space-between;
     }
   }
 `;
