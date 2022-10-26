@@ -66,6 +66,7 @@ const LandingPage: NextPage = () => {
                 href="https://play.google.com/store"
                 target="_blank"
                 title="Google Play"
+                className="google-play-link"
               >
                 <Image
                   className="google-play"
