@@ -22,21 +22,7 @@ const doRedeemTicket = async (payload: any) => {
   return response;
 };
 
-const doGetTicketToken = async () => {
-  const uri = API.getTicketToken.get;
-  const response = await requestClient()
-    .setUri(uri)
-    .setHeaders({
-      'X-APP-PLATFORM': 'ios',
-      'X-APP-VERSION': '1.0.0',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjE2OTI4OH0.uP-49rKmxxXS5rMBvnkwI1g_uJODRfDy7VBsRIFM8vE',
-    })
-    .doGet();
-  return response;
-};
-
 export default {
   doVerifyTicket,
   doRedeemTicket,
-  doGetTicketToken,
 };
