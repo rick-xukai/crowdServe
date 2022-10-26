@@ -90,8 +90,7 @@ const ScanQrCodeResult = ({
   const handleGetScanQrCodeDetail = async (value: string) => {
     if (value) {
       try {
-        const ticketToken = await TicketService.doGetTicketToken();
-        const response = await TicketService.doVerifyTicket({ code: ticketToken && ticketToken.data || '' });
+        const response = await TicketService.doVerifyTicket({ code: value });
         if (verificationApi(response)) {
           setDatail(response.data);
         } else {
