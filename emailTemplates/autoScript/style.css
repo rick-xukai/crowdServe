@@ -10,36 +10,83 @@ a,
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale;
-  font-family: Roboto, PT Sans, Source Sans Pro, Open Sans, Arial, Helvetica,
-    sans-serif;
-}
-.demo-container {
-  padding: 40px 0 0;
-  background-color: #f7fafc;
-  font-family: Roboto, PT Sans, Source Sans Pro, Open Sans, Arial, Helvetica,
-    sans-serif;
-  color: rgba(26, 32, 44, 0.8);
+  font-family: Heebo, sans-serif;
 }
 
-.bet-center {
-  margin: 0 auto;
+.email-container-nft {
+  background: #F8F6F0;
+  max-width: 640px;
 }
 
-.demo-max-width {
-  max-width: 600px;
+.email-header {
+  height: 72px;
+  background: #27272A;
+  display: flex;
+  align-items: center;
 }
 
-.demo-header {
-  margin: 0 auto;
+.email-logo {
+  width: 92px;
+  height: 48px;
+  margin: auto;
 }
 
-.demo-logo img {
-  height: 60px;
-  margin-bottom: 16px;
+.email-content {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 30px;
 }
 
-.demo-footer {
+.content-title {
+  height: 65px;
+  border-bottom: 1px solid #DCDCE1;
+  line-height: 65px;
+  font-weight: 700;
+  font-size: 20px;
+  color: #303034;
+}
+
+.content-detail {
+  margin-top: 20px;
+}
+
+.detail-text {
+  margin-bottom: 20px;
+  margin-top: 0;
+  font-weight: 400;
+  font-size: 15px;
+  color: #303034;
+}
+
+button {
+  width: 200px;
+  height: 45px;
+  background: #FC0006;
+  border-radius: 2px;
+  border: none;
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 15px;
+  color: #F8F6F0;
+}
+
+a {
+  text-decoration: none;
+  color: #1974D2;
+}
+
+.email-container-code {
+  background: #F8F6F0;
+  height: 426px;
+  max-width: 640px;
+  max-height: 426px;
+}
+
+.detail-code {
+  font-weight: 700;
+  font-size: 32px;
+  color: #303034;
+  margin-top: 15px;
+  margin-bottom: 20px;
   text-align: center;
-  margin-top: 32px;
-  padding-bottom: 40px;
 }
