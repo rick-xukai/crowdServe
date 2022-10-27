@@ -6,7 +6,10 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY yarn.lock* ./
-RUN yarn install --network-timeout 100000
+RUN \
+  if [ -f yarn.lock ]; then yarn install --network-timeout 100000; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
 # Rebuild the source code only when needed
 FROM node:16-alpine AS builder
