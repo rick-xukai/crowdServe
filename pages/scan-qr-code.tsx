@@ -7,18 +7,18 @@ import TicketService from '../services/API/Ticket/Ticket.service';
 import { ScanQrCodePageContainers } from '../styles/scanQrCode.style';
 import { Images } from '../theme';
 import { verificationApi } from '../utils/func';
-import basicAuthCheck from '../utils/basicAuth';
+// import basicAuthCheck from '../utils/basicAuth';
 import Messages from '../constants/Messages';
 
-export async function getServerSideProps(ctx: any) {
-  const { req, res } = ctx;
-
-  await basicAuthCheck(req, res);
-
-  return {
-    props: {}
-  };
-}
+// export async function getServerSideProps(ctx: any) {
+//   const { req, res } = ctx;
+//
+//   await basicAuthCheck(req, res);
+//
+//   return {
+//     props: {}
+//   };
+// }
 
 interface ScanQrCodeDetail {
   ticket: {
