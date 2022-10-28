@@ -7,6 +7,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
+cp example.env .env.development
+```
+
+```bash
 npm run dev
 # or
 yarn dev
