@@ -110,10 +110,20 @@ const ScanQrCodeResult = ({
           setDatail({} as ScanQrCodeDetail);
         }
       } catch (error: any) {
-        checkStatusType(Messages.networkError.code);
+        if (error.response) {
+          const { data } = error.response;
+          if (data.statusCode === 500) {
+            checkStatusType(Messages.invalid.code);
+          }
+        } else {
+          checkStatusType(Messages.networkError.code);
+        }
         setVerify(true);
         setDatail({} as ScanQrCodeDetail);
       }
+    } else {
+      checkStatusType(Messages.invalid.code);
+      setVerify(true);
     }
   };
 
@@ -218,7 +228,7 @@ const ScanQrCodeResult = ({
                     {verifyMessage.message}
                   </p>
                 </div>
-                <div>
+                <div style={{ textAlign: 'center' }}>
                   <button onClick={() => setResult('')}>
                     {verifyMessage.success && 'CONTINUE TO SCAN' || 'SCAN QR CODE'}
                   </button>
