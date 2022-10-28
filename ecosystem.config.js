@@ -7,7 +7,7 @@ module.exports = {
       autorestart: true,
       watch: false,
       env: {
-        name: 'crowdserve-frontend-dev',
+        name: 'dev-fe-crowdserve',
         NODE_ENV: 'development',
         PORT: 8080,
         https: 1,
@@ -16,7 +16,7 @@ module.exports = {
         ssl_cert: './ssl/cert'
       },
       env_production: {
-        name: 'crowdserve-frontend-prod',
+        name: 'prod-fe-crowdserve',
         NODE_ENV: 'production',
         PORT: 80,
         https: 1,
@@ -25,7 +25,7 @@ module.exports = {
         ssl_cert: './ssl/cert'
       },
       env_test: {
-        name: 'crowdserve-frontend-test',
+        name: 'test-fe-crowdserve',
         NODE_ENV: 'test',
         PORT: 3000,
       },
