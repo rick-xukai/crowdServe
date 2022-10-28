@@ -114,6 +114,8 @@ const ScanQrCodeResult = ({
           const { data } = error.response;
           if (data.statusCode === 500) {
             checkStatusType(Messages.invalid.code);
+          } else {
+            checkStatusType(Messages.networkError.code);
           }
         } else {
           checkStatusType(Messages.networkError.code);
