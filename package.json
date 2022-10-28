@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:dev": "pm2 start --env development",
     "lint": "next lint"
   },
   "dependencies": {

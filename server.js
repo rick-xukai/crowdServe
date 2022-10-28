@@ -146,7 +146,7 @@ server.listen(currentPort, (err) => {
     hostname: process.env.HOST || 'localhost',
     port: currentPort,
     dir: path.join(__dirname),
-    dev: process.env.NODE_ENV != 'prod',
+    dev: process.env.NODE_ENV != 'test',
     customServer: true,
     conf: serverConf,
   });

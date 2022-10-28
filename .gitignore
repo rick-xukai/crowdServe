@@ -37,5 +37,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#e emtail template auto generate
+# emtail template auto generate
 /emailTemplates/autoScript/node_modules
+
+# sll
+/ssl
