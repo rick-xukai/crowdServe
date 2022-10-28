@@ -83,6 +83,16 @@ const LandingPageContainer = styled.div`
       }
     }
   }
+  @media(min-width: 1140px) {
+    .page-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 1140px;
+      max-width: 1140px;
+    }
+  }
   @media (max-width: 1024px) {
     padding-left: 0px;
     padding-right: 0px;
