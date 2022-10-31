@@ -5,7 +5,10 @@ const nextConfig = {
   compiler: {
     styledComponents: true
   },
-  output: 'standalone'
+  output: 'standalone',
+  images: {
+    unoptimized: true
+  }
 };
 
 module.exports = nextConfig;
