@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
@@ -58,7 +59,7 @@ const ScanQrCodeResult = ({
     success: false,
   });
 
-  const checkStatusType = (statusCode: number) => {
+  const checkStatusType = (statusCode: number, data?: string) => {
     switch (statusCode) {
       case Messages.success.code:
         setVerifyMessage({
@@ -76,7 +77,10 @@ const ScanQrCodeResult = ({
         break;
       case Messages.redeemed.code:
         setVerifyMessage({
-          message: Messages.redeemed.text,
+          message: Messages.redeemed.text.replace(
+            '{redeemed_time}',
+            (data && format(new Date(data as string), 'yyyy/mm/dd hh:mm:ss')) || ''
+          ),
           image: Images.Safety,
           success: false,
         });
@@ -105,7 +109,8 @@ const ScanQrCodeResult = ({
         if (verificationApi(response)) {
           setDatail(response.data);
         } else {
-          checkStatusType(response.code);
+          const { ticket } = response.data;
+          checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
           setVerify(true);
           setDatail({} as ScanQrCodeDetail);
         }
@@ -136,7 +141,8 @@ const ScanQrCodeResult = ({
         ticket_id: detail?.ticket.id,
       });
       if (response) {
-        checkStatusType(response.code);
+        const { ticket } = response.data;
+        checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
       }
     } catch (error: any) {
       checkStatusType(Messages.networkError.code);
