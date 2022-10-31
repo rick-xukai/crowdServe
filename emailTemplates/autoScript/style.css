@@ -14,6 +14,7 @@ a,
 }
 
 .email-container-nft {
+  margin: auto;
   background: #F8F6F0;
   max-width: 640px;
 }
@@ -56,6 +57,7 @@ a,
   font-weight: 400;
   font-size: 15px;
   color: #303034;
+  word-break: break-word;
 }
 
 button {
@@ -76,6 +78,7 @@ a {
 }
 
 .email-container-code {
+  margin: auto;
   background: #F8F6F0;
   max-width: 640px;
 }
