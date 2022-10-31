@@ -1,13 +1,16 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { Images } from '../theme';
+import { qs } from '../utils/func';
 import { LandingPageContainer } from '../styles/landingPage.style';
 
 const LandingPage: NextPage = () => {
-  const router = useRouter();
+  const { email, verificationcode } = qs<{
+    email: string,
+    verificationcode: string
+  }>();
 
   useEffect(() => {
     const CallApp = require('callapp-lib');
@@ -25,8 +28,8 @@ const LandingPage: NextPage = () => {
     callLib.open({
       path: 'email.activated.cn/account',
       param: {
-        email: router.query.email,
-        verificationcode: router.query.verificationcode,
+        email: email || '',
+        verificationcode: verificationcode || '',
       },
       callback: () => {},
     });
