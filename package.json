@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^1.1.2",
+    "base-64": "^1.0.0",
     "callapp-lib": "^3.5.3",
     "date-fns": "^2.29.3",
     "next": "12.3.1",
@@ -21,6 +22,7 @@
     "styled-components": "^5.3.6"
   },
   "devDependencies": {
+    "@types/base-64": "^1.0.0",
     "@types/node": "18.8.5",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",

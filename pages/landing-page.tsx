@@ -1,18 +1,18 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import React, { useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import Base64 from 'base-64';
 import { Images } from '../theme';
-import { qs } from '../utils/func';
 import { LandingPageContainer } from '../styles/landingPage.style';
 
 const LandingPage: NextPage = () => {
-  const { email, verificationcode } = qs<{
-    email: string,
-    verificationcode: string
-  }>();
+  const router = useRouter();
 
   useEffect(() => {
+    const base64Code = router.asPath.split('?')[1];
+    const decodeParameters = JSON.parse(Base64.decode(base64Code));
     const CallApp = require('callapp-lib');
     const options = {
       scheme: {
@@ -28,8 +28,8 @@ const LandingPage: NextPage = () => {
     callLib.open({
       path: 'email.activated.cn/account',
       param: {
-        email: email || '',
-        verificationcode: verificationcode || '',
+        email: decodeParameters.email || '',
+        verificationcode: decodeParameters.code || '',
       },
       callback: () => {},
     });
