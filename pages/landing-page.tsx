@@ -11,8 +11,13 @@ const LandingPage: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const base64Code = router.asPath.split('?')[1];
-    const decodeParameters = JSON.parse(Base64.decode(base64Code));
+    let decodeParameters = { email: '', code: '' };
+    try {
+      const base64Code = router.asPath.split('?')[1];
+      decodeParameters = JSON.parse(Base64.decode(base64Code));
+    } catch (error) {
+      console.log(error);
+    }
     const CallApp = require('callapp-lib');
     const options = {
       scheme: {
