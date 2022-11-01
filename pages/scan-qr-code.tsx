@@ -141,8 +141,7 @@ const ScanQrCodeResult = ({
         ticket_id: detail?.ticket.id,
       });
       if (response) {
-        const { ticket } = response.data;
-        checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
+        checkStatusType(response.code);
       }
     } catch (error: any) {
       checkStatusType(Messages.networkError.code);
