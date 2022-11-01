@@ -3,32 +3,17 @@ module.exports = {
     {
       name: 'crowdserve-frontend',
       script: './server.js',
+      cwd: '/mnt/frontend',
       instances: 1,
       autorestart: true,
       watch: false,
       env: {
-        name: 'crowdserve-frontend-dev',
+        name: 'crowdserve-frontend',
         NODE_ENV: 'development',
+        NEXT_PUBLIC_API_SERVER: 'https://api-dev.crowdserve.xyz/',
         PORT: 8080,
-        https: 1,
-        HOST: '0.0.0.0',
-        ssl_key: './ssl/key',
-        ssl_cert: './ssl/cert'
-      },
-      env_production: {
-        name: 'crowdserve-frontend-prod',
-        NODE_ENV: 'production',
-        PORT: 80,
-        https: 1,
-        HOST: '0.0.0.0',
-        ssl_key: './ssl/key',
-        ssl_cert: './ssl/cert'
-      },
-      env_test: {
-        name: 'crowdserve-frontend-test',
-        NODE_ENV: 'test',
-        PORT: 3000,
-      },
+        HOST: '0.0.0.0'
+      }
     },
   ],
 };
