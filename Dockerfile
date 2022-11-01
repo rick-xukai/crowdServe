@@ -69,7 +69,7 @@ ENV TZ=Asia/Singapore \
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=15s --timeout=10s \
+HEALTHCHECK --interval=30s --timeout=10s \
   CMD curl -fs http://localhost:8080/ || exit 1
 
 WORKDIR /app
