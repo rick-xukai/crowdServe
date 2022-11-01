@@ -3,6 +3,7 @@ import axios from 'axios';
 
 export const defaultHeaders = {
   'content-type': 'application/json',
+  'x-api-key': process.env.NEXT_PUBLIC_API_KEY,
 };
 
 const defaultOptions = {
