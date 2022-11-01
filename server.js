@@ -21,7 +21,9 @@ const server = http.createServer(async (req, res) => {
     res.end('internal server error');
   }
 });
-const currentPort = parseInt(process.env.PORT, 10) || 8080;
+
+const listenHost = process.env.HOST || '0.0.0.0';
+const listenPort = parseInt(process.env.PORT, 10) || 8080;
 
 const serverConf = {
     "env": {},
@@ -125,19 +127,20 @@ const serverConf = {
     }
 };
 
-server.listen(currentPort, (err) => {
+server.listen(listenPort, (err) => {
   if (err) {
     console.error("Failed to start server", err);
     process.exit(1);
   }
+
   const nextServer = new NextServer({
-    hostname: process.env.HOST || 'localhost',
-    port: currentPort,
+    hostname: listenHost,
+    port: listenPort,
     dir: path.join(__dirname),
     dev: process.env.NODE_ENV != 'production',
     customServer: true,
     conf: serverConf
   });
   handler = nextServer.getRequestHandler();
-  console.log("Listening on port", currentPort);
+  console.log(`Listening on ${listenHost}:${listenPort}`);
 });

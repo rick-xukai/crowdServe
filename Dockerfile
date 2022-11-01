@@ -7,7 +7,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* /app/
 
 RUN \
   if [ -f yarn.lock ]; then yarn install --network-timeout 300000 --frozen-lockfile; \
@@ -21,8 +21,8 @@ FROM node:16-alpine AS builder
 
 WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --from=deps /app/node_modules /app/node_modules
+COPY . /app/
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -40,6 +40,8 @@ FROM node:16-alpine AS runner
 ARG ENV=dev
 ARG VERSION=dev
 
+WORKDIR /app
+
 RUN apk add --no-cache tzdata curl && \
     cp /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 
@@ -49,13 +51,13 @@ RUN apk add --no-cache tzdata curl && \
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/static ./static
+COPY --from=builder /app/public /app/public
+COPY --from=builder /app/static /app/static
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone /app/
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static /app/.next/static
 COPY --chown=nextjs:nodejs server.js /app/
 
 USER nextjs
@@ -71,7 +73,5 @@ EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=10s \
   CMD curl -fs http://localhost:8080/ || exit 1
-
-WORKDIR /app
 
 CMD ["node", "server.js"]
