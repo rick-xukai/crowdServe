@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
 import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
@@ -81,7 +80,7 @@ const ScanQrCodeResult = ({
         setVerifyMessage({
           message: Messages.redeemed.text.replace(
             '{redeemed_time}',
-            (data && format(new Date(data as string), 'yyyy/MM/dd hh:mm:ss')) || ''
+            (data && data.replace('-', '/')) || ''
           ),
           image: Images.Safety,
           success: false,
