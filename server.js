@@ -116,10 +116,10 @@ app.prepare().then(() => {
       res.end('internal server error');
     }
   }).listen(listenPort, (err) => {
-  if (err) {
-    console.error("Failed to start server", err);
-    process.exit(1);
-  }
+    if (err) {
+      console.error("Failed to start server", err);
+      process.exit(1);
+    }
     console.log(`Listening on ${listenHost}:${listenPort}`);
   });
 });
