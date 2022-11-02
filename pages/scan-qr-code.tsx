@@ -51,7 +51,7 @@ const ScanQrCodeResult = ({
   setResult: (value: string) => void;
   setShowQrReader: (value: boolean) => void;
 }) => {
-  const [detail, setDatail] = useState<ScanQrCodeDetail | null>(null);
+  const [detail, setDetail] = useState<ScanQrCodeDetail | null>(null);
   const [verify, setVerify] = useState(false);
   const [verifyMessage, setVerifyMessage] = useState<VerifyMessage>({
     message: '',
@@ -107,12 +107,12 @@ const ScanQrCodeResult = ({
       try {
         const response = await TicketService.doVerifyTicket({ code: value });
         if (verificationApi(response)) {
-          setDatail(response.data);
+          setDetail(response.data);
         } else {
           const { ticket } = response.data;
           checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
           setVerify(true);
-          setDatail({} as ScanQrCodeDetail);
+          setDetail({} as ScanQrCodeDetail);
         }
       } catch (error: any) {
         if (error.response) {
@@ -126,7 +126,7 @@ const ScanQrCodeResult = ({
           checkStatusType(Messages.networkError.code);
         }
         setVerify(true);
-        setDatail({} as ScanQrCodeDetail);
+        setDetail({} as ScanQrCodeDetail);
       }
     } else {
       checkStatusType(Messages.invalid.code);
