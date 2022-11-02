@@ -21,11 +21,11 @@ const LandingPage: NextPage = () => {
     const CallApp = require('callapp-lib');
     const options = {
       scheme: {
-        protocol: 'deeplinkcrowdserve',
+        protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PATH,
       },
       intent: {
-        package: 'com.crowdserve.mobile.dev',
-        scheme: 'deeplinkcrowdserve',
+        package: process.env.NEXT_PUBLIC_APP_PACKAGE_NAME,
+        scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PATH,
       },
       appstore: '',
     };
