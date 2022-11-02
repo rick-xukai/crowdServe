@@ -173,6 +173,24 @@ const ScanQrCodePageContainers = styled.div`
       margin-top: 15px;
     }
   }
+  .laoding-cover {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #fff;
+    border-top-color: transparent;
+    border-radius: 100%;
+    animation: circle infinite 0.75s linear;
+    margin: auto;
+    margin-top: -2px !important;
+  }
+  @keyframes circle {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 export { ScanQrCodePageContainers };
