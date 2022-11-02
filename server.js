@@ -1,8 +1,26 @@
 process.chdir(__dirname);
-const next = require('next');
+const NextServer = require('next/dist/server/next-server').default;
 const http = require('http');
-const { parse } = require('url');
 const path = require('path');
+
+// Make sure commands gracefully respect termination signals (e.g. from Docker)
+// Allow the graceful termination to be manually configurable
+if (!process.env.NEXT_MANUAL_SIG_HANDLE) {
+  process.on('SIGTERM', () => process.exit(0));
+  process.on('SIGINT', () => process.exit(0));
+}
+
+let handler;
+
+const server = http.createServer(async (req, res) => {
+  try {
+    await handler(req, res);
+  } catch (err) {
+    console.error(err);
+    res.statusCode = 500;
+    res.end('internal server error');
+  }
+});
 
 const listenHost = process.env.HOST || '0.0.0.0';
 const listenPort = parseInt(process.env.PORT, 10) || 8080;
@@ -29,6 +47,20 @@ const serverConf = {
   "poweredByHeader": true,
   "compress": true,
   "analyticsId": "",
+  "images": {
+    "deviceSizes": [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    "imageSizes": [16, 32, 48, 64, 96, 128, 256, 384],
+    "path": "/_next/image",
+    "loader": "default",
+    "domains": [],
+    "disableStaticImages": false,
+    "minimumCacheTTL": 60,
+    "formats": ["image/webp"],
+    "dangerouslyAllowSVG": false,
+    "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;",
+    "remotePatterns": [],
+    "unoptimized": false
+  },
   "devIndicators": {
     "buildActivity": true,
     "buildActivityPosition": "bottom-right"
@@ -95,31 +127,20 @@ const serverConf = {
   }
 };
 
-const app = next({
-  hostname: listenHost,
-  port: listenPort,
-  dir: path.join(__dirname),
-  dev: process.env.NODE_ENV != 'production',
-  customServer: true,
-  conf: serverConf
-});
-const handle = app.getRequestHandler();
+server.listen(listenPort, (err) => {
+  if (err) {
+    console.error("Failed to start server", err);
+    process.exit(1);
+  }
 
-app.prepare().then(() => {
-  http.createServer(async (req, res) => {
-    try {
-      const parsedUrl = parse(req.url, true);
-      await handle(req, res, parsedUrl);
-    } catch (err) {
-      console.error(err);
-      res.statusCode = 500;
-      res.end('internal server error');
-    }
-  }).listen(listenPort, (err) => {
-    if (err) {
-      console.error("Failed to start server", err);
-      process.exit(1);
-    }
-    console.log(`Listening on ${listenHost}:${listenPort}`);
+  const nextServer = new NextServer({
+    hostname: listenHost,
+    port: listenPort,
+    dir: path.join(__dirname),
+    dev: process.env.NODE_ENV != 'production',
+    customServer: true,
+    conf: serverConf
   });
+  handler = nextServer.getRequestHandler();
+  console.log(`Listening on ${listenHost}:${listenPort}`);
 });
