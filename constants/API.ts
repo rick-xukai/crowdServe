@@ -3,7 +3,7 @@ const API = {
     post: '/admin/ticket/verify',
   },
   redeemTicket: {
-    delete: '/admin/user/{userId}/ticket/{ticketId}',
+    delete: '/admin/user/ticket/{redeem_code}',
   },
 };
 

@@ -53,6 +53,8 @@ const ScanQrCodeResult = ({
 }) => {
   const [detail, setDetail] = useState<ScanQrCodeDetail | null>(null);
   const [verify, setVerify] = useState(false);
+  const [redeemCode, setRedeemCode] = useState('');
+  const [loading, setLoading] = useState(false);
   const [verifyMessage, setVerifyMessage] = useState<VerifyMessage>({
     message: '',
     image: '',
@@ -79,7 +81,7 @@ const ScanQrCodeResult = ({
         setVerifyMessage({
           message: Messages.redeemed.text.replace(
             '{redeemed_time}',
-            (data && format(new Date(data as string), 'yyyy/mm/dd hh:mm:ss')) || ''
+            (data && format(new Date(data as string), 'yyyy/MM/dd hh:mm:ss')) || ''
           ),
           image: Images.Safety,
           success: false,
@@ -108,6 +110,7 @@ const ScanQrCodeResult = ({
         const response = await TicketService.doVerifyTicket({ code: value });
         if (verificationApi(response)) {
           setDetail(response.data);
+          setRedeemCode(response.data.redeemCode);
         } else {
           const { ticket } = response.data;
           checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
@@ -135,16 +138,20 @@ const ScanQrCodeResult = ({
   };
 
   const handleVerify = async () => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
     try {
-      const response = await TicketService.doRedeemTicket({
-        user_id: detail?.user.id,
-        ticket_id: detail?.ticket.id,
-      });
+      const response = await TicketService.doRedeemTicket({ code: redeemCode });
       if (response) {
-        checkStatusType(response.code);
+        const { ticket } = response.data || {};
+        checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
       }
+      setLoading(false);
     } catch (error: any) {
       checkStatusType(Messages.networkError.code);
+      setLoading(false);
     }
     setVerify(true);
   };
@@ -218,7 +225,9 @@ const ScanQrCodeResult = ({
                   >
                     <Image src={Images.ButtonVerify} alt="" />
                     <p className="button-text">
-                      VERIFY
+                      {loading && (
+                        <p className="laoding-cover" />
+                      ) || 'VERIFY'}
                     </p>
                   </div>
                 </div>

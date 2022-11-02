@@ -13,9 +13,7 @@ const doVerifyTicket = async (payload: { code: string }) => {
 };
 
 const doRedeemTicket = async (payload: any) => {
-  const uri = API.redeemTicket.delete
-    .replace('{userId}', payload.user_id)
-    .replace('{ticketId}', payload.ticket_id);
+  const uri = API.redeemTicket.delete.replace('{redeem_code}', payload.code);
   const response = await requestClient()
     .setUri(uri)
     .doDelete();
