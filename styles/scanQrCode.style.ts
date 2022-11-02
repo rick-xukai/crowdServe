@@ -79,13 +79,13 @@ const ScanQrCodePageContainers = styled.div`
       }
     }
     .result-container {
-      padding-bottom: 94px !important;
       width: 100%;
       background: linear-gradient(180deg,rgba(39, 39, 42, 0.8) 0%,rgba(39, 39, 42, 0.8) 35.94%,rgba(39, 39, 42, 0.9) 100%);
-      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
       backdrop-filter: blur(5px);
       border-radius: 2px;
       padding: 26px 20px;
+      padding-bottom: 94px !important;
     }
     .result-items {
       .items-title {
@@ -131,7 +131,7 @@ const ScanQrCodePageContainers = styled.div`
     }
     p {
       text-align: center;
-      margin-top: 0px;
+      margin-top: 0;
       margin-bottom: 130px;
     }
     .scan-start-container {
@@ -140,11 +140,11 @@ const ScanQrCodePageContainers = styled.div`
     }
   }
   button {
-    font-family: Heebo;
+    font-family: Heebo, sans-serif;
     border: none;
     width: 100%;
     height: 50px;
-    box-shadow: 0px 2px 2px rgb(0 0 0 / 12%);
+    box-shadow: 0 2px 2px rgb(0 0 0 / 12%);
     background: ${Colors.branding};
     border-radius: 2px;
     font-weight: 700;

@@ -9,7 +9,7 @@ const LandingPageContainer = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   min-height: 100vh;
-  .page-hearder {
+  .page-header {
     max-width: 1140px;
     margin: auto;
     height: 90px;
@@ -94,9 +94,9 @@ const LandingPageContainer = styled.div`
     }
   }
   @media (max-width: 1024px) {
-    padding-left: 0px;
-    padding-right: 0px;
-    .page-hearder {
+    padding-left: 0;
+    padding-right: 0;
+    .page-header {
       padding-left: 50px;
       padding-right: 50px;
     }
@@ -129,7 +129,7 @@ const LandingPageContainer = styled.div`
     }
   }
   @media (max-width: 768px) {
-    .page-hearder {
+    .page-header {
       height: 60px;
       padding-left: 12px;
       padding-right: 12px;

@@ -45,7 +45,7 @@ const LandingPage: NextPage = () => {
       <Head>
         <title>Download CrowdServe App</title>
       </Head>
-      <div className="page-hearder">
+      <div className="page-header">
         <Image className="logo" src={Images.Logo} alt="" />
       </div>
       <div className="page-center">
