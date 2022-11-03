@@ -80,7 +80,7 @@ const ScanQrCodeResult = ({
         setVerifyMessage({
           message: Messages.redeemed.text.replace(
             '{redeemed_time}',
-            (data && data.replace('-', '/')) || ''
+            (data && data.replace(/\-/g, '/')) || ''
           ),
           image: Images.Safety,
           success: false,
