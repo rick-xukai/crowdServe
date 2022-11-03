@@ -69,9 +69,16 @@ const ScanQrCodeResult = ({
           success: true,
         });
         break;
-      case Messages.invalid.code:
+      case Messages.invalidUnlawful.code:
         setVerifyMessage({
-          message: Messages.invalid.text,
+          message: Messages.invalidUnlawful.text,
+          image: Images.Dissatisfaction,
+          success: false,
+        });
+        break;
+      case Messages.invalidExpired.code:
+        setVerifyMessage({
+          message: Messages.invalidExpired.text,
           image: Images.Dissatisfaction,
           success: false,
         });
@@ -95,7 +102,7 @@ const ScanQrCodeResult = ({
         break;
       default:
         setVerifyMessage({
-          message: Messages.invalid.text,
+          message: Messages.invalidUnlawful.text,
           image: Images.Dissatisfaction,
           success: false,
         });

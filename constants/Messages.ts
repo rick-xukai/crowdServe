@@ -3,8 +3,12 @@ const Messages = {
     code: 200,
     text: 'Ticket is verified successfully!',
   },
-  invalid: {
-    code: 1007 || 1008,
+  invalidUnlawful: {
+    code: 1007,
+    text: 'Invalid QR code, please refresh the code and try again.',
+  },
+  invalidExpired: {
+    code: 1008,
     text: 'Invalid QR code, please refresh the code and try again.',
   },
   redeemed: {
