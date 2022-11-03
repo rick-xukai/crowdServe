@@ -118,7 +118,7 @@ const ScanQrCodeResult = ({
           setDetail(response.data);
           setRedeemCode(response.data.redeemCode);
         } else {
-          const { ticket } = response.data;
+          const { ticket } = response.data || {};
           checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
           setVerify(true);
           setDetail({} as ScanQrCodeDetail);
