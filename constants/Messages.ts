@@ -9,7 +9,7 @@ const Messages = {
   },
   redeemed: {
     code: 1009,
-    text: 'This ticket has been verified at {redeemed_time}',
+    text: 'This ticket has been verified at <br /> {redeemed_time}',
   },
   networkError: {
     code: 1010,
