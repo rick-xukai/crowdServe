@@ -127,7 +127,7 @@ const ScanQrCodeResult = ({
         if (error.response) {
           const { data } = error.response;
           if (data.statusCode === 500) {
-            checkStatusType(Messages.invalid.code);
+            checkStatusType(Messages.invalidUnlawful.code);
           } else {
             checkStatusType(Messages.networkError.code);
           }
@@ -138,7 +138,7 @@ const ScanQrCodeResult = ({
         setDetail({} as ScanQrCodeDetail);
       }
     } else {
-      checkStatusType(Messages.invalid.code);
+      checkStatusType(Messages.invalidUnlawful.code);
       setVerify(true);
     }
   };
