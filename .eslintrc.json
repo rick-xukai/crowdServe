@@ -28,7 +28,6 @@
     "import/no-dynamic-require": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-named-as-default": 0,
-    "import/no-unresolved": 0,
     "import/no-webpack-loader-syntax": 0,
     "import/no-named-as-default-member": 0,
     "import/no-cycle": [2, { "maxDepth": 1 }],
