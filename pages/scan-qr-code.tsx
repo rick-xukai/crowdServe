@@ -239,9 +239,10 @@ const ScanQrCodeResult = ({
                   <Image src={verifyMessage.image} alt="" />
                 </div>
                 <div>
-                  <p className="verify-message">
-                    {verifyMessage.message}
-                  </p>
+                  <p
+                    className="verify-message"
+                    dangerouslySetInnerHTML={{ __html: verifyMessage.message }}
+                  />
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <button onClick={() => setResult('')}>
