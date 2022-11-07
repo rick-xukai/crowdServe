@@ -69,7 +69,7 @@ const LandingPage: NextPage = () => {
               </p>
               <div className="download-link">
                 <a
-                  href="https://www.apple.com/app-store"
+                  href="https://apps.apple.com/us/app/crowdserve/id6444015643"
                   target="_blank"
                   title="App Store"
                 >
