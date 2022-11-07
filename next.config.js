@@ -8,6 +8,9 @@ const nextConfig = {
   output: 'standalone',
   images: {
     unoptimized: true
+  },
+  publicRuntimeConfig: {
+    buildTime: new Date()
   }
 };
 
