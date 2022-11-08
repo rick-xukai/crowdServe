@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { isAndroid } from 'react-device-detect';
+import { isAndroid, isChrome } from 'react-device-detect';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
 
@@ -12,7 +12,7 @@ const LandingPage: NextPage = () => {
 
   useEffect(() => {
     let packageName = '';
-    if (isAndroid) {
+    if (isAndroid || isChrome) {
       const CallApp = require('callapp-lib');
       packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
       const options = {
