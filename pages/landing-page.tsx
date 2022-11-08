@@ -35,6 +35,9 @@ const LandingPage: NextPage = () => {
         package: packageName,
         scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
       },
+      universal: {
+        host: 'app-dev.crowdserve.xyz'
+      },
       appstore: '',
     };
     const callLib = new CallApp(options);
