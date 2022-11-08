@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { isAndroid, isIOS } from 'react-device-detect';
+import { isAndroid } from 'react-device-detect';
 import Base64 from 'base-64';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
@@ -20,32 +20,29 @@ const LandingPage: NextPage = () => {
     } catch (error) {
       console.log(error);
     }
-    const CallApp = require('callapp-lib');
     if (isAndroid) {
+      const CallApp = require('callapp-lib');
       packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
+      const options = {
+        scheme: {
+          protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
+        },
+        intent: {
+          package: packageName,
+          scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
+        },
+        appstore: '',
+      };
+      const callLib = new CallApp(options);
+      callLib.open({
+        path: 'user.activated.cn/account',
+        param: {
+          email: decodeParameters.email || '',
+          verificationcode: decodeParameters.code || '',
+        },
+        callback: () => {},
+      });
     }
-    if (isIOS) {
-      packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_IOS as string;
-    }
-    const options = {
-      scheme: {
-        protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
-      },
-      intent: {
-        package: packageName,
-        scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
-      },
-      appstore: '',
-    };
-    const callLib = new CallApp(options);
-    callLib.open({
-      path: 'user.activated.cn/account',
-      param: {
-        email: decodeParameters.email || '',
-        verificationcode: decodeParameters.code || '',
-      },
-      callback: () => {},
-    });
   }, []);
 
   return (
