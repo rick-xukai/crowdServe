@@ -13,6 +13,7 @@ const LandingPage: NextPage = () => {
 
   useEffect(() => {
     let decodeParameters = { email: '', code: '' };
+    let packageName = '';
     try {
       const base64Code = router.asPath.split('?')[1];
       decodeParameters = JSON.parse(Base64.decode(base64Code));
@@ -20,34 +21,34 @@ const LandingPage: NextPage = () => {
       console.log(error);
     }
     const CallApp = require('callapp-lib');
-    const options: any = {
+    if (isAndroid) {
+      packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
+    }
+    if (isIOS) {
+      packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_IOS as string;
+    }
+    const options = {
       scheme: {
         protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
       },
+      intent: {
+        package: packageName,
+        scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
+      },
+      universal: {
+        host: 'app-dev.crowdserve.xyz'
+      },
       appstore: '',
     };
-    const config = {
+    const callLib = new CallApp(options);
+    callLib.open({
       path: 'user.activated.cn/account',
       param: {
         email: decodeParameters.email || '',
         verificationcode: decodeParameters.code || '',
       },
       callback: () => {},
-    };
-    if (isAndroid) {
-      options.intent = {
-        package: process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID,
-        scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
-      };
-    }
-    if (isIOS) {
-      options.universal = {
-        host: process.env.NEXT_PUBLIC_HOST
-      };
-      config.path = 'wakeup-ios/';
-    }
-    const callLib = new CallApp(options);
-    callLib.open(config);
+    });
   }, []);
 
   return (
