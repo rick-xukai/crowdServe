@@ -27,8 +27,8 @@ a,
 }
 
 .email-logo {
-  width: 92px;
-  height: 48px;
+  width: 100px;
+  height: 65px;
   margin: auto;
 }
 
@@ -59,8 +59,7 @@ a,
 .click-nft-ticket a {
   width: 100%;
   height: 100%;
-  display: inline-block;
-  line-height: 45px;
+  display: flex;
 }
 .detail-text {
   margin-bottom: 20px;
