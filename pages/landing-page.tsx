@@ -12,7 +12,7 @@ const LandingPage: NextPage = () => {
 
   useEffect(() => {
     let packageName = '';
-    if (!isAndroid) {
+    if (isAndroid) {
       const CallApp = require('callapp-lib');
       packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
       const options = {
