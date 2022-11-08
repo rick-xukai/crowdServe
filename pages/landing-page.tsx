@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { isAndroid } from 'react-device-detect';
-import Base64 from 'base-64';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
 
@@ -12,15 +11,8 @@ const LandingPage: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    let decodeParameters = { email: '', code: '' };
     let packageName = '';
-    try {
-      const base64Code = router.asPath.split('?')[1];
-      decodeParameters = JSON.parse(Base64.decode(base64Code));
-    } catch (error) {
-      console.log(error);
-    }
-    if (isAndroid) {
+    if (!isAndroid) {
       const CallApp = require('callapp-lib');
       packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
       const options = {
@@ -34,12 +26,9 @@ const LandingPage: NextPage = () => {
         appstore: '',
       };
       const callLib = new CallApp(options);
+      const code = router.asPath.split('?')[1] || '';
       callLib.open({
-        path: 'user.activated.cn/account',
-        param: {
-          email: decodeParameters.email || '',
-          verificationcode: decodeParameters.code || '',
-        },
+        path: `user.activated.cn/account?${code}`,
         callback: () => {},
       });
     }
