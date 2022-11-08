@@ -1,0 +1,11 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "A7YZ3DJGV9.com.crowdserve.app",
+                "paths": [ "/landing-page*"]
+            }
+        ]
+    }
+}
