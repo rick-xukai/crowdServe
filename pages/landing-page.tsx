@@ -66,7 +66,7 @@ const LandingPage: NextPage = () => {
                   />
                 </a>
                 <a
-                  href="https://play.google.com/store"
+                  href="https://play.google.com/store/apps/details?id=com.crowdserve.mobile"
                   target="_blank"
                   title="Google Play"
                   className="google-play-link"
