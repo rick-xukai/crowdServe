@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 const IndexPage: NextPage = () => {
   useEffect(() => {
     const { publicRuntimeConfig } = getConfig();
-    console.log(publicRuntimeConfig?.buildTime);
+    console.log(publicRuntimeConfig?.buildTime.toLocaleString());
   });
   return (<div />);
 };
