@@ -71,6 +71,6 @@ ENV TZ=Asia/Singapore \
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=10s \
-  CMD curl -fs http://localhost:8080/ || exit 1
+  CMD curl -fs http://localhost:8080/status/index.html || exit 1
 
 CMD ["node", "server.js"]
