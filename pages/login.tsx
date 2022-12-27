@@ -16,6 +16,9 @@ const Login = () => {
   const [password, setPassword] = useState<string>('');
   const [isValidUser, setIsValidUser] = useState<boolean>(true);
   const [passwordShow, setPasswordShow] = useState<boolean>(false);
+  const [userNameChanged, setUserNameChanged] = useState<boolean>(false);
+  const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
+
   const cookies = useCookie([CookieKeys.authUser]);
 
   useEffect(() => {
@@ -69,17 +72,25 @@ const Login = () => {
             value={userName}
             name="user-name"
             placeholder="User Name"
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={(e) => {
+              setUserName(e.target.value);
+              setUserNameChanged(true);
+            }}
           />
         </div>
-        {!userName && <p className="error-message">Please input your username!</p>}
+        {!userName && userNameChanged && (
+          <p className="error-message">Please input your username!</p>
+        )}
         <div className="form-input input-password">
           <input
             value={password}
             name="password"
             placeholder="Password"
             type={!passwordShow && 'password' || 'text'}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPasswordChanged(true);
+            }}
           />
           <span
             className="password-icon"
@@ -88,7 +99,9 @@ const Login = () => {
             <Image src={(!passwordShow && Images.PasswordHidden) || Images.PasswordShow} alt="" />
           </span>
         </div>
-        {!password && <p className="error-message">Please input your password!</p>}
+        {!password && passwordChanged && (
+          <p className="error-message">Please input your password!</p>
+        )}
         <div className="form-checkbox">
           <input
             name="rememberMe"
