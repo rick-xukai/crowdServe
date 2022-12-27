@@ -24,13 +24,15 @@ export const qs = <T extends { [k: string]: string | boolean }>(
     }, {});
 
 export const dataEncryption = (data: any, type: string) => {
-  let formatData = '';
-  if (type === Encrypt) {
-    formatData = CryptoJS.AES.encrypt(data, encryptionKey).toString();
-  } else {
-    formatData = CryptoJS.AES.decrypt(data, encryptionKey).toString(
-      CryptoJS.enc.Utf8,
-    );
-  }
+  let formatData = '{}';
+  try {
+    if (type === Encrypt) {
+      formatData = CryptoJS.AES.encrypt(data, encryptionKey).toString();
+    } else {
+      formatData = CryptoJS.AES.decrypt(data, encryptionKey).toString(
+        CryptoJS.enc.Utf8,
+      );
+    }
+  } catch (_) {}
   return formatData;
 };
