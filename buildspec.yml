@@ -1,0 +1,23 @@
+version: 0.2
+phases:
+    pre_build:
+        commands:
+            - echo Prepare the building environment
+            - apk --no-cache add --virtual builds-deps libc6-compat
+    build:
+        commands:
+            - echo Building the app...
+            - yarn install --network-timeout 300000 --frozen-lockfile
+            - NODE_ENV=production yarn build
+            - mv .next dist
+artifacts:
+    files:
+        - ./public/**/*
+        - ./static/**/*
+        - ./dist/standalone/**/*
+        - ./dist/static/**/*
+        - ./server.js
+        - ./scripts/*
+        - ./appspec.yml
+        - ./release
+    discard-paths: no

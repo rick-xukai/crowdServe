@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /mnt/frontend_app
+hooks:
+  AfterInstall:
+    - location: scripts/post
+      timeout: 900
+      runas: root
+  ApplicationStart:
+    - location: scripts/start
+      timeout: 900
+      runas: root
+  ApplicationStop:
+    - location: scripts/stop
+      timeout: 900
+      runas: root

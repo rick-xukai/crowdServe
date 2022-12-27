@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ "$APPLICATION_NAME" == "crowdserve-dev" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-app" ]; then
+    cd /mnt/frontend_app
+    cp -rf ./dist/standalone/.next ./.next
+    cp -rf ./dist/standalone/package.json ./package.json
+    cp -rf ./dist/standalone/node_modules ./node_modules
+    cp -rf ./dist/static ./.next/static
+    rm -rf ./dist
+fi
+
+if [ "$APPLICATION_NAME" == "crowdserve-prod" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-app" ]; then
+    echo "production"
+fi

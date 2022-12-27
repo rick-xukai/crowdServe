@@ -14,7 +14,12 @@ let handler;
 
 const server = http.createServer(async (req, res) => {
   try {
-    await handler(req, res);
+    if (handler) {
+      await handler(req, res);
+    } else {
+      res.statusCode = 404;
+      res.end('page not found');
+    }
   } catch (err) {
     console.error(err);
     res.statusCode = 500;
