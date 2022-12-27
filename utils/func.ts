@@ -1,3 +1,9 @@
+import CryptoJS from 'crypto-js';
+
+import { Encrypt } from '../constants/General';
+
+const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY as string;
+
 export const verificationApi = (response: any) => response.code === 200 && response.message === 'OK';
 
 export const qs = <T extends { [k: string]: string | boolean }>(
@@ -16,3 +22,15 @@ export const qs = <T extends { [k: string]: string | boolean }>(
 
       return o;
     }, {});
+
+export const dataEncryption = (data: any, type: string) => {
+  let formatData = '';
+  if (type === Encrypt) {
+    formatData = CryptoJS.AES.encrypt(data, encryptionKey).toString();
+  } else {
+    formatData = CryptoJS.AES.decrypt(data, encryptionKey).toString(
+      CryptoJS.enc.Utf8,
+    );
+  }
+  return formatData;
+};

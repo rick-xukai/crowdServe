@@ -3,11 +3,15 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
+import Router from 'next/router';
+
+import { RouterKeys, CookieKeys } from '../constants/Keys';
 import TicketService from '../services/API/Ticket/Ticket.service';
 import { ScanQrCodePageContainers } from '../styles/scanQrCode.style';
 import { Images } from '../theme';
 import { verificationApi } from '../utils/func';
 import Messages from '../constants/Messages';
+import { useCookie } from '../hooks';
 
 interface ScanQrCodeDetail {
   ticket: {
@@ -262,6 +266,14 @@ const ScanQrCodeResult = ({
 const ScanQrCodePage: NextPage = () => {
   const [result, setResult] = useState('');
   const [showQrReader, setShowQrReader] = useState(false);
+  const cookies = useCookie([CookieKeys.authUser]);
+
+  useEffect(() => {
+    const userInfo = cookies.getCookie(CookieKeys.authUser);
+    if (!userInfo) {
+      Router.push(RouterKeys.login);
+    }
+  }, []);
 
   return (
     <ScanQrCodePageContainers>

@@ -11,6 +11,9 @@ import Logo from '../static/images/logo.png';
 import ButtonVerify from '../static/images/button-verify.png';
 import LandingPageBackground from '../static/images/landing-page-background.png';
 import PhoneDetail from '../static/images/phone-detail.png';
+import LoginBackground from '../static/images/login-background.png';
+import PasswordHidden from '../static/images/password-hidden.svg';
+import PasswordShow from '../static/images/password-show.svg';
 
 const Images = {
   Safety,
@@ -26,6 +29,9 @@ const Images = {
   GooglePlay,
   LandingPageBackground,
   PhoneDetail,
+  LoginBackground,
+  PasswordHidden,
+  PasswordShow,
 };
 
 export default Images;
