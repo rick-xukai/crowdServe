@@ -70,6 +70,21 @@ a,
   word-break: break-word;
 }
 
+.unsubscribe {
+  font-weight: 400;
+  font-size: 13px;
+  color: #ABACB6;
+  border-top: 1px solid #DCDCE1;
+  padding-top: 20px;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.unsubscribe-btn {
+  color: #ABACB6 !important;
+  text-decoration: underline !important;
+}
+
 button {
   width: 200px;
   height: 45px;
