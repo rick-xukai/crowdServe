@@ -10,7 +10,7 @@ import users from '../users';
 import { LoginContainer } from '../styles/login.style';
 import { useCookie } from '../hooks';
 
-const Login = () => {
+const ScanLogin = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(true);
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -120,4 +120,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ScanLogin;
