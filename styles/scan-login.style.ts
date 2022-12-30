@@ -28,7 +28,6 @@ const LoginContainer = styled.div`
     }
     .form-input {
       margin-bottom: 20px;
-      border: 1px solid ${Colors.grayScale30};
       border-radius: 2px;
       input {
         width: 100%;
@@ -38,37 +37,18 @@ const LoginContainer = styled.div`
         font-size: 15px;
         padding-left: 10px;
         border: none;
+        background: ${Colors.white};
       }
     }
     .form-checkbox {
       display: flex;
       margin-bottom: 16px;
       input {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
       }
-      input[type=checkbox]{
-        cursor: pointer;
-        position: relative;
-      }
-      input[type=checkbox]::after{
-        position: absolute;
-        top: 0;
-        color: #000;
-        width: 16px;
-        height: 16px;
-        display: inline-block;
-        visibility: visible;
-        padding-left: 0px;
-        text-align: center;
-        content: ' ';
-        border-radius: 2px
-      }
-      input[type=checkbox]:checked::after{
-        background-color: red;
-        content: "✓";
-        font-size: 14px;
-        color: ${Colors.white};
+      input[type=checkbox] {
+        accent-color: ${Colors.branding};
       }
       span {
         margin-top: 2px;
@@ -98,9 +78,12 @@ const LoginContainer = styled.div`
     .input-password {
       position: relative;
       .password-icon {
+        display: flex;
+        top: 0;
+        align-items: center;
+        height: 100%;
         position: absolute;
-        right: 8px;
-        top: 5px;
+        right: 5px;
         width: 20px;
         text-align: center;
       }

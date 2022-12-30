@@ -7,7 +7,7 @@ import { Encrypt, Decrypt } from '../constants/General';
 import { LocalStorageKeys, RouterKeys, CookieKeys } from '../constants/Keys';
 import { dataEncryption } from '../utils/func';
 import users from '../users';
-import { LoginContainer } from '../styles/login.style';
+import { LoginContainer } from '../styles/scan-login.style';
 import { useCookie } from '../hooks';
 
 const ScanLogin = () => {
