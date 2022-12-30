@@ -271,7 +271,7 @@ const ScanQrCodePage: NextPage = () => {
   useEffect(() => {
     const userInfo = cookies.getCookie(CookieKeys.authUser);
     if (!userInfo) {
-      Router.push(RouterKeys.login);
+      Router.push(RouterKeys.scanLogin);
     }
   }, []);
 
