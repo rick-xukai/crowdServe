@@ -8,5 +8,5 @@ export const CookieKeys = {
 
 export const RouterKeys = {
   scanQrCode: '/scan-qr-code',
-  login: '/login',
+  scanLogin: '/scan-login',
 };
