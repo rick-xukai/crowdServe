@@ -4,7 +4,14 @@ const nextConfig = {
   swcMinify: true,
   compiler: {
     styledComponents: true
+  },
+  output: 'standalone',
+  images: {
+    unoptimized: true
+  },
+  publicRuntimeConfig: {
+    buildTime: new Date()
   }
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

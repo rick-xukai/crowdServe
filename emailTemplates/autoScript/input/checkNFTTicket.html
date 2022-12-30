@@ -1,0 +1,63 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Check NFT Ticket</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+  </head>
+  <body style="margin: auto;">
+    <div class="email-container-nft">
+      <div class="email-header">
+        <img src="https://static.wixstatic.com/media/204ebf_50229f23d36f456fa25d1f222247053e~mv2.png/v1/fill/w_262,h_186,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/crowd%20serve%205.png" alt="" class="email-logo">
+      </div>
+      <div class="email-content">
+        <div class="content-title">
+          Your Ticket for {{event_name}} Is Ready!
+        </div>
+        <div class="content-detail">
+          <p class="detail-text">Dear User,</p>
+          <p class="detail-text">
+            You're one step closer to your event! Your NFT ticket is available on the CrowdServe App.
+          </p>
+          <p class="detail-text">
+            Click below to receive your ticket(s).<br />
+            <span style="font-size: 12px; color: #717179">
+              (You'll be prompted to download the app if you have not installed it yet.)
+            </span>
+          </p>
+          <button class="click-nft-ticket">
+            <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important;">
+              <span style="margin: auto;">MY NFT TICKET</span>
+            </a>
+          </button>
+          <p class="detail-text">
+            If the button doesn't work, copy this link and paste it on your browser:
+            <a href="{{url}}" target="_blank" style="word-break: break-word;">
+              {{url}}
+            </a>
+          </p>
+          <p class="detail-text">
+            It is recommended to install the app and login before the event to ensure a smooth experience at registration.
+          </p>
+          <p class="detail-text">
+            Please user this email address to activate your CrowdServe account when you login for the first time.
+          </p>
+          <p class="detail-text">CrowdServe is here to protect you, your ticket, the artistes and other fans.</p>
+          <p class="detail-text" style="margin-bottom: 0 !important;">
+            Yours Sincerely,<br />
+            CrowdServe
+          </p>
+          <p class="unsubscribe">
+            If you don't want to receive this type of email in the future, please
+            <a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank">unsubscribe</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
