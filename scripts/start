@@ -5,5 +5,11 @@ if [ "$APPLICATION_NAME" == "crowdserve-dev" ] && [ "$DEPLOYMENT_GROUP_NAME" == 
 fi
 
 if [ "$APPLICATION_NAME" == "crowdserve-prod" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-app" ]; then
-    echo "production"
+    docker run -d --restart=always \
+        --name=crowdserve-frontend-app \
+        --network=crowdserve-prod \
+        -p 8080:8080 \
+        -e NODE_ENV="production" \
+        -e PORT=8080 \
+        423361175163.dkr.ecr.ap-southeast-1.amazonaws.com/crowdserve-frontend-app
 fi

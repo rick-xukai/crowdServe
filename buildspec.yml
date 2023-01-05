@@ -12,12 +12,14 @@ phases:
             - mv .next dist
 artifacts:
     files:
-        - ./public/**/*
-        - ./static/**/*
-        - ./dist/standalone/**/*
-        - ./dist/static/**/*
-        - ./server.js
-        - ./scripts/*
-        - ./appspec.yml
-        - ./release
+        - public/**/*
+        - static/**/*
+        - dist/standalone/**/*
+        - dist/static/**/*
+        - server.js
+        - scripts/*
+        - appspec.yml
+        - deployspec.yml
+        - release
+        - Dockerfile
     discard-paths: no
