@@ -1,0 +1,32 @@
+version: 0.2
+phases:
+    install:
+        runtime-versions:
+            docker: latest
+    pre_build:
+        commands:
+            - echo Logging in to Amazon ECR...
+            - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+    build:
+        commands:
+            - echo Building the Docker image...
+            - COMMIT_ID=$(cat release)
+            - echo $COMMIT_ID
+            - |
+              docker build \
+              -t $PROJECT_NAME \
+              --build-arg NODE_ENV=$NODE_ENV \
+              --build-arg VERSION="$COMMIT_ID" \
+              .
+            - docker tag $PROJECT_NAME:latest $IMAGE_URI/$PROJECT_NAME:latest
+            - docker tag $PROJECT_NAME:latest $IMAGE_URI/$PROJECT_NAME:$COMMIT_ID
+            - printf '[{"name":"%s","imageUri":"%s"}]' $PROJECT_NAME $IMAGE_URI/$PROJECT_NAME:latest > imagedefinitions.json
+            - cat imagedefinitions.json
+    post_build:
+        commands:
+            - echo Pushing the Docker image...
+            - docker push $IMAGE_URI/$PROJECT_NAME:latest
+            - docker push $IMAGE_URI/$PROJECT_NAME:$COMMIT_ID
+artifacts:
+    files:
+        - imagedefinitions.json

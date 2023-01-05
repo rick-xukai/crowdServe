@@ -5,5 +5,5 @@ if [ "$APPLICATION_NAME" == "crowdserve-dev" ] && [ "$DEPLOYMENT_GROUP_NAME" == 
 fi
 
 if [ "$APPLICATION_NAME" == "crowdserve-prod" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-app" ]; then
-    echo "production"
+    docker rm -f crowdserve-frontend-app
 fi
