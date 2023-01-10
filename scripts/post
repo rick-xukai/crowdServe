@@ -3,6 +3,8 @@
 if [ "$APPLICATION_NAME" == "crowdserve-dev" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-app" ]; then
     cd /mnt/frontend_app
     rm -rf ./.next
+    rm -rf ./package.json
+    rm -rf ./node_modules
     cp -rf ./dist/standalone/.next ./.next
     cp -rf ./dist/standalone/package.json ./package.json
     cp -rf ./dist/standalone/node_modules ./node_modules
