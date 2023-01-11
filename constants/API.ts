@@ -1,4 +1,7 @@
 const API = {
+  login: {
+    post: '/api/v1/user/session',
+  },
   verifyTicket: {
     post: '/admin/ticket/verify',
   },
