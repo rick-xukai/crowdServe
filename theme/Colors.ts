@@ -2,6 +2,7 @@ const Colors = {
   black: '#000000',
   white: '#FFFFFF',
   branding: '#FC0006',
+  brandingGray: '#DD5F62',
   branding10: '#C7080D',
   backgorund: '#27272A',
   grayScale80: '#D0D0D0',

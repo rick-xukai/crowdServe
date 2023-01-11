@@ -1,5 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-const createRootReducer = () => combineReducers({});
+import loginReducer from '../slice/login.slice';
+
+const createRootReducer = () => combineReducers({
+  login: loginReducer,
+});
 
 export default createRootReducer;
