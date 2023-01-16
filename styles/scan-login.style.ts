@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Colors } from '../theme';
 
 const LoginContainer = styled.div`
-  height: 100vh;
+  height: calc(100vh - 80px);
   background: rgb(243, 243, 251);
   padding: 16px;
   display: flex;
@@ -38,6 +38,7 @@ const LoginContainer = styled.div`
         padding-left: 10px;
         border: none;
         background: ${Colors.white};
+        color: ${Colors.black};
       }
     }
     .form-checkbox {

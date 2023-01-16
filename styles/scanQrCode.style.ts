@@ -2,10 +2,9 @@ import styled from 'styled-components';
 import { Colors } from '../theme';
 
 const ScanQrCodePageContainers = styled.div`
-  height: 100%;
+  height: calc(100vh - 120px);
   width: 100%;
   background: ${Colors.backgorund};
-  min-height: 100vh;
   .scan-back {
     position: absolute;
     top: 30px;
