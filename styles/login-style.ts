@@ -4,7 +4,7 @@ import { Colors } from '../theme';
 
 const LoginContainer = styled.div`
   padding: 20px;
-  height: 100vh;
+  height: 100%;
   display: flex;
   align-items: center;
   position: relative;
