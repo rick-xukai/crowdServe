@@ -12,4 +12,5 @@ export const RouterKeys = {
   scanQrCode: '/scan-qr-code',
   scanLogin: '/scan-login',
   ticketsList: '/tickets',
+  landingPage: '/landing-page',
 };
