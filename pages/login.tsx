@@ -136,4 +136,20 @@ const Login = () => {
   );
 };
 
+// Hide the content of the web app first, it will be removed later.
+export async function getServerSideProps(ctx: any) {
+  const { res } = ctx;
+  const handleAuth = () => {
+    res.writeHead(302, { Location: RouterKeys.landingPage });
+    res.end();
+    return {
+      props: {}
+    };
+  };
+  await handleAuth();
+  return {
+    props: {}
+  };
+};
+
 export default Login;
