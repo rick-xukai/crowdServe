@@ -6,6 +6,11 @@ body {
   margin: 0;
   background-color: #27272A;
   font-family: Heebo, sans-serif;
+  height: 100%;
+}
+
+#__next {
+  height: 100%;
 }
 
 a {
@@ -25,4 +30,17 @@ a {
     color: white;
     background: black;
   }
+}
+
+.ant-message {
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.error-message-tickets .ant-message-notice-content,
+.error-message-login .ant-message-notice-content {
+  background-color: #717179;
+  color: #EEEEF3;
+  opacity: 0.9;
+  border-radius: 4px;
 }

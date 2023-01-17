@@ -19,6 +19,10 @@ const Messages = {
     code: 1010,
     text: 'Network error, please try again.',
   },
+  userTokenDeprecated: {
+    code: 1011,
+    text: 'user token is deprecated',
+  },
 };
 
 export default Messages;

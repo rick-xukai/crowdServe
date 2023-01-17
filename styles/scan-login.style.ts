@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Colors } from '../theme';
 
 const LoginContainer = styled.div`
-  height: 100vh;
+  height: 100%;
   background: rgb(243, 243, 251);
   padding: 16px;
   display: flex;
@@ -38,6 +38,13 @@ const LoginContainer = styled.div`
         padding-left: 10px;
         border: none;
         background: ${Colors.white};
+        color: ${Colors.black};
+      }
+      .ant-input-affix-wrapper {
+        padding: 0 11px 0 0;
+        height: 35px;
+        border-radius: 2px;
+        border: none;
       }
     }
     .form-checkbox {
