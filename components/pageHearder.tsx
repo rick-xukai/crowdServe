@@ -1,0 +1,56 @@
+import React from 'react';
+import styled from 'styled-components';
+import { Row, Col } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import Image from 'next/image';
+
+import { Images, Colors } from '../theme';
+
+const PageHearderContainer = styled(Row)`
+  .left-container,
+  .right-container {
+    display: flex;
+    align-items: center;
+  }
+  .left-container {
+    justify-content: flex-start;
+  }
+  .right-container {
+    justify-content: flex-end;
+  }
+  .hearder-logo {
+    width: 62px;
+    height: 30px;
+  }
+  .hearder-back {
+    color: ${Colors.white};
+    font-size: 22px;
+  }
+`;
+
+const PageHearderComponent = ({ isBack }: { isBack: boolean }) => (
+  <PageHearderContainer>
+    {(!isBack && (
+      <>
+        <Col span={12} className="left-container">
+          <div className="hearder-logo">
+            <Image src={Images.Logo} alt="" />
+          </div>
+        </Col>
+        <Col span={12} className="right-container">
+          <div className="hearder-action">
+            <Image src={Images.MenuIcon} alt="" />
+          </div>
+        </Col>
+      </>
+    )) || (
+      <Col>
+        <div className="hearder-back">
+          <ArrowLeftOutlined />
+        </div>
+      </Col>
+    )}
+  </PageHearderContainer>
+);
+
+export default PageHearderComponent;

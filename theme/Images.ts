@@ -14,6 +14,12 @@ import PhoneDetail from '../static/images/phone-detail.png';
 import LoginBackground from '../static/images/login-background.png';
 import PasswordHidden from '../static/images/password-hidden.svg';
 import PasswordShow from '../static/images/password-show.svg';
+import MenuIcon from '../static/images/menu-icon.svg';
+import NoTicketsIcon from '../static/images/no-tickets.svg';
+import TestImg from '../static/images/test-img.png';
+import CalendarIcon from '../static/images/calendar.svg';
+import LocationIcon from '../static/images/location.svg';
+import OrganiserIcon from '../static/images/organiser.svg';
 
 const Images = {
   Safety,
@@ -32,6 +38,12 @@ const Images = {
   LoginBackground,
   PasswordHidden,
   PasswordShow,
+  MenuIcon,
+  NoTicketsIcon,
+  TestImg,
+  CalendarIcon,
+  LocationIcon,
+  OrganiserIcon,
 };
 
 export default Images;

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Row, Col, Form, Input, Button } from 'antd';
+import Router from 'next/router';
+import { Row, Col, Form, Input, Button, message } from 'antd';
 
 import { useCookie } from '../hooks';
-import { CookieKeys } from '../constants/Keys';
+import { CookieKeys, RouterKeys } from '../constants/Keys';
+import { TokenExpire } from '../constants/General';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   loginAction,
@@ -17,6 +19,7 @@ import { Images } from '../theme';
 import { LoginContainer } from '../styles/login-style';
 
 const Login = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const cookies = useCookie([CookieKeys.userLoginToken]);
 
@@ -24,7 +27,6 @@ const Login = () => {
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
 
-  const [errorMessageShow, setErrorMessageShow] = useState<boolean>(false);
   const [loginFormValue, setLoginFormValue] = useState<LoginPayloadType>({
     email: '',
     password: '',
@@ -36,13 +38,21 @@ const Login = () => {
 
   useEffect(() => {
     if (data.token) {
-      cookies.setCookie(CookieKeys.userLoginToken, data.token);
+      const currentDate = new Date();
+      cookies.setCookie(CookieKeys.userLoginToken, data.token, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+      });
+      Router.push(RouterKeys.ticketsList);
     }
   }, [data]);
 
   useEffect(() => {
     if (error) {
-      setErrorMessageShow(true);
+      messageApi.open({
+        content: 'Wrong email or password.',
+        className: 'error-message-login',
+      });
     }
   }, [error]);
 
@@ -70,7 +80,6 @@ const Login = () => {
               className={`${(loginFormValue.email && 'border-white') || ''}`}
               placeholder="Email"
               bordered={false}
-              onFocus={() => setErrorMessageShow(false)}
               onChange={(e) =>
                 setLoginFormValue({
                   ...loginFormValue,
@@ -86,7 +95,6 @@ const Login = () => {
                 placeholder="Password"
                 bordered={false}
                 visibilityToggle={false}
-                onFocus={() => setErrorMessageShow(false)}
                 onChange={(e) =>
                   setLoginFormValue({
                     ...loginFormValue,
@@ -123,11 +131,7 @@ const Login = () => {
           ACTIVATE ACCOUNT
         </p>
       </div>
-      {errorMessageShow && (
-        <div className="error-message">
-          Wrong email or password.
-        </div>
-      )}
+      {contextHolder}
     </LoginContainer>
   );
 };

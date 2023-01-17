@@ -20,7 +20,18 @@ const doRedeemTicket = async (payload: any) => {
   return response;
 };
 
+const getTicketsList = async (payload: any) => {
+  const uri = API.getTicketsList.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setQueryParameter(payload)
+    .doGet();
+  return response;
+};
+
 export default {
   doVerifyTicket,
   doRedeemTicket,
+  getTicketsList,
 };
