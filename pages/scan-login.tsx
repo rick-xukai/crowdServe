@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Input } from 'antd';
 import Router from 'next/router';
-import Image from 'next/image';
 
-import { Images } from '../theme';
 import { Encrypt, Decrypt } from '../constants/General';
 import { LocalStorageKeys, RouterKeys, CookieKeys } from '../constants/Keys';
 import { dataEncryption } from '../utils/func';
@@ -15,7 +14,6 @@ const ScanLogin = () => {
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isValidUser, setIsValidUser] = useState<boolean>(true);
-  const [passwordShow, setPasswordShow] = useState<boolean>(false);
   const [userNameChanged, setUserNameChanged] = useState<boolean>(false);
   const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
 
@@ -68,7 +66,7 @@ const ScanLogin = () => {
       <div className="login-form">
         <p className="form-title">WELCOME TO CROWDSERVE!</p>
         <div className="form-input">
-          <input
+          <Input
             value={userName}
             name="user-name"
             placeholder="User Name"
@@ -82,22 +80,15 @@ const ScanLogin = () => {
           <p className="error-message">Please input your username!</p>
         )}
         <div className="form-input input-password">
-          <input
+          <Input.Password
             value={password}
             name="password"
             placeholder="Password"
-            type={!passwordShow && 'password' || 'text'}
             onChange={(e) => {
               setPassword(e.target.value);
               setPasswordChanged(true);
             }}
           />
-          <span
-            className="password-icon"
-            onClick={() => setPasswordShow(!passwordShow)}
-          >
-            <Image src={(!passwordShow && Images.PasswordHidden) || Images.PasswordShow} alt="" />
-          </span>
         </div>
         {!password && passwordChanged && (
           <p className="error-message">Please input your password!</p>

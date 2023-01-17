@@ -90,36 +90,6 @@ const LoginContainer = styled.div`
       line-height: 22px;
     }
   }
-  .error-message {
-    padding: 10px 12px;
-    font-weight: 400;
-    font-size: 15px;
-    color: ${Colors.grayScale20};
-    background: ${Colors.grayScale50};
-    opacity: 0.9;
-    border-radius: 4px;
-    position: absolute;
-    top: -30px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    width: 200px;
-    height: 40px;
-  }
-  .ant-message {
-    top: 45%;
-    font-weight: 400;
-    font-size: 15px;
-    color: ${Colors.grayScale20};
-    .ant-message-notice-content {
-      padding: 10px 12px;
-      background: ${Colors.grayScale50};
-      opacity: 0.9;
-      border-radius: 4px;
-      box-shadow: unset;
-    }
-  }
 `;
 
 export { LoginContainer };

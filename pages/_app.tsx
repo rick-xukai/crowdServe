@@ -15,6 +15,7 @@ function MyApp({ Component, ...rest }: AppProps) {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        <title>CrowdServe</title>
       </Head>
       <Component {...pageProps} />
     </Provider>

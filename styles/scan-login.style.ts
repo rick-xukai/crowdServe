@@ -40,6 +40,12 @@ const LoginContainer = styled.div`
         background: ${Colors.white};
         color: ${Colors.black};
       }
+      .ant-input-affix-wrapper {
+        padding: 0 11px 0 0;
+        height: 35px;
+        border-radius: 2px;
+        border: none;
+      }
     }
     .form-checkbox {
       display: flex;

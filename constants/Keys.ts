@@ -8,6 +8,8 @@ export const CookieKeys = {
 };
 
 export const RouterKeys = {
+  login: '/login',
   scanQrCode: '/scan-qr-code',
   scanLogin: '/scan-login',
+  ticketsList: '/tickets',
 };

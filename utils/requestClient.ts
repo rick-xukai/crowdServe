@@ -1,5 +1,11 @@
 /* eslint-disable */
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+import Router from 'next/router';
+
+import { AuthorizationType } from '../constants/API';
+import { CookieKeys, RouterKeys } from '../constants/Keys';
+import Messages from '../constants/Messages';
 
 export const defaultHeaders = {
   'x-api-key': process.env.NEXT_PUBLIC_API_KEY,
@@ -38,6 +44,8 @@ export class RequestClientClass {
   queryUrl: any;
   requireHeadersReturn: boolean;
   responseType: string;
+  authorizationStatus: boolean;
+  private readonly cookies: Cookies = new Cookies();
 
   constructor(baseUrl: string | undefined, fetch = axios) {
     this.baseUrl = baseUrl;
@@ -48,6 +56,7 @@ export class RequestClientClass {
     this.queryUrl = {};
     this.requireHeadersReturn = false;
     this.responseType = '';
+    this.authorizationStatus = false;
   }
 
   /**
@@ -114,7 +123,20 @@ export class RequestClientClass {
     return this;
   }
 
+  setAuthorizationStatus() {
+    this.authorizationStatus = true;
+    return this;
+  }
+
   async doMethod(method = 'GET') {
+    if (this.authorizationStatus) {
+      const userToken = this.cookies.get(CookieKeys.userLoginToken);
+      if (userToken) {
+        this.setHeaders({
+          authorization: `${AuthorizationType.bearer} ${userToken}`,
+        })
+      }
+    }
     const options: any = {
       baseURL: this.baseUrl,
       url: this.uri,
@@ -138,6 +160,17 @@ export class RequestClientClass {
     ) {
       options.data = this.payload;
     }
+
+    this.fetch.interceptors.response.use((response) => {
+      if (
+        response.data &&
+        response.data.code === Messages.userTokenDeprecated.code
+      ) {
+        this.cookies.remove(CookieKeys.userLoginToken);
+        Router.push(RouterKeys.login);
+      }
+      return response;
+    });
 
     const response = await this.fetch(options);
     const finalResponse = response.data;
