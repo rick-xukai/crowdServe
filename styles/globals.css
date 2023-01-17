@@ -6,6 +6,11 @@ body {
   margin: 0;
   background-color: #27272A;
   font-family: Heebo, sans-serif;
+  height: 100%;
+}
+
+#__next {
+  height: 100%;
 }
 
 a {

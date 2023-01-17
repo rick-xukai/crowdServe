@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Colors } from '../theme';
 
 const LoginContainer = styled.div`
-  height: calc(100vh - 80px);
+  height: 100%;
   background: rgb(243, 243, 251);
   padding: 16px;
   display: flex;

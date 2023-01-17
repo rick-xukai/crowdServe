@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { Provider } from 'react-redux';
 
 import { wrapper } from '../app/store';
@@ -9,6 +10,12 @@ function MyApp({ Component, ...rest }: AppProps) {
   const { pageProps } = props;
   return (
     <Provider store={store}>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </Head>
       <Component {...pageProps} />
     </Provider>
   );
