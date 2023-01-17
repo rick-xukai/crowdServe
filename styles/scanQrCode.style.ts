@@ -5,7 +5,6 @@ const ScanQrCodePageContainers = styled.div`
   height: 100%;
   width: 100%;
   background: ${Colors.backgorund};
-  min-height: 100vh;
   .scan-back {
     position: absolute;
     top: 30px;

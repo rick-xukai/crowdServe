@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js';
+import { format } from 'date-fns';
 
 import { Encrypt } from '../constants/General';
 
@@ -36,3 +37,8 @@ export const dataEncryption = (data: any, type: string) => {
   } catch (_) {}
   return formatData;
 };
+
+export const formatTimeStrByTimeString = (
+  timeString: string,
+  formatType: string,
+) => format(new Date(timeString), formatType);
