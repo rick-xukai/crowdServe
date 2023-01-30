@@ -3,7 +3,7 @@ import { Colors } from '../theme';
 
 const LoginContainer = styled.div`
   height: 100%;
-  background: rgb(243, 243, 251);
+  background-color: rgb(243, 243, 251);
   padding: 16px;
   display: flex;
   background-image: url('../static/images/login-background.png');
@@ -41,10 +41,17 @@ const LoginContainer = styled.div`
         color: ${Colors.black};
       }
       .ant-input-affix-wrapper {
+        display: inline-flex;
         padding: 0 11px 0 0;
+        width: 100%;
         height: 35px;
+        background-color: #fff;
         border-radius: 2px;
         border: none;
+        .ant-input-suffix {
+          display: flex;
+          align-items: center;
+        }
       }
     }
     .form-checkbox {
