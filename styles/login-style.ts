@@ -30,9 +30,15 @@ const LoginContainer = styled.div`
       }
     }
     .ant-input-affix-wrapper {
+      width: 100%;
+      display: inline-flex;
       border-bottom: 0.7px solid ${Colors.grayScale50};
       border-radius: 0;
       padding: 0;
+      .ant-input-suffix {
+        display: flex;
+        align-items: center;
+      }
       &.border-white {
         border-bottom: 0.7px solid ${Colors.white};
         .anticon {
@@ -54,7 +60,9 @@ const LoginContainer = styled.div`
       transition: background-color 5000s ease-in-out 0s !important;
     }
     .ant-input {
+      width: 100%;
       height: 50px;
+      border: none;
       border-bottom: 0.7px solid ${Colors.grayScale50};
       padding: 4px 4px;
       border-radius: unset;
