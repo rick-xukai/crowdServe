@@ -6,7 +6,12 @@ import Image from 'next/image';
 
 import { formatTimeStrByTimeString } from '../utils/func';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
-import { TicketStatus, FormatTimeKeys, DefaultPageSize, DefaultPage } from '../constants/General';
+import {
+  TicketStatus,
+  FormatTimeKeys,
+  DefaultPageSize,
+  DefaultPage,
+} from '../constants/General';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   reset,
@@ -45,6 +50,10 @@ const Tickets = () => {
   const scrollListener = useCallback((e: any) => {
     handleScroll(e);
   }, []);
+
+  const checkStatusIcon = (key: number) => {
+    return TicketStatus.find((item) => item.key === key)?.icon;
+  };
 
   useEffect(() => {
     if (error) {
@@ -109,6 +118,11 @@ const Tickets = () => {
                   >
                     {(item: TicketsListResponseType) => (
                       <TicketItemContainer itemImage={item.image as any} key={item.id}>
+                        {checkStatusIcon(item.status) && (
+                          <div className="on-sale-icon">
+                            <Image src={checkStatusIcon(item.status)} alt="" />
+                          </div>
+                        )}
                         <p style={{ margin: 0, textAlign: 'right' }}>
                           {TicketStatus.map((status) => {
                             if (status.key === item.status) {

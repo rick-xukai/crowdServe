@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Router from 'next/router';
 import { Row, Col, Form, Input, Button, message } from 'antd';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../hooks';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
@@ -94,7 +95,9 @@ const Login = () => {
                 className={`${(loginFormValue.password && 'border-white') || ''}`}
                 placeholder="Password"
                 bordered={false}
-                visibilityToggle={false}
+                iconRender={(visible) =>
+                  (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
+                }
                 onChange={(e) =>
                   setLoginFormValue({
                     ...loginFormValue,
@@ -134,22 +137,6 @@ const Login = () => {
       {contextHolder}
     </LoginContainer>
   );
-};
-
-// Hide the content of the web app first, it will be removed later.
-export async function getServerSideProps(ctx: any) {
-  const { res } = ctx;
-  const handleAuth = () => {
-    res.writeHead(302, { Location: RouterKeys.landingPage });
-    res.end();
-    return {
-      props: {}
-    };
-  };
-  await handleAuth();
-  return {
-    props: {}
-  };
 };
 
 export default Login;

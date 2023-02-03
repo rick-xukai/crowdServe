@@ -20,6 +20,8 @@ import TestImg from '../static/images/test-img.png';
 import CalendarIcon from '../static/images/calendar.svg';
 import LocationIcon from '../static/images/location.svg';
 import OrganiserIcon from '../static/images/organiser.svg';
+import OnSaleIcon from '../static/images/on-sale.svg';
+import SoldIcon from '../static/images/sold.svg';
 
 const Images = {
   Safety,
@@ -44,6 +46,8 @@ const Images = {
   CalendarIcon,
   LocationIcon,
   OrganiserIcon,
+  OnSaleIcon,
+  SoldIcon,
 };
 
 export default Images;

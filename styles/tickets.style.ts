@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 import { Colors } from '../theme';
 
+const backgroundLogoPath = '../static/images/background-logo.png';
+
 interface TicketItemContainerProps {
   itemImage: string;
 }
@@ -75,13 +77,20 @@ const TickersContainer = styled.div`
 const TicketItemContainer = styled.div`
   border-radius: 4px;
   padding: 10px;
-  background-image: url(${(props: TicketItemContainerProps) => props.itemImage});
+  background-image: url(${(props: TicketItemContainerProps) => props.itemImage || backgroundLogoPath});
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
   min-height: 223px;
   margin-bottom: 20px;
+  .on-sale-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 55px;
+    height: 55px;
+  }
   .item-info {
     position: absolute;
     bottom: 0;
@@ -89,6 +98,7 @@ const TicketItemContainer = styled.div`
     left: 0;
     padding: 15px;
     background: rgba(0, 0, 0, 0.7);
+    border-radius: 0 0 4px 4px;
     .item-info-row {
       > :last-child {
         margin-bottom: 0;

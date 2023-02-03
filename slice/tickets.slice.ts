@@ -32,7 +32,7 @@ export interface TicketsListResponseType {
 }
 
 /**
- * Login
+ * Get tickets list
  */
 export const getTicketsListAction = createAsyncThunk<
   TicketsListResponseType[],
