@@ -7,16 +7,9 @@ import Image from 'next/image';
 import { Images, Colors } from '../theme';
 
 const PageHearderContainer = styled(Row)`
-  .left-container,
-  .right-container {
-    display: flex;
-    align-items: center;
-  }
-  .left-container {
-    justify-content: flex-start;
-  }
-  .right-container {
-    justify-content: flex-end;
+  .hearder-action {
+    text-align: right;
+    padding-top: 5px;
   }
   .hearder-logo {
     width: 62px;

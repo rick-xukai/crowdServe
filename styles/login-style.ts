@@ -10,7 +10,6 @@ const LoginContainer = styled.div`
   position: relative;
   .page-main {
     width: 100%;
-    height: 600px;
     .main-title {
       margin-bottom: 38px;
       .logo {
@@ -30,12 +29,39 @@ const LoginContainer = styled.div`
         text-align: center;
       }
     }
+    .ant-input-affix-wrapper {
+      border-bottom: 0.7px solid ${Colors.grayScale50};
+      border-radius: 0;
+      padding: 0;
+      &.border-white {
+        border-bottom: 0.7px solid ${Colors.white};
+        .anticon {
+          color: ${Colors.white};
+        }
+      }
+      .ant-input {
+        border: none;
+        color: ${Colors.white};
+      }
+      .anticon {
+        font-size: 18px;
+        color: ${Colors.grayScale50};
+      }
+    }
+    input:-internal-autofill-previewed,
+    input:-internal-autofill-selected {
+      -webkit-text-fill-color: ${Colors.white} !important;
+      transition: background-color 5000s ease-in-out 0s !important;
+    }
     .ant-input {
       height: 50px;
       border-bottom: 0.7px solid ${Colors.grayScale50};
       padding: 4px 4px;
       border-radius: unset;
-      color: ${Colors.white};
+      background: transparent; 
+      &.ant-input-status-success {
+        color: ${Colors.white};
+      }
       &::placeholder {
         color: ${Colors.grayScale50};
       }
@@ -44,7 +70,7 @@ const LoginContainer = styled.div`
       }
     }
     .signin-btn {
-      margin-top: 65px;
+      margin-top: 45px;
       width: 100%;
       color: ${Colors.grayScale10};
       background: ${Colors.branding};

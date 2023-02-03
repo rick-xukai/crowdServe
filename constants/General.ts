@@ -1,7 +1,7 @@
 /**
  * General constants
  */
-import { Colors } from "../theme";
+import { Colors, Images } from "../theme";
 
 export const Encrypt = 'encrypt';
 export const Decrypt = 'decrypt';
@@ -14,36 +14,42 @@ export const TicketStatus = [
     key: 0,
     bgColor: Colors.branding,
     color: Colors.white,
+    icon: '',
   },
   {
     text: 'USED',
     key: 1,
     bgColor: Colors.branding100,
     color: Colors.grayScale40,
+    icon: '',
   },
   {
     text: 'CANCELLED',
     key: 2,
     bgColor: Colors.grayScale40,
     color: Colors.grayScale50,
+    icon: '',
   },
   {
     text: 'EXPIRED',
     key: 3,
     bgColor: Colors.grayScale90,
     color: Colors.grayScale40,
+    icon: '',
   },
   {
-    text: 'ON SALE',
+    text: 'UPCOMING',
     key: 4,
     bgColor: Colors.branding,
     color: Colors.white,
+    icon: Images.OnSaleIcon,
   },
   {
     text: 'SOLD',
     key: 5,
     bgColor: Colors.branding,
     color: Colors.white,
+    icon: Images.SoldIcon,
   },
 ];
 export const FormatTimeKeys = {
