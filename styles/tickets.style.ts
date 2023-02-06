@@ -86,10 +86,10 @@ const TicketItemContainer = styled.div`
   margin-bottom: 20px;
   .on-sale-icon {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 55px;
-    height: 55px;
+    top: 0px;
+    left: 0px;
+    width: 65px;
+    height: 65px;
   }
   .item-info {
     position: absolute;
@@ -109,15 +109,24 @@ const TicketItemContainer = styled.div`
       font-size: 18px;
       color: ${Colors.white};
       margin-bottom: 8px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .info-item {
       margin-bottom: 5px;
+      display: flex;
     }
     .info-description {
       font-weight: 300;
       font-size: 13px;
       color: ${Colors.grayScale20};
       margin-left: 8px;
+      max-width: 90%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .info-icon {
       top: 2px !important;
@@ -126,8 +135,10 @@ const TicketItemContainer = styled.div`
 `;
 
 const TicketStatusContainer = styled.span`
+  display: inline-block;
   height: 22px;
-  padding: 2px 6px;
+  line-height: 22px;
+  padding: 0 6px;
   border-radius: 4px;
   background: ${(props: TicketStatusContainerProps) => props.bgColor};
   color: ${(props: TicketStatusContainerProps) => props.textColor};
