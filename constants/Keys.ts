@@ -13,4 +13,5 @@ export const RouterKeys = {
   scanLogin: '/scan-login',
   ticketsList: '/tickets',
   landingPage: '/landing-page',
+  ticketDetail: '/ticket-detail/:ticketId',
 };

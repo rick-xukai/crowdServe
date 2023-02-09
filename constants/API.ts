@@ -9,6 +9,12 @@ const API = {
   getTicketsList: {
     get: '/api/v1/ticket',
   },
+  getTicketDetail: {
+    get: '/api/v1/ticket/{ticketId}',
+  },
+  getTicketQrcode: {
+    get: '/api/v1/ticket/{ticketId}/code',
+  },
   verifyTicket: {
     post: '/admin/ticket/verify',
   },

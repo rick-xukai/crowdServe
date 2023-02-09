@@ -3,8 +3,9 @@ import { Row, Col, Spin, message } from 'antd';
 import { ViewportList } from 'react-viewport-list';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
+import Router from 'next/router';
 
-import { formatTimeStrByTimeString } from '../utils/func';
+import { formatTimeStrByTimeString, checkStatusIcon } from '../utils/func';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import {
   TicketStatus,
@@ -51,16 +52,13 @@ const Tickets = () => {
     handleScroll(e);
   }, []);
 
-  const checkStatusIcon = (key: number) => {
-    return TicketStatus.find((item) => item.key === key)?.icon;
-  };
-
   useEffect(() => {
     if (error) {
       messageApi.open({
         content: error.message,
         className: 'error-message-tickets',
       });
+      document.removeEventListener('scroll', scrollListener, true);
     }
   }, [error]);
 
@@ -117,7 +115,18 @@ const Tickets = () => {
                     items={ticketsListData}
                   >
                     {(item: TicketsListResponseType) => (
-                      <TicketItemContainer itemImage={item.image as any} key={item.id}>
+                      <TicketItemContainer
+                        itemImage={item.image as any}
+                        key={item.id}
+                        onClick={() =>
+                          Router.push(
+                            RouterKeys.ticketDetail.replace(
+                              ':ticketId',
+                              item.id.toString()
+                            )
+                          )
+                        }
+                      >
                         {checkStatusIcon(item.status) && (
                           <div className="on-sale-icon">
                             <Image src={checkStatusIcon(item.status)} alt="" />
@@ -184,7 +193,7 @@ const Tickets = () => {
                   )}
                 </>
               ) || (
-                <Row>
+                <Row className="no-ticket-row">
                   <Col span={24} className="no-ticket">
                     <div style={{ margin: 'auto', textAlign: 'center' }}>
                       <Image src={Images.NoTicketsIcon} alt="" />

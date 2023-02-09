@@ -22,6 +22,9 @@ import LocationIcon from '../static/images/location.svg';
 import OrganiserIcon from '../static/images/organiser.svg';
 import OnSaleIcon from '../static/images/on-sale.svg';
 import SoldIcon from '../static/images/sold.svg';
+import BorderLine from '../static/images/line-border.svg';
+import GoToLinkIcon from '../static/images/goto-link.svg';
+import QrcodeNetworkError from '../static/images/qr-code-network-error.svg';
 
 const Images = {
   Safety,
@@ -48,6 +51,9 @@ const Images = {
   OrganiserIcon,
   OnSaleIcon,
   SoldIcon,
+  BorderLine,
+  GoToLinkIcon,
+  QrcodeNetworkError,
 };
 
 export default Images;

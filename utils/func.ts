@@ -1,7 +1,7 @@
 import CryptoJS from 'crypto-js';
 import { format } from 'date-fns';
 
-import { Encrypt } from '../constants/General';
+import { Encrypt, TicketStatus } from '../constants/General';
 
 const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY as string;
 
@@ -42,3 +42,7 @@ export const formatTimeStrByTimeString = (
   timeString: string,
   formatType: string,
 ) => format(new Date(timeString), formatType);
+
+export const checkStatusIcon = (key: number) => {
+  return TicketStatus.find((item) => item.key === key)?.icon;
+};
