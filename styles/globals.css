@@ -37,6 +37,124 @@ a {
   transform: translate(-50%, -50%) !important;
 }
 
+.ant-spin-nested-loading {
+  height: 100%;
+}
+
+.ant-spin {
+  max-height: unset !important;
+  color: #FC0006;
+}
+
+.ant-drawer-content-wrapper {
+  height: 480px !important;
+  bottom: 18px !important;
+  width: calc(100% - 20px);
+  margin: auto;
+  border-radius: 20px;
+}
+
+.ant-drawer-content {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0px -5px 14px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px);
+}
+
+.ant-drawer-body {
+  padding: 40px !important;
+}
+
+.ant-drawer-body :where(.css-dev-only-do-not-override-sk7ap8).ant-spin-nested-loading {
+  position: unset;
+}
+
+.ant-qrcode {
+  width: 100% !important;
+  height: 270px !important;
+  border: none;
+  padding: 0 !important;
+  background-color: unset;
+}
+
+.ant-qrcode canvas {
+  width: 100% !important;
+  height: 270px !important;
+}
+
+.ant-drawer-body p {
+  font-family: 'Heebo';
+  margin-bottom: 0;
+}
+
+.ant-drawer-body .code-network-error-box {
+  text-align: center;
+  margin-top: 40px;
+}
+.ant-drawer-body .code-refreshes {
+  font-weight: 400;
+  font-size: 17px;
+  color: #303034;
+  text-align: center;
+}
+
+.ant-drawer-body .code-info {
+  font-weight: 300;
+  font-size: 13px;
+  text-align: center;
+  color: #717179;
+  margin-top: 30px;
+}
+
+.ant-drawer-body .error-title {
+  font-weight: 500;
+  font-size: 17px;
+  text-align: center;
+  color: #303034;
+  margin-top: 35px;
+}
+
+.ant-drawer-body .error-info {
+  font-weight: 400;
+  font-size: 13px;
+  color: #717179;
+  margin-top: 0;
+}
+
+.ant-drawer-body .refresh-btn {
+  margin-top: 20px;
+  width: 90px;
+  height: 35px;
+  border: none;
+  background: #FC0006;
+  border-radius: 2px;
+  color: #F8F6F0;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.ant-drawer-body :where(.css-dev-only-do-not-override-sk7ap8).ant-btn-default:not(:disabled):hover {
+  color: #F8F6F0;
+  border-color: #F8F6F0;
+}
+
+.ant-qrcode .ant-qrcode-mask {
+  background: unset;
+}
+
+.ant-qrcode .ant-qrcode-expired {
+  display: none;
+}
+
+.ant-qrcode .ant-btn {
+  width: 100%;
+  height: 100%;
+}
+
+.ant-qrcode .ant-btn span {
+  display: none;
+}
+
 .error-message-tickets .ant-message-notice-content,
 .error-message-login .ant-message-notice-content {
   background-color: #717179;

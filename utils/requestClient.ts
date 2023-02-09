@@ -10,7 +10,7 @@ import Messages from '../constants/Messages';
 export const defaultHeaders = {
   'x-api-key': process.env.NEXT_PUBLIC_API_KEY,
   'x-app-platform': 'android',
-  'x-app-version': '1.1.1',
+  'x-app-version': '2.2.1',
 };
 
 const defaultOptions = {

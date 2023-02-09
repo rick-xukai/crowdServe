@@ -43,8 +43,11 @@ const TickersContainer = styled.div`
         margin-bottom: 0;
       }
     }
+    .no-ticket-row {
+      align-items: center;
+      height: calc(100vh - 200px);
+    }
     .no-ticket {
-      height: calc(100vh - 180px);
       display: flex;
       align-items: center;
       p {

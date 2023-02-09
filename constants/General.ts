@@ -7,6 +7,7 @@ export const Encrypt = 'encrypt';
 export const Decrypt = 'decrypt';
 export const DefaultPage = 1;
 export const DefaultPageSize = 10;
+export const DefaultCodeRefreshTime = 30;
 export const TokenExpire = 7 * 24 * 60 * 60 * 1000;
 export const TicketStatus = [
   {

@@ -30,8 +30,28 @@ const getTicketsList = async (payload: any) => {
   return response;
 };
 
+const getTicketDetail = async (payload: string) => {
+  const uri = API.getTicketDetail.get.replace('{ticketId}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const getTicketQrcode = async (payload: string) => {
+  const uri = API.getTicketQrcode.get.replace('{ticketId}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   doVerifyTicket,
   doRedeemTicket,
   getTicketsList,
+  getTicketDetail,
+  getTicketQrcode,
 };

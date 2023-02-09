@@ -31,6 +31,32 @@ export interface TicketsListResponseType {
   status: number;
 }
 
+export interface TicketDetailResponseType {
+  id: number;
+  name: string;
+  organizerName: string;
+  description: string;
+  image: string;
+  imageType: string;
+  thumbnailUrl: string;
+  thumbnailType: string;
+  location: string;
+  startTime: string;
+  endTime: string;
+  type: string;
+  seat: string;
+  price: number;
+  ticketNo: string;
+  status: number;
+  redeemedAt: string;
+  cancelledAt: string;
+  collections: {
+    id: number;
+    address: string;
+  }[];
+  canSell: boolean;
+}
+
 /**
  * Get tickets list
  */
@@ -62,9 +88,81 @@ export const getTicketsListAction = createAsyncThunk<
   },
 );
 
+/**
+ * Get ticket detail
+ */
+export const getTicketDetailAction = createAsyncThunk<
+  TicketDetailResponseType,
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getTicketDetail/getTicketDetailAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await TicketService.getTicketDetail(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * Get ticket Qrcode
+ */
+export const getTicketQrcodeAction = createAsyncThunk<
+  string,
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getTicketQrcode/getTicketQrcodeAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await TicketService.getTicketQrcode(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
 interface TicketsState {
   loading: boolean;
+  ticketDetailLoading: boolean;
   ticketsListData: TicketsListResponseType[];
+  ticketDetailData: TicketDetailResponseType;
+  ticketQrcodeData: string;
+  qrcodeLoading: boolean;
+  qrcodeError:
+    | {
+      message: string | undefined;
+    }
+    | undefined
+    | null;
   error:
     | {
         message: string | undefined;
@@ -75,7 +173,33 @@ interface TicketsState {
 
 const initialState: TicketsState = {
   loading: false,
+  ticketDetailLoading: true,
   ticketsListData: [],
+  ticketDetailData: {
+    id: 0,
+    name: '',
+    organizerName: '',
+    description: '',
+    image: '',
+    imageType: '',
+    thumbnailUrl: '',
+    thumbnailType: '',
+    location: '',
+    startTime: '',
+    endTime: '',
+    type: '',
+    seat: '',
+    price: 0,
+    ticketNo: '',
+    status: 0,
+    redeemedAt: '',
+    cancelledAt: '',
+    collections: [],
+    canSell: true,
+  },
+  ticketQrcodeData: '-',
+  qrcodeLoading: true,
+  qrcodeError: null,
   error: null,
 };
 
@@ -102,6 +226,38 @@ export const ticketsSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(getTicketDetailAction.pending, (state) => {
+        state.ticketDetailData = initialState.ticketDetailData;
+        state.ticketDetailLoading = true;
+      })
+      .addCase(getTicketDetailAction.fulfilled, (state, action: any) => {
+        state.ticketDetailLoading = false;
+        state.ticketDetailData = action.payload;
+      })
+      .addCase(getTicketDetailAction.rejected, (state, action) => {
+        state.ticketDetailLoading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(getTicketQrcodeAction.pending, (state) => {
+        state.ticketQrcodeData = initialState.ticketQrcodeData;
+        state.qrcodeLoading = true;
+      })
+      .addCase(getTicketQrcodeAction.fulfilled, (state, action: any) => {
+        state.qrcodeLoading = false;
+        state.ticketQrcodeData = action.payload;
+      })
+      .addCase(getTicketQrcodeAction.rejected, (state, action) => {
+        state.qrcodeLoading = false;
+        if (action.payload) {
+          state.qrcodeError = action.payload as ErrorType;
+        } else {
+          state.qrcodeError = action.error as ErrorType;
+        }
       });
   },
 });
@@ -109,7 +265,12 @@ export const ticketsSlice = createSlice({
 export const { reset } = ticketsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.tickets.loading;
+export const selectTicketDetailLoading = (state: RootState) => state.tickets.ticketDetailLoading;
 export const selectError = (state: RootState) => state.tickets.error;
 export const selectTicketsListData = (state: RootState) => state.tickets.ticketsListData;
+export const selectTicketDetailData = (state: RootState) => state.tickets.ticketDetailData;
+export const selectTicketQrcodeData = (state: RootState) => state.tickets.ticketQrcodeData;
+export const selectQrcodeLoading = (state: RootState) => state.tickets.qrcodeLoading;
+export const selectQrcodeError = (state: RootState) => state.tickets.qrcodeError;
 
 export default ticketsSlice.reducer;
