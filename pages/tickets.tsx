@@ -132,7 +132,7 @@ const Tickets = () => {
                             <Image src={checkStatusIcon(item.status)} alt="" />
                           </div>
                         )}
-                        <p style={{ margin: 0, textAlign: 'right' }}>
+                        <div style={{ textAlign: 'right' }}>
                           {TicketStatus.map((status) => {
                             if (status.key === item.status) {
                               return (
@@ -147,15 +147,15 @@ const Tickets = () => {
                             }
                             return null;
                           })}
-                        </p>
+                        </div>
                         <div className="item-info">
                           <Row className="item-info-row">
                             <Col span={24} className="info-title">{item.name}</Col>
                             <Col span={24} className="info-item">
-                              <span>
+                              <div>
                                 <Image src={Images.CalendarIcon} alt="" />
-                              </span>
-                              <span className="info-description">
+                              </div>
+                              <div className="info-description">
                                 {`${formatTimeStrByTimeString(
                                   item.startTime,
                                   FormatTimeKeys.mdy,
@@ -166,16 +166,20 @@ const Tickets = () => {
                                   item.endTime,
                                   FormatTimeKeys.hm,
                                 )}`}
-                              </span>
+                              </div>
                             </Col>
                             <Col span={24} className="info-item">
-                              <Image src={Images.LocationIcon} alt="" className="info-icon" />
-                              <span className="info-description">
+                              <div>
+                                <Image src={Images.LocationIcon} alt="" className="info-icon" />
+                              </div>
+                              <div className="info-description">
                                 {item.location}
-                              </span>
+                              </div>
                             </Col>
                             <Col span={24} className="info-item">
-                              <Image src={Images.OrganiserIcon} alt="" className="info-icon" />
+                              <div>
+                                <Image src={Images.OrganiserIcon} alt="" className="info-icon" />
+                              </div>
                               <span className="info-description">
                                 {item.organizerName}
                               </span>
