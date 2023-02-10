@@ -208,6 +208,9 @@ export const ticketsSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    resetQrcodeError: (state) => {
+      state.qrcodeError = null;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -262,7 +265,7 @@ export const ticketsSlice = createSlice({
   },
 });
 
-export const { reset } = ticketsSlice.actions;
+export const { reset, resetQrcodeError } = ticketsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.tickets.loading;
 export const selectTicketDetailLoading = (state: RootState) => state.tickets.ticketDetailLoading;

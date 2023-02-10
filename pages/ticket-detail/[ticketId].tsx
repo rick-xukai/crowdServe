@@ -9,6 +9,7 @@ import { checkStatusIcon, formatTimeStrByTimeString } from '../../utils/func';
 import { Images } from '../../theme';
 import {
   reset,
+  resetQrcodeError,
   getTicketDetailAction,
   getTicketQrcodeAction,
   selectTicketDetailData,
@@ -84,6 +85,7 @@ const TicketDetail = () => {
     if (showQrcode) {
       dispatch(getTicketQrcodeAction(id));
     } else {
+      dispatch(resetQrcodeError());
       clearInterval(Number(timer));
     }
   }, [showQrcode]);
@@ -123,7 +125,12 @@ const TicketDetail = () => {
               <ArrowLeftOutlined />
             </div>
           </Row>
-          <div className="detail-info">
+          <div
+            className={`detail-info ${
+              ticketDetailData.status !== TicketStatus[0].key &&
+              'detail-info-no-code' ||
+            ''}`}
+          >
             <div className="info-container">
               <Row className="container-top">
                 <Col span={24} className="ticket-name">
@@ -131,7 +138,7 @@ const TicketDetail = () => {
                 </Col>
                 <Col span={24}>
                   {TicketStatus.map((status) => {
-                    if (status.key === ticketDetailData.status) {
+                    if (status.key === ticketDetailData.status && status.text) {
                       return (
                         <TicketStatusContainer
                           key={status.key}
@@ -150,7 +157,7 @@ const TicketDetail = () => {
                 </Col>
                 <Col span={24} className="ticket-description">
                   <Paragraph
-                    ellipsis={{ rows: 2, expandable: true, symbol: 'Show More' }}
+                    ellipsis={{ rows: 3, expandable: true, symbol: 'Show More' }}
                   >
                     {ticketDetailData.description || '-'}
                   </Paragraph>
@@ -164,7 +171,7 @@ const TicketDetail = () => {
                 )}
               </Row>
               <Row className="border-line">
-                <Col span={24}>
+                <Col span={24} style={{ textAlign: 'center' }}>
                   <Image src={Images.BorderLine} />
                 </Col>
               </Row>
@@ -273,7 +280,7 @@ const TicketDetail = () => {
               )}
             </div>
           </div>
-          {!showQrcode && (
+          {(!showQrcode && ticketDetailData.status === TicketStatus[0].key) && (
             <Row className="qrcode-row" onClick={() => setShowQrcode(true)}>
               <Col span={24} className="show-qrcode-btn">
                 <div className="swipe-line" />
@@ -290,7 +297,7 @@ const TicketDetail = () => {
             >
               {!qrcodeError && (
                 <div>
-                  {!qrcodeLoading && (
+                  {qrcodeLoading && (
                     <>
                       <QRCode
                         value={qrcodeData}

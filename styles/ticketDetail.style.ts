@@ -29,6 +29,9 @@ const TicketDetailContainer = styled.div`
     padding: 10px 10px 103px 10px;
     background: ${Colors.backgorund};
     overflow: hidden;
+    &.detail-info-no-code {
+      padding-bottom: 10px;
+    }
     ::-webkit-scrollbar {
       display: none;
     }
@@ -137,6 +140,9 @@ const TicketDetailContainer = styled.div`
     font-weight: 300;
     font-size: 13px;
     margin-bottom: 0;
+    > :first-child {
+      display: inline-block;
+    }
     .ant-typography-expand {
       font-weight: 400;
       font-size: 13px;
