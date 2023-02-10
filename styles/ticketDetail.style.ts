@@ -26,10 +26,9 @@ const TicketDetailContainer = styled.div`
     background-size: cover;
   }
   .detail-info {
-    padding: 10px;
+    padding: 10px 10px 103px 10px;
     background: ${Colors.backgorund};
-    max-height: calc(100% - 313px);
-    overflow: auto;
+    overflow: hidden;
     ::-webkit-scrollbar {
       display: none;
     }
@@ -146,7 +145,7 @@ const TicketDetailContainer = styled.div`
   }
   .qrcode-row {
     width: calc(100% - 20px);
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     bottom: 15px;

@@ -42,6 +42,7 @@ const Tickets = () => {
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(DefaultPage);
   const [ticketsListData, setTicketsListData] = useState<TicketsListResponseType[]>([]);
+  const [requestStatusKey, setRequestStatusKey] = useState<number>(0);
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -69,18 +70,44 @@ const Tickets = () => {
   }, [isPageBottom]);
 
   useEffect(() => {
-    dispatch(getTicketsListAction({
-      page: currentPage,
-      size: DefaultPageSize,
-    }));
-  }, [currentPage]);
+    if (requestStatusKey === TicketStatus[0].key) {
+      dispatch(getTicketsListAction({
+        status: TicketStatus[0].key,
+        page: currentPage,
+        size: DefaultPageSize,
+      })).then((response: any) => {
+        if (!response.payload.length) {
+          setRequestStatusKey(TicketStatus[1].key);
+          setCurrentPage(DefaultPage);
+        }
+      });
+    } else if (requestStatusKey === TicketStatus[1].key) {
+      dispatch(getTicketsListAction({
+        status: TicketStatus[1].key,
+        page: currentPage,
+        size: DefaultPageSize,
+      })).then((response: any) => {
+        if (!response.payload.length) {
+          setRequestStatusKey(TicketStatus[2].key);
+          setCurrentPage(DefaultPage);
+        }
+      });
+    } else if (requestStatusKey === TicketStatus[2].key) {
+      dispatch(getTicketsListAction({
+        status: TicketStatus[2].key,
+        page: currentPage,
+        size: DefaultPageSize,
+      })).then((response: any) => {
+        if (!response.payload.length) {
+          document.removeEventListener('scroll', scrollListener, true);
+        }
+      })
+    }
+  }, [currentPage, requestStatusKey]);
 
   useEffect(() => {
     if (data) {
       setTicketsListData([...ticketsListData, ...data]);
-      if (!data.length && !loading) {
-        document.removeEventListener('scroll', scrollListener, true);
-      }
     }
   }, [data]);
 
@@ -134,7 +161,7 @@ const Tickets = () => {
                         )}
                         <div style={{ textAlign: 'right' }}>
                           {TicketStatus.map((status) => {
-                            if (status.key === item.status) {
+                            if (status.key === item.status && status.text) {
                               return (
                                 <TicketStatusContainer
                                   key={status.key}
