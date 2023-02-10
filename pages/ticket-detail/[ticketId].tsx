@@ -296,8 +296,8 @@ const TicketDetail = () => {
               onClose={() => setShowQrcode(false)}
             >
               {!qrcodeError && (
-                <div>
-                  {qrcodeLoading && (
+                <div style={{ height: '100%' }}>
+                  {!qrcodeLoading && (
                     <>
                       <QRCode
                         value={qrcodeData}
