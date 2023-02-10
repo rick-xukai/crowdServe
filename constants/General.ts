@@ -46,7 +46,7 @@ export const TicketStatus = [
     icon: Images.OnSaleIcon,
   },
   {
-    text: 'SOLD',
+    text: '',
     key: 5,
     bgColor: Colors.branding,
     color: Colors.white,
