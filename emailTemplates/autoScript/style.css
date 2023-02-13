@@ -116,3 +116,13 @@ a {
   margin-bottom: 20px;
   text-align: center;
 }
+
+.ticket-img {
+  text-align: center;
+}
+
+.ticket-img img {
+  width: 200px;
+  height: 200px;
+  border-radius: 4px;
+}
