@@ -20,15 +20,33 @@
           Your Ticket for {{event_name}} Is Ready!
         </div>
         <div class="content-detail">
-          <div class="ticket-img">
-            <img src="../../../static/images/test-img.png" alt="" />
-          </div>
-          <p class="detail-text">Dear User,</p>
+          <div class="ticket-img" style="background-image: url({{ticket_image}});"></div>
+          <p class="detail-text">Dear {{user_name}},</p>
           <p class="detail-text">
             You're one step closer to your event!
           </p>
+          <div class="ticket-info">
+            <p class="title">
+              ULTRA Music Festival (SG) 2023
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.a4f181a9.svg" alt="" style="margin-top: -3px;" />
+              {{event_date}}
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.64a4af46.svg" alt="" style="margin-right: 9px;" />
+              {{event_location}}
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/organiser.a317ad64.svg" alt="" />
+              {{event_organizer}}
+            </p>
+          </div>
           <p class="detail-text">
-            Click below to receive your ticket(s).<br />
+            Your NFT ticket is now available on the CrowdServe App.
+          </p>
+          <p class="detail-text">
+            Simply click below to access your ticket<br />
             <span style="font-size: 12px; color: #717179">
               (You'll be prompted to download the app if you have not installed it yet.)
             </span>
@@ -39,21 +57,24 @@
             </a>
           </button>
           <p class="detail-text">
-            If the button doesn't work, copy this link and paste it on your browser:
+            If the button doesn't work, open this link in your preferred browser
             <a href="{{url}}" target="_blank" style="word-break: break-word;">
               {{url}}
             </a>
           </p>
           <p class="detail-text">
-            It is recommended to install the app and login before the event to ensure a smooth experience at registration.
+            <span class="note">NOTE:</span>
+            Please ensure you have installed the app and activated your account before the event to ensure a smooth experience at registration.
           </p>
           <p class="detail-text">
-            Please user this email address to activate your CrowdServe account when you login for the first time.
+            This email address will be used to activate your CrowdServe account when you login for the first time.
           </p>
-          <p class="detail-text">CrowdServe is here to protect you, your ticket, the artistes and other fans.</p>
-          <p class="detail-text" style="margin-bottom: 0 !important;">
+          <p class="detail-text">
             Yours Sincerely,<br />
             CrowdServe
+          </p>
+          <p class="detail-text">
+            CrowdServe is here to protect you, your ticket, the artistes and other fans.
           </p>
           <p class="unsubscribe">
             If you don't want to receive this type of email in the future, please
