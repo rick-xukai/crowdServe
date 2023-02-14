@@ -76,7 +76,10 @@ const Tickets = () => {
         page: currentPage,
         size: DefaultPageSize,
       })).then((response: any) => {
-        if (!response.payload.length) {
+        if (
+          !response.payload.length ||
+          response.payload.length < DefaultPageSize
+        ) {
           setRequestStatusKey(TicketStatus[1].key);
           setCurrentPage(DefaultPage);
         }
@@ -87,7 +90,10 @@ const Tickets = () => {
         page: currentPage,
         size: DefaultPageSize,
       })).then((response: any) => {
-        if (!response.payload.length) {
+        if (
+          !response.payload.length ||
+          response.payload.length < DefaultPageSize
+        ) {
           setRequestStatusKey(TicketStatus[2].key);
           setCurrentPage(DefaultPage);
         }
@@ -98,7 +104,10 @@ const Tickets = () => {
         page: currentPage,
         size: DefaultPageSize,
       })).then((response: any) => {
-        if (!response.payload.length) {
+        if (
+          !response.payload.length ||
+          response.payload.length < DefaultPageSize
+        ) {
           document.removeEventListener('scroll', scrollListener, true);
         }
       })
