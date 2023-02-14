@@ -17,23 +17,26 @@
       </div>
       <div class="email-content">
         <div class="content-title">
-          Your Ticket Listing Is Cancelled
+          {{event_name}}: Ticket Listing Cancelled
         </div>
         <div class="content-detail">
-          <p class="detail-text">Dear User,</p>
+          <p class="detail-text">Dear {{user_name}},</p>
           <p class="detail-text">
-            We regret to inform you that your ticket listing for <b>{{name}}</b> has been recalled. As per event policy, all ticket listings will be removed from the secondary market 30 minutes before the start of the event.
+            We regret to inform you that your ticket listing for <b>{{event_name}}</b> has been recalled. As per event policy, all ticket listings will be removed from our marketplace 30 minutes before the start of the event to ensure all event go-ers have sufficient time to enjoy the event.
           </p>
           <p class="detail-text">
-            Your event ticket is now available via the CrowdServe app. We hope you have a great time at the event!
+            Your event ticket is now available under <b>My Tickets</b> in your CrowdServe app. We hope you have a great time at the event!
           </p>
           <p class="detail-text">
             If you have any questions, or concerns, please contact
             <a href="tech@crowdserve.xyz" target="_blank">tech@crowdserve.xyz.</a>
           </p>
-          <p class="detail-text" style="margin-bottom: 0 !important;">
+          <p class="detail-text">
             Yours Sincerely,<br />
             CrowdServe
+          </p>
+          <p class="detail-text">
+            CrowdServe is here to protect you, your ticket, the artistes and other fans.
           </p>
           <p class="unsubscribe">
             If you don't want to receive this type of email in the future, please
