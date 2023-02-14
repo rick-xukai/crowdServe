@@ -17,12 +17,12 @@
       </div>
       <div class="email-content">
         <div class="content-title">
-          Your Ticket Transaction Is Completed
+          Your Ticket Transaction for {{event_name}} Is Completed
         </div>
         <div class="content-detail">
-          <p class="detail-text">Dear User,</p>
+          <p class="detail-text">Dear {{user_name}},</p>
           <p class="detail-text">
-            The ticket of event <b>{{name}}</b> has been successfully transferred to your wallet! Please check your event entrance QR code on our CrowdServe app.
+            Your ticket for <b>{{event_name}}</b> has been successfully transferred to you! You can find it under <b>My Tickets</b> in your CrowdServe app.
           </p>
           <p class="detail-text">
             Thank you for purchasing with CrowdServe and have a great time at your event!
@@ -31,9 +31,12 @@
             If you have any questions or feedback, please contact
             <a href="tech@crowdserve.xyz" target="_blank">tech@crowdserve.xyz.</a>
           </p>
-          <p class="detail-text" style="margin-bottom: 0 !important;">
+          <p class="detail-text">
             Yours Sincerely,<br />
             CrowdServe
+          </p>
+          <p class="detail-text">
+            CrowdServe is here to protect you, your ticket, the artistes and other fans.
           </p>
           <p class="unsubscribe">
             If you don't want to receive this type of email in the future, please
