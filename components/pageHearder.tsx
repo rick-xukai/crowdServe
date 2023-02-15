@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { Row, Col } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import Image from 'next/image';
+import Router from 'next/router';
 
+import { RouterKeys } from '../constants/Keys';
 import { Images, Colors } from '../theme';
 
 const PageHearderContainer = styled(Row)`
@@ -31,7 +33,10 @@ const PageHearderComponent = ({ isBack }: { isBack: boolean }) => (
           </div>
         </Col>
         <Col span={12} className="right-container">
-          <div className="hearder-action">
+          <div
+            className="hearder-action"
+            onClick={() => Router.push(RouterKeys.settings)}
+          >
             <Image src={Images.MenuIcon} alt="" />
           </div>
         </Col>

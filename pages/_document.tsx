@@ -36,9 +36,7 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head>
-          <meta name="referrer" content="no-referrer" />
-        </Head>
+        <Head />
         <body>
           <Main />
           <NextScript />

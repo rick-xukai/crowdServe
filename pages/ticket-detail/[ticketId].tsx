@@ -19,7 +19,7 @@ import {
   selectQrcodeError,
   selectTicketDetailLoading,
 } from '../../slice/tickets.slice';
-import { RouterKeys } from '../../constants/Keys';
+import { RouterKeys, CookieKeys } from '../../constants/Keys';
 import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
 import { TicketStatusContainer } from '../../styles/tickets.style';
@@ -172,7 +172,7 @@ const TicketDetail = () => {
               </Row>
               <Row className="border-line">
                 <Col span={24} style={{ textAlign: 'center' }}>
-                  <Image src={Images.BorderLine} />
+                  <Image src={Images.BorderLine} alt="" />
                 </Col>
               </Row>
               <div className="container-info-item">
@@ -322,7 +322,7 @@ const TicketDetail = () => {
                 </div>
               ) || (
                 <div className="code-network-error-box">
-                  <Image src={Images.QrcodeNetworkError} />
+                  <Image src={Images.QrcodeNetworkError} alt="" />
                   <p className="error-title">
                     Network request failed
                   </p>
@@ -352,6 +352,24 @@ const TicketDetail = () => {
       )}
     </>
   );
+};
+
+export async function getServerSideProps(ctx: any) {
+  const { req, res } = ctx;
+  const handleAuth = () => {
+    const token = req.cookies[CookieKeys.userLoginToken];
+    if (!token) {
+      res.writeHead(302, { Location: RouterKeys.login });
+      res.end();
+      return {
+        props: {}
+      };
+    }
+  };
+  await handleAuth();
+  return {
+    props: {}
+  };
 };
 
 export default TicketDetail;

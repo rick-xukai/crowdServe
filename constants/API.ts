@@ -6,6 +6,9 @@ const API = {
   login: {
     post: '/api/v1/user/session',
   },
+  logout: {
+    delete: '/api/v1/user/session',
+  },
   getTicketsList: {
     get: '/api/v1/ticket',
   },
