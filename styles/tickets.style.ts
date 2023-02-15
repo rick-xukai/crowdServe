@@ -15,6 +15,19 @@ interface TicketStatusContainerProps {
 
 const TickersContainer = styled.div`
   padding: 20px;
+  height: 100%;
+  .page-loading {
+    position: relative;
+    height: calc(100% - 50px);
+    .anticon-loading {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      font-size: 30px;
+      color: ${Colors.branding};
+    }
+  }
   .page-title {
     margin-bottom: 20px;
     .title {
