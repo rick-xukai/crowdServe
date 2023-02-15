@@ -55,6 +55,35 @@ export const loginAction = createAsyncThunk<
   },
 );
 
+/**
+ * Logout
+ */
+export const logoutAction = createAsyncThunk<
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'logout/logoutAction',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await UserService.doLogout();
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
 interface LoginState {
   loading: boolean;
   data: LoginResponseType;

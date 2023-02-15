@@ -110,7 +110,7 @@ const Tickets = () => {
         ) {
           document.removeEventListener('scroll', scrollListener, true);
         }
-      })
+      });
     }
   }, [currentPage, requestStatusKey]);
 

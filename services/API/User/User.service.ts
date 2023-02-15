@@ -13,4 +13,13 @@ const doLogin = async (payload: LoginPayloadType) => {
   return response;
 };
 
-export default { doLogin };
+const doLogout = async () => {
+  const uri = API.logout.delete;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doDelete();
+  return response;
+};
+
+export default { doLogin, doLogout };
