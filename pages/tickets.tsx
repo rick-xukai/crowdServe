@@ -131,11 +131,11 @@ const Tickets = () => {
   return (
     <TickersContainer>
       <PageHearderComponent isBack={false} />
-      {loading && !ticketsListData.length && (
-        <div className="page-loading">
-          <LoadingOutlined />
-        </div>
-      ) || (
+      <Spin
+        spinning={loading && !ticketsListData.length}
+        indicator={<LoadingOutlined spin />}
+        size="large"
+      >
         <div className="page-main">
           <Row>
             <Col className="tickets-list" span={24} ref={ticketsListRef}>
@@ -192,16 +192,18 @@ const Tickets = () => {
                                 <Image src={Images.CalendarIcon} alt="" />
                               </div>
                               <div className="info-description">
-                                {`${formatTimeStrByTimeString(
-                                  item.startTime,
-                                  FormatTimeKeys.mdy,
-                                )} ${formatTimeStrByTimeString(
-                                  item.startTime,
-                                  FormatTimeKeys.hm,
-                                )}~${formatTimeStrByTimeString(
-                                  item.endTime,
-                                  FormatTimeKeys.hm,
-                                )}`}
+                                {item.startTime && item.endTime && (
+                                  `${formatTimeStrByTimeString(
+                                    item.startTime,
+                                    FormatTimeKeys.mdy,
+                                  )} ${formatTimeStrByTimeString(
+                                    item.startTime,
+                                    FormatTimeKeys.hm,
+                                  )}~${formatTimeStrByTimeString(
+                                    item.endTime,
+                                    FormatTimeKeys.hm,
+                                  )}`
+                                ) || '-'}
                               </div>
                             </Col>
                             <Col span={24} className="info-item">
@@ -209,7 +211,7 @@ const Tickets = () => {
                                 <Image src={Images.LocationIcon} alt="" className="info-icon" />
                               </div>
                               <div className="info-description">
-                                {item.location}
+                                {item.location || '-'}
                               </div>
                             </Col>
                             <Col span={24} className="info-item">
@@ -217,7 +219,7 @@ const Tickets = () => {
                                 <Image src={Images.OrganiserIcon} alt="" className="info-icon" />
                               </div>
                               <span className="info-description">
-                                {item.organizerName}
+                                {item.organizerName || '-'}
                               </span>
                             </Col>
                           </Row>
@@ -245,7 +247,7 @@ const Tickets = () => {
             </Col>
           </Row>
         </div>
-      )}
+      </Spin>
       {contextHolder}
     </TickersContainer>
   );

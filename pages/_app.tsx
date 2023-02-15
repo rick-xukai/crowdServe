@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import { ConfigProvider } from 'antd';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
 
@@ -18,7 +19,9 @@ function MyApp({ Component, ...rest }: AppProps) {
         <meta name="referrer" content="no-referrer" />
         <title>CrowdServe</title>
       </Head>
-      <Component {...pageProps} />
+      <ConfigProvider theme={{ hashed: false, token: { fontFamily: 'Heebo' } }}>
+        <Component {...pageProps} />
+      </ConfigProvider>
     </Provider>
   );
 }

@@ -15,19 +15,6 @@ interface TicketStatusContainerProps {
 
 const TickersContainer = styled.div`
   padding: 20px;
-  height: 100%;
-  .page-loading {
-    position: relative;
-    height: calc(100% - 50px);
-    .anticon-loading {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      font-size: 30px;
-      color: ${Colors.branding};
-    }
-  }
   .page-title {
     margin-bottom: 20px;
     .title {
@@ -75,7 +62,7 @@ const TickersContainer = styled.div`
     max-height: unset !important;
     background: rgba(0, 0, 0, 0.5);
     .anticon {
-      color: ${Colors.white};
+      color: ${Colors.branding};
     }
   }
   .ant-spin-container,
@@ -133,6 +120,7 @@ const TicketItemContainer = styled.div`
     .info-item {
       margin-bottom: 5px;
       display: flex;
+      align-items: center;
     }
     .info-description {
       font-weight: 300;
@@ -153,7 +141,7 @@ const TicketItemContainer = styled.div`
 const TicketStatusContainer = styled.span`
   display: inline-block;
   height: 22px;
-  line-height: 22px;
+  line-height: 24px;
   padding: 0 6px;
   border-radius: 4px;
   background: ${(props: TicketStatusContainerProps) => props.bgColor};
