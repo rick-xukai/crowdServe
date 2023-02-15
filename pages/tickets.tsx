@@ -131,11 +131,11 @@ const Tickets = () => {
   return (
     <TickersContainer>
       <PageHearderComponent isBack={false} />
-      <Spin
-        spinning={loading && !ticketsListData.length}
-        indicator={<LoadingOutlined spin />}
-        size="large"
-      >
+      {loading && !ticketsListData.length && (
+        <div className="page-loading">
+          <LoadingOutlined />
+        </div>
+      ) || (
         <div className="page-main">
           <Row>
             <Col className="tickets-list" span={24} ref={ticketsListRef}>
@@ -245,7 +245,7 @@ const Tickets = () => {
             </Col>
           </Row>
         </div>
-      </Spin>
+      )}
       {contextHolder}
     </TickersContainer>
   );
