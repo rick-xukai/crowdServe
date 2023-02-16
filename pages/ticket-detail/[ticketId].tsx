@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Row, Col, Spin, Typography, Drawer, QRCode, Button, message } from 'antd';
 import { LoadingOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
+import AuthHoc from '../../components/hoc/AuthHoc';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { checkStatusIcon, formatTimeStrByTimeString } from '../../utils/func';
 import { Images } from '../../theme';
@@ -19,7 +20,7 @@ import {
   selectQrcodeError,
   selectTicketDetailLoading,
 } from '../../slice/tickets.slice';
-import { RouterKeys, CookieKeys } from '../../constants/Keys';
+import { RouterKeys } from '../../constants/Keys';
 import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
 import { TicketStatusContainer } from '../../styles/tickets.style';
@@ -354,22 +355,4 @@ const TicketDetail = () => {
   );
 };
 
-export async function getServerSideProps(ctx: any) {
-  const { req, res } = ctx;
-  const handleAuth = () => {
-    const token = req.cookies[CookieKeys.userLoginToken];
-    if (!token) {
-      res.writeHead(302, { Location: RouterKeys.login });
-      res.end();
-      return {
-        props: {}
-      };
-    }
-  };
-  await handleAuth();
-  return {
-    props: {}
-  };
-};
-
-export default TicketDetail;
+export default AuthHoc(TicketDetail);

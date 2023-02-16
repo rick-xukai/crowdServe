@@ -3,6 +3,7 @@ import { Row, Col, Divider, Button } from 'antd';
 import { ArrowLeftOutlined, RightOutlined } from '@ant-design/icons';
 import Router from 'next/router';
 
+import AuthHoc from '../components/hoc/AuthHoc';
 import { useCookie } from '../hooks';
 import { useAppDispatch } from '../app/hooks';
 import ClientModalComponent from '../components/clientModal';
@@ -104,22 +105,4 @@ const Settings = () => {
   );
 };
 
-export async function getServerSideProps(ctx: any) {
-  const { req, res } = ctx;
-  const handleAuth = () => {
-    const token = req.cookies[CookieKeys.userLoginToken];
-    if (!token) {
-      res.writeHead(302, { Location: RouterKeys.login });
-      res.end();
-      return {
-        props: {}
-      };
-    }
-  };
-  await handleAuth();
-  return {
-    props: {}
-  };
-};
-
-export default Settings;
+export default AuthHoc(Settings);

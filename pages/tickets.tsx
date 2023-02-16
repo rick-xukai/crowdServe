@@ -5,8 +5,9 @@ import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Router from 'next/router';
 
+import AuthHoc from '../components/hoc/AuthHoc';
 import { formatTimeStrByTimeString, checkStatusIcon } from '../utils/func';
-import { RouterKeys, CookieKeys } from '../constants/Keys';
+import { RouterKeys } from '../constants/Keys';
 import {
   TicketStatus,
   FormatTimeKeys,
@@ -43,6 +44,7 @@ const Tickets = () => {
   const [currentPage, setCurrentPage] = useState<number>(DefaultPage);
   const [ticketsListData, setTicketsListData] = useState<TicketsListResponseType[]>([]);
   const [requestStatusKey, setRequestStatusKey] = useState<number>(0);
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -54,7 +56,7 @@ const Tickets = () => {
   }, []);
 
   useEffect(() => {
-    if (error) {
+    if (!isFirstRender && error) {
       messageApi.open({
         content: error.message,
         className: 'error-message-tickets',
@@ -121,6 +123,7 @@ const Tickets = () => {
   }, [data]);
 
   useEffect(() => {
+    setIsFirstRender(false);
     document.addEventListener('scroll', scrollListener, true);
     return () => {
       dispatch(reset());
@@ -247,22 +250,4 @@ const Tickets = () => {
   );
 };
 
-export async function getServerSideProps(ctx: any) {
-  const { req, res } = ctx;
-  const handleAuth = () => {
-    const token = req.cookies[CookieKeys.userLoginToken];
-    if (!token) {
-      res.writeHead(302, { Location: RouterKeys.login });
-      res.end();
-      return {
-        props: {}
-      };
-    }
-  };
-  await handleAuth();
-  return {
-    props: {}
-  };
-};
-
-export default Tickets;
+export default AuthHoc(Tickets);
