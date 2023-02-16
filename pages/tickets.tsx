@@ -188,9 +188,7 @@ const Tickets = () => {
                           <Row className="item-info-row">
                             <Col span={24} className="info-title">{item.name}</Col>
                             <Col span={24} className="info-item">
-                              <div>
-                                <Image src={Images.CalendarIcon} alt="" />
-                              </div>
+                              <Image className="info-item-icon" src={Images.CalendarIcon} alt="" />
                               <div className="info-description">
                                 {item.startTime && item.endTime && (
                                   `${formatTimeStrByTimeString(
@@ -207,17 +205,13 @@ const Tickets = () => {
                               </div>
                             </Col>
                             <Col span={24} className="info-item">
-                              <div>
-                                <Image src={Images.LocationIcon} alt="" className="info-icon" />
-                              </div>
+                              <Image src={Images.LocationIcon} alt="" className="info-item-icon" />
                               <div className="info-description">
                                 {item.location || '-'}
                               </div>
                             </Col>
                             <Col span={24} className="info-item">
-                              <div>
-                                <Image src={Images.OrganiserIcon} alt="" className="info-icon" />
-                              </div>
+                              <Image src={Images.OrganiserIcon} alt="" className="info-item-icon" />
                               <span className="info-description">
                                 {item.organizerName || '-'}
                               </span>
