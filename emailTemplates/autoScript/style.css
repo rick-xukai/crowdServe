@@ -150,6 +150,8 @@ a {
 }
 
 .info-item img {
+  width: 14px;
+  height: 14px;
   margin-right: 8px;
 }
 
