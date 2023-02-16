@@ -121,6 +121,13 @@ const TicketItemContainer = styled.div`
       margin-bottom: 5px;
       display: flex;
       align-items: center;
+      img {
+        width: 16px !important;
+      }
+      .info-item-icon {
+        min-width: 16px !important;
+        min-height: 16px !important;
+      }
     }
     .info-description {
       font-weight: 300;
@@ -131,9 +138,6 @@ const TicketItemContainer = styled.div`
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-    .info-icon {
-      top: 2px !important;
     }
   }
 `;
