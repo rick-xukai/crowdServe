@@ -3,6 +3,26 @@ const Messages = {
     code: 200,
     text: 'Ticket is verified successfully!',
   },
+  notFound: {
+    code: 404,
+    text: 'Something is wrong.',
+  },
+  activateAccountUserDosentExist1001: {
+    code: 1001,
+    text: `User doesn't exist.`,
+  },
+  activateAccountUserDosentExist1002: {
+    code: 1002,
+    text: `User doesn't exist.`,
+  },
+  invalidPassword: {
+    code: 1003,
+    text: 'Wrong email or password.'
+  },
+  activateAccountUserAlreadyExist: {
+    code: 1005,
+    text: 'Account already exists, please login.',
+  },
   invalidUnlawful: {
     code: 1007,
     text: 'Invalid QR code, please refresh the code and try again.',
