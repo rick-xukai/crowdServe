@@ -1,6 +1,7 @@
 import CryptoJS from 'crypto-js';
 import { format } from 'date-fns';
 
+import Messages from '../constants/Messages';
 import { Encrypt, TicketStatus } from '../constants/General';
 
 const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY as string;
@@ -45,4 +46,30 @@ export const formatTimeStrByTimeString = (
 
 export const checkStatusIcon = (key: number) => {
   return TicketStatus.find((item) => item.key === key)?.icon;
+};
+
+export const isEmail = (value: string) =>
+  /* eslint-disable max-len */
+  /* eslint-disable no-useless-escape */
+  /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{1,1})+([^<>()\.,;:\s@\"]{2,}))$/.test(
+    value
+  );
+
+export const isPassword = (value: string) =>
+  /* eslint-disable max-len */
+  /* eslint-disable no-useless-escape */
+  /^\S*(?=\S{8,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/.test(
+    value
+  );
+
+export const getErrorMessage = (errorCode: number | undefined) => {
+  let errorMessage = Messages.notFound.text;
+  if (errorCode) {
+    Object.values(Messages).forEach((item) => {
+      if (errorCode === item.code) {
+        errorMessage = item.text;
+      }
+    });
+  }
+  return errorMessage;
 };

@@ -11,6 +11,7 @@ import { PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { SettingsContainer } from '../styles/settings-style';
 import { logoutAction } from '../slice/login.slice';
+import GoogleDocComponent from '../components/googleDocComponent';
 
 const Settings = () => {
   const dispatch = useAppDispatch();
@@ -95,10 +96,9 @@ const Settings = () => {
           )}
         </>
       ) || (
-        <iframe
-          title="Google Document"
-          width="100%"
-          src={iframeLink}
+        <GoogleDocComponent
+          docLink={iframeLink}
+          checkGoogleDoc={setCheckGoogleDoc}
         />
       )}
     </SettingsContainer>

@@ -1,6 +1,6 @@
 import { RequestClientClass } from '../../../utils/requestClient';
 import API from '../../../constants/API';
-import { LoginPayloadType } from '../../../slice/login.slice';
+import { LoginPayloadType, VerifyUserPayload, VerificationCodePayload } from '../../../slice/login.slice';
 
 const requestClient = () => new RequestClientClass(process.env.NEXT_PUBLIC_API_SERVER);
 
@@ -22,4 +22,22 @@ const doLogout = async () => {
   return response;
 };
 
-export default { doLogin, doLogout };
+const doVerifyUser = async (payload: VerifyUserPayload) => {
+  const uri = API.verifyUser.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .doPost();
+  return response;
+};
+
+const doVerificationCode = async (payload: VerificationCodePayload) => {
+  const uri = API.verificationCode.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .doPost();
+  return response;
+};
+
+export default { doLogin, doLogout, doVerifyUser, doVerificationCode };

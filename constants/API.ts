@@ -6,6 +6,12 @@ const API = {
   login: {
     post: '/api/v1/user/session',
   },
+  verifyUser: {
+    post: '/api/v1/user/status/verify',
+  },
+  verificationCode: {
+    post: '/api/v1/user/verification',
+  },
   logout: {
     delete: '/api/v1/user/session',
   },
