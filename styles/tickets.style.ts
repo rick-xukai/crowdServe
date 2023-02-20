@@ -2,11 +2,7 @@ import styled from 'styled-components';
 
 import { Colors } from '../theme';
 
-const backgroundLogoPath = '../static/images/background-logo.png';
-
-interface TicketItemContainerProps {
-  itemImage: string;
-}
+const BackgroundLogoPath = '../static/images/background-logo.png';
 
 interface TicketStatusContainerProps {
   bgColor: string;
@@ -25,7 +21,7 @@ const TickersContainer = styled.div`
     }
   }
   .page-main {
-    margin-top: 20px;
+    margin-top: 25px;
     .tickets-list {
       height: calc(100vh - 100px);
       overflow: auto;
@@ -80,13 +76,21 @@ const TickersContainer = styled.div`
 const TicketItemContainer = styled.div`
   border-radius: 4px;
   padding: 10px;
-  background-image: url(${(props: TicketItemContainerProps) => props.itemImage || backgroundLogoPath});
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: relative;
   min-height: 223px;
   margin-bottom: 20px;
+  position: relative;
+  .ticket-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    img, video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
   .on-sale-icon {
     position: absolute;
     top: 0px;
@@ -158,4 +162,5 @@ export {
   TickersContainer,
   TicketItemContainer,
   TicketStatusContainer,
+  BackgroundLogoPath,
 };

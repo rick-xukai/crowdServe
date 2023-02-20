@@ -1,12 +1,6 @@
 import styled from 'styled-components';
 import { Colors } from '../theme';
 
-interface TicketDetailContainerProps {
-  detailImage: string;
-}
-
-const backgroundLogoPath = '../static/images/background-logo.png';
-
 const TicketDetailContainer = styled.div`
   height: 100%;
   position: relative;
@@ -20,10 +14,15 @@ const TicketDetailContainer = styled.div`
   }
   .detail-background {
     height: 230px;
-    background-image: url(${(props: TicketDetailContainerProps) => props.detailImage || backgroundLogoPath});
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    img, video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
   .detail-info {
     padding: 10px 10px 103px 10px;
@@ -135,19 +134,23 @@ const TicketDetailContainer = styled.div`
       bottom: -28px;
     }
   }
-  .ant-typography {
+  .text-typography {
     color: ${Colors.grayScale40};
     font-weight: 300;
     font-size: 13px;
     margin-bottom: 0;
-    > :first-child {
-      display: inline-block;
-    }
-    .ant-typography-expand {
+    a {
       font-weight: 400;
       font-size: 13px;
       color: ${Colors.white};
     }
+  }
+  .whole-description {
+    color: ${Colors.grayScale40};
+    font-weight: 300;
+    font-size: 13px;
+    margin: 0;
+    white-space: pre-wrap;
   }
   .qrcode-row {
     width: calc(100% - 20px);

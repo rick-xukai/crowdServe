@@ -29,6 +29,7 @@ import {
   TickersContainer,
   TicketItemContainer,
   TicketStatusContainer,
+  BackgroundLogoPath,
 } from '../styles/tickets.style';
 
 const Tickets = () => {
@@ -155,7 +156,7 @@ const Tickets = () => {
                   >
                     {(item: TicketsListResponseType) => (
                       <TicketItemContainer
-                        itemImage={item.image as any}
+                        className={item.status === TicketStatus.find((item) => item.key === 5)?.key && 'background-mask' || ''}
                         key={item.id}
                         onClick={() =>
                           Router.push(
@@ -166,6 +167,20 @@ const Tickets = () => {
                           )
                         }
                       >
+                        <div className="ticket-background">
+                          {item.imageType === 'Video' && (
+                            <video src={item.image} autoPlay={false} />
+                          ) || (
+                            <img
+                              src={item.image} 
+                              alt=""
+                              onError={(e: any) => {
+                                e.target.onerror = null;
+                                e.target.src = BackgroundLogoPath;
+                              }}
+                            />
+                          )}
+                        </div>
                         {checkStatusIcon(item.status) && (
                           <div className="on-sale-icon">
                             <Image src={checkStatusIcon(item.status)} alt="" />

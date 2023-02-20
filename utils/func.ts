@@ -42,7 +42,14 @@ export const dataEncryption = (data: any, type: string) => {
 export const formatTimeStrByTimeString = (
   timeString: string,
   formatType: string,
-) => format(new Date(timeString), formatType);
+) => {
+  try {
+    if (timeString) {
+      return format(new Date(timeString), formatType);
+    }
+    return '-';
+  } catch (_) {}
+};
 
 export const checkStatusIcon = (key: number) => {
   return TicketStatus.find((item) => item.key === key)?.icon;
