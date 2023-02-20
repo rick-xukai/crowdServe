@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import Image from 'next/image';
-import { Row, Col, Spin, Typography, Drawer, QRCode, Button, message } from 'antd';
+import { Row, Col, Spin, Drawer, QRCode, Button, message } from 'antd';
+import TextTruncate from 'react-text-truncate';
 import { LoadingOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
 import AuthHoc from '../../components/hoc/AuthHoc';
@@ -21,11 +22,10 @@ import {
   selectTicketDetailLoading,
 } from '../../slice/tickets.slice';
 import { RouterKeys } from '../../constants/Keys';
-import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys } from '../../constants/General';
+import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys, PriceUnit } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
-import { TicketStatusContainer } from '../../styles/tickets.style';
+import { TicketStatusContainer, BackgroundLogoPath } from '../../styles/tickets.style';
 
-const { Paragraph } = Typography;
 let timer: NodeJS.Timer | null = null;
 
 const TicketDetail = () => {
@@ -41,6 +41,7 @@ const TicketDetail = () => {
 
   const [id, setTicketId] = useState<string>('');
   const [showQrcode, setShowQrcode] = useState<boolean>(false);
+  const [textShowMore, setTextShowMore] = useState<boolean>(false);
   const [countdownNumber, setCountdownNumber] = useState<
     number | ((prevTime: number) => void)
   >(DefaultCodeRefreshTime);
@@ -114,9 +115,26 @@ const TicketDetail = () => {
   return (
     <>
       {!ticketDetailLoading && (
-        <TicketDetailContainer detailImage={ticketDetailData.image}>
-          <Row style={{ position: 'relative' }}>
-            <Col span={24} className="detail-background" />
+        <TicketDetailContainer>
+          <Row style={{ position: 'relative', minHeight: 230 }}>
+            <Col span={24} className="detail-background">
+              {ticketDetailData.imageType === 'Video' && (
+                <video
+                  src={ticketDetailData.image}
+                  autoPlay
+                  loop
+                />
+              ) || (
+                <img
+                  src={ticketDetailData.image}
+                  alt=""
+                  onError={(e: any) => {
+                    e.target.onerror = null;
+                    e.target.src = BackgroundLogoPath;
+                  }}
+                />
+              )}
+            </Col>
             <div
               className="goback-icon"
               onClick={() =>
@@ -154,14 +172,23 @@ const TicketDetail = () => {
                   })}
                 </Col>
                 <Col span={24} className="organizer-name">
-                  {ticketDetailData.organizerName || '-'}
+                  By {ticketDetailData.organizerName || '-'}
                 </Col>
                 <Col span={24} className="ticket-description">
-                  <Paragraph
-                    ellipsis={{ rows: 3, expandable: true, symbol: 'Show More' }}
-                  >
-                    {ticketDetailData.description || '-'}
-                  </Paragraph>
+                  {textShowMore && (
+                    <p className="whole-description">
+                      {ticketDetailData.description}
+                    </p>
+                  ) || (
+                    <TextTruncate
+                      line={2}
+                      element="span"
+                      truncateText="…"
+                      containerClassName="text-typography"
+                      text={ticketDetailData.description || '-'}
+                      textTruncateChild={<a href="#" onClick={() => setTextShowMore(true)}>Show More</a>}
+                    />
+                  )}
                   <div className="circle-left" />
                   <div className="circle-right" />
                 </Col>
@@ -249,7 +276,7 @@ const TicketDetail = () => {
                         Price
                       </Col>
                       <Col span={24} className="info-item-value">
-                        {ticketDetailData.price}
+                        {`${ticketDetailData.price.toFixed(2)} ${PriceUnit}`}
                       </Col>
                     </Row>
                   </Col>
@@ -265,20 +292,20 @@ const TicketDetail = () => {
                   </Col>
                 </Row>
               </div>
-              {ticketDetailData.thumbnailUrl && (
+              {ticketDetailData.collections.length && (
                 <Row className="container-bottom">
                   <Col span={24} style={{ textAlign: 'center' }}>
                     <div>
                       <Image src={Images.GoToLinkIcon} alt="" />
                       <span className="view-blockchain">
-                        <a href={ticketDetailData.thumbnailUrl} target="_blank">
+                        <a href={ticketDetailData.collections[0].address} target="_blank">
                           VIEW ON BLOCKCHAIN
                         </a>
                       </span>
                     </div>
                   </Col>
                 </Row>
-              )}
+              ) || null}
             </div>
           </div>
           {(!showQrcode && ticketDetailData.status === TicketStatus[0].key) && (
