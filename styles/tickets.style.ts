@@ -2,8 +2,6 @@ import styled from 'styled-components';
 
 import { Colors } from '../theme';
 
-const BackgroundLogoPath = '../static/images/background-logo.png';
-
 interface TicketStatusContainerProps {
   bgColor: string;
   textColor: string;
@@ -162,5 +160,4 @@ export {
   TickersContainer,
   TicketItemContainer,
   TicketStatusContainer,
-  BackgroundLogoPath,
 };

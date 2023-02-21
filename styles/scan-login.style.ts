@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import { Colors } from '../theme';
+import { Colors, Images } from '../theme';
 
 const LoginContainer = styled.div`
   height: 100%;
   background-color: rgb(243, 243, 251);
   padding: 16px;
   display: flex;
-  background-image: url('../static/images/login-background.png');
+  background-image: url(${Images.LoginBackground.src});
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

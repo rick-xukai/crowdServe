@@ -24,7 +24,7 @@ import {
 import { RouterKeys } from '../../constants/Keys';
 import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys, PriceUnit } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
-import { TicketStatusContainer, BackgroundLogoPath } from '../../styles/tickets.style';
+import { TicketStatusContainer } from '../../styles/tickets.style';
 
 let timer: NodeJS.Timer | null = null;
 
@@ -125,12 +125,13 @@ const TicketDetail = () => {
                   loop
                 />
               ) || (
-                <img
+                <Image
                   src={ticketDetailData.image}
+                  layout="fill"
                   alt=""
                   onError={(e: any) => {
                     e.target.onerror = null;
-                    e.target.src = BackgroundLogoPath;
+                    e.target.src = Images.BackgroundLogo.src;
                   }}
                 />
               )}
