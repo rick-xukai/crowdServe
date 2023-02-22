@@ -87,6 +87,7 @@ const TicketItemContainer = styled.div`
       width: 100%;
       height: 100%;
       object-fit: cover;
+      border-radius: 4px;
     }
   }
   .on-sale-icon {
@@ -141,6 +142,20 @@ const TicketItemContainer = styled.div`
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+  }
+  .background-mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    z-index: 1;
+    border-radius: 4px;
+  }
+  .status-warpper {
+    position: absolute;
+    right: 10px;
   }
 `;
 

@@ -5,16 +5,13 @@ import Router from 'next/router';
 
 import AuthHoc from '../components/hoc/AuthHoc';
 import { useCookie } from '../hooks';
-import { useAppDispatch } from '../app/hooks';
 import ClientModalComponent from '../components/clientModal';
 import { PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { SettingsContainer } from '../styles/settings-style';
-import { logoutAction } from '../slice/login.slice';
 import GoogleDocComponent from '../components/googleDocComponent';
 
 const Settings = () => {
-  const dispatch = useAppDispatch();
   const cookies = useCookie([CookieKeys.userLoginToken]);
 
   const [modalShow, setModalShow] = useState<boolean>(false);
@@ -22,7 +19,6 @@ const Settings = () => {
   const [iframeLink, setIframeLink] = useState<string>('');
 
   const userLogout = () => {
-    dispatch(logoutAction());
     cookies.removeCookie(CookieKeys.userLoginToken);
     Router.push(RouterKeys.login);
   };

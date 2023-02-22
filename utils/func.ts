@@ -47,8 +47,8 @@ export const formatTimeStrByTimeString = (
     if (timeString) {
       return format(new Date(timeString), formatType);
     }
-    return '-';
   } catch (_) {}
+  return '-';
 };
 
 export const checkStatusIcon = (key: number) => {

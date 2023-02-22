@@ -7,6 +7,7 @@ import TicketService from '../services/API/Ticket';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
+  code: number | undefined;
   message: string;
 }
 
@@ -137,6 +138,7 @@ export const getTicketQrcodeAction = createAsyncThunk<
         return response.data;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -144,6 +146,7 @@ export const getTicketQrcodeAction = createAsyncThunk<
         throw err;
       }
       return rejectWithValue({
+        code: err.code,
         message: err.response,
       } as ErrorType);
     }
@@ -159,6 +162,7 @@ interface TicketsState {
   qrcodeLoading: boolean;
   qrcodeError:
     | {
+      code: number | undefined;
       message: string | undefined;
     }
     | undefined
@@ -208,9 +212,12 @@ export const ticketsSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    resetError: (state) => {
+      state.error = null;
+    },
     resetQrcodeError: (state) => {
       state.qrcodeError = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -249,10 +256,12 @@ export const ticketsSlice = createSlice({
       .addCase(getTicketQrcodeAction.pending, (state) => {
         state.ticketQrcodeData = initialState.ticketQrcodeData;
         state.qrcodeLoading = true;
+        state.qrcodeError = undefined;
       })
       .addCase(getTicketQrcodeAction.fulfilled, (state, action: any) => {
         state.qrcodeLoading = false;
         state.ticketQrcodeData = action.payload;
+        state.qrcodeError = undefined;
       })
       .addCase(getTicketQrcodeAction.rejected, (state, action) => {
         state.qrcodeLoading = false;
@@ -265,7 +274,7 @@ export const ticketsSlice = createSlice({
   },
 });
 
-export const { reset, resetQrcodeError } = ticketsSlice.actions;
+export const { reset, resetQrcodeError, resetError } = ticketsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.tickets.loading;
 export const selectTicketDetailLoading = (state: RootState) => state.tickets.ticketDetailLoading;
