@@ -33,7 +33,7 @@ const TickersContainer = styled.div`
           margin-right: 10px;
         }
       }
-      > :nth-last-child(2) {
+      > :last-child {
         margin-bottom: 0;
       }
     }
