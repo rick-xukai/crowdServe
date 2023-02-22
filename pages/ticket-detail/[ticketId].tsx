@@ -108,7 +108,9 @@ const TicketDetail = () => {
 
   useEffect(() => {
     if (countdownNumber === 0) {
-      dispatch(getTicketQrcodeAction(id));
+      setTimeout(() => {
+        dispatch(getTicketQrcodeAction(id));
+      }, 100);
     }
   }, [countdownNumber]);
 
@@ -195,7 +197,14 @@ const TicketDetail = () => {
                       truncateText="…"
                       containerClassName="text-typography"
                       text={ticketDetailData.description || '-'}
-                      textTruncateChild={<a href="#" onClick={() => setTextShowMore(true)}>Show More</a>}
+                      textTruncateChild={
+                        <span
+                          className="show-more"
+                          onClick={() => setTextShowMore(true)}
+                        >
+                          Show More
+                        </span>
+                      }
                     />
                   )}
                   <div className="circle-left" />
@@ -342,7 +351,7 @@ const TicketDetail = () => {
                         onRefresh={() => setCountdownNumber(0)}
                       />
                       <p className="code-refreshes">
-                        QR Code refreshes in: {`${countdownNumber < 10 && '00:0' || '00:'}${countdownNumber as any}`}
+                        QR Code refreshes in: {`${countdownNumber < 10 && '00:0' || '00:'}${countdownNumber}`}
                       </p>
                       <p className="code-info">
                         This QR code is your admission voucher, do not <br />

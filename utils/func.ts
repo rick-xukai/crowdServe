@@ -65,7 +65,7 @@ export const isEmail = (value: string) =>
 export const isPassword = (value: string) =>
   /* eslint-disable max-len */
   /* eslint-disable no-useless-escape */
-  /^\S*(?=\S{8,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/.test(
+  /^\S*(?=\S{8,})\S*$/.test(
     value
   );
 

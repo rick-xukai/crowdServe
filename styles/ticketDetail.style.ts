@@ -134,7 +134,7 @@ const TicketDetailContainer = styled.div`
     font-weight: 300;
     font-size: 13px;
     margin-bottom: 0;
-    a {
+    .show-more {
       font-weight: 400;
       font-size: 13px;
       color: ${Colors.white};

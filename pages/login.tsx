@@ -34,6 +34,7 @@ const ActivateAccountComponent = ({
   const loading = useAppSelector(selectLoading);
 
   const [checked, setChecked] = useState<boolean>(false);
+  const [isTextShak, setTextShak] = useState<boolean>(false);
   const [verifyUserSuccess, setVerifyUserSuccess] = useState<boolean>(false);
   const [verificationCodeSuccess, setVerificationCodeSuccess] = useState<boolean>(false);
   const [activateAccountValue, setActivateAccountValue] = useState({
@@ -44,9 +45,13 @@ const ActivateAccountComponent = ({
 
   const onFinish = async (values: any) => {
     if (!verifyUserSuccess) {
-      const result = await dispatch(verifyUserAction(values));
-      if (result.type === verifyUserAction.fulfilled.toString()) {
-        setVerifyUserSuccess(true);
+      if (checked) {
+        const result = await dispatch(verifyUserAction(values));
+        if (result.type === verifyUserAction.fulfilled.toString()) {
+          setVerifyUserSuccess(true);
+        }
+      } else {
+        setTextShak(true);
       }
       return;
     }
@@ -73,6 +78,11 @@ const ActivateAccountComponent = ({
         Router.push(RouterKeys.ticketsList);
       }
     }
+  };
+
+  const checkGoogleDocAction = (link: string) => {
+    checkGoogleDoc(true);
+    googleDocLink(link);
   };
 
   // eslint-disable-next-line
@@ -107,38 +117,21 @@ const ActivateAccountComponent = ({
           <Form.Item>
             <Button
               className="signin-btn"
-              disabled={!activateAccountValue.email || !checked || loading}
+              disabled={!activateAccountValue.email || loading}
               type="primary"
               htmlType="submit"
+              onClick={() => setTextShak(false)}
             >
               ACTIVATE
             </Button>
           </Form.Item>
-          <Form.Item style={{ marginBottom: 32 }}>
+          <Form.Item style={{ marginBottom: 32 }} className={isTextShak && 'text-shak' || ''}>
             <div className="agreement-wrapper">
               <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)} />
               <div style={{ marginLeft: 8 }}>
                 <span className="agreement-label">
-                  I agree to CrowdServe
-                  <span
-                    className="agreement-label-action agree"
-                    onClick={() => {
-                      checkGoogleDoc(true);
-                      googleDocLink(TermsConditionsLink);
-                    }}
-                  >
-                    Terms&Conditions
-                  </span>
-                  and
-                  <span
-                    className="agreement-label-action agree"
-                    onClick={() => {
-                      checkGoogleDoc(true);
-                      googleDocLink(PrivacyPolicyLink);
-                    }}
-                  >
-                    Privacy Policy.
-                  </span>
+                  I agree to CrowdServe <span className="agreement-label-action" onClick={() => checkGoogleDocAction(TermsConditionsLink)}>Terms&Conditions</span>
+                  and <span className="agreement-label-action"onClick={() => checkGoogleDocAction(PrivacyPolicyLink)}>Privacy Policy.</span>
                 </span>
               </div>
             </div>

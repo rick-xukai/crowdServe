@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Row, Col, Spin, message } from 'antd';
-import { ViewportList } from 'react-viewport-list';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Router from 'next/router';
@@ -33,10 +32,10 @@ import {
 } from '../styles/tickets.style';
 
 const Tickets = () => {
-  const { useMemState, useNotBackEffect, useMemRef } = useKeepAlive('Tickets');
+  const { useMemState, useMemRef } = useKeepAlive('Tickets');
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
-  const ticketsListRef = useMemRef(null, 'ticketsListRef');
+  const ticketsListRef = useMemRef<any>(null, 'ticketsListRef');
 
   const data = useAppSelector(selectTicketsListData);
   const loading = useAppSelector(selectLoading);
@@ -64,25 +63,25 @@ const Tickets = () => {
     handleScroll(e);
   }, []);
 
-  useNotBackEffect(() => {
+  useEffect(() => {
     if (!isFirstRender && error) {
       messageApi.open({
         content: error.message,
         className: 'error-message-tickets',
       });
       if (ticketsListRef && ticketsListRef.current) {
-        (ticketsListRef as any).current.removeEventListener('scroll', scrollListener, true);
+        ticketsListRef.current.removeEventListener('scroll', scrollListener, true);
       }
     }
   }, [error]);
 
-  useNotBackEffect(() => {
+  useEffect(() => {
     if (isPageBottom && !loading) {
       setCurrentPage(currentPage + 1);
     }
   }, [isPageBottom]);
 
-  useNotBackEffect(() => {
+  useEffect(() => {
     if (isDisableRequest || isGetAllData) {
       return;
     }
@@ -132,7 +131,7 @@ const Tickets = () => {
             setIsDisableRequest(true);
             setIsGetAllData(true);
             if (ticketsListRef && ticketsListRef.current) {
-              (ticketsListRef as any).current.removeEventListener('scroll', scrollListener, true);
+              ticketsListRef.current.removeEventListener('scroll', scrollListener, true);
             }
           }
         }
@@ -140,29 +139,29 @@ const Tickets = () => {
     }
   }, [currentPage, requestStatusKey]);
 
-  useNotBackEffect(() => {
+  useEffect(() => {
     if (data) {
       setTicketsListData([...ticketsListData, ...data]);
     }
   }, [data]);
 
-  useNotBackEffect(() => {
+  useEffect(() => {
     if (ticketsListRef && ticketsListRef.current) {
       setTimeout(() => {
-        (ticketsListRef as any).current.scrollTop = listScrollValue;
+        ticketsListRef.current.scrollTop = listScrollValue;
       });
     }
   }, [ticketsListData]);
 
-  useNotBackEffect(() => {
+  useEffect(() => {
     setIsFirstRender(false);
     if (!isGetAllData && ticketsListRef && ticketsListRef.current) {
-      (ticketsListRef as any).current.addEventListener('scroll', scrollListener, true);
+      ticketsListRef.current.addEventListener('scroll', scrollListener, true);
     }
     return () => {
       dispatch(resetError());
       if (ticketsListRef && ticketsListRef.current) {
-        (ticketsListRef as any).current.removeEventListener('scroll', scrollListener, true);
+        ticketsListRef.current.removeEventListener('scroll', scrollListener, true);
       }
     };
   }, []);
@@ -185,94 +184,90 @@ const Tickets = () => {
               </div>
               {ticketsListData.length && (
                 <>
-                  <ViewportList
-                    viewportRef={ticketsListRef}
-                    items={ticketsListData}
-                  >
-                    {(item: TicketsListResponseType) => (
-                      <TicketItemContainer
-                        key={item.id}
-                        onClick={() => {
-                          Router.push(
-                            RouterKeys.ticketDetail.replace(
-                              ':ticketId',
-                              item.id.toString()
-                            ),
-                          );
-                          setIsDisableRequest(true);
-                        }}
-                      >
-                        {item.status === TicketStatus.find((v) => v.key === 5)?.key && (
-                          <div className="background-mask" />
+                  {ticketsListData.map((item) => (
+                    <TicketItemContainer
+                      key={item.id}
+                      onClick={() => {
+                        Router.push(
+                          RouterKeys.ticketDetail.replace(
+                            ':ticketId',
+                            item.id.toString()
+                          ),
+                        );
+                        setIsDisableRequest(true);
+                        setListScrollValue(ticketsListRef.current.scrollTop);
+                      }}
+                    >
+                      {item.status === TicketStatus.find((v) => v.key === 5)?.key && (
+                        <div className="background-mask" />
+                      )}
+                      <div className="ticket-background">
+                        {item.thumbnailType === 'Video' && (
+                          <video src={item.thumbnailUrl} autoPlay={false} />
+                        ) || (
+                          <Image
+                            src={item.thumbnailUrl || Images.BackgroundLogo.src}
+                            layout="fill"
+                            alt=""
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = Images.BackgroundLogo.src;
+                            }}
+                          />
                         )}
-                        <div className="ticket-background">
-                          {item.thumbnailType === 'Video' && (
-                            <video src={item.thumbnailUrl} autoPlay={false} />
-                          ) || (
-                            <Image
-                              src={item.thumbnailUrl || Images.BackgroundLogo.src}
-                              layout="fill"
-                              alt=""
-                              onError={(e: any) => {
-                                e.target.onerror = null;
-                                e.target.src = Images.BackgroundLogo.src;
-                              }}
-                            />
-                          )}
+                      </div>
+                      {checkStatusIcon(item.status) && (
+                        <div className="on-sale-icon">
+                          <Image src={checkStatusIcon(item.status)} alt="" />
                         </div>
-                        {checkStatusIcon(item.status) && (
-                          <div className="on-sale-icon">
-                            <Image src={checkStatusIcon(item.status)} alt="" />
-                          </div>
-                        )}
-                        <div className="status-warpper" style={{ textAlign: 'right' }}>
-                          {TicketStatus.map((status) => {
-                            if (status.key === item.status && status.text) {
-                              return (
-                                <TicketStatusContainer
-                                  key={status.key}
-                                  bgColor={status.bgColor}
-                                  textColor={status.color}
-                                >
-                                  {status.text}
-                                </TicketStatusContainer>
-                              );
-                            }
-                            return null;
-                          })}
-                        </div>
-                        <div className="item-info">
-                          <Row className="item-info-row">
-                            <Col span={24} className="info-title">{item.name}</Col>
-                            <Col span={24} className="info-item">
-                              <Image className="info-item-icon" src={Images.CalendarIcon} alt="" />
-                              <div className="info-description">
-                                {`${formatTimeStrByTimeString(
-                                  item.startTime,
-                                  FormatTimeKeys.norm,
-                                )}~${formatTimeStrByTimeString(
-                                  item.endTime,
-                                  FormatTimeKeys.norm,
-                                )}`}
-                              </div>
-                            </Col>
-                            <Col span={24} className="info-item">
-                              <Image src={Images.LocationIcon} alt="" className="info-item-icon" />
-                              <div className="info-description">
-                                {item.location || '-'}
-                              </div>
-                            </Col>
-                            <Col span={24} className="info-item">
-                              <Image src={Images.OrganiserIcon} alt="" className="info-item-icon" />
-                              <span className="info-description">
-                                {item.organizerName || '-'}
-                              </span>
-                            </Col>
-                          </Row>
-                        </div>
-                      </TicketItemContainer>
-                    )}
-                  </ViewportList>
+                      )}
+                      <div className="status-warpper" style={{ textAlign: 'right' }}>
+                        {TicketStatus.map((status) => {
+                          if (status.key === item.status && status.text) {
+                            return (
+                              <TicketStatusContainer
+                                key={status.key}
+                                bgColor={status.bgColor}
+                                textColor={status.color}
+                              >
+                                {status.text}
+                              </TicketStatusContainer>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
+                      <div className="item-info">
+                        <Row className="item-info-row">
+                          <Col span={24} className="info-title">{item.name}</Col>
+                          <Col span={24} className="info-item">
+                            <Image className="info-item-icon" src={Images.CalendarIcon} alt="" />
+                            <div className="info-description">
+                              {`${formatTimeStrByTimeString(
+                                item.startTime,
+                                FormatTimeKeys.norm,
+                              )}~${formatTimeStrByTimeString(
+                                item.endTime,
+                                FormatTimeKeys.norm,
+                              )}`}
+                            </div>
+                          </Col>
+                          <Col span={24} className="info-item">
+                            <Image src={Images.LocationIcon} alt="" className="info-item-icon" />
+                            <div className="info-description">
+                              {item.location || '-'}
+                            </div>
+                          </Col>
+                          <Col span={24} className="info-item">
+                            <Image src={Images.OrganiserIcon} alt="" className="info-item-icon" />
+                            <span className="info-description">
+                              {item.organizerName || '-'}
+                            </span>
+                          </Col>
+                        </Row>
+                      </div>
+                    </TicketItemContainer>
+                  ))}
                   {loading && ticketsListData.length && (
                     <div className="load-more">
                       <LoadingOutlined />
