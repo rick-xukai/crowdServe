@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Row, Col, Spin, message } from 'antd';
 import { ViewportList } from 'react-viewport-list';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Router from 'next/router';
+import { useKeepAlive } from 'next-easy-keepalive';
 
 import AuthHoc from '../components/hoc/AuthHoc';
 import { formatTimeStrByTimeString, checkStatusIcon } from '../utils/func';
@@ -16,12 +17,12 @@ import {
 } from '../constants/General';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
-  reset,
   getTicketsListAction,
   selectLoading,
   selectError,
   selectTicketsListData,
   TicketsListResponseType,
+  resetError,
 } from '../slice/tickets.slice';
 import { Images } from '../theme';
 import PageHearderComponent from '../components/pageHearder';
@@ -32,22 +33,30 @@ import {
 } from '../styles/tickets.style';
 
 const Tickets = () => {
+  const { useMemState, useNotBackEffect, useMemRef } = useKeepAlive('Tickets');
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
-  const ticketsListRef = useRef(null);
+  const ticketsListRef = useMemRef(null, 'ticketsListRef');
 
   const data = useAppSelector(selectTicketsListData);
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
 
-  const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(DefaultPage);
-  const [ticketsListData, setTicketsListData] = useState<TicketsListResponseType[]>([]);
-  const [requestStatusKey, setRequestStatusKey] = useState<number>(0);
-  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
+  const [isPageBottom, setIsPageBottom] = useMemState<boolean>(false, 'isPageBottom');
+  const [currentPage, setCurrentPage] = useMemState<number>(DefaultPage, 'currentPage');
+  const [ticketsListData, setTicketsListData] = useMemState<TicketsListResponseType[]>([], 'ticketsListData');
+  const [requestStatusKey, setRequestStatusKey] = useMemState<number>(0, 'requestStatusKey');
+  const [isFirstRender, setIsFirstRender] = useMemState<boolean>(true, 'isFirstRender');
+  const [isDisableRequest, setIsDisableRequest] = useMemState<boolean>(false, 'isDisableRequest');
+  const [listScrollValue, setListScrollValue] = useMemState<number>(0, 'listScrollValue');
+  const [isGetAllData, setIsGetAllData] = useMemState<boolean>(false, 'isGetAllData');
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
+    setListScrollValue(scrollTop);
+    if (scrollTop + clientHeight + 20 > scrollHeight) {
+      setIsDisableRequest(false);
+    }
     setIsPageBottom(scrollTop + clientHeight + 20 > scrollHeight);
   };
 
@@ -55,35 +64,42 @@ const Tickets = () => {
     handleScroll(e);
   }, []);
 
-  useEffect(() => {
+  useNotBackEffect(() => {
     if (!isFirstRender && error) {
       messageApi.open({
         content: error.message,
         className: 'error-message-tickets',
       });
-      document.removeEventListener('scroll', scrollListener, true);
+      if (ticketsListRef && ticketsListRef.current) {
+        (ticketsListRef as any).current.removeEventListener('scroll', scrollListener, true);
+      }
     }
   }, [error]);
 
-  useEffect(() => {
+  useNotBackEffect(() => {
     if (isPageBottom && !loading) {
       setCurrentPage(currentPage + 1);
     }
   }, [isPageBottom]);
 
-  useEffect(() => {
+  useNotBackEffect(() => {
+    if (isDisableRequest || isGetAllData) {
+      return;
+    }
     if (requestStatusKey === TicketStatus[0].key) {
       dispatch(getTicketsListAction({
         status: TicketStatus[0].key,
         page: currentPage,
         size: DefaultPageSize,
       })).then((response: any) => {
-        if (
-          !response.payload.length ||
-          response.payload.length < DefaultPageSize
-        ) {
-          setRequestStatusKey(TicketStatus[1].key);
-          setCurrentPage(DefaultPage);
+        if (response.type === getTicketsListAction.fulfilled.toString()) {
+          if (
+            !response.payload.length ||
+            response.payload.length < DefaultPageSize
+          ) {
+            setRequestStatusKey(TicketStatus[1].key);
+            setCurrentPage(DefaultPage);
+          }
         }
       });
     } else if (requestStatusKey === TicketStatus[1].key) {
@@ -92,12 +108,14 @@ const Tickets = () => {
         page: currentPage,
         size: DefaultPageSize,
       })).then((response: any) => {
-        if (
-          !response.payload.length ||
-          response.payload.length < DefaultPageSize
-        ) {
-          setRequestStatusKey(TicketStatus[2].key);
-          setCurrentPage(DefaultPage);
+        if (response.type === getTicketsListAction.fulfilled.toString()) {
+          if (
+            !response.payload.length ||
+            response.payload.length < DefaultPageSize
+          ) {
+            setRequestStatusKey(TicketStatus[2].key);
+            setCurrentPage(DefaultPage);
+          }
         }
       });
     } else if (requestStatusKey === TicketStatus[2].key) {
@@ -106,28 +124,46 @@ const Tickets = () => {
         page: currentPage,
         size: DefaultPageSize,
       })).then((response: any) => {
-        if (
-          !response.payload.length ||
-          response.payload.length < DefaultPageSize
-        ) {
-          document.removeEventListener('scroll', scrollListener, true);
+        if (response.type === getTicketsListAction.fulfilled.toString()) {
+          if (
+            !response.payload.length ||
+            response.payload.length < DefaultPageSize
+          ) {
+            setIsDisableRequest(true);
+            setIsGetAllData(true);
+            if (ticketsListRef && ticketsListRef.current) {
+              (ticketsListRef as any).current.removeEventListener('scroll', scrollListener, true);
+            }
+          }
         }
       });
     }
   }, [currentPage, requestStatusKey]);
 
-  useEffect(() => {
+  useNotBackEffect(() => {
     if (data) {
       setTicketsListData([...ticketsListData, ...data]);
     }
   }, [data]);
 
-  useEffect(() => {
+  useNotBackEffect(() => {
+    if (ticketsListRef && ticketsListRef.current) {
+      setTimeout(() => {
+        (ticketsListRef as any).current.scrollTop = listScrollValue;
+      });
+    }
+  }, [ticketsListData]);
+
+  useNotBackEffect(() => {
     setIsFirstRender(false);
-    document.addEventListener('scroll', scrollListener, true);
+    if (!isGetAllData && ticketsListRef && ticketsListRef.current) {
+      (ticketsListRef as any).current.addEventListener('scroll', scrollListener, true);
+    }
     return () => {
-      dispatch(reset());
-      document.removeEventListener('scroll', scrollListener, true);
+      dispatch(resetError());
+      if (ticketsListRef && ticketsListRef.current) {
+        (ticketsListRef as any).current.removeEventListener('scroll', scrollListener, true);
+      }
     };
   }, []);
 
@@ -155,23 +191,26 @@ const Tickets = () => {
                   >
                     {(item: TicketsListResponseType) => (
                       <TicketItemContainer
-                        className={item.status === TicketStatus.find((v) => v.key === 5)?.key && 'background-mask' || ''}
                         key={item.id}
-                        onClick={() =>
+                        onClick={() => {
                           Router.push(
                             RouterKeys.ticketDetail.replace(
                               ':ticketId',
                               item.id.toString()
-                            )
-                          )
-                        }
+                            ),
+                          );
+                          setIsDisableRequest(true);
+                        }}
                       >
+                        {item.status === TicketStatus.find((v) => v.key === 5)?.key && (
+                          <div className="background-mask" />
+                        )}
                         <div className="ticket-background">
-                          {item.imageType === 'Video' && (
-                            <video src={item.image} autoPlay={false} />
+                          {item.thumbnailType === 'Video' && (
+                            <video src={item.thumbnailUrl} autoPlay={false} />
                           ) || (
                             <Image
-                              src={item.image}
+                              src={item.thumbnailUrl || Images.BackgroundLogo.src}
                               layout="fill"
                               alt=""
                               onError={(e: any) => {
@@ -186,7 +225,7 @@ const Tickets = () => {
                             <Image src={checkStatusIcon(item.status)} alt="" />
                           </div>
                         )}
-                        <div style={{ textAlign: 'right' }}>
+                        <div className="status-warpper" style={{ textAlign: 'right' }}>
                           {TicketStatus.map((status) => {
                             if (status.key === item.status && status.text) {
                               return (
@@ -208,18 +247,13 @@ const Tickets = () => {
                             <Col span={24} className="info-item">
                               <Image className="info-item-icon" src={Images.CalendarIcon} alt="" />
                               <div className="info-description">
-                                {item.startTime && item.endTime && (
-                                  `${formatTimeStrByTimeString(
-                                    item.startTime,
-                                    FormatTimeKeys.mdy,
-                                  )} ${formatTimeStrByTimeString(
-                                    item.startTime,
-                                    FormatTimeKeys.hm,
-                                  )}~${formatTimeStrByTimeString(
-                                    item.endTime,
-                                    FormatTimeKeys.hm,
-                                  )}`
-                                ) || '-'}
+                                {`${formatTimeStrByTimeString(
+                                  item.startTime,
+                                  FormatTimeKeys.norm,
+                                )}~${formatTimeStrByTimeString(
+                                  item.endTime,
+                                  FormatTimeKeys.norm,
+                                )}`}
                               </div>
                             </Col>
                             <Col span={24} className="info-item">

@@ -13,15 +13,10 @@ const TicketDetailContainer = styled.div`
     left: 10px;
   }
   .detail-background {
-    height: 230px;
     width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
     img, video {
       width: 100%;
       height: 100%;
-      object-fit: cover;
     }
   }
   .detail-info {
@@ -152,34 +147,20 @@ const TicketDetailContainer = styled.div`
     margin: 0;
     white-space: pre-wrap;
   }
-  .qrcode-row {
-    width: calc(100% - 20px);
-    position: fixed;
+  .ant-float-btn {
     left: 0;
     right: 0;
     bottom: 15px;
     margin: auto;
-  }
-  .show-qrcode-btn {
-    height: 73px;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0px -5px 14px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(5px);
-    border-radius: 20px;
-    text-align: center;
-    p {
-      font-weight: 500;
-      font-size: 15px;
-      color: ${Colors.grayScale50};
+    width: 72px;
+    height: 72px;
+    .ant-float-btn-body {
+      background: ${Colors.branding};
+      box-shadow: 0px 1px 12px rgb(0 0 0 / 25%);
     }
-    .swipe-line {
-      width: 40px;
-      height: 5px;
-      background: ${Colors.grayScale40};
-      border-radius: 13px;
-      margin: auto;
-      margin-top: 5px;
-      margin-bottom: 20px;
+    .ant-float-btn-icon {
+      width: 40px !important;
+      height: 40px !important;
     }
   }
 `;

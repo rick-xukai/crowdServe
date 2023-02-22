@@ -26,6 +26,7 @@ import BorderLine from '../static/images/line-border.svg';
 import GoToLinkIcon from '../static/images/goto-link.svg';
 import QrcodeNetworkError from '../static/images/qr-code-network-error.svg';
 import BackgroundLogo from '../static/images/background-logo.png';
+import QrcodeIcon from '../static/images/qr-code.svg';
 
 const Images = {
   Safety,
@@ -56,6 +57,7 @@ const Images = {
   GoToLinkIcon,
   QrcodeNetworkError,
   BackgroundLogo,
+  QrcodeIcon,
 };
 
 export default Images;

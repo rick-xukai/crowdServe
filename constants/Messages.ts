@@ -5,7 +5,7 @@ const Messages = {
   },
   notFound: {
     code: 404,
-    text: 'Something is wrong.',
+    text: `User doesn't exist.`,
   },
   activateAccountUserDosentExist1001: {
     code: 1001,
@@ -18,6 +18,10 @@ const Messages = {
   invalidPassword: {
     code: 1003,
     text: 'Wrong email or password.'
+  },
+  invalidActivationCode: {
+    code: 1004,
+    text: 'Invalid verification code.',
   },
   activateAccountUserAlreadyExist: {
     code: 1005,
@@ -43,6 +47,10 @@ const Messages = {
     code: 1011,
     text: 'user token is deprecated',
   },
+  ticketSold: {
+    code: 1017,
+    text: 'Ticket already sold',
+  }
 };
 
 export default Messages;

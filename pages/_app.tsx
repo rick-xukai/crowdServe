@@ -1,14 +1,18 @@
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import { ConfigProvider } from 'antd';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
+import { KeepAliveProvider } from 'next-easy-keepalive';
 
 import { wrapper } from '../app/store';
 import '../styles/globals.css';
 
 function MyApp({ Component, ...rest }: AppProps) {
+  const router = useRouter();
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;
+
   return (
     <Provider store={store}>
       <Head>
@@ -20,7 +24,9 @@ function MyApp({ Component, ...rest }: AppProps) {
         <title>CrowdServe</title>
       </Head>
       <ConfigProvider theme={{ hashed: false, token: { fontFamily: 'Heebo' } }}>
-        <Component {...pageProps} />
+        <KeepAliveProvider router={router} alwaysRemember>
+          <Component {...pageProps} />
+        </KeepAliveProvider>
       </ConfigProvider>
     </Provider>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
 import Image from 'next/image';
-import { Row, Col, Spin, Drawer, QRCode, Button, message } from 'antd';
+import { Row, Col, Spin, Drawer, QRCode, Button, message, FloatButton } from 'antd';
 import TextTruncate from 'react-text-truncate';
 import { LoadingOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 
@@ -22,6 +22,7 @@ import {
   selectTicketDetailLoading,
 } from '../../slice/tickets.slice';
 import { RouterKeys } from '../../constants/Keys';
+import Messages from '../../constants/Messages';
 import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys, PriceUnit } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
 import { TicketStatusContainer } from '../../styles/tickets.style';
@@ -78,6 +79,13 @@ const TicketDetail = () => {
   }, [error]);
 
   useEffect(() => {
+    if (qrcodeError && qrcodeError.code === Messages.ticketSold.code) {
+      setShowQrcode(false);
+      dispatch(getTicketDetailAction(id));
+    }
+  }, [qrcodeError]);
+
+  useEffect(() => {
     if (id) {
       dispatch(getTicketDetailAction(id));
     }
@@ -116,7 +124,8 @@ const TicketDetail = () => {
     <>
       {!ticketDetailLoading && (
         <TicketDetailContainer>
-          <Row style={{ position: 'relative', minHeight: 230 }}>
+          <img src={Images.QrcodeNetworkError.src} alt="" style={{ display: 'none' }} />
+          <Row>
             <Col span={24} className="detail-background">
               {ticketDetailData.imageType === 'Video' && (
                 <video
@@ -125,9 +134,8 @@ const TicketDetail = () => {
                   loop
                 />
               ) || (
-                <Image
+                <img
                   src={ticketDetailData.image}
-                  layout="fill"
                   alt=""
                   onError={(e: any) => {
                     e.target.onerror = null;
@@ -310,12 +318,10 @@ const TicketDetail = () => {
             </div>
           </div>
           {(!showQrcode && ticketDetailData.status === TicketStatus[0].key) && (
-            <Row className="qrcode-row" onClick={() => setShowQrcode(true)}>
-              <Col span={24} className="show-qrcode-btn">
-                <div className="swipe-line" />
-                <p>Swipe Up for Ticket QR Code</p>
-              </Col>
-            </Row>
+            <FloatButton
+              onClick={() => setShowQrcode(true)}
+              icon={<Image src={Images.QrcodeIcon} alt="" />}
+            />
           ) || (
             <Drawer
               placement="bottom"
@@ -336,7 +342,7 @@ const TicketDetail = () => {
                         onRefresh={() => setCountdownNumber(0)}
                       />
                       <p className="code-refreshes">
-                        QR Code refreshes in: 00:{countdownNumber as any}
+                        QR Code refreshes in: {`${countdownNumber < 10 && '00:0' || '00:'}${countdownNumber as any}`}
                       </p>
                       <p className="code-info">
                         This QR code is your admission voucher, do not <br />
