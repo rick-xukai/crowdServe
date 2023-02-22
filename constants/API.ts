@@ -25,7 +25,7 @@ const API = {
     get: '/api/v1/ticket/{ticketId}/code',
   },
   verifyTicket: {
-    post: '/admin/ticket/verify',
+    post: '/admin/{eventId}/ticket/verify',
   },
   redeemTicket: {
     delete: '/admin/user/ticket/{redeem_code}',

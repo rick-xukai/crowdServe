@@ -50,6 +50,10 @@ const Messages = {
   ticketSold: {
     code: 1017,
     text: 'Ticket already sold',
+  },
+  eventMismatch : {
+    code: 1042,
+    text: 'Current event does not match.'
   }
 };
 

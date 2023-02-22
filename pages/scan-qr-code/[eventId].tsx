@@ -3,15 +3,15 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 
-import { RouterKeys, CookieKeys } from '../constants/Keys';
-import TicketService from '../services/API/Ticket/Ticket.service';
-import { ScanQrCodePageContainers } from '../styles/scanQrCode.style';
-import { Images } from '../theme';
-import { verificationApi } from '../utils/func';
-import Messages from '../constants/Messages';
-import { useCookie } from '../hooks';
+import { RouterKeys, CookieKeys } from '../../constants/Keys';
+import TicketService from '../../services/API/Ticket/Ticket.service';
+import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
+import { Images } from '../../theme';
+import { verificationApi } from '../../utils/func';
+import Messages from '../../constants/Messages';
+import { useCookie } from '../../hooks';
 
 interface ScanQrCodeDetail {
   ticket: {
@@ -36,10 +36,12 @@ interface VerifyMessage {
 
 const ScanQrCodeResult = ({
   result,
+  currentEventId,
   setResult,
   setShowQrReader,
 }: {
   result: string;
+  currentEventId: string;
   setResult: (value: string) => void;
   setShowQrReader: (value: boolean) => void;
 }) => {
@@ -106,7 +108,7 @@ const ScanQrCodeResult = ({
   const handleGetScanQrCodeDetail = async (value: string) => {
     if (value) {
       try {
-        const response = await TicketService.doVerifyTicket({ code: value });
+        const response = await TicketService.doVerifyTicket({ code: value, eventId: currentEventId });
         if (verificationApi(response)) {
           setDetail(response.data);
           setRedeemCode(response.data.redeemCode);
@@ -264,9 +266,19 @@ const ScanQrCodeResult = ({
 };
 
 const ScanQrCodePage: NextPage = () => {
+  const router = useRouter();
+
   const [result, setResult] = useState('');
   const [showQrReader, setShowQrReader] = useState(false);
+  const [id, setEventId] = useState<string>('');
   const cookies = useCookie([CookieKeys.authUser]);
+
+  useEffect(() => {
+    const { eventId } = router.query;
+    if (eventId) {
+      setEventId(eventId as string);
+    }
+  }, [router.isReady]);
 
   useEffect(() => {
     const userInfo = cookies.getCookie(CookieKeys.authUser);
@@ -302,6 +314,7 @@ const ScanQrCodePage: NextPage = () => {
           ) || (
             <ScanQrCodeResult
               result={result}
+              currentEventId={id}
               setResult={setResult}
               setShowQrReader={setShowQrReader}
             />
