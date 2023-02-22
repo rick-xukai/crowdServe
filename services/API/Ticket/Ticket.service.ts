@@ -3,11 +3,11 @@ import API from '../../../constants/API';
 
 const requestClient = () => new RequestClientClass(process.env.NEXT_PUBLIC_API_SERVER);
 
-const doVerifyTicket = async (payload: { code: string }) => {
-  const uri = API.verifyTicket.post;
+const doVerifyTicket = async (payload: { code: string, eventId: string }) => {
+  const uri = API.verifyTicket.post.replace('{eventId}', payload.eventId);
   const response = await requestClient()
     .setUri(uri)
-    .setPayload(payload)
+    .setPayload({ code: payload.code })
     .doPost();
   return response;
 };
