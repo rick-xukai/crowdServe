@@ -55,7 +55,9 @@ const ScanLogin = () => {
         localStorage.removeItem(LocalStorageKeys.rememberMe);
       }
       cookies.setCookie(CookieKeys.authUser, userInfo);
-      Router.push(RouterKeys.scanQrCode);
+      const eventId = localStorage.getItem(LocalStorageKeys.eventIdForScan);
+      localStorage.removeItem(LocalStorageKeys.eventIdForScan);
+      Router.push(RouterKeys.scanQrCode.replace(':eventId', eventId || ''));
     } else {
       setIsValidUser(false);
     }
