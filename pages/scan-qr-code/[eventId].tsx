@@ -5,7 +5,7 @@ import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
 import Router, { useRouter } from 'next/router';
 
-import { RouterKeys, CookieKeys } from '../../constants/Keys';
+import { RouterKeys, CookieKeys, LocalStorageKeys } from '../../constants/Keys';
 import TicketService from '../../services/API/Ticket/Ticket.service';
 import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
 import { Images } from '../../theme';
@@ -92,6 +92,13 @@ const ScanQrCodeResult = ({
         setVerifyMessage({
           message: Messages.networkError.text,
           image: Images.NetworkError,
+          success: false,
+        });
+        break;
+      case Messages.eventMismatch.code:
+        setVerifyMessage({
+          message: Messages.eventMismatch.text,
+          image: Images.Dissatisfaction,
           success: false,
         });
         break;
@@ -276,7 +283,8 @@ const ScanQrCodePage: NextPage = () => {
   useEffect(() => {
     const { eventId } = router.query;
     if (eventId) {
-      setEventId(eventId as string);
+      setEventId(eventId.toString());
+      localStorage.setItem(LocalStorageKeys.eventIdForScan, eventId.toString());
     }
   }, [router.isReady]);
 
