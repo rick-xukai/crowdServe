@@ -243,13 +243,15 @@ const Tickets = () => {
                           <Col span={24} className="info-item">
                             <Image className="info-item-icon" src={Images.CalendarIcon} alt="" />
                             <div className="info-description">
-                              {`${formatTimeStrByTimeString(
-                                item.startTime,
-                                FormatTimeKeys.norm,
-                              )}~${formatTimeStrByTimeString(
-                                item.endTime,
-                                FormatTimeKeys.norm,
-                              )}`}
+                              {item.startTime && item.endTime && (
+                                `${formatTimeStrByTimeString(
+                                  item.startTime,
+                                  FormatTimeKeys.norm,
+                                )}~${formatTimeStrByTimeString(
+                                  item.endTime,
+                                  FormatTimeKeys.norm,
+                                )}`
+                              ) || '-'}
                             </div>
                           </Col>
                           <Col span={24} className="info-item">

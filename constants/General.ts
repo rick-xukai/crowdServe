@@ -10,6 +10,7 @@ export const DefaultPageSize = 10;
 export const DefaultCodeRefreshTime = 30;
 export const TokenExpire = 7 * 24 * 60 * 60 * 1000;
 export const PriceUnit = 'SGD';
+export const ScreenWidthPoint = 375;
 export const PrivacyPolicyLink = 'https://docs.google.com/document/d/1M1ay69Paa9vi7YWTbKUawmn8cqOYROTNT3JnQ0MOMgg/mobilebasic';
 export const TermsConditionsLink = 'https://docs.google.com/document/d/1kzJJhxsjlOtZW7s7OCbQVfDpBrUghrOl8ExbAs5QcBg/mobilebasic';
 export const TicketStatus = [

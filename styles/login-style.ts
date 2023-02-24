@@ -127,6 +127,23 @@ const LoginContainer = styled.div`
   }
   .agreement-wrapper {
     display: flex;
+    .change-text {
+      margin-left: 5px;
+      .agreement-label {
+        font-size: 12px;
+      }
+    }
+    .change-text-checkbox {
+      .ant-checkbox-inner {
+        width: 15px;
+        height: 15px;
+      }
+    }
+    .checkbox-show-error {
+      .ant-checkbox-inner {
+        border: 1px solid ${Colors.branding};
+      }
+    }
   }
   .agreement-label {
     font-weight: 400;
@@ -169,9 +186,6 @@ const LoginContainer = styled.div`
   .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
     border-color: ${Colors.branding} !important;
     border-radius: 2px;
-  }
-  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-inner, .ant-checkbox:not(.ant-checkbox-disabled):hover .ant-checkbox-inner {
-    border-color: ${Colors.grayScale10} !important;
   }
   .code-sent {
     margin-bottom: 40px;
