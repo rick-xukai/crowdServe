@@ -1,5 +1,4 @@
 import type { AppProps } from 'next/app';
-import { useRouter } from 'next/router';
 import { ConfigProvider } from 'antd';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
@@ -8,7 +7,6 @@ import { wrapper } from '../app/store';
 import '../styles/globals.css';
 
 function MyApp({ Component, ...rest }: AppProps) {
-  const router = useRouter();
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;
 
