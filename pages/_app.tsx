@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { ConfigProvider } from 'antd';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
-import { KeepAliveProvider } from 'next-easy-keepalive';
 
 import { wrapper } from '../app/store';
 import '../styles/globals.css';
@@ -24,9 +23,7 @@ function MyApp({ Component, ...rest }: AppProps) {
         <title>CrowdServe</title>
       </Head>
       <ConfigProvider theme={{ hashed: false, token: { fontFamily: 'Heebo' } }}>
-        <KeepAliveProvider router={router} alwaysRemember>
-          <Component {...pageProps} />
-        </KeepAliveProvider>
+        <Component {...pageProps} />
       </ConfigProvider>
     </Provider>
   );
