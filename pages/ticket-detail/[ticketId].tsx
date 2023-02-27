@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Router, { useRouter } from 'next/router';
+import _ from 'lodash';
 import Image from 'next/image';
 import { Row, Col, Spin, Drawer, QRCode, Button, message, FloatButton } from 'antd';
 import TextTruncate from 'react-text-truncate';
@@ -21,6 +22,7 @@ import {
   selectQrcodeError,
   selectTicketDetailLoading,
 } from '../../slice/tickets.slice';
+import { selectTicketsDataForAllStatus, setTicketsDataForAllStatus } from '../../slice/ticketsCache.slice';
 import { RouterKeys } from '../../constants/Keys';
 import Messages from '../../constants/Messages';
 import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys, PriceUnit } from '../../constants/General';
@@ -39,6 +41,7 @@ const TicketDetail = () => {
   const error = useAppSelector(selectError);
   const qrcodeError = useAppSelector(selectQrcodeError);
   const ticketDetailLoading = useAppSelector(selectTicketDetailLoading);
+  const ticketsDataForAllStatus = useAppSelector(selectTicketsDataForAllStatus);
 
   const [id, setTicketId] = useState<string>('');
   const [showQrcode, setShowQrcode] = useState<boolean>(false);
@@ -70,6 +73,18 @@ const TicketDetail = () => {
   }, [router.isReady]);
 
   useEffect(() => {
+    if (ticketDetailData.id !== 0) {
+      const allTickets = _.cloneDeep(ticketsDataForAllStatus);
+      allTickets.forEach((item, index) => {
+        if (item.id === ticketDetailData.id) {
+          allTickets.splice(index, 1, { ...item, status: ticketDetailData.status });
+        }
+      });
+      dispatch(setTicketsDataForAllStatus(allTickets));
+    }
+  }, [ticketDetailData]);
+
+  useEffect(() => {
     if (error) {
       messageApi.open({
         content: error.message,
@@ -79,7 +94,7 @@ const TicketDetail = () => {
   }, [error]);
 
   useEffect(() => {
-    if (qrcodeError && qrcodeError.code === Messages.ticketSold.code) {
+    if (qrcodeError && qrcodeError.code === Messages.redeemed.code) {
       setShowQrcode(false);
       dispatch(getTicketDetailAction(id));
     }

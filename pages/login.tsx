@@ -6,7 +6,7 @@ import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../hooks';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
-import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink, ScreenWidthPoint } from '../constants/General';
+import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
 import { isEmail, getErrorMessage, isPassword } from '../utils/func';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -22,6 +22,8 @@ import {
 import { Images } from '../theme';
 import GoogleDocComponent from '../components/googleDocComponent';
 import { LoginContainer } from '../styles/login-style';
+import { resetTicketsCache } from '../slice/ticketsCache.slice';
+import { resetTicketsListData } from '../slice/tickets.slice';
 
 const ActivateAccountComponent = ({
   checkGoogleDoc,
@@ -37,7 +39,6 @@ const ActivateAccountComponent = ({
   const [isTextShak, setTextShak] = useState<boolean>(false);
   const [verifyUserSuccess, setVerifyUserSuccess] = useState<boolean>(false);
   const [verificationCodeSuccess, setVerificationCodeSuccess] = useState<boolean>(false);
-  const [needChangeText, setNeedChangeText] = useState<boolean>(false);
   const [activateAccountValue, setActivateAccountValue] = useState({
     email: '',
     code: '',
@@ -88,9 +89,6 @@ const ActivateAccountComponent = ({
 
   // eslint-disable-next-line
   useEffect(() => {
-    if (window.screen.width < ScreenWidthPoint) {
-      setNeedChangeText(true);
-    }
     return () => {
       dispatch(reset());
     };
@@ -132,27 +130,16 @@ const ActivateAccountComponent = ({
           <Form.Item style={{ marginBottom: 32 }} className={isTextShak && 'text-shak' || ''}>
             <div className="agreement-wrapper">
               <Checkbox
-                className={`${!checked && 'checkbox-show-error' || ''} ${needChangeText && 'change-text-checkbox' || ''}`}
+                className={`${!checked && 'checkbox-show-error' || ''}`}
                 checked={checked}
                 onChange={(e) => setChecked(e.target.checked)}
               />
-              {needChangeText && (
-                <div className="change-text">
-                  <span className="agreement-label">
-                    I agree to CrowdServe
-                    <br />
-                    <span className="agreement-label-action" onClick={() => checkGoogleDocAction(TermsConditionsLink)}>Terms&Conditions</span>
-                    and <span className="agreement-label-action"onClick={() => checkGoogleDocAction(PrivacyPolicyLink)}>Privacy Policy.</span>
-                  </span>
-                </div>
-              ) || (
-                <div style={{ marginLeft: 8 }}>
-                  <span className="agreement-label">
-                    I agree to CrowdServe <span className="agreement-label-action" onClick={() => checkGoogleDocAction(TermsConditionsLink)}>Terms&Conditions</span>
-                    and <span className="agreement-label-action"onClick={() => checkGoogleDocAction(PrivacyPolicyLink)}>Privacy Policy.</span>
-                  </span>
-                </div>
-              )}
+              <div style={{ marginLeft: 8 }}>
+                <span className="agreement-label">
+                  I agree to CrowdServe <span className="agreement-label-action" onClick={() => checkGoogleDocAction(TermsConditionsLink)}>Terms&Conditions</span>
+                  and <span className="agreement-label-action"onClick={() => checkGoogleDocAction(PrivacyPolicyLink)}>Privacy Policy.</span>
+                </span>
+              </div>
             </div>
           </Form.Item>
         </Form>
@@ -256,6 +243,8 @@ const Login = () => {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
       });
+      dispatch(resetTicketsListData());
+      dispatch(resetTicketsCache());
       Router.push(RouterKeys.ticketsList);
     }
   }, [data]);

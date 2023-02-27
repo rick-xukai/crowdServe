@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { Row, Col, Spin, message } from 'antd';
+import _ from 'lodash';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Router from 'next/router';
@@ -20,9 +21,22 @@ import {
   selectLoading,
   selectError,
   selectTicketsListData,
-  TicketsListResponseType,
   resetError,
 } from '../slice/tickets.slice';
+import {
+  setTicketsDataForAllStatus,
+  selectTicketsDataForAllStatus,
+  setCurrentPage,
+  selectCurrentPage,
+  setRequestStatusKey,
+  selectRequestStatusKey,
+  setIsDisableRequest,
+  selectIsDisableRequest,
+  setIsGetAllData,
+  selectIsGetAllData,
+  setScrollValue,
+  selectScrollValue,
+} from '../slice/ticketsCache.slice';
 import { Images } from '../theme';
 import PageHearderComponent from '../components/pageHearder';
 import {
@@ -40,21 +54,21 @@ const Tickets = () => {
   const data = useAppSelector(selectTicketsListData);
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
+  const ticketsDataForAllStatus = useAppSelector(selectTicketsDataForAllStatus);
+  const currentPage = useAppSelector(selectCurrentPage);
+  const requestStatusKey = useAppSelector(selectRequestStatusKey);
+  const isDisableRequest = useAppSelector(selectIsDisableRequest);
+  const isGetAllData = useAppSelector(selectIsGetAllData);
+  const listScrollValue = useAppSelector(selectScrollValue);
 
   const [isPageBottom, setIsPageBottom] = useMemState<boolean>(false, 'isPageBottom');
-  const [currentPage, setCurrentPage] = useMemState<number>(DefaultPage, 'currentPage');
-  const [ticketsListData, setTicketsListData] = useMemState<TicketsListResponseType[]>([], 'ticketsListData');
-  const [requestStatusKey, setRequestStatusKey] = useMemState<number>(0, 'requestStatusKey');
   const [isFirstRender, setIsFirstRender] = useMemState<boolean>(true, 'isFirstRender');
-  const [isDisableRequest, setIsDisableRequest] = useMemState<boolean>(false, 'isDisableRequest');
-  const [listScrollValue, setListScrollValue] = useMemState<number>(0, 'listScrollValue');
-  const [isGetAllData, setIsGetAllData] = useMemState<boolean>(false, 'isGetAllData');
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
-    setListScrollValue(scrollTop);
+    dispatch(setScrollValue(scrollTop));
     if (scrollTop + clientHeight + 20 > scrollHeight) {
-      setIsDisableRequest(false);
+      dispatch(setIsDisableRequest(false));
     }
     setIsPageBottom(scrollTop + clientHeight + 20 > scrollHeight);
   };
@@ -77,7 +91,7 @@ const Tickets = () => {
 
   useEffect(() => {
     if (isPageBottom && !loading) {
-      setCurrentPage(currentPage + 1);
+      dispatch(setCurrentPage(currentPage + 1));
     }
   }, [isPageBottom]);
 
@@ -96,8 +110,8 @@ const Tickets = () => {
             !response.payload.length ||
             response.payload.length < DefaultPageSize
           ) {
-            setRequestStatusKey(TicketStatus[1].key);
-            setCurrentPage(DefaultPage);
+            dispatch(setRequestStatusKey(TicketStatus[1].key));
+            dispatch(setCurrentPage(DefaultPage));
           }
         }
       });
@@ -112,8 +126,8 @@ const Tickets = () => {
             !response.payload.length ||
             response.payload.length < DefaultPageSize
           ) {
-            setRequestStatusKey(TicketStatus[2].key);
-            setCurrentPage(DefaultPage);
+            dispatch(setRequestStatusKey(TicketStatus[2].key));
+            dispatch(setCurrentPage(DefaultPage));
           }
         }
       });
@@ -128,8 +142,8 @@ const Tickets = () => {
             !response.payload.length ||
             response.payload.length < DefaultPageSize
           ) {
-            setIsDisableRequest(true);
-            setIsGetAllData(true);
+            dispatch(setIsDisableRequest(true));
+            dispatch(setIsGetAllData(true));
             if (ticketsListRef && ticketsListRef.current) {
               ticketsListRef.current.removeEventListener('scroll', scrollListener, true);
             }
@@ -141,7 +155,14 @@ const Tickets = () => {
 
   useEffect(() => {
     if (data) {
-      setTicketsListData([...ticketsListData, ...data]);
+      dispatch(
+        setTicketsDataForAllStatus(
+          _.uniqWith(
+            [...ticketsDataForAllStatus, ...data],
+            _.isEqual
+          )
+        ),
+      );
     }
   }, [data]);
 
@@ -151,7 +172,7 @@ const Tickets = () => {
         ticketsListRef.current.scrollTop = listScrollValue;
       });
     }
-  }, [ticketsListData]);
+  }, [ticketsDataForAllStatus]);
 
   useEffect(() => {
     setIsFirstRender(false);
@@ -170,7 +191,7 @@ const Tickets = () => {
     <TickersContainer>
       <PageHearderComponent isBack={false} />
       <Spin
-        spinning={loading && !ticketsListData.length}
+        spinning={loading && !ticketsDataForAllStatus.length}
         indicator={<LoadingOutlined spin />}
         size="large"
       >
@@ -182,9 +203,9 @@ const Tickets = () => {
                   <Col span={24} className="title">MY TICKETS</Col>
                 </Row>
               </div>
-              {ticketsListData.length && (
+              {ticketsDataForAllStatus.length && (
                 <>
-                  {ticketsListData.map((item) => (
+                  {ticketsDataForAllStatus.map((item) => (
                     <TicketItemContainer
                       key={item.id}
                       onClick={() => {
@@ -194,8 +215,8 @@ const Tickets = () => {
                             item.id.toString()
                           ),
                         );
-                        setIsDisableRequest(true);
-                        setListScrollValue(ticketsListRef.current.scrollTop);
+                        dispatch(setIsDisableRequest(true));
+                        dispatch(setScrollValue(ticketsListRef.current.scrollTop));
                       }}
                     >
                       {item.status === TicketStatus.find((v) => v.key === 5)?.key && (
@@ -270,7 +291,7 @@ const Tickets = () => {
                       </div>
                     </TicketItemContainer>
                   ))}
-                  {loading && ticketsListData.length && (
+                  {loading && ticketsDataForAllStatus.length && (
                     <div className="load-more">
                       <LoadingOutlined />
                       Loading...
