@@ -225,22 +225,41 @@ iframe {
 }
 
 @keyframes text-shak {
-  25% {
-    padding-left: 22.5px;
-    padding-right: 7.5px;
+  10% {
+    transform: translateY(5px);
+  }
+  20% {
+    transform: translateY(-5px);
+  }
+  30% {
+    transform: translateY(5px);
+  }
+  40% {
+    transform: translateY(-5px);
   }
   50% {
-    padding-left: 7.5px;
-    padding-right: 22.5px;
+    transform: translateY(5px);
   }
-  75% {
-    padding-left: 22.5px;
-    padding-right: 7.5px;
+  60% {
+    transform: translateY(-5px);
+  }
+  70% {
+    transform: translateY(5px);
+  }
+  80% {
+    transform: translateY(-5px);
+  }
+  90% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
+
 .text-shak {
   -webkit-animation-name: text-shak;
   -webkit-animation-duration: 1s;
   animation-name: text-shak;
-  animation-duration: 300ms;
+  animation-duration: 0.5s;
 }

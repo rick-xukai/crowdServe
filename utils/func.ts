@@ -45,7 +45,7 @@ export const formatTimeStrByTimeString = (
 ) => {
   try {
     if (timeString) {
-      return format(new Date(timeString), formatType);
+      return format(new Date(timeString.replace(/-/g, '/')), formatType);
     }
   } catch (_) {}
   return '-';
