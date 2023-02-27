@@ -21,7 +21,6 @@
     "date-fns": "^2.29.3",
     "lodash": "^4.17.21",
     "next": "12.3.1",
-    "next-easy-keepalive": "^1.2.14",
     "next-redux-wrapper": "^8.1.0",
     "nextjs-basic-auth": "^0.1.3",
     "react": "18.2.0",

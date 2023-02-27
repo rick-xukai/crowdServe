@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { Row, Col, Spin, message } from 'antd';
 import _ from 'lodash';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Router from 'next/router';
-import { useKeepAlive } from 'next-easy-keepalive';
 
 import AuthHoc from '../components/hoc/AuthHoc';
 import { formatTimeStrByTimeString, checkStatusIcon } from '../utils/func';
@@ -46,10 +45,9 @@ import {
 } from '../styles/tickets.style';
 
 const Tickets = () => {
-  const { useMemState, useMemRef } = useKeepAlive('Tickets');
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
-  const ticketsListRef = useMemRef<any>(null, 'ticketsListRef');
+  const ticketsListRef = useRef<any>(null);
 
   const data = useAppSelector(selectTicketsListData);
   const loading = useAppSelector(selectLoading);
@@ -61,8 +59,8 @@ const Tickets = () => {
   const isGetAllData = useAppSelector(selectIsGetAllData);
   const listScrollValue = useAppSelector(selectScrollValue);
 
-  const [isPageBottom, setIsPageBottom] = useMemState<boolean>(false, 'isPageBottom');
-  const [isFirstRender, setIsFirstRender] = useMemState<boolean>(true, 'isFirstRender');
+  const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
