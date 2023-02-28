@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "pm2": "pm2 start 'next start -p 8080' --name crowdserve-frontend",
-    "pm2:restart": "pm2 stop crowdserve-frontend && next build && pm2 restart crowdserve-frontend",
+    "pm2": "pm2 start 'next start -p 8080' --name crowdserve-frontend-app",
+    "pm2:restart": "pm2 stop crowdserve-frontend-app && next build && pm2 restart crowdserve-frontend-app",
     "lint": "next lint"
   },
   "dependencies": {
