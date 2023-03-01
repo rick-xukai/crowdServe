@@ -9,6 +9,11 @@ interface TicketStatusContainerProps {
 
 const TickersContainer = styled.div`
   padding: 20px;
+  height: 100%;
+  overflow: auto;
+  ::-webkit-scrollbar {
+    display: none;
+  }
   .page-title {
     margin-bottom: 20px;
     .title {
@@ -18,14 +23,12 @@ const TickersContainer = styled.div`
       font-family: 'Oswald';
     }
   }
+  .ant-spin-nested-loading {
+    height: unset;
+  }
   .page-main {
-    margin-top: 25px;
+    margin-top: 50px;
     .tickets-list {
-      height: calc(100vh - 100px);
-      overflow: auto;
-      ::-webkit-scrollbar {
-        display: none;
-      }
       .load-more {
         color: ${Colors.white};
         text-align: center;

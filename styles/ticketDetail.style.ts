@@ -38,6 +38,8 @@ const TicketDetailContainer = styled.div`
       .container-top {
         position: relative;
         .ticket-status-icon {
+          width: 72px;
+          height: 72px;
           position: absolute;
           right: 0;
         }

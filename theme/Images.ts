@@ -21,7 +21,7 @@ import CalendarIcon from '../static/images/calendar.png';
 import LocationIcon from '../static/images/location.png';
 import OrganiserIcon from '../static/images/organiser.png';
 import OnSaleIcon from '../static/images/on-sale.svg';
-import SoldIcon from '../static/images/sold.svg';
+import SoldIcon from '../static/images/sold-icon.png';
 import BorderLine from '../static/images/line-border.svg';
 import GoToLinkIcon from '../static/images/goto-link.svg';
 import QrcodeNetworkError from '../static/images/qr-code-network-error.svg';
