@@ -9,6 +9,14 @@ import { RouterKeys } from '../constants/Keys';
 import { Images, Colors } from '../theme';
 
 const PageHearderContainer = styled(Row)`
+  position: fixed;
+  width: calc(100% - 40px);
+  z-index: 1;
+  background: ${Colors.backgorund};
+  top: 0;
+  height: 60px;
+  align-items: center;
+  padding-top: 5px;
   .hearder-action {
     text-align: right;
     padding-top: 5px;

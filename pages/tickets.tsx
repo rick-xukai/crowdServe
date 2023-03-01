@@ -186,7 +186,7 @@ const Tickets = () => {
   }, []);
 
   return (
-    <TickersContainer>
+    <TickersContainer ref={ticketsListRef}>
       <PageHearderComponent isBack={false} />
       <Spin
         spinning={loading && !ticketsDataForAllStatus.length}
@@ -195,7 +195,7 @@ const Tickets = () => {
       >
         <div className="page-main">
           <Row>
-            <Col className="tickets-list" span={24} ref={ticketsListRef}>
+            <Col className="tickets-list" span={24}>
               <div className="page-title">
                 <Row>
                   <Col span={24} className="title">MY TICKETS</Col>
