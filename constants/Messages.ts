@@ -53,7 +53,7 @@ const Messages = {
   },
   eventMismatch : {
     code: 1042,
-    text: 'Current event does not match.'
+    text: 'Invalid QR code, this ticket is not accessible for this event.'
   }
 };
 
