@@ -6,7 +6,7 @@ import { isAndroid, isIOS } from 'react-device-detect';
 import Image from 'next/image';
 
 import { LocalStorageKeys } from '../constants/Keys';
-import { GooglePlayLink, AppLandingPage } from '../constants/General';
+import { GooglePlayLink, AppLandingPage, AppHost } from '../constants/General';
 import { Colors, Images } from '../theme';
 
 const OpenAppContainer = styled.div`
@@ -18,6 +18,7 @@ const OpenAppContainer = styled.div`
   box-shadow: 0px 4px 10px rgb(0 0 0 / 10%);
   border-radius: 6px;
   padding: 10px;
+  z-index: 1;
   .main-row {
     height: 100%;
   }
@@ -49,7 +50,11 @@ const OpenAppContainer = styled.div`
   }
 `;
 
-const OpenAppComponent = () => {
+const OpenAppComponent = ({
+  setIsOpenAppShow
+}: {
+  setIsOpenAppShow: (status: boolean) => void
+}) => {
   const openAppInIos = useRef<any>(null);
 
   const [showContainer, setShowContainer] = useState<boolean>(false);
@@ -62,6 +67,7 @@ const OpenAppComponent = () => {
       const options: any = {
         scheme: {
           protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
+          host: AppHost,
         },
         intent: {
           package: process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID,
@@ -75,6 +81,7 @@ const OpenAppComponent = () => {
   };
 
   const closeInstallAppButton = () => {
+    setIsOpenAppShow(false);
     localStorage.setItem(
       LocalStorageKeys.closeInstallAppTime,
       new Date().getTime().toString(),

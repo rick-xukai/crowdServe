@@ -232,6 +232,7 @@ const Login = () => {
   const [showActivateAccount, setShowActivateAccount] = useState<boolean>(false);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
   const [googleDocLink, setgoogleDocLink] = useState<string>('');
+  const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
 
   const onFinish = (values: LoginPayloadType) => {
     dispatch(loginAction(values));
@@ -339,7 +340,7 @@ const Login = () => {
               googleDocLink={setgoogleDocLink}
             />
           )}
-          <div className="page-bottom">
+          <div className={isOpenAppShow && 'page-bottom open-app' || 'page-bottom'}>
             <p className="registered">
               {!showActivateAccount && `Haven't registered?` || 'Already have an account?'}
             </p>
@@ -357,7 +358,7 @@ const Login = () => {
           checkGoogleDoc={setCheckGoogleDoc}
         />
       )}
-      <OpenAppComponent />
+      <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
       {contextHolder}
     </LoginContainer>
   );
