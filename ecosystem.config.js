@@ -10,7 +10,7 @@ module.exports = {
       env: {
         name: 'crowdserve-frontend',
         NODE_ENV: 'development',
-        NEXT_PUBLIC_API_SERVER: 'https://api-dev.crowdserve.xyz/',
+        NEXT_PUBLIC_API_SERVER: 'https://api-dev.ticket-crowdserve.com',
         PORT: 8080,
         HOST: '0.0.0.0'
       }
