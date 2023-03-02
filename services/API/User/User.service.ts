@@ -40,4 +40,19 @@ const doVerificationCode = async (payload: VerificationCodePayload) => {
   return response;
 };
 
-export default { doLogin, doLogout, doVerifyUser, doVerificationCode };
+
+const checkApiMaintenance = async () => {
+  const uri = API.apiMaintenance.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .doGet();
+  return response;
+};
+
+export default {
+  doLogin,
+  doLogout,
+  doVerifyUser,
+  doVerificationCode,
+  checkApiMaintenance,
+};
