@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Router from 'next/router';
+import { isSafari } from 'react-device-detect';
 
 import AuthHoc from '../components/hoc/AuthHoc';
 import { formatTimeStrByTimeString, checkStatusIcon } from '../utils/func';
@@ -224,7 +225,13 @@ const Tickets = () => {
                       )}
                       <div className="ticket-background">
                         {item.thumbnailType === 'Video' && (
-                          <video src={item.thumbnailUrl} autoPlay={false} />
+                          <>
+                            {isSafari && (
+                              <video src={item.thumbnailUrl} autoPlay={false} poster={Images.BackgroundLogo.src} />
+                            ) || (
+                              <video src={item.thumbnailUrl} autoPlay={false} />
+                            )}
+                          </>
                         ) || (
                           <Image
                             src={item.thumbnailUrl || Images.BackgroundLogo.src}
