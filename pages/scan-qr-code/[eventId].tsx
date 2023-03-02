@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
 import Router, { useRouter } from 'next/router';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import { RouterKeys, CookieKeys, LocalStorageKeys } from '../../constants/Keys';
 import TicketService from '../../services/API/Ticket/Ticket.service';
@@ -278,13 +279,25 @@ const ScanQrCodePage: NextPage = () => {
   const [result, setResult] = useState('');
   const [showQrReader, setShowQrReader] = useState(false);
   const [id, setEventId] = useState<string>('');
+  const [eventCorrect, setEventCorrect] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const cookies = useCookie([CookieKeys.authUser]);
+
+  const checkEvent = async (id: string) => {
+    const response = await TicketService.checkEvent(id);
+    setLoading(false);
+    if (response.code !== Messages.notFound.code) {
+      setEventCorrect(true);
+    }
+  };
 
   useEffect(() => {
     const { eventId } = router.query;
     if (eventId) {
       setEventId(eventId.toString());
       localStorage.setItem(LocalStorageKeys.eventIdForScan, eventId.toString());
+      checkEvent(eventId.toString());
     }
   }, [router.isReady]);
 
@@ -329,17 +342,42 @@ const ScanQrCodePage: NextPage = () => {
           )}
         </>
       ) || (
-        <div className="scan-start">
-          <div className="scan-start-mask" />
-          <div className="scan-start-container">
-            <p>
-              <Image src={Images.Logo} alt="" />
-            </p>
-            <button onClick={() => setShowQrReader(true)}>
-              SCAN QR CODE
-            </button>
-          </div>
-        </div>
+        <>
+          {eventCorrect && !loading && (
+            <div className="scan-start">
+              <div className="scan-start-mask" />
+              <div className="scan-start-container">
+                <p>
+                  <Image src={Images.Logo} alt="" />
+                </p>
+                <button onClick={() => setShowQrReader(true)}>
+                  SCAN QR CODE
+                </button>
+              </div>
+            </div>
+         ) || (
+            <div className="verify-container">
+              <div className="items" style={{ width: '100%' }}>
+                <div style={{ textAlign: 'center' }}>
+                  {loading && (
+                    <div className="loading-box">
+                      <LoadingOutlined />
+                    </div>
+                  ) || (
+                    <Image src={Images.Dissatisfaction} alt="" />
+                  )}
+                </div>
+                {!loading && (
+                  <div>
+                    <p className="verify-message">
+                      Can't find this event
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </ScanQrCodePageContainers>
   );
