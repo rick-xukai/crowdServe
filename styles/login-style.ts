@@ -110,6 +110,9 @@ const LoginContainer = styled.div`
     justify-content: center;
     width: 100%;
     left: 0;
+    &.open-app {
+      padding-bottom: 120px;
+    }
     .registered {
       font-weight: 300;
       font-size: 15px;

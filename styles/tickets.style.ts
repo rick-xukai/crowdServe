@@ -54,6 +54,9 @@ const TickersContainer = styled.div`
         font-size: 17px;
       }
     }
+    &.open-app {
+      padding-bottom: 80px;
+    }
   }
   .ant-spin {
     max-height: unset !important;

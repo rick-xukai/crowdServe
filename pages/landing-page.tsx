@@ -3,9 +3,9 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { isAndroid, isChrome, isIOS } from 'react-device-detect';
+import { isAndroid, isIOS } from 'react-device-detect';
 
-import { AppleStoreLink, GooglePlayLink } from '../constants/General';
+import { AppleStoreLink, GooglePlayLink, AppHost } from '../constants/General';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
 
@@ -23,6 +23,7 @@ const LandingPage: NextPage = () => {
       const options = {
         scheme: {
           protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
+          host: AppHost,
         },
         intent: {
           package: packageName,

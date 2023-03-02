@@ -62,6 +62,7 @@ const Tickets = () => {
 
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
+  const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -194,7 +195,7 @@ const Tickets = () => {
         indicator={<LoadingOutlined spin />}
         size="large"
       >
-        <div className="page-main">
+        <div className={isOpenAppShow && 'page-main open-app' || 'page-main'}>
           <Row>
             <Col className="tickets-list" span={24}>
               <div className="page-title">
@@ -311,7 +312,7 @@ const Tickets = () => {
           </Row>
         </div>
       </Spin>
-      <OpenAppComponent />
+      <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
       {contextHolder}
     </TickersContainer>
   );
