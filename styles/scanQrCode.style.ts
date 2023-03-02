@@ -171,6 +171,10 @@ const ScanQrCodePageContainers = styled.div`
       background: unset;
       margin-top: 15px;
     }
+    .loading-box {
+      color: ${Colors.branding};
+      font-size: 40px;
+    }
   }
   .laoding-cover {
     width: 30px;

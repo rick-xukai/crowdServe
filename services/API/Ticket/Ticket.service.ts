@@ -48,10 +48,20 @@ const getTicketQrcode = async (payload: string) => {
   return response;
 };
 
+const checkEvent = async (payload: string) => {
+  const uri = API.checkEvent.get.replace('{eventId}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   doVerifyTicket,
   doRedeemTicket,
   getTicketsList,
   getTicketDetail,
   getTicketQrcode,
+  checkEvent,
 };
