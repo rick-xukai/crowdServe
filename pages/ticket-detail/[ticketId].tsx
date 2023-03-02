@@ -147,6 +147,8 @@ const TicketDetail = () => {
               {ticketDetailData.imageType === 'Video' && (
                 <video
                   src={ticketDetailData.image}
+                  playsInline
+                  muted
                   autoPlay
                   loop
                 />
