@@ -3,6 +3,8 @@ import Cookies from 'universal-cookie';
 import Router from 'next/router';
 import { CookieKeys, RouterKeys } from '../../constants/Keys';
 
+import UserService from '../../services/API/User/User.service';
+
 const AuthHoc = (AuthComponent: any) => (
   class MyComponent extends Component {
     static async getInitialProps(ctx: any) {
@@ -11,6 +13,12 @@ const AuthHoc = (AuthComponent: any) => (
         const token = req.cookies[CookieKeys.userLoginToken];
         if (!token) {
           res.writeHead(302, { Location: RouterKeys.login });
+          res.end();
+          return {};
+        }
+        const isApiMaintenance = await UserService.checkApiMaintenance();
+        if (isApiMaintenance === 1) {
+          res.writeHead(302, { Location: RouterKeys.maintenance });
           res.end();
           return {};
         }
@@ -25,10 +33,18 @@ const AuthHoc = (AuthComponent: any) => (
 
     private readonly cookies = new Cookies();
 
-    componentDidMount () {
+    async componentDidMount () {
       const token = this.cookies.get(CookieKeys.userLoginToken);
       if (!token) {
         Router.push(RouterKeys.login);
+      }
+      try {
+        const isApiMaintenance = await UserService.checkApiMaintenance();
+        if (isApiMaintenance === 1) {
+          Router.push(RouterKeys.maintenance);
+        }
+      } catch (error) {
+        return {};
       }
     }
 

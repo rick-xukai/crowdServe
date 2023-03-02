@@ -33,6 +33,9 @@ const API = {
   checkEvent: {
     get: '/admin/event/{eventId}',
   },
+  apiMaintenance: {
+    get: '/maintenance',
+  },
 };
 
 export default API;
