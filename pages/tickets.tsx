@@ -37,6 +37,7 @@ import {
   selectScrollValue,
 } from '../slice/ticketsCache.slice';
 import { Images } from '../theme';
+import OpenAppComponent from '../components/openAppComponent';
 import PageHearderComponent from '../components/pageHearder';
 import {
   TickersContainer,
@@ -310,6 +311,7 @@ const Tickets = () => {
           </Row>
         </div>
       </Spin>
+      <OpenAppComponent />
       {contextHolder}
     </TickersContainer>
   );

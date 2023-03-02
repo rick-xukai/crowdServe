@@ -28,6 +28,7 @@ import QrcodeNetworkError from '../static/images/qr-code-network-error.svg';
 import BackgroundLogo from '../static/images/background-logo.png';
 import QrcodeIcon from '../static/images/qr-code.svg';
 import BlockAppIcon from '../static/images/block-app.svg';
+import AppLogo from '../static/images/app-logo.png';
 
 const Images = {
   Safety,
@@ -60,6 +61,7 @@ const Images = {
   BackgroundLogo,
   QrcodeIcon,
   BlockAppIcon,
+  AppLogo,
 };
 
 export default Images;
