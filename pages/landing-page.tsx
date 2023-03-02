@@ -3,7 +3,9 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { isAndroid, isChrome } from 'react-device-detect';
+import { isAndroid, isChrome, isIOS } from 'react-device-detect';
+
+import { AppleStoreLink, GooglePlayLink } from '../constants/General';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
 
@@ -12,7 +14,10 @@ const LandingPage: NextPage = () => {
 
   useEffect(() => {
     let packageName = '';
-    if (isAndroid || isChrome) {
+    if (isIOS) {
+      window.location.href = AppleStoreLink;
+    }
+    if (isAndroid) {
       const CallApp = require('callapp-lib');
       packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
       const options = {
@@ -23,7 +28,7 @@ const LandingPage: NextPage = () => {
           package: packageName,
           scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
         },
-        appstore: '',
+        fallback: GooglePlayLink,
       };
       const callLib = new CallApp(options);
       const code = router.asPath.split('?')[1] || '';
@@ -55,7 +60,7 @@ const LandingPage: NextPage = () => {
               </p>
               <div className="download-link">
                 <a
-                  href="https://apps.apple.com/us/app/crowdserve/id6444015643"
+                  href={AppleStoreLink}
                   target="_blank"
                   title="App Store"
                 >
@@ -66,7 +71,7 @@ const LandingPage: NextPage = () => {
                   />
                 </a>
                 <a
-                  href="https://play.google.com/store/apps/details?id=com.crowdserve.mobile"
+                  href={GooglePlayLink}
                   target="_blank"
                   title="Google Play"
                   className="google-play-link"

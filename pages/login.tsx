@@ -21,6 +21,7 @@ import {
 } from '../slice/login.slice';
 import { Images } from '../theme';
 import GoogleDocComponent from '../components/googleDocComponent';
+import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';
 import { resetTicketsListData } from '../slice/tickets.slice';
@@ -356,6 +357,7 @@ const Login = () => {
           checkGoogleDoc={setCheckGoogleDoc}
         />
       )}
+      <OpenAppComponent />
       {contextHolder}
     </LoginContainer>
   );
