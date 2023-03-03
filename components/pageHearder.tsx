@@ -11,7 +11,7 @@ import { Images, Colors } from '../theme';
 const PageHearderContainer = styled(Row)`
   position: fixed;
   width: calc(100% - 40px);
-  z-index: 1;
+  z-index: 2;
   background: ${Colors.backgorund};
   top: 0;
   height: 60px;
