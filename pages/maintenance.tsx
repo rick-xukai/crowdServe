@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { Images, Colors } from '../theme';
 
-const MaintenancePageContainer = styled.div`
+export const MaintenancePageContainer = styled.div`
   display: flex;
   align-items: center;
   width: 100%;

@@ -144,7 +144,7 @@ const TicketDetail = () => {
           <img src={Images.QrcodeNetworkError.src} alt="" style={{ display: 'none' }} />
           <Row>
             <Col span={24} className="detail-background">
-              {ticketDetailData.imageType === 'Video' && (
+              {ticketDetailData.imageType.toLocaleLowerCase() === 'video' && (
                 <video
                   src={ticketDetailData.image}
                   playsInline

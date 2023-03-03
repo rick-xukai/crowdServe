@@ -81,11 +81,11 @@ const OpenAppComponent = ({
   };
 
   const closeInstallAppButton = () => {
-    setIsOpenAppShow(false);
     localStorage.setItem(
       LocalStorageKeys.closeInstallAppTime,
       new Date().getTime().toString(),
     );
+    setIsOpenAppShow(false);
     setShowContainer(false);
   };
 
@@ -96,10 +96,12 @@ const OpenAppComponent = ({
     );
     if (lastCloseInstallAppTime === 0) {
       setShowContainer(true);
+      setIsOpenAppShow(true);
       return;
     }
     if (Math.abs(currentTime - lastCloseInstallAppTime) >= (2 * 60 * 60 * 1000)) {
       setShowContainer(true);
+      setIsOpenAppShow(true);
     }
   }, []);
 
