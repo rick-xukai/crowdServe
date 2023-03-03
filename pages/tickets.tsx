@@ -63,7 +63,7 @@ const Tickets = () => {
 
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
-  const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
+  const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;

@@ -1,12 +1,24 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
 import Router from 'next/router';
-import { CookieKeys, RouterKeys } from '../../constants/Keys';
+import Image from 'next/image';
 
+import { Images } from '../../theme';
+import { MaintenancePageContainer } from '../../pages/maintenance';
+import Messages from '../../constants/Messages';
+import { CookieKeys, RouterKeys } from '../../constants/Keys';
 import UserService from '../../services/API/User/User.service';
 
 const AuthHoc = (AuthComponent: any) => (
-  class MyComponent extends Component {
+  class MyComponent extends Component <any, any> {
+    constructor(props: any) {
+      super(props);
+      this.state = {
+        maintenanceApiSuccess: true,
+        loading: true,
+      };
+    };
+
     static async getInitialProps(ctx: any) {
       try {
         const { req, res } = ctx;
@@ -40,16 +52,41 @@ const AuthHoc = (AuthComponent: any) => (
       }
       try {
         const isApiMaintenance = await UserService.checkApiMaintenance();
+        this.setState({ loading: false });
         if (isApiMaintenance === 1) {
           Router.push(RouterKeys.maintenance);
         }
       } catch (error) {
+        this.setState({ loading: false, maintenanceApiSuccess: false });
         return {};
       }
     }
 
     render() {
-      return <AuthComponent {...this.props} />;
+      const { maintenanceApiSuccess, loading } = this.state;
+
+      if (loading) {
+        return null;
+      }
+
+      return (
+        <>
+          {maintenanceApiSuccess && (
+            <AuthComponent {...this.props} />
+          ) || (
+            <MaintenancePageContainer>
+              <div className="page-main">
+                <div className="block-icon">
+                  <Image src={Images.NetworkError} alt="" />
+                </div>
+                <p className="title">
+                  {Messages.networkError.text}
+                </p>
+              </div>
+            </MaintenancePageContainer>
+          )}
+        </>
+      );
     }
   }
 );
