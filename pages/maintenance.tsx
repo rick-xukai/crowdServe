@@ -31,18 +31,16 @@ const MaintenancePageContainer = styled.div`
   }
 `;
 
-const Maintenance = () => {
-  return (
-    <MaintenancePageContainer>
-      <div className="page-main">
-        <div className="block-icon">
-          <Image src={Images.BlockAppIcon} alt="" />
-        </div>
-        <p className="title">We'll be back soon</p>
-        <p>We are building something new for you, <br /> please come back later~</p>
+const Maintenance = () => (
+  <MaintenancePageContainer>
+    <div className="page-main">
+      <div className="block-icon">
+        <Image src={Images.BlockAppIcon} alt="" />
       </div>
-    </MaintenancePageContainer>
-  );
-};
+      <p className="title">{`We'll be back soon`}</p>
+      <p>We are building something new for you, <br /> please come back later~</p>
+    </div>
+  </MaintenancePageContainer>
+);
 
 export default Maintenance;

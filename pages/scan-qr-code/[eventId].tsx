@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { RouterKeys, CookieKeys, LocalStorageKeys } from '../../constants/Keys';
@@ -12,7 +12,6 @@ import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
 import { Images } from '../../theme';
 import { verificationApi } from '../../utils/func';
 import Messages from '../../constants/Messages';
-import { useCookie } from '../../hooks';
 
 interface ScanQrCodeDetail {
   ticket: {
@@ -282,10 +281,8 @@ const ScanQrCodePage: NextPage = () => {
   const [eventCorrect, setEventCorrect] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const cookies = useCookie([CookieKeys.authUser]);
-
-  const checkEvent = async (id: string) => {
-    const response = await TicketService.checkEvent(id);
+  const checkEvent = async (checkEventId: string) => {
+    const response = await TicketService.checkEvent(checkEventId);
     setLoading(false);
     if (response.code !== Messages.notFound.code) {
       setEventCorrect(true);
@@ -300,13 +297,6 @@ const ScanQrCodePage: NextPage = () => {
       checkEvent(eventId.toString());
     }
   }, [router.isReady]);
-
-  useEffect(() => {
-    const userInfo = cookies.getCookie(CookieKeys.authUser);
-    if (!userInfo) {
-      Router.push(RouterKeys.scanLogin);
-    }
-  }, []);
 
   return (
     <ScanQrCodePageContainers>
@@ -370,7 +360,7 @@ const ScanQrCodePage: NextPage = () => {
                 {!loading && (
                   <div>
                     <p className="verify-message">
-                      Can't find this event
+                      Invalid URL
                     </p>
                   </div>
                 )}
@@ -384,21 +374,30 @@ const ScanQrCodePage: NextPage = () => {
 };
 
 export async function getServerSideProps(ctx: any) {
-  const { req, res } = ctx;
-  const handleAuth = () => {
-    const token = req.cookies[CookieKeys.authUser];
-    if (!token) {
-      res.writeHead(302, { Location: RouterKeys.scanLogin });
-      res.end();
-      return {
-        props: {}
-      };
+  const { req, res, query } = ctx;
+  try {
+    const response = await TicketService.checkEvent(query.eventId);
+    const handleAuth = () => {
+      const token = req.cookies[CookieKeys.authUser];
+      if (!token) {
+        res.writeHead(302, { Location: RouterKeys.scanLogin });
+        res.end();
+        return {
+          props: {}
+        };
+      }
+    };
+    if (response.code !== Messages.notFound.code) {
+      await handleAuth();
     }
-  };
-  await handleAuth();
-  return {
-    props: {}
-  };
+    return {
+      props: {}
+    };
+  } catch (error) {
+    return {
+      props: {}
+    };
+  }
 };
 
 export default ScanQrCodePage;
