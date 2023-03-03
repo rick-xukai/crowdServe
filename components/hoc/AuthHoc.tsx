@@ -49,13 +49,15 @@ const AuthHoc = (AuthComponent: any) => (
       const token = this.cookies.get(CookieKeys.userLoginToken);
       if (!token) {
         Router.push(RouterKeys.login);
+        return;
       }
       try {
         const isApiMaintenance = await UserService.checkApiMaintenance();
-        this.setState({ loading: false });
         if (isApiMaintenance === 1) {
           Router.push(RouterKeys.maintenance);
+          return;
         }
+        this.setState({ loading: false });
       } catch (error) {
         this.setState({ loading: false, maintenanceApiSuccess: false });
         return {};
