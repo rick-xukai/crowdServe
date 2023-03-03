@@ -383,4 +383,22 @@ const ScanQrCodePage: NextPage = () => {
   );
 };
 
+export async function getServerSideProps(ctx: any) {
+  const { req, res } = ctx;
+  const handleAuth = () => {
+    const token = req.cookies[CookieKeys.authUser];
+    if (!token) {
+      res.writeHead(302, { Location: RouterKeys.scanLogin });
+      res.end();
+      return {
+        props: {}
+      };
+    }
+  };
+  await handleAuth();
+  return {
+    props: {}
+  };
+};
+
 export default ScanQrCodePage;
