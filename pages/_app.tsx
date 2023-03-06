@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import { ConfigProvider } from 'antd';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
 
@@ -8,6 +9,7 @@ import '../styles/globals.css';
 function MyApp({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;
+
   return (
     <Provider store={store}>
       <Head>
@@ -15,9 +17,12 @@ function MyApp({ Component, ...rest }: AppProps) {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        <meta name="referrer" content="no-referrer" />
         <title>CrowdServe</title>
       </Head>
-      <Component {...pageProps} />
+      <ConfigProvider theme={{ hashed: false, token: { fontFamily: 'Heebo' } }}>
+        <Component {...pageProps} />
+      </ConfigProvider>
     </Provider>
   );
 }

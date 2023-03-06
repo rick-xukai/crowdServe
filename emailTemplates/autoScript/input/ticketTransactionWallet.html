@@ -20,12 +20,12 @@
           Your Ticket Transaction Is Completed
         </div>
         <div class="content-detail">
-          <p class="detail-text">Dear User,</p>
+          <p class="detail-text">Dear {{user_name}},</p>
           <p class="detail-text">
-            Your ticket for <b>{{name}}</b> has been successfully transferred to the buyer!
+            Your ticket for <b>{{event_name}}</b> has been successfully transferred to the buyer!
           </p>
           <p class="detail-text">
-            <b>{{price}}</b> has been credited to your CrowdServe Wallet. 
+            <b>{{price}}</b> has been credited to your CrowdServe Wallet.
           </p>
           <p class="detail-text">
             You may use your wallet balance to buy tickets in our marketplace, make in-event purchases in participating events, or withdraw the amount to your bank account.
@@ -34,9 +34,12 @@
             If you have any questions or feedback, please contact
             <a href="tech@crowdserve.xyz" target="_blank">tech@crowdserve.xyz.</a>
           </p>
-          <p class="detail-text" style="margin-bottom: 0 !important;">
+          <p class="detail-text">
             Yours Sincerely,<br />
             CrowdServe
+          </p>
+          <p class="detail-text">
+            CrowdServe is here to protect you, your ticket, the artistes and other fans.
           </p>
           <p class="unsubscribe">
             If you don't want to receive this type of email in the future, please

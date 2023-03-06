@@ -3,15 +3,15 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
+import { LoadingOutlined } from '@ant-design/icons';
 
-import { RouterKeys, CookieKeys } from '../constants/Keys';
-import TicketService from '../services/API/Ticket/Ticket.service';
-import { ScanQrCodePageContainers } from '../styles/scanQrCode.style';
-import { Images } from '../theme';
-import { verificationApi } from '../utils/func';
-import Messages from '../constants/Messages';
-import { useCookie } from '../hooks';
+import { RouterKeys, CookieKeys, LocalStorageKeys } from '../../constants/Keys';
+import TicketService from '../../services/API/Ticket/Ticket.service';
+import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
+import { Images } from '../../theme';
+import { verificationApi } from '../../utils/func';
+import Messages from '../../constants/Messages';
 
 interface ScanQrCodeDetail {
   ticket: {
@@ -36,10 +36,12 @@ interface VerifyMessage {
 
 const ScanQrCodeResult = ({
   result,
+  currentEventId,
   setResult,
   setShowQrReader,
 }: {
   result: string;
+  currentEventId: string;
   setResult: (value: string) => void;
   setShowQrReader: (value: boolean) => void;
 }) => {
@@ -93,6 +95,13 @@ const ScanQrCodeResult = ({
           success: false,
         });
         break;
+      case Messages.eventMismatch.code:
+        setVerifyMessage({
+          message: Messages.eventMismatch.text,
+          image: Images.Dissatisfaction,
+          success: false,
+        });
+        break;
       default:
         setVerifyMessage({
           message: Messages.invalidUnlawful.text,
@@ -106,7 +115,7 @@ const ScanQrCodeResult = ({
   const handleGetScanQrCodeDetail = async (value: string) => {
     if (value) {
       try {
-        const response = await TicketService.doVerifyTicket({ code: value });
+        const response = await TicketService.doVerifyTicket({ code: value, eventId: currentEventId });
         if (verificationApi(response)) {
           setDetail(response.data);
           setRedeemCode(response.data.redeemCode);
@@ -264,16 +273,30 @@ const ScanQrCodeResult = ({
 };
 
 const ScanQrCodePage: NextPage = () => {
+  const router = useRouter();
+
   const [result, setResult] = useState('');
   const [showQrReader, setShowQrReader] = useState(false);
-  const cookies = useCookie([CookieKeys.authUser]);
+  const [id, setEventId] = useState<string>('');
+  const [eventCorrect, setEventCorrect] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const checkEvent = async (checkEventId: string) => {
+    const response = await TicketService.checkEvent(checkEventId);
+    setLoading(false);
+    if (response.code !== Messages.notFound.code) {
+      setEventCorrect(true);
+    }
+  };
 
   useEffect(() => {
-    const userInfo = cookies.getCookie(CookieKeys.authUser);
-    if (!userInfo) {
-      Router.push(RouterKeys.scanLogin);
+    const { eventId } = router.query;
+    if (eventId) {
+      setEventId(eventId.toString());
+      localStorage.setItem(LocalStorageKeys.eventIdForScan, eventId.toString());
+      checkEvent(eventId.toString());
     }
-  }, []);
+  }, [router.isReady]);
 
   return (
     <ScanQrCodePageContainers>
@@ -302,26 +325,79 @@ const ScanQrCodePage: NextPage = () => {
           ) || (
             <ScanQrCodeResult
               result={result}
+              currentEventId={id}
               setResult={setResult}
               setShowQrReader={setShowQrReader}
             />
           )}
         </>
       ) || (
-        <div className="scan-start">
-          <div className="scan-start-mask" />
-          <div className="scan-start-container">
-            <p>
-              <Image src={Images.Logo} alt="" />
-            </p>
-            <button onClick={() => setShowQrReader(true)}>
-              SCAN QR CODE
-            </button>
-          </div>
-        </div>
+        <>
+          {eventCorrect && !loading && (
+            <div className="scan-start">
+              <div className="scan-start-mask" />
+              <div className="scan-start-container">
+                <p>
+                  <Image src={Images.Logo} alt="" />
+                </p>
+                <button onClick={() => setShowQrReader(true)}>
+                  SCAN QR CODE
+                </button>
+              </div>
+            </div>
+         ) || (
+            <div className="verify-container">
+              <div className="items" style={{ width: '100%' }}>
+                <div style={{ textAlign: 'center' }}>
+                  {loading && (
+                    <div className="loading-box">
+                      <LoadingOutlined />
+                    </div>
+                  ) || (
+                    <Image src={Images.Dissatisfaction} alt="" />
+                  )}
+                </div>
+                {!loading && (
+                  <div>
+                    <p className="verify-message">
+                      Invalid URL
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </ScanQrCodePageContainers>
   );
+};
+
+export async function getServerSideProps(ctx: any) {
+  const { req, res, query } = ctx;
+  try {
+    const response = await TicketService.checkEvent(query.eventId);
+    const handleAuth = () => {
+      const token = req.cookies[CookieKeys.authUser];
+      if (!token) {
+        res.writeHead(302, { Location: RouterKeys.scanLogin });
+        res.end();
+        return {
+          props: {}
+        };
+      }
+    };
+    if (response.code !== Messages.notFound.code) {
+      await handleAuth();
+    }
+    return {
+      props: {}
+    };
+  } catch (error) {
+    return {
+      props: {}
+    };
+  }
 };
 
 export default ScanQrCodePage;

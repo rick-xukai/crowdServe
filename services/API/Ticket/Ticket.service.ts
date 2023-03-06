@@ -3,11 +3,11 @@ import API from '../../../constants/API';
 
 const requestClient = () => new RequestClientClass(process.env.NEXT_PUBLIC_API_SERVER);
 
-const doVerifyTicket = async (payload: { code: string }) => {
-  const uri = API.verifyTicket.post;
+const doVerifyTicket = async (payload: { code: string, eventId: string }) => {
+  const uri = API.verifyTicket.post.replace('{eventId}', payload.eventId);
   const response = await requestClient()
     .setUri(uri)
-    .setPayload(payload)
+    .setPayload({ code: payload.code })
     .doPost();
   return response;
 };
@@ -30,8 +30,38 @@ const getTicketsList = async (payload: any) => {
   return response;
 };
 
+const getTicketDetail = async (payload: string) => {
+  const uri = API.getTicketDetail.get.replace('{ticketId}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const getTicketQrcode = async (payload: string) => {
+  const uri = API.getTicketQrcode.get.replace('{ticketId}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
+const checkEvent = async (payload: string) => {
+  const uri = API.checkEvent.get.replace('{eventId}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   doVerifyTicket,
   doRedeemTicket,
   getTicketsList,
+  getTicketDetail,
+  getTicketQrcode,
+  checkEvent,
 };

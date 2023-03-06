@@ -17,9 +17,18 @@ import PasswordShow from '../static/images/password-show.svg';
 import MenuIcon from '../static/images/menu-icon.svg';
 import NoTicketsIcon from '../static/images/no-tickets.svg';
 import TestImg from '../static/images/test-img.png';
-import CalendarIcon from '../static/images/calendar.svg';
-import LocationIcon from '../static/images/location.svg';
-import OrganiserIcon from '../static/images/organiser.svg';
+import CalendarIcon from '../static/images/calendar.png';
+import LocationIcon from '../static/images/location.png';
+import OrganiserIcon from '../static/images/organiser.png';
+import OnSaleIcon from '../static/images/on-sale.svg';
+import SoldIcon from '../static/images/sold-icon.png';
+import BorderLine from '../static/images/line-border.svg';
+import GoToLinkIcon from '../static/images/goto-link.svg';
+import QrcodeNetworkError from '../static/images/qr-code-network-error.svg';
+import BackgroundLogo from '../static/images/background-logo.png';
+import QrcodeIcon from '../static/images/qr-code.svg';
+import BlockAppIcon from '../static/images/block-app.svg';
+import AppLogo from '../static/images/app-logo.png';
 
 const Images = {
   Safety,
@@ -44,6 +53,15 @@ const Images = {
   CalendarIcon,
   LocationIcon,
   OrganiserIcon,
+  OnSaleIcon,
+  SoldIcon,
+  BorderLine,
+  GoToLinkIcon,
+  QrcodeNetworkError,
+  BackgroundLogo,
+  QrcodeIcon,
+  BlockAppIcon,
+  AppLogo,
 };
 
 export default Images;

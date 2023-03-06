@@ -7,6 +7,7 @@ import UserService from '../services/API/User';
 /* eslint-disable no-param-reassign, complexity */
 
 export interface ErrorType {
+  code: number | undefined;
   message: string;
 }
 
@@ -22,6 +23,15 @@ export interface LoginResponseType {
     email: string;
   };
   token: string;
+}
+
+export interface VerifyUserPayload {
+  email: string;
+}
+
+export interface VerificationCodePayload {
+  email: string;
+  code: string;
 }
 
 /**
@@ -42,6 +52,101 @@ export const loginAction = createAsyncThunk<
         return response.data;
       }
       return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * Logout
+ */
+export const logoutAction = createAsyncThunk<
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'logout/logoutAction',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await UserService.doLogout();
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * verifyUser
+ */
+export const verifyUserAction = createAsyncThunk<
+  {},
+  VerifyUserPayload,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'verifyUser/verifyUserAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await UserService.doVerifyUser(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * verificationCode
+ */
+export const verificationCodeAction = createAsyncThunk<
+  {},
+  VerificationCodePayload,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'verificationCode/verificationCodeAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await UserService.doVerificationCode(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -60,6 +165,7 @@ interface LoginState {
   data: LoginResponseType;
   error:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined
@@ -95,6 +201,34 @@ export const loginSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(loginAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(verifyUserAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyUserAction.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(verifyUserAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(verificationCodeAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verificationCodeAction.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(verificationCodeAction.rejected, (state, action) => {
         state.loading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;

@@ -2,10 +2,6 @@ import styled from 'styled-components';
 
 import { Colors } from '../theme';
 
-interface TicketItemContainerProps {
-  itemImage: string;
-}
-
 interface TicketStatusContainerProps {
   bgColor: string;
   textColor: string;
@@ -13,6 +9,11 @@ interface TicketStatusContainerProps {
 
 const TickersContainer = styled.div`
   padding: 20px;
+  height: 100%;
+  overflow: auto;
+  ::-webkit-scrollbar {
+    display: none;
+  }
   .page-title {
     margin-bottom: 20px;
     .title {
@@ -22,14 +23,12 @@ const TickersContainer = styled.div`
       font-family: 'Oswald';
     }
   }
+  .ant-spin-nested-loading {
+    height: unset;
+  }
   .page-main {
-    margin-top: 20px;
+    margin-top: 50px;
     .tickets-list {
-      height: calc(100vh - 100px);
-      overflow: auto;
-      ::-webkit-scrollbar {
-        display: none;
-      }
       .load-more {
         color: ${Colors.white};
         text-align: center;
@@ -37,12 +36,15 @@ const TickersContainer = styled.div`
           margin-right: 10px;
         }
       }
-      > :nth-last-child(2) {
+      > :last-child {
         margin-bottom: 0;
       }
     }
+    .no-ticket-row {
+      align-items: center;
+      height: calc(100vh - 200px);
+    }
     .no-ticket {
-      height: calc(100vh - 180px);
       display: flex;
       align-items: center;
       p {
@@ -52,12 +54,15 @@ const TickersContainer = styled.div`
         font-size: 17px;
       }
     }
+    &.open-app {
+      padding-bottom: 80px;
+    }
   }
   .ant-spin {
     max-height: unset !important;
     background: rgba(0, 0, 0, 0.5);
     .anticon {
-      color: ${Colors.white};
+      color: ${Colors.branding};
     }
   }
   .ant-spin-container,
@@ -75,13 +80,29 @@ const TickersContainer = styled.div`
 const TicketItemContainer = styled.div`
   border-radius: 4px;
   padding: 10px;
-  background-image: url(${(props: TicketItemContainerProps) => props.itemImage});
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: relative;
   min-height: 223px;
   margin-bottom: 20px;
+  position: relative;
+  .ticket-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    img, video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+  }
+  .on-sale-icon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 65px;
+    height: 65px;
+  }
   .item-info {
     position: absolute;
     bottom: 0;
@@ -89,6 +110,7 @@ const TicketItemContainer = styled.div`
     left: 0;
     padding: 15px;
     background: rgba(0, 0, 0, 0.7);
+    border-radius: 0 0 4px 4px;
     .item-info-row {
       > :last-child {
         margin-bottom: 0;
@@ -99,25 +121,55 @@ const TicketItemContainer = styled.div`
       font-size: 18px;
       color: ${Colors.white};
       margin-bottom: 8px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .info-item {
       margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      img {
+        width: 16px !important;
+      }
+      .info-item-icon {
+        min-width: 16px !important;
+        min-height: 16px !important;
+      }
     }
     .info-description {
       font-weight: 300;
       font-size: 13px;
       color: ${Colors.grayScale20};
       margin-left: 8px;
+      max-width: 90%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .info-icon {
-      top: 2px !important;
-    }
+  }
+  .background-mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    z-index: 1;
+    border-radius: 4px;
+  }
+  .status-warpper {
+    position: absolute;
+    right: 10px;
   }
 `;
 
 const TicketStatusContainer = styled.span`
+  display: inline-block;
   height: 22px;
-  padding: 2px 6px;
+  line-height: 24px;
+  padding: 0 6px;
   border-radius: 4px;
   background: ${(props: TicketStatusContainerProps) => props.bgColor};
   color: ${(props: TicketStatusContainerProps) => props.textColor};

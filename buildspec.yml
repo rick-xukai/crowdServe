@@ -13,7 +13,6 @@ phases:
 artifacts:
     files:
         - public/**/*
-        - static/**/*
         - dist/standalone/**/*
         - dist/static/**/*
         - server.js

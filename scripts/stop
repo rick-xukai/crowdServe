@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$APPLICATION_NAME" == "crowdserve-dev" ] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-app" ]; then
+if [[ "$APPLICATION_NAME" == "crowdserve-dev" || "$APPLICATION_NAME" == "crowdserve-stag" ]] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-app" ]; then
     pm2 stop crowdserve-frontend-app
 fi
 

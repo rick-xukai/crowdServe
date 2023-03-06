@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Colors } from '../theme';
+import { Colors, Images } from '../theme';
 
 const ScanQrCodePageContainers = styled.div`
   height: 100%;
@@ -113,7 +113,7 @@ const ScanQrCodePageContainers = styled.div`
     width: 100%;
     position: fixed;
     height: 100%;
-    background-image: url('../static/images/background.png');
+    background-image: url(${Images.BackGround.src});
     background-position: center;
 	  background-repeat: no-repeat;
     background-size: cover;
@@ -170,6 +170,10 @@ const ScanQrCodePageContainers = styled.div`
       border: 1px solid #fff;
       background: unset;
       margin-top: 15px;
+    }
+    .loading-box {
+      color: ${Colors.branding};
+      font-size: 40px;
     }
   }
   .laoding-cover {

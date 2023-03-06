@@ -17,23 +17,29 @@
       </div>
       <div class="email-content">
         <div class="content-title">
-          Your Ticket Is Sold!
+          Your Ticket for {{event_name}} Has Been Sold!
         </div>
         <div class="content-detail">
-          <p class="detail-text">Dear User,</p>
-          <p class="detail-text">
-            Your ticket for <b>{{name}}</b> has been sold!
+          <p class="detail-text">Dear {{user_name}},</p>
+          <p class="detail-text" style="margin-bottom: 40px !important;">
+            Your ticket for <b>{{event_name}}</b> has been sold!
           </p>
           <p class="detail-text">
-            The ticket now is being transferred to the buyer which may take a few minutes. Once completed, your earnings will appear in your CrowdServe Wallet.
+            The ticket is being transferred to the buyer right now. This action may take a few minutes. Henceforth, you will no longer be able to access your ticket.
+          </p>
+          <p class="detail-text">
+            Once the transaction has completed, your earnings will appear in your CrowdServe Wallet.
           </p>
           <p class="detail-text">
             If you have any questions, or have not received your earnings in a long time, please contact
             <a href="tech@crowdserve.xyz" target="_blank">tech@crowdserve.xyz.</a>
           </p>
-          <p class="detail-text" style="margin-bottom: 0 !important;">
+          <p class="detail-text">
             Yours Sincerely,<br />
             CrowdServe
+          </p>
+          <p class="detail-text">
+            CrowdServe is here to protect you, your ticket, the artistes and other fans.
           </p>
           <p class="unsubscribe">
             If you don't want to receive this type of email in the future, please

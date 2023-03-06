@@ -116,3 +116,47 @@ a {
   margin-bottom: 20px;
   text-align: center;
 }
+
+.ticket-img {
+  margin: auto;
+  margin-bottom: 20px;
+  width: 200px;
+  height: 200px;
+  border-radius: 4px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.ticket-info {
+  margin-bottom: 20px;
+}
+
+.ticket-info .title {
+  font-weight: 700;
+  font-size: 13px;
+  color: #303034;
+  margin-bottom: 6px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  margin-top: 0;
+  font-weight: 300;
+  font-size: 13px;
+  color: #303034;
+}
+
+.info-item img {
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+}
+
+.detail-text .note {
+  font-weight: 700;
+  font-size: 15px;
+  color: #303034;
+}

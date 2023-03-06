@@ -17,23 +17,27 @@
       </div>
       <div class="email-content">
         <div class="content-title">
-          Ticket Is Flying To You
+          Your Ticket Is Flying To You
         </div>
         <div class="content-detail">
-          <p class="detail-text">Dear User,</p>
+          <div class="ticket-img" style="background-image: url({{ticket_image}});"></div>
+          <p class="detail-text">Dear {{user_name}},</p>
           <p class="detail-text">
-            Your ticket purchase for <b>{{name}}</b> is successful! Please expect a few minutes before the ticket appears in your CrowdServe app.
+            Your ticket purchase for <b>{{event_name}}</b> is successful! Please expect a few minutes before the ticket appears in your CrowdServe app.
           </p>
           <p class="detail-text">
-            We'll inform you with another email when the transfer is completed.
+            We will send another email to notify you when the transfer is completed.
           </p>
           <p class="detail-text">
-            If you have any questions, or haven't received your ticket in a long time, please contact
+            If you have any questions, or haven't received your ticket after a while, please contact
             <a href="tech@crowdserve.xyz" target="_blank">tech@crowdserve.xyz.</a>
           </p>
-          <p class="detail-text" style="margin-bottom: 0 !important;">
+          <p class="detail-text">
             Yours Sincerely,<br />
             CrowdServe
+          </p>
+          <p class="detail-text">
+            CrowdServe is here to protect you, your ticket, the artistes and other fans.
           </p>
           <p class="unsubscribe">
             If you don't want to receive this type of email in the future, please
