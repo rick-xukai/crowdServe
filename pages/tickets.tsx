@@ -306,14 +306,18 @@ const Tickets = () => {
                   )}
                 </>
               ) || (
-                <Row className="no-ticket-row">
-                  <Col span={24} className="no-ticket">
-                    <div style={{ margin: 'auto', textAlign: 'center' }}>
-                      <Image src={Images.NoTicketsIcon} alt="" />
-                      <p>No Tickets Available</p>
-                    </div>
-                  </Col>
-                </Row>
+                <>
+                  {!ticketsDataForAllStatus.length && !loading && (
+                    <Row className="no-ticket-row">
+                      <Col span={24} className="no-ticket">
+                        <div style={{ margin: 'auto', textAlign: 'center' }}>
+                          <Image src={Images.NoTicketsIcon} alt="" />
+                          <p>No Tickets Available</p>
+                        </div>
+                      </Col>
+                    </Row>
+                  )}
+                </>
               )}
             </Col>
           </Row>
