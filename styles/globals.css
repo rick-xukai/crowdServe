@@ -157,6 +157,7 @@ a {
 }
 
 .error-message-tickets .ant-message-notice-content,
+.error-message-event .ant-message-notice-content,
 .error-message-login .ant-message-notice-content {
   background-color: #717179;
   color: #EEEEF3;
