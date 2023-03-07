@@ -19,7 +19,9 @@ const PageHearderContainer = styled(Row)`
   padding-top: 5px;
   .hearder-action {
     text-align: right;
-    padding-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
   }
   .hearder-logo {
     width: 62px;
@@ -29,9 +31,21 @@ const PageHearderContainer = styled(Row)`
     color: ${Colors.white};
     font-size: 22px;
   }
+  .user-login {
+    margin-right: 20px;
+    font-weight: 400;
+    font-size: 15px;
+    color: ${Colors.branding};
+  }
 `;
 
-const PageHearderComponent = ({ isBack }: { isBack: boolean }) => (
+const PageHearderComponent = ({
+  isBack = false,
+  showLogin = false
+}: {
+  isBack?: boolean;
+  showLogin?: boolean
+}) => (
   <PageHearderContainer>
     {(!isBack && (
       <>
@@ -45,6 +59,11 @@ const PageHearderComponent = ({ isBack }: { isBack: boolean }) => (
             className="hearder-action"
             onClick={() => Router.push(RouterKeys.settings)}
           >
+            {showLogin && (
+              <div className="user-login" onClick={() => Router.push(RouterKeys.login)}>
+                LOG IN
+              </div>
+            )}
             <Image src={Images.MenuIcon} alt="" />
           </div>
         </Col>
