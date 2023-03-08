@@ -269,6 +269,9 @@ const Login = () => {
 
   return (
     <LoginContainer>
+      <div className="skip-login" onClick={() => Router.push(RouterKeys.eventList)}>
+        <span>Skip</span>
+      </div>
       {!checkGoogleDoc && (
         <div className="page-main">
           <Row className="main-logo">

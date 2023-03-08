@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import _ from 'lodash';
+import Router from 'next/router';
 import { Row, Col, Input, message, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { useCookie } from '../hooks';
-import { CookieKeys } from '../constants/Keys';
+import { RouterKeys } from '../constants/Keys';
 import { formatTimeStrByTimeString } from '../utils/func';
 import { FormatTimeKeys, DefaultPageSize } from '../constants/General';
 import { Images } from '../theme';
@@ -17,6 +17,7 @@ import {
   selectLoading,
   resetError,
   selectError,
+  resetEventDetailLoading,
 } from '../slice/event.slice';
 import {
   setEventDataForAll,
@@ -40,7 +41,6 @@ import OpenAppComponent from '../components/openAppComponent';
 const EventList = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
-  const cookie = useCookie([CookieKeys.userLoginToken]);
   const eventListRef = useRef<any>(null);
 
   const loading = useAppSelector(selectLoading);
@@ -55,7 +55,6 @@ const EventList = () => {
 
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
-  const [userToken, setUserToken] = useState<string | undefined>(undefined);
   const [showSearchInput, setShowSearchInput] = useState<boolean>(false);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
 
@@ -162,12 +161,12 @@ const EventList = () => {
 
   useEffect(() => {
     setIsFirstRender(false);
-    setUserToken(cookie.getCookie(CookieKeys.userLoginToken));
     if (!isGetAllData && eventListRef && eventListRef.current) {
       eventListRef.current.addEventListener('scroll', scrollListener, true);
     }
     return () => {
       dispatch(resetError());
+      dispatch(resetEventDetailLoading());
       if (eventListRef && eventListRef.current) {
         eventListRef.current.removeEventListener('scroll', scrollListener, true);
       }
@@ -176,7 +175,7 @@ const EventList = () => {
 
   return (
     <EventListContainer ref={eventListRef}>
-      <PageHearderComponent showLogin={!userToken} />
+      <PageHearderComponent />
       <Spin
         spinning={loading && !eventDataForAll.length}
         indicator={<LoadingOutlined spin />}
@@ -207,6 +206,12 @@ const EventList = () => {
                     <EventItemContainer
                       key={item.id}
                       onClick={() => {
+                        Router.push(
+                          RouterKeys.eventDetail.replace(
+                            ':eventId',
+                            item.id.toString()
+                          ),
+                        );
                         dispatch(setIsDisableRequest(true));
                         dispatch(setScrollValue(eventListRef.current.scrollTop));
                       }}

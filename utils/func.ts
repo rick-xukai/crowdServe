@@ -2,7 +2,7 @@ import CryptoJS from 'crypto-js';
 import { format } from 'date-fns';
 
 import Messages from '../constants/Messages';
-import { Encrypt, TicketStatus } from '../constants/General';
+import { Encrypt, TicketStatus, GooglePlayLink, AppHost } from '../constants/General';
 
 const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY as string;
 
@@ -79,4 +79,21 @@ export const getErrorMessage = (errorCode: number | undefined) => {
     });
   }
   return errorMessage;
+};
+
+export const openApp = () => {
+  const CallApp = require('callapp-lib');
+  const options: any = {
+    scheme: {
+      protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
+      host: AppHost,
+    },
+    intent: {
+      package: process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID,
+      scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
+    },
+    fallback: GooglePlayLink,
+  };
+  const callLib = new CallApp(options);
+  callLib.open({ path: '' });
 };

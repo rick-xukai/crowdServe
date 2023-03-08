@@ -32,6 +32,15 @@ import AppLogo from '../static/images/app-logo.png';
 import ClockIcon from '../static/images/clock.png';
 import NoEventIcon from '../static/images/no-event.svg';
 import NoSearchEventIcon from '../static/images/no-search-event.svg';
+import EventLineIcon from '../static/images/line-event.svg';
+import InstallIcon from '../static/images/install.svg';
+import MenuHomeIcon from '../static/images/menu-home.svg';
+import MenuTicketIcon from '../static/images/menu-ticket.svg';
+import MenuWalletIcon from '../static/images/menu-wallet.svg';
+import MenuPrivacyIcon from '../static/images/menu-privacy.svg';
+import MenuTemsIcon from '../static/images/menu-tems.svg';
+import MenuLogoutIcon from '../static/images/menu-logout.svg';
+import MyWalletIcon from '../static/images/my-wallet.svg';
 
 const Images = {
   Safety,
@@ -68,6 +77,15 @@ const Images = {
   ClockIcon,
   NoEventIcon,
   NoSearchEventIcon,
+  EventLineIcon,
+  InstallIcon,
+  MenuHomeIcon,
+  MenuTicketIcon,
+  MenuWalletIcon,
+  MenuPrivacyIcon,
+  MenuTemsIcon,
+  MenuLogoutIcon,
+  MyWalletIcon,
 };
 
 export default Images;

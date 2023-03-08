@@ -16,6 +16,8 @@ export const AppleStoreLink = 'https://apps.apple.com/us/app/crowdserve/id644401
 export const GooglePlayLink = 'https://play.google.com/store/apps/details?id=com.crowdserve.mobile';
 export const AppLandingPage = 'https://app.ticket-crowdserve.com/landing-page';
 export const AppHost = 'user.activated.cn';
+export const PrimaryMarket = 'Primary Market';
+export const PurchaseFromFan = 'Purchase From Fan';
 export const TicketStatus = [
   {
     text: 'UPCOMING',

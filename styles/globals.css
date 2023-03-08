@@ -264,3 +264,15 @@ iframe {
   animation-name: text-shak;
   animation-duration: 0.5s;
 }
+
+.ant-tooltip .ant-tooltip-inner {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 2px;
+  font-weight: 400;
+  font-size: 13px;
+  color: #717179;
+}
+
+.ant-tooltip .ant-tooltip-arrow:before {
+  background: rgba(255, 255, 255, 0.9);
+}
