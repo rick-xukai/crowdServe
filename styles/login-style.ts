@@ -24,7 +24,7 @@ const LoginContainer = styled.div`
         display: flex;
         justify-content: center;
         div {
-          width: 122px;
+          width: 62px;
           height: 62px;
         }
       }

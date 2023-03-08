@@ -31,6 +31,8 @@ const PageHearderContainer = styled(Row)`
   .hearder-logo {
     width: 62px;
     height: 30px;
+    display: flex;
+    align-items: center;
   }
   .hearder-back {
     color: ${Colors.white};
@@ -70,7 +72,7 @@ const PageHearderComponent = ({
     <PageHearderContainer>
       <Col span={12} className="left-container">
         <div className="hearder-logo">
-          <Image src={Images.Logo} alt="" />
+          <Image src={Images.LogoNameIcon} alt="" />
         </div>
       </Col>
       <Col span={12} className="right-container">
