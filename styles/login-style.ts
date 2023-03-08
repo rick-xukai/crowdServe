@@ -7,6 +7,15 @@ const LoginContainer = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
+  position: relative;
+  .skip-login {
+    position: absolute;
+    color: ${Colors.white};
+    top: 20px;
+    right: 20px;
+    font-weight: 400;
+    font-size: 15px;
+  }
   .page-main {
     width: 100%;
     position: relative;

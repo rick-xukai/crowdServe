@@ -2,6 +2,7 @@ export const LocalStorageKeys = {
   rememberMe: 'rememberMe',
   eventIdForScan: 'eventIdForScan',
   closeInstallAppTime: 'closeInstallAppTime',
+  currentPageToSetting: 'currentPageToSetting',
 };
 
 export const CookieKeys = {
@@ -18,4 +19,7 @@ export const RouterKeys = {
   ticketDetail: '/ticket-detail/:ticketId',
   settings: '/settings',
   maintenance: '/maintenance',
+  eventList: '/event',
+  eventDetail: '/event-detail/:eventId',
+  myWallet: '/my-wallet',
 };

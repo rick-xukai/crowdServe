@@ -5,8 +5,9 @@ import { CloseOutlined } from '@ant-design/icons';
 import { isAndroid, isIOS } from 'react-device-detect';
 import Image from 'next/image';
 
+import { openApp } from '../utils/func';
 import { LocalStorageKeys } from '../constants/Keys';
-import { GooglePlayLink, AppLandingPage, AppHost } from '../constants/General';
+import { AppLandingPage } from '../constants/General';
 import { Colors, Images } from '../theme';
 
 const OpenAppContainer = styled.div`
@@ -59,24 +60,11 @@ const OpenAppComponent = ({
 
   const [showContainer, setShowContainer] = useState<boolean>(false);
 
-  const openApp = () => {
+  const handleOpenApp = () => {
     if (isIOS) {
       openAppInIos.current.click();
     } else if (isAndroid) {
-      const CallApp = require('callapp-lib');
-      const options: any = {
-        scheme: {
-          protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
-          host: AppHost,
-        },
-        intent: {
-          package: process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID,
-          scheme: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
-        },
-        fallback: GooglePlayLink,
-      };
-      const callLib = new CallApp(options);
-      callLib.open({ path: '' });
+      openApp();
     }
   };
 
@@ -110,7 +98,7 @@ const OpenAppComponent = ({
       {showContainer && (
         <OpenAppContainer>
           <Row>
-            <Col span={20} onClick={openApp}>
+            <Col span={20} onClick={handleOpenApp}>
               <Row>
                 <Col className="app-logo">
                   <Image src={Images.AppLogo} alt="" />
