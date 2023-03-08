@@ -33,7 +33,7 @@ export const eventCacheSlice = createSlice({
       state.currentPage = DefaultPage;
       state.isDisableRequest = false;
       state.isGetAllData = false;
-      state.searchKeyword = '';
+      state.scrollValue = 0;
     },
     setEventDataForAll: (state, action) => {
       state.eventDataForAll = action.payload;
