@@ -8,6 +8,7 @@ import AppStore from '../static/images/app-store.svg';
 import GooglePlay from '../static/images/google-play.png';
 import BackGround from '../static/images/background.png';
 import Logo from '../static/images/logo.png';
+import LogoNameIcon from '../static/images/logo-name.png';
 import ButtonVerify from '../static/images/button-verify.png';
 import LandingPageBackground from '../static/images/landing-page-background.png';
 import PhoneDetail from '../static/images/phone-detail.png';
@@ -86,6 +87,7 @@ const Images = {
   MenuTemsIcon,
   MenuLogoutIcon,
   MyWalletIcon,
+  LogoNameIcon,
 };
 
 export default Images;

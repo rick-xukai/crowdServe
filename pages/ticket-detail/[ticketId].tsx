@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import _ from 'lodash';
 import Image from 'next/image';
 import { Row, Col, Spin, Drawer, QRCode, Button, message, FloatButton } from 'antd';
 import TextTruncate from 'react-text-truncate';
-import { LoadingOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import AuthHoc from '../../components/hoc/AuthHoc';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -23,11 +23,11 @@ import {
   selectTicketDetailLoading,
 } from '../../slice/tickets.slice';
 import { selectTicketsDataForAllStatus, setTicketsDataForAllStatus } from '../../slice/ticketsCache.slice';
-import { RouterKeys } from '../../constants/Keys';
 import Messages from '../../constants/Messages';
 import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys, PriceUnit } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
 import { TicketStatusContainer } from '../../styles/tickets.style';
+import PageHearderComponent from '../../components/pageHearder';
 
 let timer: NodeJS.Timer | null = null;
 
@@ -141,6 +141,7 @@ const TicketDetail = () => {
     <>
       {!ticketDetailLoading && (
         <TicketDetailContainer>
+          <PageHearderComponent />
           <img src={Images.QrcodeNetworkError.src} alt="" style={{ display: 'none' }} />
           <Row>
             <Col span={24} className="detail-background">
@@ -163,14 +164,6 @@ const TicketDetail = () => {
                 />
               )}
             </Col>
-            <div
-              className="goback-icon"
-              onClick={() =>
-                Router.push(RouterKeys.ticketsList)
-              }
-            >
-              <ArrowLeftOutlined />
-            </div>
           </Row>
           <div
             className={`detail-info ${
