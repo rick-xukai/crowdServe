@@ -61,8 +61,10 @@ const EventList = () => {
 
   const searchInputChange = (value: string) => {
     if (!value) {
-      dispatch(resetEventRelatedState());
+      dispatch(setEventDataForAll([]));
+      eventListRef.current.addEventListener('scroll', scrollListener, true);
     }
+    dispatch(resetEventRelatedState());
     dispatch(setSearchKeyword(value));
   };
 
@@ -96,7 +98,7 @@ const EventList = () => {
   }, [error]);
 
   useEffect(() => {
-    if (isPageBottom && !loading && !searchKeyword) {
+    if (isPageBottom && !loading) {
       dispatch(setCurrentPage(currentPage + 1));
     }
   }, [isPageBottom]);
@@ -110,30 +112,28 @@ const EventList = () => {
   }, [eventDataForAll]);
 
   useEffect(() => {
-    if (searchKeyword) {
-      dispatch(getEventListAction({ keyword: searchKeyword }));
-    } else {
-      if (isDisableRequest || isGetAllData) {
-        return;
-      }
-      dispatch(
-        getEventListAction({
-          page: currentPage,
-          size: DefaultPageSize,
-        }),
-      ).then((response: any) => {
-        if (response.type === getEventListAction.fulfilled.toString()) {
-          if (
-            !response.payload.length ||
-            response.payload.length < DefaultPageSize
-          ) {
-            dispatch(setIsGetAllData(true));
-            dispatch(setIsDisableRequest(true));
-          }
-        }
-      });
+    if (isDisableRequest || isGetAllData) {
+      return;
     }
-  }, [searchKeyword, currentPage]);
+    dispatch(
+      getEventListAction({
+        page: currentPage,
+        size: DefaultPageSize,
+        keyword: searchKeyword,
+      }),
+    ).then((response: any) => {
+      if (response.type === getEventListAction.fulfilled.toString()) {
+        if (
+          !response.payload.length ||
+          response.payload.length < DefaultPageSize
+        ) {
+          dispatch(setIsGetAllData(true));
+          dispatch(setIsDisableRequest(true));
+          eventListRef.current.removeEventListener('scroll', scrollListener, true);
+        }
+      }
+    });
+  }, [currentPage, searchKeyword]);
 
   useEffect(() => {
     if (data) {
@@ -196,10 +196,6 @@ const EventList = () => {
                         placeholder="Search events"
                         prefix={<SearchOutlined />}
                         onChange={handleSearch}
-                        onSearch={() => {
-                          dispatch(resetEventRelatedState());
-                          dispatch(setEventDataForAll([]));
-                        }}
                       />
                     </Col>
                   )}
