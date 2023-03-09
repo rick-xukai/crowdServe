@@ -48,8 +48,8 @@ const ScanQrCodePageContainers = styled.div`
       text-align: center;
       margin-bottom: 15px;
       img {
-        width: 142px !important;
-        height: 73px !important;
+        width: 62px !important;
+        height: 62px !important;
       }
     }
     .border-box {

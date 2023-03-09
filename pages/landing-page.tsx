@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { isAndroid, isIOS } from 'react-device-detect';
+import { isAndroid } from 'react-device-detect';
 
 import { AppleStoreLink, GooglePlayLink, AppHost } from '../constants/General';
 import { Images } from '../theme';
@@ -14,9 +14,6 @@ const LandingPage: NextPage = () => {
 
   useEffect(() => {
     let packageName = '';
-    if (isIOS) {
-      window.location.href = AppleStoreLink;
-    }
     if (isAndroid) {
       const CallApp = require('callapp-lib');
       packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
