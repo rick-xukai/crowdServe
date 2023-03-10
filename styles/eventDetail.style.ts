@@ -8,9 +8,11 @@ const EventDetailContainer = styled.div`
   background: ${Colors.backgorund};
   .detail-background {
     width: 100%;
+    height: 250px;
     img {
       width: 100%;
       height: 100%;
+      object-fit: cover;
     }
   }
   .event-detail-container {
@@ -32,18 +34,16 @@ const EventDetailContainer = styled.div`
         color: ${Colors.white};
         margin-bottom: 10px;
         max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
       }
       .info-item {
         margin-bottom: 5px;
         display: flex;
-        align-items: center;
         img {
           width: 16px !important;
         }
         .info-item-icon {
+          margin: unset !important;
+          margin-top: 2px !important;
           min-width: 16px !important;
           min-height: 16px !important;
         }
@@ -54,9 +54,6 @@ const EventDetailContainer = styled.div`
         color: ${Colors.white};
         margin-left: 8px;
         max-width: 90%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
       }
     }
     .dividing-line {
@@ -64,6 +61,15 @@ const EventDetailContainer = styled.div`
       background: ${Colors.grayScale90};
       margin-top: 20px;
       margin-bottom: 15px;
+    }
+    .all-ticket-sold {
+      p {
+        margin-top: 10px;
+        margin-bottom: 0
+        font-weight: 400;
+        font-size: 15px;
+        color: ${Colors.grayScale20};
+      }
     }
   }
   .ticket-description {
@@ -91,6 +97,11 @@ const EventDetailContainer = styled.div`
   .ant-tabs-nav {
     height: 35px;
   }
+  @media (max-width: 374px) {
+    .ant-tabs .ant-tabs-tab+.ant-tabs-tab {
+      margin: 0 0 0 10px;
+    }
+  }
   .ant-tabs-tab {
     padding: 0;
     align-items: unset;
@@ -107,6 +118,9 @@ const EventDetailContainer = styled.div`
   .ant-tabs-tab-btn {
     font-weight: 400;
     font-size: 17px;
+    @media (max-width: 374px) {
+      font-size: 14px;
+    }
   }
   .ant-tabs .ant-tabs-tab:hover {
     color: ${Colors.grayScale50};

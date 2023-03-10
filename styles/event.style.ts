@@ -55,7 +55,7 @@ const EventListContainer = styled.div`
     }
     .no-event-row {
       align-items: center;
-      height: calc(100vh - 200px);
+      height: calc(100vh - 400px);
     }
     .no-event {
       display: flex;
@@ -78,6 +78,13 @@ const EventListContainer = styled.div`
       input {
         color: ${Colors.white};
       }
+    }
+    .ant-input-suffix {
+      margin-inline-start: 8px;
+    }
+    .ant-input-clear-icon {
+      display: flex;
+      align-items: center;
     }
   }
   .page-loading {
