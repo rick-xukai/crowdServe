@@ -127,7 +127,7 @@ const EventDetail = () => {
   useEffect(() => {
     return () => {
       dispatch(resetError());
-    }
+    };
   }, []);
 
   return (

@@ -59,6 +59,19 @@ const EventList = () => {
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
   const [searchInputPlaceholder, setSearchInputPlaceholder] = useState<string>('Search events');
 
+  const handleScroll = (event: any) => {
+    const { clientHeight, scrollHeight, scrollTop } = event.target;
+    dispatch(setScrollValue(scrollTop));
+    if (scrollTop + clientHeight + 20 > scrollHeight) {
+      dispatch(setIsDisableRequest(false));
+    }
+    setIsPageBottom(scrollTop + clientHeight + 20 > scrollHeight);
+  };
+
+  const scrollListener = useCallback((e: any) => {
+    handleScroll(e);
+  }, []);
+
   const searchInputChange = (value: string) => {
     if (!value) {
       setSearchInputPlaceholder('Search events');
@@ -72,19 +85,6 @@ const EventList = () => {
   const handleSearch = useCallback(
     _.debounce((e: any) => searchInputChange(e.target.value), 300), []
   );
-
-  const handleScroll = (event: any) => {
-    const { clientHeight, scrollHeight, scrollTop } = event.target;
-    dispatch(setScrollValue(scrollTop));
-    if (scrollTop + clientHeight + 20 > scrollHeight) {
-      dispatch(setIsDisableRequest(false));
-    }
-    setIsPageBottom(scrollTop + clientHeight + 20 > scrollHeight);
-  };
-
-  const scrollListener = useCallback((e: any) => {
-    handleScroll(e);
-  }, []);
 
   const handleBlur = () => {
     if (searchKeyword) {
