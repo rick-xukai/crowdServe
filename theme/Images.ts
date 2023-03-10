@@ -29,7 +29,7 @@ import QrcodeNetworkError from '../static/images/qr-code-network-error.svg';
 import BackgroundLogo from '../static/images/background-logo.png';
 import QrcodeIcon from '../static/images/qr-code.svg';
 import BlockAppIcon from '../static/images/block-app.svg';
-import AppLogo from '../static/images/app-logo.png';
+import AppLogo from '../static/images/app-logo.svg';
 import ClockIcon from '../static/images/clock.png';
 import NoEventIcon from '../static/images/no-event.svg';
 import NoSearchEventIcon from '../static/images/no-search-event.svg';

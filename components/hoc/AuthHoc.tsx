@@ -24,7 +24,7 @@ const AuthHoc = (AuthComponent: any) => (
         const { req, res } = ctx;
         const token = req.cookies[CookieKeys.userLoginToken];
         if (!token) {
-          res.writeHead(302, { Location: RouterKeys.login });
+          res.writeHead(302, { Location: `${RouterKeys.login}?redirect=${req.url}` });
           res.end();
           return {};
         }
@@ -48,7 +48,7 @@ const AuthHoc = (AuthComponent: any) => (
     async componentDidMount () {
       const token = this.cookies.get(CookieKeys.userLoginToken);
       if (!token) {
-        Router.push(RouterKeys.login);
+        Router.push({ pathname: RouterKeys.login, query: `redirect=${window.location.pathname}` });
         return;
       }
       try {
