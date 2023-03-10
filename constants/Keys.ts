@@ -17,7 +17,6 @@ export const RouterKeys = {
   ticketsList: '/tickets',
   landingPage: '/landing-page',
   ticketDetail: '/ticket-detail/:ticketId',
-  settings: '/settings',
   maintenance: '/maintenance',
   eventList: '/event',
   eventDetail: '/event-detail/:eventId',
