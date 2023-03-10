@@ -78,6 +78,7 @@ const LoginContainer = styled.div`
       padding: 4px 4px;
       border-radius: unset;
       background: transparent; 
+      color: ${Colors.white};
       &.ant-input-status-success {
         color: ${Colors.white};
       }

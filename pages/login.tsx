@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { Row, Col, Form, Input, Button, message, Checkbox } from 'antd';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../hooks';
+import UserService from '../services/API/User/User.service';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
 import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
-import { isEmail, getErrorMessage, isPassword } from '../utils/func';
+import { isEmail, getErrorMessage, isPassword, base64Decrypt } from '../utils/func';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   loginAction,
@@ -30,20 +31,27 @@ import { resetEventCache } from '../slice/eventCache.slice';
 const ActivateAccountComponent = ({
   checkGoogleDoc,
   googleDocLink,
+  activateInputDefaultEmail,
+  activateInputDefaultCode,
+  verifyUser,
 }: {
   checkGoogleDoc: (status: boolean) => void;
   googleDocLink: (link: string) => void;
+  activateInputDefaultEmail: string | undefined;
+  activateInputDefaultCode: string | undefined;
+  verifyUser: boolean;
 }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectLoading);
 
   const [checked, setChecked] = useState<boolean>(false);
   const [isTextShak, setTextShak] = useState<boolean>(false);
-  const [verifyUserSuccess, setVerifyUserSuccess] = useState<boolean>(false);
+  const [verifyUserSuccess, setVerifyUserSuccess] = useState<boolean>(verifyUser);
   const [verificationCodeSuccess, setVerificationCodeSuccess] = useState<boolean>(false);
   const [activateAccountValue, setActivateAccountValue] = useState({
-    email: '',
-    code: '',
+    email: activateInputDefaultEmail || '',
+    code: activateInputDefaultCode || '',
     password: '',
   });
 
@@ -79,7 +87,7 @@ const ActivateAccountComponent = ({
         }),
       );
       if (result.type === loginAction.fulfilled.toString()) {
-        Router.push(RouterKeys.ticketsList);
+        router.push(RouterKeys.eventList);
       }
     }
   };
@@ -104,7 +112,10 @@ const ActivateAccountComponent = ({
         </Col>
       </Row>
       {!verifyUserSuccess && (
-        <Form onFinish={onFinish}>
+        <Form
+          onFinish={onFinish}
+          initialValues={{ email: activateInputDefaultEmail }}
+        >
           <Form.Item name="email" style={{ marginBottom: 0 }}>
             <Input
               className={`${(activateAccountValue.email && 'border-white') || ''}`}
@@ -156,7 +167,7 @@ const ActivateAccountComponent = ({
               {activateAccountValue.email}
             </Col>
           </Row>
-          <Form onFinish={onFinish}>
+          <Form onFinish={onFinish} initialValues={{ code: activateInputDefaultCode }}>
             <Form.Item name="code" style={{ marginBottom: 0 }}>
               <Input
                 className={`${(activateAccountValue.code && 'border-white') || ''}`}
@@ -217,7 +228,16 @@ const ActivateAccountComponent = ({
   );
 };
 
-const Login = () => {
+const Login = ({
+  needActivate,
+  defultEmail,
+  defultCode,
+}: {
+  needActivate: boolean,
+  defultEmail: undefined | string,
+  defultCode: undefined | string,
+}) => {
+  const router: any = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const cookies = useCookie([CookieKeys.userLoginToken]);
@@ -230,7 +250,7 @@ const Login = () => {
     email: '',
     password: '',
   });
-  const [showActivateAccount, setShowActivateAccount] = useState<boolean>(false);
+  const [showActivateAccount, setShowActivateAccount] = useState<boolean>(needActivate);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
   const [googleDocLink, setgoogleDocLink] = useState<string>('');
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
@@ -242,14 +262,14 @@ const Login = () => {
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
+      const redirect = router.query.redirect;
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
       });
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());
-      dispatch(resetEventCache());
-      Router.push(RouterKeys.ticketsList);
+      router.push(redirect || RouterKeys.eventList);
     }
   }, [data]);
 
@@ -271,7 +291,7 @@ const Login = () => {
 
   return (
     <LoginContainer>
-      <div className="skip-login" onClick={() => Router.push(RouterKeys.eventList)}>
+      <div className="skip-login" onClick={() => router.push(RouterKeys.eventList)}>
         <span>Skip</span>
       </div>
       {!checkGoogleDoc && (
@@ -343,6 +363,9 @@ const Login = () => {
             <ActivateAccountComponent
               checkGoogleDoc={setCheckGoogleDoc}
               googleDocLink={setgoogleDocLink}
+              activateInputDefaultEmail={defultEmail}
+              activateInputDefaultCode={defultCode}
+              verifyUser={needActivate}
             />
           )}
           <div className={isOpenAppShow && 'page-bottom open-app' || 'page-bottom'}>
@@ -367,6 +390,26 @@ const Login = () => {
       {contextHolder}
     </LoginContainer>
   );
+};
+
+Login.getInitialProps = async (ctx: any) => {
+  const { query } = ctx;
+  let needActivate = false;
+  let defultEmail = undefined;
+  let defultCode = undefined;
+  try {
+    const parameters = base64Decrypt(Object.keys(query)[0]);
+    const response = await UserService.doVerificationCode({
+      code: parameters.code,
+      email: parameters.email,
+    });
+    if (response.code !== 1005) {
+      needActivate = true;
+      defultEmail = parameters.email;
+      defultCode = parameters.code;
+    }
+  } catch (_) {}
+  return { needActivate, defultEmail, defultCode };
 };
 
 export default Login;

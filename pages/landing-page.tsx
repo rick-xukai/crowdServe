@@ -3,8 +3,10 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { isAndroid } from 'react-device-detect';
+import { isAndroid, isIOS } from 'react-device-detect';
 
+import { base64Decrypt } from '../utils/func';
+import { CookieKeys, RouterKeys } from '../constants/Keys';
 import { AppleStoreLink, GooglePlayLink, AppHost } from '../constants/General';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
@@ -94,6 +96,33 @@ const LandingPage: NextPage = () => {
       </div>
     </LandingPageContainer>
   );
+};
+
+LandingPage.getInitialProps = (ctx: any) => {
+  const { req, res, query } = ctx;
+  try {
+    const token = req.cookies[CookieKeys.userLoginToken];
+    const parameters = base64Decrypt(Object.keys(query)[0]);
+    if (token) {
+      if (parameters.ticketId) {
+        res.writeHead(302, { Location: RouterKeys.ticketDetail.replace(':ticketId', parameters.ticketId) });
+        res.end();
+      }
+    } else {
+      res.writeHead(302, { Location: `${RouterKeys.login}?${Object.keys(query)[0]}` });
+      res.end();
+    }
+  } catch (error) {
+    if (isIOS) {
+     res.writeHead(302, { Location: AppleStoreLink });
+    } else if (isAndroid) {
+     res.writeHead(302, { Location: GooglePlayLink });
+    }
+    res.end();
+  }
+  return {
+    props: {}
+  };
 };
 
 export default LandingPage;

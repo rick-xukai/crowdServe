@@ -97,3 +97,9 @@ export const openApp = () => {
   const callLib = new CallApp(options);
   callLib.open({ path: '' });
 };
+
+export const base64Decrypt = (code: string) => {
+  const parsedWordArray = CryptoJS.enc.Base64.parse(code);
+  const parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
+  return JSON.parse(parsedStr);
+};
