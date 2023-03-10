@@ -269,6 +269,7 @@ const Login = ({
       });
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());
+      dispatch(resetEventCache());
       router.push(redirect || RouterKeys.eventList);
     }
   }, [data]);
