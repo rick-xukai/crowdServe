@@ -112,7 +112,7 @@ const EventDetail = () => {
   useEffect(() => {
     let data: EventTicketTypeResponseType[] = [];
     if (eventTicketTypeData.length) {
-      data = eventTicketTypeData.filter((item) => item.externalLink && item.stock !== 0);
+      data = eventTicketTypeData.filter((item) => item.externalLink);
     }
     setEventTicketTypeFilter(data);
   }, [eventTicketTypeData]);
@@ -187,7 +187,7 @@ const EventDetail = () => {
                     ) || (
                       <TextTruncate
                         line={2}
-                        element="span"
+                        element="div"
                         truncateText="…"
                         containerClassName="text-typography"
                         text={eventDetailData.description || '-'}
