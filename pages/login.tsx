@@ -25,6 +25,7 @@ import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';
 import { resetTicketsListData } from '../slice/tickets.slice';
+import { resetEventCache } from '../slice/eventCache.slice';
 
 const ActivateAccountComponent = ({
   checkGoogleDoc,
@@ -247,6 +248,7 @@ const Login = () => {
       });
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());
+      dispatch(resetEventCache());
       Router.push(RouterKeys.ticketsList);
     }
   }, [data]);

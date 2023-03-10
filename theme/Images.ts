@@ -42,6 +42,8 @@ import MenuPrivacyIcon from '../static/images/menu-privacy.svg';
 import MenuTemsIcon from '../static/images/menu-tems.svg';
 import MenuLogoutIcon from '../static/images/menu-logout.svg';
 import MyWalletIcon from '../static/images/my-wallet.svg';
+import ClearIcon from '../static/images/clear.svg';
+import AllTicketSold from '../static/images/all-ticket-sold.svg';
 
 const Images = {
   Safety,
@@ -88,6 +90,8 @@ const Images = {
   MenuLogoutIcon,
   MyWalletIcon,
   LogoNameIcon,
+  ClearIcon,
+  AllTicketSold,
 };
 
 export default Images;

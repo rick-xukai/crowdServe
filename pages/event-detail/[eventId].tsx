@@ -25,6 +25,7 @@ import {
   getEventDetailAction,
   selectEventDetailError,
   resetError,
+  EventTicketTypeResponseType,
 } from '../../slice/event.slice';
 import { EventDetailContainer, TicketTypeItem } from '../../styles/eventDetail.style';
 import PageHearderComponent from '../../components/pageHearder';
@@ -43,6 +44,7 @@ const EventDetail = () => {
   const [id, setEventId] = useState<string>('');
   const [textShowMore, setTextShowMore] = useState<boolean>(false);
   const [tabActiveKey, setTabActiveKey] = useState<string>(PrimaryMarket);
+  const [eventTicketTypeFilter, setEventTicketTypeFilter] = useState<EventTicketTypeResponseType[]>([]);
 
   const tabsItem: TabsProps['items'] = [
     {
@@ -108,6 +110,14 @@ const EventDetail = () => {
   }, [error]);
 
   useEffect(() => {
+    let data: EventTicketTypeResponseType[] = [];
+    if (eventTicketTypeData.length) {
+      data = eventTicketTypeData.filter((item) => item.externalLink && item.stock !== 0);
+    }
+    setEventTicketTypeFilter(data);
+  }, [eventTicketTypeData]);
+
+  useEffect(() => {
     if (id) {
       getData(id);
     }
@@ -128,9 +138,10 @@ const EventDetail = () => {
           <div className="page-main">
             <Row>
               <Col span={24} className="detail-background">
-                <img
+                <Image
                   src={eventDetailData.image}
                   alt=""
+                  layout="fill"
                   onError={(e: any) => {
                     e.target.onerror = null;
                     e.target.src = Images.BackgroundLogo.src;
@@ -204,9 +215,9 @@ const EventDetail = () => {
                 />
                 {tabActiveKey === PrimaryMarket && (
                   <Row gutter={[10, 10]}>
-                    {eventTicketTypeData.map((item) => {
-                      if (item.externalLink) {
-                        return (
+                    {eventTicketTypeFilter.length && (
+                      <>
+                        {eventTicketTypeFilter.map((item) => (
                           <TicketTypeItem
                             span={12}
                             key={item.id}
@@ -241,17 +252,23 @@ const EventDetail = () => {
                               </div>
                             )}
                           </TicketTypeItem>
-                        );
-                      }
-                      return null;
-                    })}
+                        ))}
+                      </>
+                    ) || (
+                      <Col span={24} className="all-ticket-sold">
+                        <div style={{ textAlign: 'center', marginTop: 20 }}>
+                          <Image src={Images.AllTicketSold} alt="" />
+                          <p>All tickets are sold.</p>
+                        </div>
+                      </Col>
+                    )}
                   </Row>
                 ) || (
                   <div className="install-app">
                     <Image src={Images.InstallIcon} alt="" />
                     <p>Buy Secondary Tickets on our app!</p>
                     <p className="install-btn" onClick={handleOpenApp}>
-                      Install now
+                      OPEN APP NOW
                     </p>
                     <a ref={openAppInIos} href={AppLandingPage} style={{ display: 'none' }} />
                   </div>

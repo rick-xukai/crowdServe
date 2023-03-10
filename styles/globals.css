@@ -265,6 +265,10 @@ iframe {
   animation-duration: 0.5s;
 }
 
+.ant-tooltip {
+  max-width: unset;
+}
+
 .ant-tooltip .ant-tooltip-inner {
   background: rgba(255, 255, 255, 0.9);
   border-radius: 2px;

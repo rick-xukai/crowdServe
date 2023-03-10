@@ -57,9 +57,11 @@ const EventList = () => {
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [showSearchInput, setShowSearchInput] = useState<boolean>(false);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
+  const [searchInputPlaceholder, setSearchInputPlaceholder] = useState<string>('Search events');
 
   const searchInputChange = (value: string) => {
     if (!value) {
+      setSearchInputPlaceholder('Search events');
       dispatch(setEventDataForAll([]));
       eventListRef.current.addEventListener('scroll', scrollListener, true);
     }
@@ -83,6 +85,13 @@ const EventList = () => {
   const scrollListener = useCallback((e: any) => {
     handleScroll(e);
   }, []);
+
+  const handleBlur = () => {
+    if (searchKeyword) {
+      return;
+    }
+    setSearchInputPlaceholder('Search events');
+  };
 
   useEffect(() => {
     if (!isFirstRender && error) {
@@ -190,11 +199,13 @@ const EventList = () => {
                   {showSearchInput && (
                     <Col span={24}>
                       <Input.Search
-                        allowClear
+                        allowClear={{ clearIcon: <Image src={Images.ClearIcon} alt="" /> }}
                         defaultValue={searchKeyword}
-                        placeholder="Search events"
+                        placeholder={searchInputPlaceholder}
                         prefix={<SearchOutlined />}
                         onChange={handleSearch}
+                        onFocus={() => setSearchInputPlaceholder('')}
+                        onBlur={handleBlur}
                       />
                     </Col>
                   )}
