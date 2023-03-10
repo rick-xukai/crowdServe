@@ -5,7 +5,6 @@ import { Row, Col, Form, Input, Button, message, Checkbox } from 'antd';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../hooks';
-import UserService from '../services/API/User/User.service';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
 import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
 import { isEmail, getErrorMessage, isPassword, base64Decrypt } from '../utils/func';
@@ -31,15 +30,9 @@ import { resetEventCache } from '../slice/eventCache.slice';
 const ActivateAccountComponent = ({
   checkGoogleDoc,
   googleDocLink,
-  activateInputDefaultEmail,
-  activateInputDefaultCode,
-  verifyUser,
 }: {
   checkGoogleDoc: (status: boolean) => void;
   googleDocLink: (link: string) => void;
-  activateInputDefaultEmail: string | undefined;
-  activateInputDefaultCode: string | undefined;
-  verifyUser: boolean;
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -47,11 +40,11 @@ const ActivateAccountComponent = ({
 
   const [checked, setChecked] = useState<boolean>(false);
   const [isTextShak, setTextShak] = useState<boolean>(false);
-  const [verifyUserSuccess, setVerifyUserSuccess] = useState<boolean>(verifyUser);
+  const [verifyUserSuccess, setVerifyUserSuccess] = useState<boolean>(false);
   const [verificationCodeSuccess, setVerificationCodeSuccess] = useState<boolean>(false);
   const [activateAccountValue, setActivateAccountValue] = useState({
-    email: activateInputDefaultEmail || '',
-    code: activateInputDefaultCode || '',
+    email: '',
+    code: '',
     password: '',
   });
 
@@ -112,10 +105,7 @@ const ActivateAccountComponent = ({
         </Col>
       </Row>
       {!verifyUserSuccess && (
-        <Form
-          onFinish={onFinish}
-          initialValues={{ email: activateInputDefaultEmail }}
-        >
+        <Form onFinish={onFinish}>
           <Form.Item name="email" style={{ marginBottom: 0 }}>
             <Input
               className={`${(activateAccountValue.email && 'border-white') || ''}`}
@@ -167,7 +157,7 @@ const ActivateAccountComponent = ({
               {activateAccountValue.email}
             </Col>
           </Row>
-          <Form onFinish={onFinish} initialValues={{ code: activateInputDefaultCode }}>
+          <Form onFinish={onFinish}>
             <Form.Item name="code" style={{ marginBottom: 0 }}>
               <Input
                 className={`${(activateAccountValue.code && 'border-white') || ''}`}
@@ -228,15 +218,7 @@ const ActivateAccountComponent = ({
   );
 };
 
-const Login = ({
-  needActivate,
-  defultEmail,
-  defultCode,
-}: {
-  needActivate: boolean,
-  defultEmail: undefined | string,
-  defultCode: undefined | string,
-}) => {
+const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) => {
   const router: any = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
@@ -247,10 +229,10 @@ const Login = ({
   const data = useAppSelector(selectData);
 
   const [loginFormValue, setLoginFormValue] = useState<LoginPayloadType>({
-    email: '',
+    email: defultLoginEmail || '',
     password: '',
   });
-  const [showActivateAccount, setShowActivateAccount] = useState<boolean>(needActivate);
+  const [showActivateAccount, setShowActivateAccount] = useState<boolean>(false);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
   const [googleDocLink, setgoogleDocLink] = useState<string>('');
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
@@ -309,7 +291,7 @@ const Login = ({
                   LOGIN TO YOUR ACCOUNT
                 </Col>
               </Row>
-              <Form onFinish={onFinish}>
+              <Form onFinish={onFinish} initialValues={{ email: defultLoginEmail }}>
                 <Form.Item name="email">
                   <Input
                     className={`${(loginFormValue.email && 'border-white') || ''}`}
@@ -364,9 +346,6 @@ const Login = ({
             <ActivateAccountComponent
               checkGoogleDoc={setCheckGoogleDoc}
               googleDocLink={setgoogleDocLink}
-              activateInputDefaultEmail={defultEmail}
-              activateInputDefaultCode={defultCode}
-              verifyUser={needActivate}
             />
           )}
           <div className={isOpenAppShow && 'page-bottom open-app' || 'page-bottom'}>
@@ -395,22 +374,12 @@ const Login = ({
 
 Login.getInitialProps = async (ctx: any) => {
   const { query } = ctx;
-  let needActivate = false;
-  let defultEmail = undefined;
-  let defultCode = undefined;
+  let defultLoginEmail = undefined;
   try {
     const parameters = base64Decrypt(Object.keys(query)[0]);
-    const response = await UserService.doVerificationCode({
-      code: parameters.code,
-      email: parameters.email,
-    });
-    if (response.code !== 1005) {
-      needActivate = true;
-      defultEmail = parameters.email;
-      defultCode = parameters.code;
-    }
+    defultLoginEmail = parameters.email;
   } catch (_) {}
-  return { needActivate, defultEmail, defultCode };
+  return { defultLoginEmail };
 };
 
 export default Login;

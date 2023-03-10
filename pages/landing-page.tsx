@@ -10,6 +10,7 @@ import { CookieKeys, RouterKeys } from '../constants/Keys';
 import { AppleStoreLink, GooglePlayLink, AppHost } from '../constants/General';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
+import UserService from '../services/API/User/User.service';
 
 const LandingPage: NextPage = () => {
   const router = useRouter();
@@ -98,7 +99,7 @@ const LandingPage: NextPage = () => {
   );
 };
 
-LandingPage.getInitialProps = (ctx: any) => {
+LandingPage.getInitialProps = async (ctx: any) => {
   const { req, res, query } = ctx;
   try {
     const token = req.cookies[CookieKeys.userLoginToken];
@@ -109,7 +110,16 @@ LandingPage.getInitialProps = (ctx: any) => {
         res.end();
       }
     } else {
-      res.writeHead(302, { Location: `${RouterKeys.login}?${Object.keys(query)[0]}` });
+      const parameters = base64Decrypt(Object.keys(query)[0]);
+      const response = await UserService.doVerificationCode({
+        code: parameters.code,
+        email: parameters.email,
+      });
+      if (response.code !== 1005) {
+        res.writeHead(302, { Location: `${RouterKeys.activateAccount}?${Object.keys(query)[0]}` });
+      } else {
+        res.writeHead(302, { Location: `${RouterKeys.login}?${Object.keys(query)[0]}` });
+      }
       res.end();
     }
   } catch (error) {

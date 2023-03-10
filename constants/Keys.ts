@@ -21,4 +21,5 @@ export const RouterKeys = {
   eventList: '/event',
   eventDetail: '/event-detail/:eventId',
   myWallet: '/my-wallet',
+  activateAccount: '/activate-account',
 };

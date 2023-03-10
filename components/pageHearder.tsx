@@ -5,7 +5,11 @@ import { CloseOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Router from 'next/router';
 
+import { useAppDispatch } from '../app/hooks';
 import { useCookie } from '../hooks';
+import { resetEventCache } from '../slice/eventCache.slice';
+import { resetTicketsCache } from '../slice/ticketsCache.slice';
+import { resetTicketsListData } from '../slice/tickets.slice';
 import { PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { Images, Colors } from '../theme';
@@ -116,8 +120,13 @@ const PageHearderContainer = styled(Row)`
   }
 `;
 
-const PageHearderComponent = () => {
+const PageHearderComponent = ({
+  setMenuState = () => {}
+}: {
+  setMenuState?: (status: boolean) => void
+}) => {
   const cookie = useCookie([CookieKeys.userLoginToken]);
+  const dispatch = useAppDispatch();
 
   const [isUserToken, setIsUserToken] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
@@ -134,6 +143,13 @@ const PageHearderComponent = () => {
     if (path === window.location.pathname) {
       setShowMenu(false);
     } else {
+      if (path === RouterKeys.eventList) {
+        dispatch(resetEventCache());
+      }
+      if (path === RouterKeys.ticketsList) {
+        dispatch(resetTicketsListData());
+        dispatch(resetTicketsCache());
+      }
       Router.push(path);
     }
   };
@@ -171,10 +187,10 @@ const PageHearderComponent = () => {
                 <Image
                   src={Images.MenuIcon}
                   alt=""
-                  onClick={() => setShowMenu(true)}
+                  onClick={() => { setShowMenu(true); setMenuState(true) }}
                 />
               ) || (
-                <div className="close-icon" onClick={() => setShowMenu(false)}>
+                <div className="close-icon" onClick={() => { setShowMenu(false); setMenuState(false) }}>
                   <CloseOutlined />
                 </div>
               )}

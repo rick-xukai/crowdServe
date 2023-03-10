@@ -44,6 +44,7 @@ const TicketDetail = () => {
   const ticketsDataForAllStatus = useAppSelector(selectTicketsDataForAllStatus);
 
   const [id, setTicketId] = useState<string>('');
+  const [menuState, setMenuState] = useState<boolean>(false);
   const [showQrcode, setShowQrcode] = useState<boolean>(false);
   const [textShowMore, setTextShowMore] = useState<boolean>(false);
   const [countdownNumber, setCountdownNumber] = useState<
@@ -141,7 +142,7 @@ const TicketDetail = () => {
     <>
       {!ticketDetailLoading && (
         <TicketDetailContainer>
-          <PageHearderComponent />
+          <PageHearderComponent setMenuState={setMenuState} />
           <img src={Images.QrcodeNetworkError.src} alt="" style={{ display: 'none' }} />
           <Row>
             <Col span={24} className="detail-background">
@@ -203,7 +204,7 @@ const TicketDetail = () => {
                   ) || (
                     <TextTruncate
                       line={2}
-                      element="span"
+                      element="div"
                       truncateText="…"
                       containerClassName="text-typography"
                       text={ticketDetailData.description || '-'}
@@ -336,7 +337,7 @@ const TicketDetail = () => {
               ) || null}
             </div>
           </div>
-          {(!showQrcode && ticketDetailData.status === TicketStatus[0].key) && (
+          {(!showQrcode && ticketDetailData.status === TicketStatus[0].key && !menuState) && (
             <FloatButton
               onClick={() => setShowQrcode(true)}
               icon={<Image src={Images.QrcodeIcon} alt="" />}
