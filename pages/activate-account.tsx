@@ -316,7 +316,7 @@ const ActivateAccount = ({
             <Form.Item>
               <Button
                 className="signin-btn"
-                disabled={!isPassword(activateAccountFormValue.password) || activateAccountFormValue.email || loading}
+                disabled={!isPassword(activateAccountFormValue.password) || !activateAccountFormValue.email || loading}
                 type="primary"
                 htmlType="submit"
                 onClick={() => setTextShak(false)}
