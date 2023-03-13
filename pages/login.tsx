@@ -222,7 +222,7 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
   const router: any = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
-  const cookies = useCookie([CookieKeys.userLoginToken]);
+  const cookies = useCookie([CookieKeys.userLoginToken, CookieKeys.userLoginEmail]);
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
@@ -246,6 +246,10 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
       const currentDate = new Date();
       const redirect = router.query.redirect;
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+      });
+      cookies.setCookie(CookieKeys.userLoginEmail, loginFormValue.email, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
       });
@@ -321,9 +325,9 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
                         })
                       }
                     />
-                    <p className="forgot-password">
+                    {/* <p className="forgot-password">
                       FORGOT PASSWORD?
-                    </p>
+                    </p> */}
                   </div>
                 </Form.Item>
                 <Form.Item>

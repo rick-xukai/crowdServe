@@ -206,7 +206,15 @@ const ActivateAccountContainer = styled.div`
   }
 `;
 
-const ActivateAccount = ({ defultEmail, activateCode }: { defultEmail: string; activateCode: string }) => {
+const ActivateAccount = ({
+  defultEmail,
+  activateCode,
+  currentTicketId,
+}: {
+  defultEmail: string;
+  activateCode: string;
+  currentTicketId: string;
+}) => {
   const [messageApi, contextHolder] = message.useMessage();
   const cookies = useCookie([CookieKeys.userLoginToken]);
   const dispatch = useAppDispatch();
@@ -226,14 +234,8 @@ const ActivateAccount = ({ defultEmail, activateCode }: { defultEmail: string; a
     password: '',
   });
 
-  const onFinish = (values: any) => {
+  const onFinish = () => {
     if (checked) {
-      if (isPassword(values.password)) {
-        setActivateAccountFormValue({
-          ...activateAccountFormValue,
-          password: values.password,
-        });
-      }
       dispatch(loginAction(activateAccountFormValue));
     } else {
       setTextShak(true);
@@ -247,7 +249,11 @@ const ActivateAccount = ({ defultEmail, activateCode }: { defultEmail: string; a
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
       });
-      router.push(RouterKeys.ticketsList);
+      if (currentTicketId) {
+        router.push(RouterKeys.ticketDetail.replace(':ticketId', currentTicketId));
+      } else {
+        router.push(RouterKeys.ticketsList);
+      }
     }
   }, [data]);
 
@@ -293,7 +299,7 @@ const ActivateAccount = ({ defultEmail, activateCode }: { defultEmail: string; a
               <div>
                 <Input.Password
                   className={`${(activateAccountFormValue.password && 'border-white') || ''}`}
-                  placeholder="Set your password(at least 8 characters)"
+                  placeholder="Set your password (at least 8 characters)"
                   bordered={false}
                   iconRender={(visible) =>
                     (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
@@ -310,7 +316,7 @@ const ActivateAccount = ({ defultEmail, activateCode }: { defultEmail: string; a
             <Form.Item>
               <Button
                 className="signin-btn"
-                disabled={!activateAccountFormValue.password || loading}
+                disabled={!isPassword(activateAccountFormValue.password) || activateAccountFormValue.email || loading}
                 type="primary"
                 htmlType="submit"
                 onClick={() => setTextShak(false)}
@@ -351,12 +357,14 @@ ActivateAccount.getInitialProps = async (ctx: any) => {
   const { query } = ctx;
   let defultEmail = '';
   let activateCode = '';
+  let currentTicketId = '';
   try {
     const parameters = base64Decrypt(Object.keys(query)[0]);
     defultEmail = parameters.email;
     activateCode = parameters.code;
+    currentTicketId = parameters.ticketId;
   } catch (_) {}
-  return { defultEmail, activateCode };
+  return { defultEmail, activateCode, currentTicketId };
 };
 
 export default ActivateAccount;

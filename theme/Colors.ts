@@ -20,6 +20,8 @@ const Colors = {
   success30: '#00D387',
   failed10: '#FFD8E1',
   failed20: '#F11E51',
+  whiteMask: '#ACACAE',
+  brandingMask: '#9B2621',
 };
 
 export default Colors;

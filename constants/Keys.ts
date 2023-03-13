@@ -8,6 +8,7 @@ export const LocalStorageKeys = {
 export const CookieKeys = {
   authUser: 'authUser',
   userLoginToken: 'userLoginToken',
+  userLoginEmail: 'userLoginEmail',
 };
 
 export const RouterKeys = {

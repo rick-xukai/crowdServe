@@ -8,6 +8,8 @@ const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  max-width: 765px;
+  margin: auto;
   .skip-login {
     position: absolute;
     color: ${Colors.white};

@@ -5,6 +5,8 @@ const EventListContainer = styled.div`
   padding: 20px;
   height: 100%;
   overflow: auto;
+  max-width: 765px;
+  margin: auto;
   ::-webkit-scrollbar {
     display: none;
   }
