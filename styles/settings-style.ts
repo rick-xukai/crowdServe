@@ -31,15 +31,19 @@ const SettingsContainer = styled.div`
     font-size: 22px;
   }
   .page-main {
-    margin-top: 20px;
-    padding: 15px 20px 15px 15px;
-    border-radius: 4px;
-    background: ${Colors.grayScale70};
+    margin-top: 60px;
     .info-name,
     .arrow-right {
       font-weight: 400;
       font-size: 17px;
       color: ${Colors.white};
+    }
+    .info-name {
+      display: flex;
+      align-items: center;
+      .name {
+        margin-left: 10px;
+      }
     }
     .arrow-right {
       text-align: right;
@@ -48,6 +52,9 @@ const SettingsContainer = styled.div`
     .ant-divider {
       background: ${Colors.grayScale90};
       margin: 15px 0;
+    }
+    .menu-item-row {
+      margin-bottom: 20px;
     }
   }
   .logout-btn {

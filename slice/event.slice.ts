@@ -1,0 +1,275 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
+import { RootState } from '../app/store';
+import { verificationApi } from '../utils/func';
+import EventService from '../services/API/Event';
+
+/* eslint-disable no-param-reassign, complexity */
+
+export interface ErrorType {
+  code: number | undefined;
+  message: string;
+}
+
+export interface GetEventListPayloadType {
+  page?: number | null;
+  size?: number | null;
+  keyword?: string;
+}
+
+export interface EventListResponseType {
+  id: number;
+  name: string;
+  organizerName: string;
+  image: string;
+  location: string;
+  startTime: string;
+  endTime: string;
+  description: string;
+  status: number;
+}
+
+export interface EventDetailResponseType {
+  id: number;
+  name: string;
+  organizerName: string;
+  image: string;
+  status: number;
+  location: string;
+  startTime: string;
+  endTime: string;
+  description: string;
+}
+
+export interface EventTicketTypeResponseType {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  purchaseLimit: number;
+  image: string;
+  imageType: string;
+  thumbnailUrl: string;
+  thumbnailType: string;
+  externalLink: string;
+  blockchainUrl: string;
+}
+
+/**
+ * Get event list
+ */
+export const getEventListAction = createAsyncThunk<
+  EventListResponseType[],
+  GetEventListPayloadType,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getEventList/getEventListAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventService.getEventList(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * Get event detail
+ */
+export const getEventDetailAction = createAsyncThunk<
+  EventDetailResponseType[],
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getEventDetail/getEventDetailAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventService.getEventDetail(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * Get event ticket type
+ */
+export const getEventTicketTypeAction = createAsyncThunk<
+  EventListResponseType[],
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getEventTicketType/getEventTicketTypeAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventService.getEventTicketType(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+interface EventState {
+  loading: boolean;
+  eventDetailLoading: boolean,
+  eventDetailData: EventDetailResponseType;
+  eventListData: EventListResponseType[];
+  eventTicketTypeData: EventTicketTypeResponseType[];
+  eventDetailError:
+    | {
+      message: string | undefined;
+    }
+    | undefined
+    | null;
+  error:
+    | {
+        message: string | undefined;
+      }
+    | undefined
+    | null;
+}
+
+const initialState: EventState = {
+  loading: true,
+  eventDetailLoading: true,
+  eventListData: [],
+  eventTicketTypeData: [],
+  error: null,
+  eventDetailError: null,
+  eventDetailData: {
+    id: 0,
+    name: '',
+    organizerName: '',
+    image: '',
+    location: '',
+    startTime: '',
+    endTime: '',
+    description: '',
+    status: 0,
+  }
+};
+
+export const eventSlice = createSlice({
+  name: 'event',
+  initialState,
+  reducers: {
+    reset: () => initialState,
+    resetError: (state) => {
+      state.error = null;
+      state.eventDetailError = null;
+    },
+    resetEventListData: (state) => {
+      state.eventListData = [];
+    },
+    resetEventDetailLoading: (state) => {
+      state.eventDetailLoading = true;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getEventListAction.pending, (state) => {
+        state.eventListData = [];
+        state.loading = true;
+      })
+      .addCase(getEventListAction.fulfilled, (state, action: any) => {
+        state.loading = false;
+        state.eventListData = action.payload;
+      })
+      .addCase(getEventListAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(getEventDetailAction.pending, (state) => {
+        state.eventDetailData = {} as EventDetailResponseType;
+        state.eventDetailLoading = true;
+      })
+      .addCase(getEventDetailAction.fulfilled, (state, action: any) => {
+        state.eventDetailData = action.payload;
+      })
+      .addCase(getEventDetailAction.rejected, (state, action) => {
+        state.eventDetailLoading = false;
+        if (action.payload) {
+          state.eventDetailError = action.payload as ErrorType;
+        } else {
+          state.eventDetailError = action.error as ErrorType;
+        }
+      })
+      .addCase(getEventTicketTypeAction.pending, (state) => {
+        state.eventTicketTypeData = [];
+        state.eventDetailLoading = true;
+      })
+      .addCase(getEventTicketTypeAction.fulfilled, (state, action: any) => {
+        state.eventDetailLoading = false;
+        state.eventTicketTypeData = action.payload;
+      })
+      .addCase(getEventTicketTypeAction.rejected, (state, action) => {
+        state.eventDetailLoading = false;
+        if (action.payload) {
+          state.eventDetailError = action.payload as ErrorType;
+        } else {
+          state.eventDetailError = action.error as ErrorType;
+        }
+      });
+  },
+});
+
+export const {
+  reset,
+  resetError,
+  resetEventListData,
+  resetEventDetailLoading,
+} = eventSlice.actions;
+
+export const selectLoading = (state: RootState) => state.event.loading;
+export const selectEventDetailLoading = (state: RootState) => state.event.eventDetailLoading;
+export const selectError = (state: RootState) => state.event.error;
+export const selectEventListData = (state: RootState) => state.event.eventListData;
+export const selectEventTicketTypeData = (state: RootState) => state.event.eventTicketTypeData;
+export const selectEventDetailData = (state: RootState) => state.event.eventDetailData;
+export const selectEventDetailError = (state: RootState) => state.event.eventDetailError;
+
+export default eventSlice.reducer;

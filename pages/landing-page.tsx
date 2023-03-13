@@ -5,18 +5,18 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { isAndroid, isIOS } from 'react-device-detect';
 
+import { base64Decrypt } from '../utils/func';
+import { CookieKeys, RouterKeys } from '../constants/Keys';
 import { AppleStoreLink, GooglePlayLink, AppHost } from '../constants/General';
 import { Images } from '../theme';
 import { LandingPageContainer } from '../styles/landingPage.style';
+import UserService from '../services/API/User/User.service';
 
 const LandingPage: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
     let packageName = '';
-    if (isIOS) {
-      window.location.href = AppleStoreLink;
-    }
     if (isAndroid) {
       const CallApp = require('callapp-lib');
       packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
@@ -46,7 +46,7 @@ const LandingPage: NextPage = () => {
         <title>Download CrowdServe App</title>
       </Head>
       <div className="page-header">
-        <Image className="logo" src={Images.Logo} alt="" />
+        <Image className="logo" src={Images.LogoNameIcon} alt="" />
       </div>
       <div className="page-center">
         <div className="page-content">
@@ -97,6 +97,42 @@ const LandingPage: NextPage = () => {
       </div>
     </LandingPageContainer>
   );
+};
+
+LandingPage.getInitialProps = async (ctx: any) => {
+  const { req, res, query } = ctx;
+  try {
+    const token = req.cookies[CookieKeys.userLoginToken];
+    const parameters = base64Decrypt(Object.keys(query)[0]);
+    if (token) {
+      if (parameters.ticketId) {
+        res.writeHead(302, { Location: RouterKeys.ticketDetail.replace(':ticketId', parameters.ticketId) });
+        res.end();
+      }
+    } else {
+      const parameters = base64Decrypt(Object.keys(query)[0]);
+      const response = await UserService.doVerificationCode({
+        code: parameters.code,
+        email: parameters.email,
+      });
+      if (response.code !== 1005) {
+        res.writeHead(302, { Location: `${RouterKeys.activateAccount}?${Object.keys(query)[0]}` });
+      } else {
+        res.writeHead(302, { Location: `${RouterKeys.login}?${Object.keys(query)[0]}` });
+      }
+      res.end();
+    }
+  } catch (error) {
+    if (isIOS) {
+     res.writeHead(302, { Location: AppleStoreLink });
+    } else if (isAndroid) {
+     res.writeHead(302, { Location: GooglePlayLink });
+    }
+    res.end();
+  }
+  return {
+    props: {}
+  };
 };
 
 export default LandingPage;

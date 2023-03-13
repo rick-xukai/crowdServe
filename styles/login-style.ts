@@ -7,6 +7,15 @@ const LoginContainer = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
+  position: relative;
+  .skip-login {
+    position: absolute;
+    color: ${Colors.white};
+    top: 20px;
+    right: 20px;
+    font-weight: 400;
+    font-size: 15px;
+  }
   .page-main {
     width: 100%;
     position: relative;
@@ -15,7 +24,7 @@ const LoginContainer = styled.div`
         display: flex;
         justify-content: center;
         div {
-          width: 122px;
+          width: 62px;
           height: 62px;
         }
       }
@@ -69,6 +78,7 @@ const LoginContainer = styled.div`
       padding: 4px 4px;
       border-radius: unset;
       background: transparent; 
+      color: ${Colors.white};
       &.ant-input-status-success {
         color: ${Colors.white};
       }

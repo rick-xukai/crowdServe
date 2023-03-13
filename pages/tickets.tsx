@@ -190,7 +190,7 @@ const Tickets = () => {
 
   return (
     <TickersContainer ref={ticketsListRef}>
-      <PageHearderComponent isBack={false} />
+      <PageHearderComponent />
       <Spin
         spinning={loading && !ticketsDataForAllStatus.length}
         indicator={<LoadingOutlined spin />}

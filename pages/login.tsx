@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { Row, Col, Form, Input, Button, message, Checkbox } from 'antd';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../hooks';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
 import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
-import { isEmail, getErrorMessage, isPassword } from '../utils/func';
+import { isEmail, getErrorMessage, isPassword, base64Decrypt } from '../utils/func';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   loginAction,
@@ -25,6 +25,7 @@ import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';
 import { resetTicketsListData } from '../slice/tickets.slice';
+import { resetEventCache } from '../slice/eventCache.slice';
 
 const ActivateAccountComponent = ({
   checkGoogleDoc,
@@ -33,6 +34,7 @@ const ActivateAccountComponent = ({
   checkGoogleDoc: (status: boolean) => void;
   googleDocLink: (link: string) => void;
 }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectLoading);
 
@@ -78,7 +80,7 @@ const ActivateAccountComponent = ({
         }),
       );
       if (result.type === loginAction.fulfilled.toString()) {
-        Router.push(RouterKeys.ticketsList);
+        router.push(RouterKeys.eventList);
       }
     }
   };
@@ -216,7 +218,8 @@ const ActivateAccountComponent = ({
   );
 };
 
-const Login = () => {
+const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) => {
+  const router: any = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const cookies = useCookie([CookieKeys.userLoginToken]);
@@ -226,7 +229,7 @@ const Login = () => {
   const data = useAppSelector(selectData);
 
   const [loginFormValue, setLoginFormValue] = useState<LoginPayloadType>({
-    email: '',
+    email: defultLoginEmail || '',
     password: '',
   });
   const [showActivateAccount, setShowActivateAccount] = useState<boolean>(false);
@@ -241,13 +244,15 @@ const Login = () => {
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
+      const redirect = router.query.redirect;
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
       });
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());
-      Router.push(RouterKeys.ticketsList);
+      dispatch(resetEventCache());
+      router.push(redirect || RouterKeys.eventList);
     }
   }, [data]);
 
@@ -269,6 +274,9 @@ const Login = () => {
 
   return (
     <LoginContainer>
+      <div className="skip-login" onClick={() => router.push(RouterKeys.eventList)}>
+        <span>Skip</span>
+      </div>
       {!checkGoogleDoc && (
         <div className="page-main">
           <Row className="main-logo">
@@ -283,7 +291,7 @@ const Login = () => {
                   LOGIN TO YOUR ACCOUNT
                 </Col>
               </Row>
-              <Form onFinish={onFinish}>
+              <Form onFinish={onFinish} initialValues={{ email: defultLoginEmail }}>
                 <Form.Item name="email">
                   <Input
                     className={`${(loginFormValue.email && 'border-white') || ''}`}
@@ -362,6 +370,16 @@ const Login = () => {
       {contextHolder}
     </LoginContainer>
   );
+};
+
+Login.getInitialProps = async (ctx: any) => {
+  const { query } = ctx;
+  let defultLoginEmail = undefined;
+  try {
+    const parameters = base64Decrypt(Object.keys(query)[0]);
+    defultLoginEmail = parameters.email;
+  } catch (_) {}
+  return { defultLoginEmail };
 };
 
 export default Login;

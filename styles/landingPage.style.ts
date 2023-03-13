@@ -18,9 +18,9 @@ const LandingPageContainer = styled.div`
     }
     .logo {
       width: 115px !important;
-      height: 60px !important;
+      height: 40px !important;
       min-width: 115px !important;
-      min-height: 60px !important;
+      min-height: 40px !important;
       right: unset !important;
     }
   }
@@ -135,9 +135,9 @@ const LandingPageContainer = styled.div`
       padding-right: 12px;
       .logo {
         width: 77px !important;
-        height: 40px !important;
+        height: 30px !important;
         min-width: 77px !important;
-        min-height: 40px !important;
+        min-height: 30px !important;
       }
     }
     .page-content {

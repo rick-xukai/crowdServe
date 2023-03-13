@@ -8,6 +8,7 @@ import AppStore from '../static/images/app-store.svg';
 import GooglePlay from '../static/images/google-play.png';
 import BackGround from '../static/images/background.png';
 import Logo from '../static/images/logo.png';
+import LogoNameIcon from '../static/images/logo-name.png';
 import ButtonVerify from '../static/images/button-verify.png';
 import LandingPageBackground from '../static/images/landing-page-background.png';
 import PhoneDetail from '../static/images/phone-detail.png';
@@ -28,7 +29,22 @@ import QrcodeNetworkError from '../static/images/qr-code-network-error.svg';
 import BackgroundLogo from '../static/images/background-logo.png';
 import QrcodeIcon from '../static/images/qr-code.svg';
 import BlockAppIcon from '../static/images/block-app.svg';
-import AppLogo from '../static/images/app-logo.png';
+import AppLogo from '../static/images/app-logo.svg';
+import ClockIcon from '../static/images/clock.png';
+import NoEventIcon from '../static/images/no-event.svg';
+import NoSearchEventIcon from '../static/images/no-search-event.svg';
+import EventLineIcon from '../static/images/line-event.svg';
+import InstallIcon from '../static/images/install.svg';
+import MenuHomeIcon from '../static/images/menu-home.svg';
+import MenuTicketIcon from '../static/images/menu-ticket.svg';
+import MenuWalletIcon from '../static/images/menu-wallet.svg';
+import MenuPrivacyIcon from '../static/images/menu-privacy.svg';
+import MenuTemsIcon from '../static/images/menu-tems.svg';
+import MenuLogoutIcon from '../static/images/menu-logout.svg';
+import MyWalletIcon from '../static/images/my-wallet.svg';
+import ClearIcon from '../static/images/clear.svg';
+import AllTicketSold from '../static/images/all-ticket-sold.svg';
+import LogoActivateAccount from '../static/images/logo-activate-account.png';
 
 const Images = {
   Safety,
@@ -62,6 +78,22 @@ const Images = {
   QrcodeIcon,
   BlockAppIcon,
   AppLogo,
+  ClockIcon,
+  NoEventIcon,
+  NoSearchEventIcon,
+  EventLineIcon,
+  InstallIcon,
+  MenuHomeIcon,
+  MenuTicketIcon,
+  MenuWalletIcon,
+  MenuPrivacyIcon,
+  MenuTemsIcon,
+  MenuLogoutIcon,
+  MyWalletIcon,
+  LogoNameIcon,
+  ClearIcon,
+  AllTicketSold,
+  LogoActivateAccount,
 };
 
 export default Images;

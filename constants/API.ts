@@ -36,6 +36,15 @@ const API = {
   apiMaintenance: {
     get: '/maintenance',
   },
+  getEventList: {
+    get: '/api/v1/event',
+  },
+  getEventDetail: {
+    get: '/api/v1/event/{eventId}',
+  },
+  getEventDetailTicketType: {
+    get: '/api/v1/event/{eventId}/type',
+  }
 };
 
 export default API;

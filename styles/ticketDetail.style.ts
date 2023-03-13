@@ -14,6 +14,7 @@ const TicketDetailContainer = styled.div`
   }
   .detail-background {
     width: 100%;
+    margin-top: 45px;
     img, video {
       width: 100%;
       height: 100%;
