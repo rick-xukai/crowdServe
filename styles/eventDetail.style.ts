@@ -6,6 +6,8 @@ const EventDetailContainer = styled.div`
   padding-top: 45px;
   height: 100%;
   background: ${Colors.backgorund};
+  max-width: 765px;
+  margin: auto;
   .detail-background {
     width: 100%;
     height: 250px;
@@ -173,12 +175,12 @@ const EventDetailContainer = styled.div`
 const TicketTypeItem = styled(Col)`
   background: ${Colors.backgorund};
   border-radius: 6px;
-  position: relative;
   .type-img {
     height: 162px;
     padding: 6px;
     border-radius: 6px;
     background: ${Colors.grayScale70};
+    position: relative;
     img {
       width: 100%;
       height: 100%;
@@ -218,15 +220,23 @@ const TicketTypeItem = styled(Col)`
     .price {
       color: ${Colors.branding};
     }
+    &.out-stock {
+      .title {
+        color: ${Colors.whiteMask};
+      }
+      .price {
+        color: ${Colors.brandingMask};
+      }
+    }
   }
   .out-stock-mask {
     position: absolute;
-    top: 0;
+    top: 6px;
     left: 0;
-    width: calc(100% - 10px);
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
     right: 0;
     margin: auto;
-    height: 100%;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 6px;
     font-weight: 700;

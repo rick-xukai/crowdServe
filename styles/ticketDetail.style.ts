@@ -5,6 +5,8 @@ const TicketDetailContainer = styled.div`
   height: 100%;
   position: relative;
   background: ${Colors.backgorund};
+  max-width: 765px;
+  margin: auto;
   .goback-icon {
     position: absolute;
     color: ${Colors.white};

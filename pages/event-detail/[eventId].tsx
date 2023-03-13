@@ -232,8 +232,13 @@ const EventDetail = () => {
                                   e.target.src = Images.BackgroundLogo.src;
                                 }}
                               />
+                              {item.stock === 0 && (
+                                <div className="out-stock-mask">
+                                  OUT OF STOCK
+                                </div>
+                              )}
                             </div>
-                            <div className="type-info">
+                            <div className={item.stock === 0 && 'type-info out-stock' || 'type-info'}>
                               <div className="line">
                                 <img src={Images.EventLineIcon.src} alt="" />
                               </div>
@@ -246,11 +251,6 @@ const EventDetail = () => {
                                 </p>
                               </div>
                             </div>
-                            {item.stock === 0 && (
-                              <div className="out-stock-mask">
-                                OUT OF STOCK
-                              </div>
-                            )}
                           </TicketTypeItem>
                         ))}
                       </>

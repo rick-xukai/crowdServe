@@ -7,10 +7,12 @@ interface TicketStatusContainerProps {
   textColor: string;
 }
 
-const TickersContainer = styled.div`
+const TicketsContainer = styled.div`
   padding: 20px;
   height: 100%;
   overflow: auto;
+  max-width: 765px;
+  margin: auto;
   ::-webkit-scrollbar {
     display: none;
   }
@@ -178,7 +180,7 @@ const TicketStatusContainer = styled.span`
 `;
 
 export {
-  TickersContainer,
+  TicketsContainer,
   TicketItemContainer,
   TicketStatusContainer,
 };

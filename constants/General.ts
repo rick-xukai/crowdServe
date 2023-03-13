@@ -18,6 +18,7 @@ export const AppLandingPage = 'https://app.ticket-crowdserve.com/landing-page';
 export const AppHost = 'user.activated.cn';
 export const PrimaryMarket = 'Primary Market';
 export const PurchaseFromFan = 'Purchase From Fan';
+export const DifferentEmailErrorMessafe = 'Please log in with the email address used to purchase your ticket to view your ticket details.';
 export const TicketStatus = [
   {
     text: 'UPCOMING',
