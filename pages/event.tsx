@@ -76,7 +76,9 @@ const EventList = () => {
     if (!value) {
       setSearchInputPlaceholder('Search events');
       dispatch(setEventDataForAll([]));
-      eventListRef.current.addEventListener('scroll', scrollListener, true);
+      if (eventListRef && eventListRef.current) {
+        eventListRef.current.addEventListener('scroll', scrollListener, true);
+      }
     }
     dispatch(resetEventRelatedState());
     dispatch(setSearchKeyword(value));
@@ -137,7 +139,9 @@ const EventList = () => {
         ) {
           dispatch(setIsGetAllData(true));
           dispatch(setIsDisableRequest(true));
-          eventListRef.current.removeEventListener('scroll', scrollListener, true);
+          if (eventListRef && eventListRef.current) {
+            eventListRef.current.removeEventListener('scroll', scrollListener, true);
+          }
         }
       }
     });
