@@ -6,8 +6,6 @@ const EventDetailContainer = styled.div`
   padding-top: 45px;
   height: 100%;
   background: ${Colors.backgorund};
-  max-width: 765px;
-  margin: auto;
   .detail-background {
     width: 100%;
     height: 250px;

@@ -8,8 +8,6 @@ const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  max-width: 765px;
-  margin: auto;
   .skip-login {
     position: absolute;
     color: ${Colors.white};
@@ -77,10 +75,10 @@ const LoginContainer = styled.div`
       height: 50px;
       border: none;
       border-bottom: 0.7px solid ${Colors.grayScale50};
-      padding: 4px 4px;
       border-radius: unset;
       background: transparent; 
       color: ${Colors.white};
+      padding: 0;
       &.ant-input-status-success {
         color: ${Colors.white};
       }
@@ -113,6 +111,18 @@ const LoginContainer = styled.div`
       text-align: right;
       margin-top: 12px;
       margin-bottom: 0;
+    }
+    .tips {
+      font-weight: 400;
+      font-size: 13px;
+      color: ${Colors.grayScale50};
+      &.signup-email {
+        margin-top: 5px;
+        font-weight: 400;
+        font-size: 17px;
+        color: ${Colors.white};
+        margin-bottom: 15px;
+      }
     }
   }
   .page-bottom {

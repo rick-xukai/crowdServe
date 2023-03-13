@@ -29,7 +29,6 @@ const PageHearderContainer = styled(Row)`
   left: 0;
   right: 0;
   margin: auto;
-  max-width: 765px;
   .hearder-action {
     text-align: right;
     display: flex;
@@ -67,7 +66,6 @@ const PageHearderContainer = styled(Row)`
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 40px;
-    max-width: 765px;
     margin: auto;
     .menu-item-row {
       user-select: none;
