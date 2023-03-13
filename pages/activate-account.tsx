@@ -310,7 +310,7 @@ const ActivateAccount = ({ defultEmail, activateCode }: { defultEmail: string; a
             <Form.Item>
               <Button
                 className="signin-btn"
-                disabled={!activateAccountFormValue.password || loading}
+                disabled={!activateAccountFormValue.password || !activateAccountFormValue.email || loading}
                 type="primary"
                 htmlType="submit"
                 onClick={() => setTextShak(false)}
