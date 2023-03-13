@@ -36,8 +36,8 @@ const ActivateAccountContainer = styled.div`
         display: flex;
         justify-content: center;
         div {
-          width: 120px;
-          height: 60px;
+          width: 62px;
+          height: 62px;
         }
       }
     }
@@ -279,7 +279,7 @@ const ActivateAccount = ({
         <div className="page-main">
           <Row className="main-logo">
             <Col span={24} className="logo">
-              <div><Image src={Images.LogoActivateAccount} alt="" /></div>
+              <div><Image src={Images.Logo} alt="" /></div>
             </Col>
           </Row>
           <Row className="main-title">
@@ -333,8 +333,8 @@ const ActivateAccount = ({
                 />
                 <div style={{ marginLeft: 8 }}>
                   <span className="agreement-label">
-                    I agree to CrowdServe <span className="agreement-label-action" onClick={() => setGoogleDocLink(TermsConditionsLink)}>Terms&Conditions</span>
-                    and <span className="agreement-label-action"onClick={() => setGoogleDocLink(PrivacyPolicyLink)}>Privacy Policy.</span>
+                    I agree to CrowdServe <span className="agreement-label-action" onClick={() => { setGoogleDocLink(TermsConditionsLink); setCheckGoogleDoc(true); }}>Terms&Conditions</span>
+                    and <span className="agreement-label-action" onClick={() => { setGoogleDocLink(PrivacyPolicyLink); setCheckGoogleDoc(true); }}>Privacy Policy.</span>
                   </span>
                 </div>
               </div>

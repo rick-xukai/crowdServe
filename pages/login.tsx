@@ -295,20 +295,29 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
                   LOGIN TO YOUR ACCOUNT
                 </Col>
               </Row>
-              <Form onFinish={onFinish} initialValues={{ email: defultLoginEmail }}>
-                <Form.Item name="email">
-                  <Input
-                    className={`${(loginFormValue.email && 'border-white') || ''}`}
-                    placeholder="Email"
-                    bordered={false}
-                    onChange={(e) =>
-                      setLoginFormValue({
-                        ...loginFormValue,
-                        email: e.target.value,
-                      })
-                    }
-                  />
-                </Form.Item>
+              <Form onFinish={onFinish}>
+                {defultLoginEmail && (
+                  <>
+                    <div className="tips">Login with</div>
+                    <div className="tips signup-email">
+                      {defultLoginEmail}
+                    </div>
+                  </>
+                ) || (
+                  <Form.Item name="email">
+                    <Input
+                      className={`${(loginFormValue.email && 'border-white') || ''}`}
+                      placeholder="Email"
+                      bordered={false}
+                      onChange={(e) =>
+                        setLoginFormValue({
+                          ...loginFormValue,
+                          email: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Item>
+                )}
                 <Form.Item name="password" style={{ marginBottom: 0 }}>
                   <div>
                     <Input.Password
