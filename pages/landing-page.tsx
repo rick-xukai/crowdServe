@@ -1,9 +1,10 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { isAndroid, isIOS } from 'react-device-detect';
+import { isAndroid } from 'react-device-detect';
 
 import { base64Decrypt } from '../utils/func';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
@@ -101,34 +102,43 @@ const LandingPage: NextPage = () => {
 
 LandingPage.getInitialProps = async (ctx: any) => {
   const { req, res, query } = ctx;
-  try {
-    const token = req.cookies[CookieKeys.userLoginToken];
-    const parameters = base64Decrypt(Object.keys(query)[0]);
-    if (token) {
-      if (parameters.ticketId) {
-        res.writeHead(302, { Location: RouterKeys.ticketDetail.replace(':ticketId', parameters.ticketId) });
+  if (!_.isEmpty(query)) {
+    try {
+      const token = req.cookies[CookieKeys.userLoginToken];
+      const parameters = base64Decrypt(Object.keys(query)[0]);
+      if (token) {
+        if (parameters.email === req.cookies[CookieKeys.userLoginEmail]) {
+          if (parameters.ticketId) {
+            res.writeHead(302, { Location: RouterKeys.ticketDetail.replace(':ticketId', parameters.ticketId) });
+          }
+        } else  {
+          res.writeHead(302, { Location: `${RouterKeys.ticketsList}?sameAccount=false` });
+        }
+        res.end();
+      } else {
+        const response = await UserService.doVerificationCode({
+          code: parameters.code,
+          email: parameters.email,
+        });
+        if (response.code !== 1005) {
+          res.writeHead(302, { Location: `${RouterKeys.activateAccount}?${Object.keys(query)[0]}` });
+        } else {
+          res.writeHead(302, { Location: `${RouterKeys.login}?${Object.keys(query)[0]}` });
+        }
         res.end();
       }
+    } catch (_) {}
+  } else {
+    if (isAndroid) {
+      res.writeHead(302, { Location: GooglePlayLink });
+      res.end();
     } else {
-      const parameters = base64Decrypt(Object.keys(query)[0]);
-      const response = await UserService.doVerificationCode({
-        code: parameters.code,
-        email: parameters.email,
-      });
-      if (response.code !== 1005) {
-        res.writeHead(302, { Location: `${RouterKeys.activateAccount}?${Object.keys(query)[0]}` });
-      } else {
-        res.writeHead(302, { Location: `${RouterKeys.login}?${Object.keys(query)[0]}` });
-      }
+      res.writeHead(302, { Location: AppleStoreLink });
       res.end();
     }
-  } catch (error) {
-    if (isIOS) {
-     res.writeHead(302, { Location: AppleStoreLink });
-    } else if (isAndroid) {
-     res.writeHead(302, { Location: GooglePlayLink });
-    }
-    res.end();
+    return {
+      props: {}
+    };
   }
   return {
     props: {}

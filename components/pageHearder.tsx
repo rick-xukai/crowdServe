@@ -29,6 +29,7 @@ const PageHearderContainer = styled(Row)`
   left: 0;
   right: 0;
   margin: auto;
+  max-width: 765px;
   .hearder-action {
     text-align: right;
     display: flex;
@@ -66,6 +67,8 @@ const PageHearderContainer = styled(Row)`
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 40px;
+    max-width: 765px;
+    margin: auto;
     .menu-item-row {
       user-select: none;
       margin-bottom: 20px;
@@ -125,7 +128,7 @@ const PageHearderComponent = ({
 }: {
   setMenuState?: (status: boolean) => void
 }) => {
-  const cookie = useCookie([CookieKeys.userLoginToken]);
+  const cookie = useCookie([CookieKeys.userLoginToken, CookieKeys.userLoginEmail]);
   const dispatch = useAppDispatch();
 
   const [isUserToken, setIsUserToken] = useState<boolean>(false);
@@ -136,6 +139,7 @@ const PageHearderComponent = ({
 
   const userLogout = () => {
     cookie.removeCookie(CookieKeys.userLoginToken);
+    cookie.removeCookie(CookieKeys.userLoginEmail);
     Router.push(RouterKeys.login);
   };
 
@@ -164,7 +168,7 @@ const PageHearderComponent = ({
           {checkGoogleDoc && (
             <ArrowLeftOutlined onClick={() => setCheckGoogleDoc(false)} />
           ) || (
-            <Image src={Images.LogoNameIcon} alt="" />
+            <Image src={Images.LogoNameIcon} alt="" onClick={() => Router.push(RouterKeys.eventList)} />
           )}
         </div>
       </Col>
@@ -183,10 +187,10 @@ const PageHearderComponent = ({
                 <Image
                   src={Images.MenuIcon}
                   alt=""
-                  onClick={() => { setShowMenu(true); setMenuState(true) }}
+                  onClick={() => { setShowMenu(true); setMenuState(true); }}
                 />
               ) || (
-                <div className="close-icon" onClick={() => { setShowMenu(false); setMenuState(false) }}>
+                <div className="close-icon" onClick={() => { setShowMenu(false); setMenuState(false); }}>
                   <CloseOutlined />
                 </div>
               )}

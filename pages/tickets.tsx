@@ -3,7 +3,7 @@ import { Row, Col, Spin, message } from 'antd';
 import _ from 'lodash';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { isSafari } from 'react-device-detect';
 
 import AuthHoc from '../components/hoc/AuthHoc';
@@ -14,6 +14,7 @@ import {
   FormatTimeKeys,
   DefaultPageSize,
   DefaultPage,
+  DifferentEmailErrorMessafe,
 } from '../constants/General';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -41,12 +42,13 @@ import { Images } from '../theme';
 import OpenAppComponent from '../components/openAppComponent';
 import PageHearderComponent from '../components/pageHearder';
 import {
-  TickersContainer,
+  TicketsContainer,
   TicketItemContainer,
   TicketStatusContainer,
 } from '../styles/tickets.style';
 
 const Tickets = () => {
+  const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const ticketsListRef = useRef<any>(null);
@@ -68,10 +70,10 @@ const Tickets = () => {
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
     dispatch(setScrollValue(scrollTop));
-    if (scrollTop + clientHeight + 20 > scrollHeight) {
+    if (scrollTop + clientHeight + 40 > scrollHeight) {
       dispatch(setIsDisableRequest(false));
     }
-    setIsPageBottom(scrollTop + clientHeight + 20 > scrollHeight);
+    setIsPageBottom(scrollTop + clientHeight + 40 > scrollHeight);
   };
 
   const scrollListener = useCallback((e: any) => {
@@ -176,6 +178,17 @@ const Tickets = () => {
   }, [ticketsDataForAllStatus]);
 
   useEffect(() => {
+    if (!_.isEmpty(router.query)) {
+      if (router.query.sameAccount === 'false') {
+        messageApi.open({
+          content: DifferentEmailErrorMessafe,
+          className: 'error-message-tickets',
+        });
+      }
+    }
+  }, [router.isReady]);
+
+  useEffect(() => {
     setIsFirstRender(false);
     if (!isGetAllData && ticketsListRef && ticketsListRef.current) {
       ticketsListRef.current.addEventListener('scroll', scrollListener, true);
@@ -189,7 +202,7 @@ const Tickets = () => {
   }, []);
 
   return (
-    <TickersContainer ref={ticketsListRef}>
+    <TicketsContainer ref={ticketsListRef}>
       <PageHearderComponent />
       <Spin
         spinning={loading && !ticketsDataForAllStatus.length}
@@ -210,7 +223,7 @@ const Tickets = () => {
                     <TicketItemContainer
                       key={item.id}
                       onClick={() => {
-                        Router.push(
+                        router.push(
                           RouterKeys.ticketDetail.replace(
                             ':ticketId',
                             item.id.toString()
@@ -325,7 +338,7 @@ const Tickets = () => {
       </Spin>
       <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
       {contextHolder}
-    </TickersContainer>
+    </TicketsContainer>
   );
 };
 
