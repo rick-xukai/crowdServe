@@ -143,13 +143,9 @@ const PageHearderComponent = ({
     if (path === window.location.pathname) {
       setShowMenu(false);
     } else {
-      if (path === RouterKeys.eventList) {
-        dispatch(resetEventCache());
-      }
-      if (path === RouterKeys.ticketsList) {
-        dispatch(resetTicketsListData());
-        dispatch(resetTicketsCache());
-      }
+      dispatch(resetEventCache());
+      dispatch(resetTicketsListData());
+      dispatch(resetTicketsCache());
       Router.push(path);
     }
   };
