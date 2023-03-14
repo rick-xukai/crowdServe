@@ -348,7 +348,7 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
                     className="signin-btn"
                     disabled={
                       !loginFormValue.email ||
-                      !loginFormValue.password ||
+                      !isPassword(loginFormValue.password) ||
                       loading
                     }
                     type="primary"
