@@ -70,10 +70,10 @@ const Tickets = () => {
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
     dispatch(setScrollValue(scrollTop));
-    if (scrollTop + clientHeight + 40 > scrollHeight) {
+    if (scrollTop + clientHeight + 80 > scrollHeight) {
       dispatch(setIsDisableRequest(false));
     }
-    setIsPageBottom(scrollTop + clientHeight + 40 > scrollHeight);
+    setIsPageBottom(scrollTop + clientHeight + 80 > scrollHeight);
   };
 
   const scrollListener = useCallback((e: any) => {
