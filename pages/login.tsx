@@ -238,7 +238,11 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
 
   const onFinish = (values: LoginPayloadType) => {
-    dispatch(loginAction(values));
+    if (defultLoginEmail) {
+      dispatch(loginAction(loginFormValue));
+    } else {
+      dispatch(loginAction(values));
+    }
   };
 
   useEffect(() => {

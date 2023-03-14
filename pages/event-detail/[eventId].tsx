@@ -225,7 +225,7 @@ const EventDetail = () => {
                           >
                             <div className="type-img">
                               <img
-                                src={item.image}
+                                src={item.thumbnailUrl}
                                 alt=""
                                 onError={(e: any) => {
                                   e.target.onerror = null;
