@@ -127,7 +127,7 @@ LandingPage.getInitialProps = async (ctx: any) => {
         }
         res.end();
       }
-    } catch (_) {}
+    } catch (error) {}
   } else {
     if (isAndroid) {
       res.writeHead(302, { Location: GooglePlayLink });
