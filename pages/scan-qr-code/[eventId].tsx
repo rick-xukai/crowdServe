@@ -293,7 +293,6 @@ const ScanQrCodePage: NextPage = () => {
     const { eventId } = router.query;
     if (eventId) {
       setEventId(eventId.toString());
-      localStorage.setItem(LocalStorageKeys.eventIdForScan, eventId.toString());
       checkEvent(eventId.toString());
     }
   }, [router.isReady]);
@@ -380,7 +379,7 @@ export async function getServerSideProps(ctx: any) {
     const handleAuth = () => {
       const token = req.cookies[CookieKeys.authUser];
       if (!token) {
-        res.writeHead(302, { Location: RouterKeys.scanLogin });
+        res.writeHead(302, { Location: `${RouterKeys.scanLogin}?eventId=${query.eventId || ''}` });
         res.end();
         return {
           props: {}
