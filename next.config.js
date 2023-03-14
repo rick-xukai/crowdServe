@@ -11,7 +11,16 @@ const nextConfig = {
   },
   publicRuntimeConfig: {
     buildTime: new Date()
-  }
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/event',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;

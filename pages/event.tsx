@@ -33,6 +33,8 @@ import {
   setIsGetAllData,
   selectIsGetAllData,
   resetEventRelatedState,
+  setEventDataForSearch,
+  selectEventDataForSearch,
 } from '../slice/eventCache.slice';
 import { EventListContainer, EventItemContainer } from '../styles/event.style';
 import PageHearderComponent from '../components/pageHearder';
@@ -52,6 +54,7 @@ const EventList = () => {
   const isDisableRequest = useAppSelector(selectIsDisableRequest);
   const isGetAllData = useAppSelector(selectIsGetAllData);
   const listScrollValue = useAppSelector(selectScrollValue);
+  const eventDataForSearch = useAppSelector(selectEventDataForSearch);
 
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
@@ -76,10 +79,9 @@ const EventList = () => {
     if (!value) {
       setSearchInputPlaceholder('Search events');
       dispatch(setEventDataForAll([]));
-      if (eventListRef && eventListRef.current) {
-        eventListRef.current.addEventListener('scroll', scrollListener, true);
-      }
     }
+    dispatch(setEventDataForSearch([]));
+    eventListRef.current.addEventListener('scroll', scrollListener, true);
     dispatch(resetEventRelatedState());
     dispatch(setSearchKeyword(value));
   };
@@ -159,10 +161,14 @@ const EventList = () => {
           ),
         );
       } else {
-        dispatch(setEventDataForAll(data));
+        dispatch(setEventDataForSearch([...eventDataForSearch, ...data]));
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    dispatch(setEventDataForAll(eventDataForSearch));
+  }, [eventDataForSearch]);
 
   useEffect(() => {
     if (eventDataForAll.length) {
