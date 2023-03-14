@@ -28,6 +28,14 @@ const ActivateAccountContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  .skip-login {
+    position: absolute;
+    color: ${Colors.white};
+    top: 20px;
+    right: 20px;
+    font-weight: 400;
+    font-size: 15px;
+  }
   .page-main {
     width: 100%;
     position: relative;
@@ -275,6 +283,9 @@ const ActivateAccount = ({
 
   return (
     <ActivateAccountContainer>
+      <div className="skip-login" onClick={() => router.push(RouterKeys.eventList)}>
+        <span>Skip</span>
+      </div>
       {!checkGoogleDoc && (
         <div className="page-main">
           <Row className="main-logo">

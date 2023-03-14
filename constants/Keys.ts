@@ -1,6 +1,5 @@
 export const LocalStorageKeys = {
   rememberMe: 'rememberMe',
-  eventIdForScan: 'eventIdForScan',
   closeInstallAppTime: 'closeInstallAppTime',
   currentPageToSetting: 'currentPageToSetting',
 };
