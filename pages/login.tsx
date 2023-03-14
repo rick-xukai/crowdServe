@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { isEmpty } from 'lodash';
 import { Row, Col, Form, Input, Button, message, Checkbox } from 'antd';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
@@ -218,7 +219,15 @@ const ActivateAccountComponent = ({
   );
 };
 
-const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) => {
+const Login = ({
+  defultLoginEmail,
+  currentTicketId,
+  redirectPage,
+}: { 
+  defultLoginEmail: undefined | string;
+  currentTicketId: string;
+  redirectPage: string;
+}) => {
   const router: any = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
@@ -248,7 +257,6 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
-      const redirect = router.query.redirect;
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
@@ -260,7 +268,11 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());
       dispatch(resetEventCache());
-      router.push(redirect || RouterKeys.eventList);
+      if (currentTicketId) {
+        router.push(RouterKeys.ticketDetail.replace(':ticketId', currentTicketId));
+      } else {
+        router.push(redirectPage || RouterKeys.eventList);
+      }
     }
   }, [data]);
 
@@ -392,11 +404,17 @@ const Login = ({ defultLoginEmail }: { defultLoginEmail: undefined | string }) =
 Login.getInitialProps = async (ctx: any) => {
   const { query } = ctx;
   let defultLoginEmail = undefined;
+  let currentTicketId = '';
+  let redirectPage = '';
+  if (!isEmpty(query)) {
+    redirectPage = query.redirect || '';
+  }
   try {
     const parameters = base64Decrypt(Object.keys(query)[0]);
     defultLoginEmail = parameters.email;
+    currentTicketId = parameters.ticketId;
   } catch (_) {}
-  return { defultLoginEmail };
+  return { defultLoginEmail, currentTicketId, redirectPage };
 };
 
 export default Login;

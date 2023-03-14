@@ -9,7 +9,7 @@ import users from '../users';
 import { LoginContainer } from '../styles/scan-login.style';
 import { useCookie } from '../hooks';
 
-const ScanLogin = () => {
+const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
   const [rememberMe, setRememberMe] = useState<boolean>(true);
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -55,9 +55,7 @@ const ScanLogin = () => {
         localStorage.removeItem(LocalStorageKeys.rememberMe);
       }
       cookies.setCookie(CookieKeys.authUser, userInfo);
-      const eventId = localStorage.getItem(LocalStorageKeys.eventIdForScan);
-      localStorage.removeItem(LocalStorageKeys.eventIdForScan);
-      Router.push(RouterKeys.scanQrCode.replace(':eventId', eventId || ''));
+      Router.push(RouterKeys.scanQrCode.replace(':eventId', currentEventId));
     } else {
       setIsValidUser(false);
     }
@@ -111,6 +109,15 @@ const ScanLogin = () => {
       </div>
     </LoginContainer>
   );
+};
+
+ScanLogin.getInitialProps = async (ctx: any) => {
+  const { query } = ctx;
+  let currentEventId = '';
+  try {
+    currentEventId = query.eventId;
+  } catch (_) {}
+  return { currentEventId };
 };
 
 export default ScanLogin;
