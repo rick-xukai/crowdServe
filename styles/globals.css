@@ -53,6 +53,7 @@ a {
   width: calc(100% - 20px);
   margin: auto;
   border-radius: 20px;
+  max-width: 400px;
 }
 
 .ant-drawer-content {

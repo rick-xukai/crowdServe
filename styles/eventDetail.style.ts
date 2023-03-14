@@ -6,9 +6,14 @@ const EventDetailContainer = styled.div`
   padding-top: 45px;
   height: 100%;
   background: ${Colors.backgorund};
+  max-width: 1240px;
+  margin: auto;
   .detail-background {
     width: 100%;
     height: 250px;
+    @media (min-width: 1023px) {
+      height: 400px;
+    }
     img {
       width: 100%;
       height: 100%;
@@ -149,6 +154,9 @@ const EventDetailContainer = styled.div`
   .ant-tabs-nav-list {
     justify-content: space-between;
     width: 100%;
+    @media (min-width: 767px) {
+      display: block !important;
+    }
   }
   .install-app {
     text-align: center;

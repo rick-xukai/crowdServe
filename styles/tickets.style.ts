@@ -11,6 +11,8 @@ const TicketsContainer = styled.div`
   padding: 20px;
   height: 100%;
   overflow: auto;
+  max-width: 1280px;
+  margin: auto;
   ::-webkit-scrollbar {
     display: none;
   }
@@ -75,6 +77,23 @@ const TicketsContainer = styled.div`
   .ant-spin-nested-loading .ant-spin-blur::after {
     opacity: 0;
   }
+  .tickets-list-container {
+    @media (min-width: 767px) {
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 358px);
+      grid-gap: 12px;
+      justify-content: center;
+    }
+    @media (min-width: 1023px) {
+      grid-template-columns: repeat(auto-fill, 320px);
+      grid-gap: 12px;
+    }
+    @media (min-width: 1280px) {
+      grid-template-columns: repeat(auto-fill, 290px);
+      grid-gap: 24px;
+    }
+  }
 `;
 
 const TicketItemContainer = styled.div`
@@ -83,6 +102,17 @@ const TicketItemContainer = styled.div`
   min-height: 223px;
   margin-bottom: 20px;
   position: relative;
+  @media (min-width: 767px) {
+    min-width: 358px;
+    margin-bottom: 0;
+  }
+  @media (min-width: 1023px) {
+    min-width: 315px;
+  }
+  @media (min-width: 1280px) {
+    min-width: 292px;
+    max-width: 292px;
+  }
   .ticket-background {
     position: absolute;
     top: 0;

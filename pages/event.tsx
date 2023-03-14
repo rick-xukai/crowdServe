@@ -5,6 +5,7 @@ import { Row, Col, Input, message, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
+import { isMobile } from 'react-device-detect';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { RouterKeys } from '../constants/Keys';
@@ -205,9 +206,9 @@ const EventList = () => {
             <Col className="event-list" span={24}>
               <div className="page-title">
                 <Row>
-                  <Col span={24} className="title">EVENTS</Col>
+                  <Col span={24} md={12} className="title">EVENTS</Col>
                   {showSearchInput && (
-                    <Col span={24}>
+                    <Col span={24} md={12}>
                       <Input.Search
                         allowClear={{ clearIcon: <Image src={Images.ClearIcon} alt="" /> }}
                         defaultValue={searchKeyword}
@@ -222,7 +223,7 @@ const EventList = () => {
                 </Row>
               </div>
               {eventDataForAll.length && (
-                <>
+                <div className="event-list-container">
                   {eventDataForAll.map((item) => (
                     <EventItemContainer
                       key={item.id}
@@ -281,13 +282,13 @@ const EventList = () => {
                       </div>
                     </EventItemContainer>
                   ))}
-                  {loading && eventDataForAll.length && (
+                  {loading && eventDataForAll.length && isMobile && (
                     <div className="load-more">
                       <LoadingOutlined />
                       Loading...
                     </div>
                   )}
-                </>
+                </div>
               ) || (
                 <>
                   {!eventDataForAll.length && !loading && (
@@ -308,7 +309,9 @@ const EventList = () => {
           </Row>
         </div>
       </Spin>
-      <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
+      {isMobile && (
+        <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
+      )}
       {contextHolder}
     </EventListContainer>
   );

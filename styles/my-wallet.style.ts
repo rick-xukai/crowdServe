@@ -8,8 +8,11 @@ const MyWalletContainer = styled.div`
   height: 100%;
   padding: 20px;
   position: relative;
+  max-width: 1240px;
+  margin: auto;
   .page-main {
     text-align: center;
+    margin: auto;
     .title {
       margin-top: 20px;
       margin-bottom: 10px;

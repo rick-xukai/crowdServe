@@ -220,6 +220,8 @@ const EventDetail = () => {
                         {eventTicketTypeFilter.map((item) => (
                           <TicketTypeItem
                             span={12}
+                            md={6}
+                            lg={4}
                             key={item.id}
                             onClick={() => toShopify(item.externalLink, item.stock)}
                           >

@@ -29,6 +29,11 @@ const PageHearderContainer = styled(Row)`
   left: 0;
   right: 0;
   margin: auto;
+  max-width: 1240px;
+  @media (min-width: 1280px) {
+    padding: 0;
+    height: 60px;
+  }
   .hearder-action {
     text-align: right;
     display: flex;
@@ -40,6 +45,10 @@ const PageHearderContainer = styled(Row)`
     height: 30px;
     display: flex;
     align-items: center;
+    @media (min-width: 1280px) {
+      width: 100px;
+      height: 40px;
+    }
   }
   .hearder-back {
     color: ${Colors.white};
@@ -67,6 +76,11 @@ const PageHearderContainer = styled(Row)`
     padding-right: 20px;
     padding-top: 40px;
     margin: auto;
+    max-width: 1240px;
+    @media (min-width: 1280px) {
+      padding-left: 0;
+      padding-right: 0;
+    }
     .menu-item-row {
       user-select: none;
       margin-bottom: 20px;
