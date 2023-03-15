@@ -7,7 +7,7 @@ import Router from 'next/router';
 
 import { useAppDispatch } from '../app/hooks';
 import { useCookie } from '../hooks';
-import { resetEventCache } from '../slice/eventCache.slice';
+import { resetEventCache, setEventDataForSearch } from '../slice/eventCache.slice';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';
 import { resetTicketsListData } from '../slice/tickets.slice';
 import { PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
@@ -45,6 +45,7 @@ const PageHearderContainer = styled(Row)`
     height: 30px;
     display: flex;
     align-items: center;
+    cursor: pointer;
     @media (min-width: 1280px) {
       width: 100px;
       height: 40px;
@@ -160,6 +161,7 @@ const PageHearderComponent = ({
       setShowMenu(false);
     } else {
       dispatch(resetEventCache());
+      dispatch(setEventDataForSearch([]));
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());
       Router.push(path);

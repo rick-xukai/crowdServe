@@ -13,6 +13,7 @@ import { formatTimeStrByTimeString } from '../utils/func';
 import { FormatTimeKeys, DefaultPageSize } from '../constants/General';
 import { Images } from '../theme';
 import {
+  resetEventListData,
   selectEventListData,
   getEventListAction,
   selectLoading,
@@ -162,14 +163,17 @@ const EventList = () => {
           ),
         );
       } else {
-        dispatch(setEventDataForSearch([...eventDataForSearch, ...data]));
+        dispatch(
+          setEventDataForSearch(
+             _.uniqWith(
+              [...eventDataForSearch, ...data],
+              _.isEqual
+            )
+          ),
+        );
       }
     }
   }, [data]);
-
-  useEffect(() => {
-    dispatch(setEventDataForAll(eventDataForSearch));
-  }, [eventDataForSearch]);
 
   useEffect(() => {
     if (eventDataForAll.length) {
@@ -185,6 +189,7 @@ const EventList = () => {
       eventListRef.current.addEventListener('scroll', scrollListener, true);
     }
     return () => {
+      dispatch(resetEventListData());
       dispatch(resetError());
       dispatch(resetEventDetailLoading());
       if (eventListRef && eventListRef.current) {
@@ -222,9 +227,9 @@ const EventList = () => {
                   )}
                 </Row>
               </div>
-              {eventDataForAll.length && (
+              {(searchKeyword && eventDataForSearch ||  eventDataForAll).length && (
                 <div className="event-list-container">
-                  {eventDataForAll.map((item) => (
+                  {(searchKeyword && eventDataForSearch ||  eventDataForAll).map((item) => (
                     <EventItemContainer
                       key={item.id}
                       onClick={() => {
@@ -282,7 +287,7 @@ const EventList = () => {
                       </div>
                     </EventItemContainer>
                   ))}
-                  {loading && eventDataForAll.length && isMobile && (
+                  {loading && (searchKeyword && eventDataForSearch ||  eventDataForAll).length && isMobile && (
                     <div className="load-more">
                       <LoadingOutlined />
                       Loading...
@@ -291,7 +296,7 @@ const EventList = () => {
                 </div>
               ) || (
                 <>
-                  {!eventDataForAll.length && !loading && (
+                  {!(searchKeyword && eventDataForSearch ||  eventDataForAll).length && !loading && (
                     <Row className="no-event-row">
                       <Col span={24} className="no-event">
                         <div style={{ margin: 'auto', textAlign: 'center' }}>
