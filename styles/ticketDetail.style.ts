@@ -5,6 +5,8 @@ const TicketDetailContainer = styled.div`
   height: 100%;
   position: relative;
   background: ${Colors.backgorund};
+  max-width: 1240px;
+  margin: auto;
   .goback-icon {
     position: absolute;
     color: ${Colors.white};
@@ -15,6 +17,12 @@ const TicketDetailContainer = styled.div`
   .detail-background {
     width: 100%;
     margin-top: 45px;
+    @media (min-width: 1023px) {
+      height: 400px;
+      img, video {
+        object-fit: cover;
+      }
+    }
     img, video {
       width: 100%;
       height: 100%;
@@ -24,6 +32,24 @@ const TicketDetailContainer = styled.div`
     padding: 10px 10px 103px 10px;
     background: ${Colors.backgorund};
     overflow: hidden;
+    @media (min-width: 1023px) {
+      .info-container {
+        border: none !important;
+        box-shadow: unset !important;
+        background: ${Colors.backgorund} !important;
+      }
+    }
+    @media (min-width: 1280px) {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      .info-container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        border: none !important;
+        box-shadow: unset !important;
+        background: ${Colors.backgorund} !important;
+      }
+    }
     &.detail-info-no-code {
       padding-bottom: 10px;
     }
@@ -47,8 +73,20 @@ const TicketDetailContainer = styled.div`
       }
       .border-line {
         margin-bottom: 15px;
+        span {
+          width: 100% !important;
+        }
         img {
           left: 3px !important;
+          object-fit: cover;
+        }
+        @media (min-width: 1023px) {
+          border: 0.6px solid ${Colors.grayScale90};
+          margin-top: 20px;
+          margin-bottom: 20px;
+          .ant-col {
+            display: none;
+          }
         }
       }
       .ticket-name {
@@ -119,6 +157,9 @@ const TicketDetailContainer = styled.div`
       z-index: 1;
       left: -30px;
       bottom: -28px;
+      @media (min-width: 1023px) {
+        display: none;
+      }
     }
     .circle-right {
       position: absolute;
@@ -130,6 +171,9 @@ const TicketDetailContainer = styled.div`
       z-index: 1;
       right: -30px;
       bottom: -28px;
+      @media (min-width: 1023px) {
+        display: none;
+      }
     }
   }
   .text-typography {
@@ -157,6 +201,7 @@ const TicketDetailContainer = styled.div`
     margin: auto;
     width: 72px;
     height: 72px;
+    background: ${Colors.black};
     .ant-float-btn-body {
       background: ${Colors.branding};
       box-shadow: 0px 1px 12px rgb(0 0 0 / 25%);

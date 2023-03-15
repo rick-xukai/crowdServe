@@ -20,6 +20,10 @@ const OpenAppContainer = styled.div`
   border-radius: 6px;
   padding: 10px;
   z-index: 1;
+  max-width: 1240px;
+  left: 0;
+  right: 0;
+  margin: auto;
   .main-row {
     height: 100%;
   }

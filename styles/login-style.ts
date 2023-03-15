@@ -19,6 +19,8 @@ const LoginContainer = styled.div`
   .page-main {
     width: 100%;
     position: relative;
+    max-width: 375px;
+    margin: auto;
     .main-logo {
       .logo {
         display: flex;

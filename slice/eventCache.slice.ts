@@ -8,6 +8,7 @@ import { EventListResponseType } from './event.slice';
 
 interface EventCacheState {
   eventDataForAll: EventListResponseType[];
+  eventDataForSearch: EventListResponseType[];
   currentPage: number;
   searchKeyword: string;
   isDisableRequest: boolean;
@@ -17,6 +18,7 @@ interface EventCacheState {
 
 const initialState: EventCacheState = {
   eventDataForAll: [],
+  eventDataForSearch: [],
   searchKeyword: '',
   currentPage: DefaultPage,
   isDisableRequest: false,
@@ -37,6 +39,9 @@ export const eventCacheSlice = createSlice({
     },
     setEventDataForAll: (state, action) => {
       state.eventDataForAll = action.payload;
+    },
+    setEventDataForSearch: (state, action) => {
+      state.eventDataForSearch = action.payload;
     },
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
@@ -65,6 +70,7 @@ export const {
   setScrollValue,
   setSearchKeyword,
   resetEventRelatedState,
+  setEventDataForSearch,
 } = eventCacheSlice.actions;
 
 export const selectEventDataForAll = (state: RootState) => state.eventCache.eventDataForAll;
@@ -73,5 +79,6 @@ export const selectSearchKeyword = (state: RootState) => state.eventCache.search
 export const selectIsDisableRequest = (state: RootState) => state.eventCache.isDisableRequest;
 export const selectIsGetAllData = (state: RootState) => state.eventCache.isGetAllData;
 export const selectScrollValue = (state: RootState) => state.eventCache.scrollValue;
+export const selectEventDataForSearch = (state: RootState) => state.eventCache.eventDataForSearch;
 
 export default eventCacheSlice.reducer;

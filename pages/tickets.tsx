@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { isSafari } from 'react-device-detect';
+import { isSafari, isMobile } from 'react-device-detect';
 
 import AuthHoc from '../components/hoc/AuthHoc';
 import { formatTimeStrByTimeString, checkStatusIcon } from '../utils/func';
@@ -218,7 +218,7 @@ const Tickets = () => {
                 </Row>
               </div>
               {ticketsDataForAllStatus.length && (
-                <>
+                <div className="tickets-list-container">
                   {ticketsDataForAllStatus.map((item) => (
                     <TicketItemContainer
                       key={item.id}
@@ -311,13 +311,13 @@ const Tickets = () => {
                       </div>
                     </TicketItemContainer>
                   ))}
-                  {loading && ticketsDataForAllStatus.length && (
+                  {loading && ticketsDataForAllStatus.length && isMobile && (
                     <div className="load-more">
                       <LoadingOutlined />
                       Loading...
                     </div>
                   )}
-                </>
+                </div>
               ) || (
                 <>
                   {!ticketsDataForAllStatus.length && !loading && (
@@ -336,7 +336,9 @@ const Tickets = () => {
           </Row>
         </div>
       </Spin>
-      <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
+      {isMobile && (
+        <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
+      )}
       {contextHolder}
     </TicketsContainer>
   );
