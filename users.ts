@@ -1,7 +1,7 @@
 const users = [
   {
     "user": "scan001",
-    "password": "qZKwV2"
+    "password": "crowdserve"
   }
 ];
 
