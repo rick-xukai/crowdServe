@@ -81,6 +81,7 @@ const PageHearderContainer = styled(Row)`
     @media (min-width: 1280px) {
       padding-left: 0;
       padding-right: 0;
+      height: calc(100% - 55px);
     }
     .menu-item-row {
       user-select: none;
