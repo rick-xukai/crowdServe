@@ -8,6 +8,8 @@ const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  max-width: 400px;
+  margin: auto;
   .skip-login {
     position: absolute;
     color: ${Colors.white};
@@ -15,6 +17,7 @@ const LoginContainer = styled.div`
     right: 20px;
     font-weight: 400;
     font-size: 15px;
+    cursor: pointer;
   }
   .page-main {
     width: 100%;
@@ -215,7 +218,7 @@ const LoginContainer = styled.div`
     border-radius: 2px;
   }
   .code-sent {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     .title {
       font-weight: 300;
       font-size: 17px;
@@ -226,6 +229,19 @@ const LoginContainer = styled.div`
       font-size: 17px;
       color: ${Colors.grayScale20};
     }
+  }
+  .ant-divider-horizontal.ant-divider-with-text {
+    margin: 24px 0;
+  }
+  .ant-divider-inner-text {
+    font-weight: 400;
+    font-size: 15px;
+    color: ${Colors.grayScale20};
+    padding-top: 3px;
+  }
+  .ant-divider-horizontal.ant-divider-with-text::before,
+  .ant-divider-horizontal.ant-divider-with-text::after {
+    background: ${Colors.grayScale50};
   }
 `;
 

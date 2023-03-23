@@ -3,17 +3,25 @@ const Messages = {
     code: 200,
     text: 'Ticket is verified successfully!',
   },
+  apiError: {
+    code: 500,
+    text: 'Network Error.',
+  },
+  requestFailed: {
+    code: 'ERR_NETWORK',
+    text: 'Network Error.',
+  },
   notFound: {
     code: 404,
-    text: `User doesn't exist.`,
+    text: `Email address not found. Please check your email address or create a new account.`,
   },
   activateAccountUserDosentExist1001: {
     code: 1001,
-    text: `User doesn't exist.`,
+    text: `Email address not found. Please check your email address or create a new account.`,
   },
   activateAccountUserDosentExist1002: {
     code: 1002,
-    text: `User doesn't exist.`,
+    text: `Email address not found. Please check your email address or create a new account.`,
   },
   invalidPassword: {
     code: 1003,
@@ -54,7 +62,15 @@ const Messages = {
   eventMismatch : {
     code: 1042,
     text: 'Invalid QR code, this ticket is not accessible for this event.'
-  }
+  },
+  alreadyUserGoogleRegister: {
+    code: 1043,
+    text: 'This email address has been registered via a Google account. Please log in with your Google account or use a different email address to create a new account.',
+  },
+  continueToRegister: {
+    code: 1044,
+    text: '',
+  },
 };
 
 export default Messages;

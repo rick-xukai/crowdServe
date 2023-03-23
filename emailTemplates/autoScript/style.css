@@ -20,15 +20,15 @@ a,
 }
 
 .email-header {
-  height: 72px;
+  height: 95px;
   background: #27272A;
   display: flex;
   align-items: center;
 }
 
 .email-logo {
-  width: 100px;
-  height: 65px;
+  width: 180px;
+  height: 70px;
   margin: auto;
 }
 
