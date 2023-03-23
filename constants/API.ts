@@ -6,6 +6,9 @@ const API = {
   login: {
     post: '/api/v1/user/session',
   },
+  registerAccount: {
+    post: '/api/v1/user',
+  },
   verifyUser: {
     post: '/api/v1/user/status/verify',
   },

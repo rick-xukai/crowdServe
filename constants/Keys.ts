@@ -22,4 +22,6 @@ export const RouterKeys = {
   eventDetail: '/event-detail/:eventId',
   myWallet: '/my-wallet',
   activateAccount: '/activate-account',
+  activateAccountNormalFlow: '/activate-account-normal-flow',
+  createAccount: '/create-account',
 };

@@ -417,6 +417,11 @@
     rc-trigger "^5.3.4"
     rc-util "^5.24.4"
 
+"@react-oauth/google@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@react-oauth/google/-/google-0.8.0.tgz#e95c9e2ef28f0da6d5de223e48c391a12eb4f821"
+  integrity sha512-xmIhYvvaBSblOzo3Fqv762lqub92SOFR8eRR7QpPyFPZEXZcOymaMuEkRSUKUrbu+9wfB8qtOaGMRJzrN7U2PA==
+
 "@reduxjs/toolkit@^1.9.1":
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.9.1.tgz#4c34dc4ddcec161535288c60da5c19c3ef15180e"

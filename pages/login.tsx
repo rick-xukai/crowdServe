@@ -6,9 +6,10 @@ import { Row, Col, Form, Input, Button, message, Checkbox } from 'antd';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../hooks';
+import Messages from '../constants/Messages';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
 import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
-import { isEmail, getErrorMessage, isPassword, base64Decrypt } from '../utils/func';
+import { isEmail, getErrorMessage, isPassword, base64Decrypt, base64Encrypt } from '../utils/func';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   loginAction,
@@ -19,7 +20,7 @@ import {
   selectLoading,
   selectData,
   reset,
-} from '../slice/login.slice';
+} from '../slice/user.slice';
 import { Images } from '../theme';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
@@ -27,6 +28,7 @@ import { LoginContainer } from '../styles/login-style';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';
 import { resetTicketsListData } from '../slice/tickets.slice';
 import { resetEventCache, setEventDataForSearch } from '../slice/eventCache.slice';
+// import GoogleLoginComponent from '../components/googleLoginComponent';
 
 const ActivateAccountComponent = ({
   checkGoogleDoc,
@@ -66,6 +68,7 @@ const ActivateAccountComponent = ({
         verificationCodeAction({
           ...values,
           email: activateAccountValue.email,
+          type: 1,
         }),
       );
       if (result.type === verificationCodeAction.fulfilled.toString()) {
@@ -192,6 +195,7 @@ const ActivateAccountComponent = ({
               className={`${(activateAccountValue.password && 'border-white') || ''}`}
               placeholder="Set your password (at least 8 characters)"
               bordered={false}
+              maxLength={20}
               iconRender={(visible) =>
                 (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
               }
@@ -223,7 +227,7 @@ const Login = ({
   defultLoginEmail,
   currentTicketId,
   redirectPage,
-}: { 
+}: {
   defultLoginEmail: undefined | string;
   currentTicketId: string;
   redirectPage: string;
@@ -237,6 +241,7 @@ const Login = ({
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
 
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [loginFormValue, setLoginFormValue] = useState<LoginPayloadType>({
     email: defultLoginEmail || '',
     password: '',
@@ -246,11 +251,11 @@ const Login = ({
   const [googleDocLink, setgoogleDocLink] = useState<string>('');
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
 
-  const onFinish = (values: LoginPayloadType) => {
-    if (defultLoginEmail) {
-      dispatch(loginAction(loginFormValue));
-    } else {
-      dispatch(loginAction(values));
+  const onFinish = async (values: LoginPayloadType) => {
+    const response: any = await dispatch(loginAction(defultLoginEmail && loginFormValue || values));
+    if (response.payload.code === Messages.activateAccountUserDosentExist1001.code) {
+      dispatch(verifyUserAction({ email: loginFormValue.email }));
+      router.push(`${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({ email: loginFormValue.email })}`);
     }
   };
 
@@ -278,7 +283,11 @@ const Login = ({
   }, [data]);
 
   useEffect(() => {
-    if (error) {
+    if (
+      error &&
+      !isFirstRender &&
+      error.code !== Messages.activateAccountUserDosentExist1001.code
+    ) {
       messageApi.open({
         content: getErrorMessage(error.code),
         className: 'error-message-login',
@@ -288,6 +297,8 @@ const Login = ({
 
   // eslint-disable-next-line
   useEffect(() => {
+    setShowActivateAccount(false);
+    setIsFirstRender(false);
     return () => {
       dispatch(reset());
     };
@@ -341,6 +352,7 @@ const Login = ({
                       className={`${(loginFormValue.password && 'border-white') || ''}`}
                       placeholder="Password"
                       bordered={false}
+                      maxLength={20}
                       iconRender={(visible) =>
                         (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
                       }
@@ -370,6 +382,8 @@ const Login = ({
                     SIGN IN
                   </Button>
                 </Form.Item>
+                {/* <Divider>OR</Divider>
+                <GoogleLoginComponent buttonText="CONTINUE WITH GOOGLE" /> */}
               </Form>
             </div>
           ) || (
@@ -380,13 +394,13 @@ const Login = ({
           )}
           <div className={isOpenAppShow && 'page-bottom open-app' || 'page-bottom'}>
             <p className="registered">
-              {!showActivateAccount && `Haven't registered?` || 'Already have an account?'}
+              Don't have an account?
             </p>
             <p
               className="activate"
-              onClick={() => setShowActivateAccount(!showActivateAccount)}
+              onClick={() => router.push(RouterKeys.createAccount)}
             >
-              {!showActivateAccount && 'ACTIVATE ACCOUNT' || 'LOGIN'}
+              REGISTER NOW
             </p>
           </div>
         </div>

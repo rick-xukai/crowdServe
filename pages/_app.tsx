@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app';
 import { ConfigProvider } from 'antd';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
+// import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import { wrapper } from '../app/store';
 import '../styles/globals.css';
@@ -20,6 +21,11 @@ function MyApp({ Component, ...rest }: AppProps) {
         <meta name="referrer" content="no-referrer" />
         <title>CrowdServe</title>
       </Head>
+      {/* <GoogleOAuthProvider clientId='crowdserve_test'>
+        <ConfigProvider theme={{ hashed: false, token: { fontFamily: 'Heebo' } }}>
+          <Component {...pageProps} />
+        </ConfigProvider>
+      </GoogleOAuthProvider> */}
       <ConfigProvider theme={{ hashed: false, token: { fontFamily: 'Heebo' } }}>
         <Component {...pageProps} />
       </ConfigProvider>

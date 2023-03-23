@@ -69,7 +69,14 @@ export const isPassword = (value: string) =>
     value
   );
 
-export const getErrorMessage = (errorCode: number | undefined) => {
+export const isUserName = (value: string) =>
+  /* eslint-disable max-len */
+  /* eslint-disable no-useless-escape */
+  /^[a-zA-Z0-9\s]+$/.test(
+    value
+  );
+
+export const getErrorMessage = (errorCode: number | undefined | string) => {
   let errorMessage = Messages.notFound.text;
   if (errorCode) {
     Object.values(Messages).forEach((item) => {
@@ -102,4 +109,9 @@ export const base64Decrypt = (code: string) => {
   const parsedWordArray = CryptoJS.enc.Base64.parse(code);
   const parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
   return JSON.parse(parsedStr);
+};
+
+export const base64Encrypt = (parameters: {}) => {
+  const wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(parameters));
+  return CryptoJS.enc.Base64.stringify(wordArray);
 };
