@@ -265,10 +265,12 @@ const Login = ({
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
+        domain: window.location.hostname,
       });
       cookies.setCookie(CookieKeys.userLoginEmail, loginFormValue.email, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
+        domain: window.location.hostname,
       });
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());

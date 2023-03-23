@@ -152,8 +152,8 @@ const PageHearderComponent = ({
   const [modalShow, setModalShow] = useState<boolean>(false);
 
   const userLogout = () => {
-    cookie.removeCookie(CookieKeys.userLoginToken);
-    cookie.removeCookie(CookieKeys.userLoginEmail);
+    cookie.removeCookie(CookieKeys.userLoginToken, { domain: window.location.hostname });
+    cookie.removeCookie(CookieKeys.userLoginEmail, { domain: window.location.hostname });
     Router.push(RouterKeys.login);
   };
 
