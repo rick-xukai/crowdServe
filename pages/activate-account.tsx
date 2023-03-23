@@ -14,13 +14,12 @@ import {
   selectLoading,
   selectData,
   reset,
-} from '../slice/login.slice';
+} from '../slice/user.slice';
 import { isPassword, base64Decrypt, getErrorMessage } from '../utils/func';
 import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
 import { Images, Colors } from '../theme';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
-
 
 const ActivateAccountContainer = styled.div`
   padding: 20px;
@@ -28,6 +27,8 @@ const ActivateAccountContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  max-width: 400px;
+  margin: auto;
   .skip-login {
     position: absolute;
     color: ${Colors.white};
@@ -233,6 +234,7 @@ const ActivateAccount = ({
   const data = useAppSelector(selectData);
 
   const [checked, setChecked] = useState<boolean>(false);
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [isTextShak, setTextShak] = useState<boolean>(false);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
   const [googleDocLink, setGoogleDocLink] = useState<string>('');
@@ -266,7 +268,7 @@ const ActivateAccount = ({
   }, [data]);
 
   useEffect(() => {
-    if (error) {
+    if (error && !isFirstRender) {
       messageApi.open({
         content: getErrorMessage(error.code),
         className: 'error-message-login',
@@ -274,8 +276,8 @@ const ActivateAccount = ({
     }
   }, [error]);
 
-  // eslint-disable-next-line
   useEffect(() => {
+    setIsFirstRender(false);
     return () => {
       dispatch(reset());
     };
@@ -312,6 +314,7 @@ const ActivateAccount = ({
                   className={`${(activateAccountFormValue.password && 'border-white') || ''}`}
                   placeholder="Set your password (at least 8 characters)"
                   bordered={false}
+                  maxLength={20}
                   iconRender={(visible) =>
                     (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
                   }

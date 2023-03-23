@@ -32,6 +32,16 @@ export interface VerifyUserPayload {
 export interface VerificationCodePayload {
   email: string;
   code: string;
+  type: number;
+}
+
+export interface RegisterAccountPayload {
+  email: string;
+  code: string;
+  username: string;
+  password: string;
+  externalChannel?: string;
+  externalId?: string;
 }
 
 /**
@@ -48,6 +58,38 @@ export const loginAction = createAsyncThunk<
   async (payload, { rejectWithValue }) => {
     try {
       const response = await UserService.doLogin(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
+/**
+ * RegisterAccount
+ */
+export const registerAccountAction = createAsyncThunk<
+  LoginResponseType,
+  RegisterAccountPayload,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'registerAccount/registerAccountAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await UserService.doRegisterAccount(payload);
       if (verificationApi(response)) {
         return response.data;
       }
@@ -160,7 +202,7 @@ export const verificationCodeAction = createAsyncThunk<
   },
 );
 
-interface LoginState {
+interface UserState {
   loading: boolean;
   data: LoginResponseType;
   error:
@@ -172,7 +214,7 @@ interface LoginState {
     | null;
 }
 
-const initialState: LoginState = {
+const initialState: UserState = {
   loading: false,
   data: {
     user: {
@@ -184,8 +226,8 @@ const initialState: LoginState = {
   error: null,
 };
 
-export const loginSlice = createSlice({
-  name: 'login',
+export const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {
     reset: () => initialState,
@@ -235,14 +277,30 @@ export const loginSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(registerAccountAction.pending, (state) => {
+        state.data = {} as LoginResponseType;
+        state.loading = true;
+      })
+      .addCase(registerAccountAction.fulfilled, (state, action: any) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(registerAccountAction.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
       });
   },
 });
 
-export const { reset } = loginSlice.actions;
+export const { reset } = userSlice.actions;
 
-export const selectLoading = (state: RootState) => state.login.loading;
-export const selectError = (state: RootState) => state.login.error;
-export const selectData = (state: RootState) => state.login.data;
+export const selectLoading = (state: RootState) => state.user.loading;
+export const selectError = (state: RootState) => state.user.error;
+export const selectData = (state: RootState) => state.user.data;
 
-export default loginSlice.reducer;
+export default userSlice.reducer;

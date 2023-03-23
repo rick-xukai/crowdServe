@@ -119,6 +119,7 @@ LandingPage.getInitialProps = async (ctx: any) => {
         const response = await UserService.doVerificationCode({
           code: parameters.code,
           email: parameters.email,
+          type: 1,
         });
         if (response.code !== 1005) {
           res.writeHead(302, { Location: `${RouterKeys.activateAccount}?${Object.keys(query)[0]}` });

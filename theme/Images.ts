@@ -45,6 +45,7 @@ import MyWalletIcon from '../static/images/my-wallet.svg';
 import ClearIcon from '../static/images/clear.svg';
 import AllTicketSold from '../static/images/all-ticket-sold.svg';
 import LogoActivateAccount from '../static/images/logo-activate-account.png';
+import GoogleIcon from '../static/images/google-icon.svg';
 
 const Images = {
   Safety,
@@ -94,6 +95,7 @@ const Images = {
   ClearIcon,
   AllTicketSold,
   LogoActivateAccount,
+  GoogleIcon,
 };
 
 export default Images;
