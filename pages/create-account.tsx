@@ -95,10 +95,12 @@ const CreateAccount = () => {
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
+        domain: window.location.hostname,
       });
       cookies.setCookie(CookieKeys.userLoginEmail, createAccountValue.email, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
+        domain: window.location.hostname,
       });
       router.push(RouterKeys.ticketsList);
     }
