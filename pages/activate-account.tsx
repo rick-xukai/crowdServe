@@ -258,6 +258,12 @@ const ActivateAccount = ({
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
+        domain: window.location.hostname,
+      });
+      cookies.setCookie(CookieKeys.userLoginEmail, activateAccountFormValue.email, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
       });
       if (currentTicketId) {
         router.push(RouterKeys.ticketDetail.replace(':ticketId', currentTicketId));

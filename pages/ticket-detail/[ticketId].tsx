@@ -6,6 +6,7 @@ import { Row, Col, Spin, Drawer, QRCode, Button, message, FloatButton } from 'an
 import TextTruncate from 'react-text-truncate';
 import { LoadingOutlined } from '@ant-design/icons';
 
+import { useCookie } from '../../hooks';
 import AuthHoc from '../../components/hoc/AuthHoc';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { checkStatusIcon, formatTimeStrByTimeString } from '../../utils/func';
@@ -24,6 +25,7 @@ import {
 } from '../../slice/tickets.slice';
 import { selectTicketsDataForAllStatus, setTicketsDataForAllStatus } from '../../slice/ticketsCache.slice';
 import Messages from '../../constants/Messages';
+import { CookieKeys, RouterKeys } from '../../constants/Keys';
 import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys, PriceUnit } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
 import { TicketStatusContainer } from '../../styles/tickets.style';
@@ -32,6 +34,7 @@ import PageHearderComponent from '../../components/pageHearder';
 let timer: NodeJS.Timer | null = null;
 
 const TicketDetail = () => {
+  const cookie = useCookie([CookieKeys.userLoginToken]);
   const [messageApi, contextHolder] = message.useMessage();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -133,6 +136,11 @@ const TicketDetail = () => {
   // eslint-disable-next-line
   useEffect(() => {
     return () => {
+      if (cookie.getCookie(CookieKeys.userLoginToken)) {
+        router.push(RouterKeys.ticketsList);
+      } else {
+        router.push(RouterKeys.login);
+      }
       clearInterval(Number(timer));
       dispatch(reset());
     };
