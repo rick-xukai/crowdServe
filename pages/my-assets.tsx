@@ -1,29 +1,37 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Row, Col, Spin, message } from 'antd';
-import _ from 'lodash';
-import { LoadingOutlined } from '@ant-design/icons';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { isSafari, isMobile } from 'react-device-detect';
+import React, { useCallback, useEffect, useState, useRef } from "react";
+import { Row, Col, Spin, message, Tabs, Button } from "antd";
+import _ from "lodash";
+import { LoadingOutlined } from "@ant-design/icons";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { isSafari, isMobile, isIOS, isAndroid } from "react-device-detect";
+import type { TabsProps } from "antd";
 
-import AuthHoc from '../components/hoc/AuthHoc';
-import { formatTimeStrByTimeString, checkStatusIcon } from '../utils/func';
-import { RouterKeys } from '../constants/Keys';
+import AuthHoc from "../components/hoc/AuthHoc";
+import {
+  formatTimeStrByTimeString,
+  checkStatusIcon,
+  openApp,
+} from "../utils/func";
+import { RouterKeys } from "../constants/Keys";
 import {
   TicketStatus,
   FormatTimeKeys,
   DefaultPageSize,
   DefaultPage,
   DifferentEmailErrorMessafe,
-} from '../constants/General';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+  MyTickets,
+  MyCollectibles,
+  AppLandingPage,
+} from "../constants/General";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   getTicketsListAction,
   selectLoading,
   selectError,
   selectTicketsListData,
   resetError,
-} from '../slice/tickets.slice';
+} from "../slice/tickets.slice";
 import {
   setTicketsDataForAllStatus,
   selectTicketsDataForAllStatus,
@@ -37,21 +45,22 @@ import {
   selectIsGetAllData,
   setScrollValue,
   selectScrollValue,
-} from '../slice/ticketsCache.slice';
-import { Images } from '../theme';
-import OpenAppComponent from '../components/openAppComponent';
-import PageHearderComponent from '../components/pageHearder';
+} from "../slice/ticketsCache.slice";
+import { Images } from "../theme";
+import OpenAppComponent from "../components/openAppComponent";
+import PageHearderComponent from "../components/pageHearder";
 import {
   TicketsContainer,
   TicketItemContainer,
   TicketStatusContainer,
-} from '../styles/tickets.style';
+} from "../styles/tickets.style";
 
 const Tickets = () => {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const ticketsListRef = useRef<any>(null);
+  const openAppInIos = useRef<any>(null);
 
   const data = useAppSelector(selectTicketsListData);
   const loading = useAppSelector(selectLoading);
@@ -66,6 +75,9 @@ const Tickets = () => {
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
+  const [showMyCollectibles, setShowMyCollectibles] = useState<boolean>(false);
+  const [showMyAssetsTabs, setShowMyAssetsTabs] = useState<boolean>(true);
+  const [currentTabsKeys, setCurrentTabsKeys] = useState<string>(MyTickets);
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -84,10 +96,14 @@ const Tickets = () => {
     if (!isFirstRender && error) {
       messageApi.open({
         content: error.message,
-        className: 'error-message-tickets',
+        className: "error-message-tickets",
       });
       if (ticketsListRef && ticketsListRef.current) {
-        ticketsListRef.current.removeEventListener('scroll', scrollListener, true);
+        ticketsListRef.current.removeEventListener(
+          "scroll",
+          scrollListener,
+          true
+        );
       }
     }
   }, [error]);
@@ -103,11 +119,13 @@ const Tickets = () => {
       return;
     }
     if (requestStatusKey === TicketStatus[0].key) {
-      dispatch(getTicketsListAction({
-        status: TicketStatus[0].key,
-        page: currentPage,
-        size: DefaultPageSize,
-      })).then((response: any) => {
+      dispatch(
+        getTicketsListAction({
+          status: TicketStatus[0].key,
+          page: currentPage,
+          size: DefaultPageSize,
+        })
+      ).then((response: any) => {
         if (response.type === getTicketsListAction.fulfilled.toString()) {
           if (
             !response.payload.length ||
@@ -119,11 +137,13 @@ const Tickets = () => {
         }
       });
     } else if (requestStatusKey === TicketStatus[1].key) {
-      dispatch(getTicketsListAction({
-        status: TicketStatus[1].key,
-        page: currentPage,
-        size: DefaultPageSize,
-      })).then((response: any) => {
+      dispatch(
+        getTicketsListAction({
+          status: TicketStatus[1].key,
+          page: currentPage,
+          size: DefaultPageSize,
+        })
+      ).then((response: any) => {
         if (response.type === getTicketsListAction.fulfilled.toString()) {
           if (
             !response.payload.length ||
@@ -135,11 +155,13 @@ const Tickets = () => {
         }
       });
     } else if (requestStatusKey === TicketStatus[2].key) {
-      dispatch(getTicketsListAction({
-        status: TicketStatus[2].key,
-        page: currentPage,
-        size: DefaultPageSize,
-      })).then((response: any) => {
+      dispatch(
+        getTicketsListAction({
+          status: TicketStatus[2].key,
+          page: currentPage,
+          size: DefaultPageSize,
+        })
+      ).then((response: any) => {
         if (response.type === getTicketsListAction.fulfilled.toString()) {
           if (
             !response.payload.length ||
@@ -148,7 +170,11 @@ const Tickets = () => {
             dispatch(setIsDisableRequest(true));
             dispatch(setIsGetAllData(true));
             if (ticketsListRef && ticketsListRef.current) {
-              ticketsListRef.current.removeEventListener('scroll', scrollListener, true);
+              ticketsListRef.current.removeEventListener(
+                "scroll",
+                scrollListener,
+                true
+              );
             }
           }
         }
@@ -160,11 +186,8 @@ const Tickets = () => {
     if (data) {
       dispatch(
         setTicketsDataForAllStatus(
-          _.uniqWith(
-            [...ticketsDataForAllStatus, ...data],
-            _.isEqual
-          )
-        ),
+          _.uniqWith([...ticketsDataForAllStatus, ...data], _.isEqual)
+        )
       );
     }
   }, [data]);
@@ -179,10 +202,10 @@ const Tickets = () => {
 
   useEffect(() => {
     if (!_.isEmpty(router.query)) {
-      if (router.query.sameAccount === 'false') {
+      if (router.query.sameAccount === "false") {
         messageApi.open({
           content: DifferentEmailErrorMessafe,
-          className: 'error-message-tickets',
+          className: "error-message-tickets",
         });
       }
     }
@@ -191,33 +214,73 @@ const Tickets = () => {
   useEffect(() => {
     setIsFirstRender(false);
     if (!isGetAllData && ticketsListRef && ticketsListRef.current) {
-      ticketsListRef.current.addEventListener('scroll', scrollListener, true);
+      ticketsListRef.current.addEventListener("scroll", scrollListener, true);
     }
     return () => {
       dispatch(resetError());
       if (ticketsListRef && ticketsListRef.current) {
-        ticketsListRef.current.removeEventListener('scroll', scrollListener, true);
+        ticketsListRef.current.removeEventListener(
+          "scroll",
+          scrollListener,
+          true
+        );
       }
     };
   }, []);
 
+  const tabsItem: TabsProps["items"] = [
+    {
+      key: MyTickets,
+      label: (
+        <div>
+          <span>My Tickets</span>
+        </div>
+      ),
+      children: "",
+    },
+    {
+      key: MyCollectibles,
+      label: (
+        <div>
+          <span>My Collectibles</span>
+        </div>
+      ),
+      children: "",
+    },
+  ];
+
+  const handleOpenApp = () => {
+    if (isIOS) {
+      openAppInIos.current.click();
+    } else if (isAndroid) {
+      openApp();
+    }
+  };
+
   return (
     <TicketsContainer ref={ticketsListRef}>
-      <PageHearderComponent />
+      <PageHearderComponent showTabs setShowTabs={setShowMyAssetsTabs} />
+      {showMyAssetsTabs && (
+        <div className="page-tabs">
+          <Tabs
+            defaultActiveKey={currentTabsKeys}
+            items={tabsItem}
+            onChange={(activeKey) => {
+              setCurrentTabsKeys(activeKey);
+              setShowMyCollectibles(activeKey === MyCollectibles);
+            }}
+          />
+        </div>
+      )}
       <Spin
         spinning={loading && !ticketsDataForAllStatus.length}
         indicator={<LoadingOutlined spin />}
         size="large"
       >
-        <div className={isOpenAppShow && 'page-main open-app' || 'page-main'}>
+        <div className={(isOpenAppShow && "page-main open-app") || "page-main"}>
           <Row>
             <Col className="tickets-list" span={24}>
-              <div className="page-title">
-                <Row>
-                  <Col span={24} className="title">MY TICKETS</Col>
-                </Row>
-              </div>
-              {ticketsDataForAllStatus.length && (
+              {(ticketsDataForAllStatus.length && (
                 <div className="tickets-list-container">
                   {ticketsDataForAllStatus.map((item) => (
                     <TicketItemContainer
@@ -225,27 +288,34 @@ const Tickets = () => {
                       onClick={() => {
                         router.push(
                           RouterKeys.ticketDetail.replace(
-                            ':ticketId',
+                            ":ticketId",
                             item.id.toString()
-                          ),
+                          )
                         );
                         dispatch(setIsDisableRequest(true));
-                        dispatch(setScrollValue(ticketsListRef.current.scrollTop));
+                        dispatch(
+                          setScrollValue(ticketsListRef.current.scrollTop)
+                        );
                       }}
                     >
-                      {item.status === TicketStatus.find((v) => v.key === 5)?.key && (
+                      {item.status ===
+                        TicketStatus.find((v) => v.key === 5)?.key && (
                         <div className="background-mask" />
                       )}
                       <div className="ticket-background">
-                        {item.thumbnailType === 'Video' && (
+                        {(item.thumbnailType === "Video" && (
                           <>
-                            {isSafari && (
-                              <video src={item.thumbnailUrl} autoPlay={false} poster={Images.BackgroundLogo.src} />
-                            ) || (
+                            {(isSafari && (
+                              <video
+                                src={item.thumbnailUrl}
+                                autoPlay={false}
+                                poster={Images.BackgroundLogo.src}
+                              />
+                            )) || (
                               <video src={item.thumbnailUrl} autoPlay={false} />
                             )}
                           </>
-                        ) || (
+                        )) || (
                           <Image
                             src={item.thumbnailUrl || Images.BackgroundLogo.src}
                             layout="fill"
@@ -262,7 +332,10 @@ const Tickets = () => {
                           <Image src={checkStatusIcon(item.status)} alt="" />
                         </div>
                       )}
-                      <div className="status-warpper" style={{ textAlign: 'right' }}>
+                      <div
+                        className="status-warpper"
+                        style={{ textAlign: "right" }}
+                      >
                         {TicketStatus.map((status) => {
                           if (status.key === item.status && status.text) {
                             return (
@@ -280,31 +353,42 @@ const Tickets = () => {
                       </div>
                       <div className="item-info">
                         <Row className="item-info-row">
-                          <Col span={24} className="info-title">{item.name}</Col>
+                          <Col span={24} className="info-title">
+                            {item.name}
+                          </Col>
                           <Col span={24} className="info-item">
-                            <Image className="info-item-icon" src={Images.CalendarIcon} alt="" />
+                            <Image
+                              className="info-item-icon"
+                              src={Images.CalendarIcon}
+                              alt=""
+                            />
                             <div className="info-description">
-                              {item.startTime && item.endTime && (
-                                `${formatTimeStrByTimeString(
+                              {(item.startTime &&
+                                formatTimeStrByTimeString(
                                   item.startTime,
-                                  FormatTimeKeys.norm,
-                                )}~${formatTimeStrByTimeString(
-                                  item.endTime,
-                                  FormatTimeKeys.norm,
-                                )}`
-                              ) || '-'}
+                                  FormatTimeKeys.norm
+                                )) ||
+                                "-"}
                             </div>
                           </Col>
                           <Col span={24} className="info-item">
-                            <Image src={Images.LocationIcon} alt="" className="info-item-icon" />
+                            <Image
+                              src={Images.LocationIcon}
+                              alt=""
+                              className="info-item-icon"
+                            />
                             <div className="info-description">
-                              {item.location || '-'}
+                              {item.location || "-"}
                             </div>
                           </Col>
                           <Col span={24} className="info-item">
-                            <Image src={Images.OrganiserIcon} alt="" className="info-item-icon" />
+                            <Image
+                              src={Images.OrganiserIcon}
+                              alt=""
+                              className="info-item-icon"
+                            />
                             <span className="info-description">
-                              {item.organizerName || '-'}
+                              {item.organizerName || "-"}
                             </span>
                           </Col>
                         </Row>
@@ -318,12 +402,12 @@ const Tickets = () => {
                     </div>
                   )}
                 </div>
-              ) || (
+              )) || (
                 <>
                   {!ticketsDataForAllStatus.length && !loading && (
                     <Row className="no-ticket-row">
                       <Col span={24} className="no-ticket">
-                        <div style={{ margin: 'auto', textAlign: 'center' }}>
+                        <div style={{ margin: "auto", textAlign: "center" }}>
                           <Image src={Images.NoTicketsIcon} alt="" />
                           <p>No Tickets Available</p>
                         </div>
@@ -332,13 +416,30 @@ const Tickets = () => {
                   )}
                 </>
               )}
+              <div
+                className="open-app-collectibles"
+                style={{ display: (showMyCollectibles && "flex") || "none" }}
+              >
+                <div className="page-main-collectibles">
+                  <Image src={Images.MyCollectiblesIcon} alt="" />
+                  <p className="title">
+                    Open the app to access the full functionality.
+                  </p>
+                </div>
+                <div className="page-bottom">
+                  <Button onClick={handleOpenApp}>OPEN NOW</Button>
+                </div>
+                <a
+                  ref={openAppInIos}
+                  href={AppLandingPage}
+                  style={{ display: "none" }}
+                />
+              </div>
             </Col>
           </Row>
         </div>
       </Spin>
-      {isMobile && (
-        <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
-      )}
+      {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}
       {contextHolder}
     </TicketsContainer>
   );

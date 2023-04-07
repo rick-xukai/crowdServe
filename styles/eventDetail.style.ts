@@ -191,6 +191,7 @@ const TicketTypeItem = styled(Col)`
       width: 100%;
       height: 100%;
       border-radius: 4px;
+      object-fit: cover;
     }
   }
   .type-info {
