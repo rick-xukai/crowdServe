@@ -14,7 +14,7 @@ export const RouterKeys = {
   login: '/login',
   scanQrCode: '/scan-qr-code/:eventId',
   scanLogin: '/scan-login',
-  ticketsList: '/tickets',
+  ticketsList: '/my-assets',
   landingPage: '/landing-page',
   ticketDetail: '/ticket-detail/:ticketId',
   maintenance: '/maintenance',

@@ -1,5 +1,6 @@
 const Colors = {
   black: '#000000',
+  black10: '#171718',
   white: '#FFFFFF',
   branding: '#FC0006',
   brandingGray: '#DD5F62',
@@ -22,6 +23,7 @@ const Colors = {
   failed20: '#F11E51',
   whiteMask: '#ACACAE',
   brandingMask: '#9B2621',
+  blueGray: '#056790',
 };
 
 export default Colors;
