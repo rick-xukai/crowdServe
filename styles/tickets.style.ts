@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { Colors } from '../theme';
+import { Colors } from "../theme";
 
 interface TicketStatusContainerProps {
   bgColor: string;
@@ -22,14 +22,70 @@ const TicketsContainer = styled.div`
       font-weight: 700;
       font-size: 28px;
       color: ${Colors.white};
-      font-family: 'Oswald';
+      font-family: "Oswald";
     }
   }
   .ant-spin-nested-loading {
     height: unset;
   }
+  .page-tabs {
+    position: fixed;
+    top: 45px;
+    width: 100%;
+    left: 0;
+    z-index: 999;
+    background: ${Colors.black10};
+    padding: 10px 20px 0 20px;
+    .ant-tabs {
+      color: ${Colors.grayScale50};
+    }
+    .ant-tabs-tab {
+      cursor: unset;
+    }
+    .ant-tabs >.ant-tabs-nav {
+      margin: 0;
+    }
+    .ant-tabs .ant-tabs-tab {
+      padding: 0 0 5px 0;
+    }
+    .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
+      margin: 0 0 0 24px;
+    }
+    .ant-tabs .ant-tabs-tab:hover {
+      color: ${Colors.white};
+    }
+    .ant-tabs-tab-btn {
+      font-weight: 500;
+      font-size: 17px;
+    }
+    .ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: ${Colors.white};
+    }
+    .ant-tabs .ant-tabs-ink-bar {
+      background: ${Colors.white};
+    }
+    .ant-tabs-ink-bar {
+      height: 3px !important;
+      background: transparent !important;
+      text-align: center;
+    }
+    .ant-tabs-ink-bar::after {
+      content: "";
+      position: absolute;
+      width: 40px;
+      height: 3px;
+      -ms-transform: translateX(-50%);
+      transform: translateX(-50%);
+      background: ${Colors.white};
+      border-radius: 2px;
+    }
+    .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap::before,
+    .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap::after {
+      display: none;
+    }
+  }
   .page-main {
-    margin-top: 50px;
+    margin-top: 90px;
     .tickets-list {
       .load-more {
         color: ${Colors.white};
@@ -68,7 +124,7 @@ const TicketsContainer = styled.div`
     }
   }
   .ant-spin-container,
-  .ant-spin-nested-loading{
+  .ant-spin-nested-loading {
     opacity: unset;
   }
   .ant-spin-nested-loading {
@@ -92,6 +148,54 @@ const TicketsContainer = styled.div`
     @media (min-width: 1280px) {
       grid-template-columns: repeat(auto-fill, 290px);
       grid-gap: 24px;
+    }
+  }
+  .open-app-collectibles {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    max-width: 1240px;
+    margin: auto;
+    position: fixed;
+    width: 100%;
+    background: ${Colors.backgorund};
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1;
+    .page-main-collectibles {
+      text-align: center;
+      margin: auto;
+      .title {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-weight: 700;
+        font-size: 20px;
+        color: ${Colors.grayScale20};
+      }
+      .info {
+        margin: 0;
+        font-weight: 400;
+        font-size: 15px;
+        color: ${Colors.grayScale40};
+      }
+    }
+    .page-bottom {
+      position: absolute;
+      bottom: 180px;
+      width: calc(100% - 40px);
+      .ant-btn {
+        height: 45px;
+        padding: 12px 10px;
+        background: ${Colors.branding};
+        border-radius: 2px;
+        color: ${Colors.grayScale10};
+        font-weight: 700;
+        font-size: 15px;
+        border: none;
+        width: 100%;
+      }
     }
   }
 `;
@@ -119,7 +223,8 @@ const TicketItemContainer = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    img, video {
+    img,
+    video {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -207,8 +312,4 @@ const TicketStatusContainer = styled.span`
   font-size: 12px;
 `;
 
-export {
-  TicketsContainer,
-  TicketItemContainer,
-  TicketStatusContainer,
-};
+export { TicketsContainer, TicketItemContainer, TicketStatusContainer };

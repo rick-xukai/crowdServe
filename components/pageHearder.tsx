@@ -30,6 +30,9 @@ const PageHearderContainer = styled(Row)`
   right: 0;
   margin: auto;
   max-width: 1240px;
+  &.show-tabs {
+    background: ${Colors.black10};
+  }
   @media (min-width: 1280px) {
     padding: 0;
     height: 60px;
@@ -75,7 +78,7 @@ const PageHearderContainer = styled(Row)`
     right: 0px;
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 40px;
+    padding-top: 20px;
     margin: auto;
     max-width: 1240px;
     @media (min-width: 1280px) {
@@ -138,9 +141,13 @@ const PageHearderContainer = styled(Row)`
 `;
 
 const PageHearderComponent = ({
-  setMenuState = () => {}
+  showTabs = false,
+  setMenuState = () => {},
+  setShowTabs = () => {},
 }: {
-  setMenuState?: (status: boolean) => void
+  showTabs?: boolean;
+  setMenuState?: (status: boolean) => void;
+  setShowTabs?: (status: boolean) => void;
 }) => {
   const cookie = useCookie([CookieKeys.userLoginToken, CookieKeys.userLoginEmail]);
   const dispatch = useAppDispatch();
@@ -160,6 +167,9 @@ const PageHearderComponent = ({
   const hanldeMenuClick = (path: string) => {
     if (path === window.location.pathname) {
       setShowMenu(false);
+      if (path === RouterKeys.ticketsList) {
+        setShowTabs(true);
+      }
     } else {
       dispatch(resetEventCache());
       dispatch(setEventDataForSearch([]));
@@ -177,7 +187,7 @@ const PageHearderComponent = ({
   }, []);
 
   return (
-    <PageHearderContainer>
+    <PageHearderContainer className={(showTabs && !showMenu) && 'show-tabs' || ''}>
       <Col span={12} className="left-container">
         <div className="hearder-logo">
           {checkGoogleDoc && (
@@ -202,10 +212,21 @@ const PageHearderComponent = ({
                 <Image
                   src={Images.MenuIcon}
                   alt=""
-                  onClick={() => { setShowMenu(true); setMenuState(true); }}
+                  onClick={() => {
+                    setShowMenu(true);
+                    setMenuState(true);
+                    setShowTabs(false);
+                  }}
                 />
               ) || (
-                <div className="close-icon" onClick={() => { setShowMenu(false); setMenuState(false); }}>
+                <div
+                  className="close-icon"
+                  onClick={() => {
+                    setShowMenu(false);
+                    setMenuState(false);
+                    setShowTabs(true);
+                  }}
+                >
                   <CloseOutlined />
                 </div>
               )}
@@ -231,7 +252,7 @@ const PageHearderComponent = ({
                 <Col span={24} className="info-name">
                   <Image src={Images.MenuTicketIcon} alt="" />
                   <span className="name">
-                    My Tickets
+                    My Assets
                   </span>
                 </Col>
               </Row>

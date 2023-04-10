@@ -250,36 +250,22 @@ const TicketDetail = () => {
                   </Col>
                 </Row>
                 <Row className="info-item-row-flex">
-                  <Col span={12}>
+                  <Col span={24}>
                     <Row className="info-item-row">
                       <Col span={24} className="info-item-title">
                         Date
                       </Col>
                       <Col span={24} className="info-item-value">
-                        {ticketDetailData.startTime && (
-                          formatTimeStrByTimeString(
-                            ticketDetailData.startTime,
-                            FormatTimeKeys.mdy,
-                          )
-                        ) || '-'}
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={12}>
-                    <Row className="info-item-row">
-                      <Col span={24} className="info-item-title">
-                        Time
-                      </Col>
-                      <Col span={24} className="info-item-value">
-                        {ticketDetailData.startTime && ticketDetailData.endTime && (
-                          `${formatTimeStrByTimeString(
-                            ticketDetailData.startTime,
-                            FormatTimeKeys.hm,
-                          )}~${formatTimeStrByTimeString(
-                            ticketDetailData.endTime,
-                            FormatTimeKeys.hm,
-                          )}`
-                        ) || '-'}
+                        {(ticketDetailData.startTime &&
+                          ticketDetailData.endTime &&
+                            `${formatTimeStrByTimeString(
+                              ticketDetailData.startTime,
+                              FormatTimeKeys.norm
+                            )} - ${formatTimeStrByTimeString(
+                              ticketDetailData.endTime,
+                              FormatTimeKeys.norm
+                            )}`) ||
+                        '-'}
                       </Col>
                     </Row>
                   </Col>
@@ -329,7 +315,7 @@ const TicketDetail = () => {
                   </Col>
                 </Row>
               </div>
-              {ticketDetailData.collections.length && (
+              {ticketDetailData.collections && ticketDetailData.collections.length && (
                 <Row className="container-bottom">
                   <Col span={24} style={{ textAlign: 'center' }}>
                     <div>
