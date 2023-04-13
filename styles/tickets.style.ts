@@ -162,6 +162,7 @@ const TicketsContainer = styled.div`
     background: ${Colors.backgorund};
     top: 0;
     left: 0;
+    right: 0;
     height: 100%;
     z-index: 1;
     .page-main-collectibles {
@@ -185,6 +186,10 @@ const TicketsContainer = styled.div`
       position: absolute;
       bottom: 180px;
       width: calc(100% - 40px);
+      max-width: 400px;
+      margin: auto;
+      left: 0;
+      right: 0;
       .ant-btn {
         height: 45px;
         padding: 12px 10px;
@@ -196,6 +201,25 @@ const TicketsContainer = styled.div`
         border: none;
         width: 100%;
       }
+    }
+  }
+  @media (min-width: 1280px) {
+    .page-main {
+      margin-top: 120px;
+    }
+    .page-bottom {
+      bottom: 300px !important;
+    }
+    .show-tabs {
+      background: ${Colors.backgorund};
+    }
+    .page-tabs {
+      max-width: 1240px;
+      right: 0;
+      margin: auto;
+      padding: 20px 0 0 0;
+      top: 60px;
+      background: ${Colors.backgorund};
     }
   }
 `;
