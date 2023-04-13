@@ -183,13 +183,7 @@ const TicketsContainer = styled.div`
       }
     }
     .page-bottom {
-      position: absolute;
-      bottom: 180px;
-      width: calc(100% - 40px);
-      max-width: 400px;
-      margin: auto;
-      left: 0;
-      right: 0;
+      margin-top: 100px;
       .ant-btn {
         height: 45px;
         padding: 12px 10px;
@@ -206,9 +200,6 @@ const TicketsContainer = styled.div`
   @media (min-width: 1280px) {
     .page-main {
       margin-top: 120px;
-    }
-    .page-bottom {
-      bottom: 300px !important;
     }
     .show-tabs {
       background: ${Colors.backgorund};

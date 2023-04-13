@@ -425,9 +425,9 @@ const Tickets = () => {
                   <p className="title">
                     Open the app to access the full functionality.
                   </p>
-                </div>
-                <div className="page-bottom">
-                  <Button onClick={handleOpenApp}>OPEN NOW</Button>
+                  <div className="page-bottom">
+                    <Button onClick={handleOpenApp}>OPEN NOW</Button>
+                  </div>
                 </div>
                 <a
                   ref={openAppInIos}
