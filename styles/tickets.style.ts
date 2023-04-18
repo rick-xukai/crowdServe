@@ -13,6 +13,21 @@ const TicketsContainer = styled.div`
   overflow: auto;
   max-width: 1280px;
   margin: auto;
+  .page-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    color: ${Colors.branding};
+    .anticon-loading {
+      margin: auto;
+      font-size: 30px;
+    }
+  }
   ::-webkit-scrollbar {
     display: none;
   }

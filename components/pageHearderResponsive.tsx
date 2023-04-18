@@ -128,7 +128,7 @@ const PageHearderResponsive = () => {
     CookieKeys.userLoginEmail,
   ]);
 
-  const [isUserToken, setIsUserToken] = useState<boolean>(false);
+  const [isUserToken, setIsUserToken] = useState<boolean | null>(null);
   const [userLoginInitials, setUserLoginInitials] = useState<string>('');
   const [showLogout, setShowLogout] = useState<boolean>(false);
 
@@ -148,6 +148,8 @@ const PageHearderResponsive = () => {
     const email = cookie.getCookie(CookieKeys.userLoginEmail);
     if (token) {
       setIsUserToken(true);
+    } else {
+      setIsUserToken(false);
     }
     if (email) {
       setUserLoginInitials(email.slice(0, 1).toUpperCase());
@@ -212,25 +214,32 @@ const PageHearderResponsive = () => {
             </Row>
           </Col>
           <Col span={6} className="right-button">
-            {(!isUserToken && (
-              <Button onClick={() => router.push(RouterKeys.login)}>
-                LOG IN
-              </Button>
-            )) || (
-              <div>
-                <Popover
-                  title={
-                    <span className="logout-popover-title" onClick={userLogout}>
-                      LOG OUT
-                    </span>
-                  }
-                  trigger="hover"
-                  open={showLogout}
-                  onOpenChange={(status) => setShowLogout(status)}
-                >
-                  <Avatar>{userLoginInitials}</Avatar>
-                </Popover>
-              </div>
+            {isUserToken !== null && (
+              <>
+                {(!isUserToken && (
+                  <Button onClick={() => router.push(RouterKeys.login)}>
+                    LOG IN
+                  </Button>
+                )) || (
+                  <div>
+                    <Popover
+                      title={
+                        <span
+                          className="logout-popover-title"
+                          onClick={userLogout}
+                        >
+                          LOG OUT
+                        </span>
+                      }
+                      trigger="hover"
+                      open={showLogout}
+                      onOpenChange={(status) => setShowLogout(status)}
+                    >
+                      <Avatar>{userLoginInitials}</Avatar>
+                    </Popover>
+                  </div>
+                )}
+              </>
             )}
           </Col>
         </Row>

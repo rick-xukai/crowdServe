@@ -227,6 +227,16 @@ const EventList = () => {
     };
   }, []);
 
+  if (loading && !eventDataForAll.length) {
+    return (
+      <EventListContainer ref={eventListRef}>
+        <Spin spinning indicator={<LoadingOutlined spin />} size="large">
+          <div />
+        </Spin>
+      </EventListContainer>
+    );
+  }
+
   return (
     <EventListContainer ref={eventListRef}>
       <Col md={24} xs={0}>
@@ -235,57 +245,50 @@ const EventList = () => {
       <Col md={0} xs={24}>
         <PageHearderComponent setMenuState={setMenuState} />
       </Col>
-      <Spin
-        spinning={loading && !eventDataForAll.length}
-        indicator={<LoadingOutlined spin />}
-        size="large"
-      >
-        <Col md={24} xs={0} className="page-main desktop-responsive">
-          <Row>
-            <Col span={24}>
-              <Carousel autoplay>
-                {eventListBanner &&
-                  eventListBanner.map((item) => (
-                    <div key={item.link} className="banner-item">
-                      <a href={item.link} target="_blank">
-                        <img src={item.image} alt="" />
-                      </a>
-                    </div>
-                  ))}
-              </Carousel>
-            </Col>
-          </Row>
-          <Row>
-            <Col className="event-list" span={24}>
-              <div className="page-title">
-                <Row>
-                  <Col span={24} className="title">
-                    EVENTS
+      <Col md={24} xs={0} className="page-main desktop-responsive">
+        <Row>
+          <Col span={24}>
+            <Carousel autoplay>
+              {eventListBanner &&
+                eventListBanner.map((item) => (
+                  <div key={item.link} className="banner-item">
+                    <a href={item.link} target="_blank">
+                      <img src={item.image} alt="" />
+                    </a>
+                  </div>
+                ))}
+            </Carousel>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="event-list" span={24}>
+            <div className="page-title">
+              <Row>
+                <Col span={24} className="title">
+                  EVENTS
+                </Col>
+                {showSearchInput && (
+                  <Col md={24} lg={24} xl={12}>
+                    <Input.Search
+                      allowClear={{
+                        clearIcon: <Image src={Images.ClearIcon} alt="" />,
+                      }}
+                      defaultValue={searchKeyword}
+                      placeholder={searchInputPlaceholder}
+                      prefix={<SearchOutlined />}
+                      onChange={handleSearch}
+                      onFocus={() => setSearchInputPlaceholder('')}
+                      onBlur={handleBlur}
+                    />
                   </Col>
-                  {showSearchInput && (
-                    <Col md={24} lg={24} xl={12}>
-                      <Input.Search
-                        allowClear={{
-                          clearIcon: <Image src={Images.ClearIcon} alt="" />,
-                        }}
-                        defaultValue={searchKeyword}
-                        placeholder={searchInputPlaceholder}
-                        prefix={<SearchOutlined />}
-                        onChange={handleSearch}
-                        onFocus={() => setSearchInputPlaceholder('')}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                  )}
-                </Row>
-              </div>
-              {(((searchKeyword && eventDataForSearch) || eventDataForAll)
-                .length && (
-                <div className="event-list-container event-list-container-responsive">
-                  {(
-                    (searchKeyword && eventDataForSearch) ||
-                    eventDataForAll
-                  ).map((item) => (
+                )}
+              </Row>
+            </div>
+            {(((searchKeyword && eventDataForSearch) || eventDataForAll)
+              .length && (
+              <div className="event-list-container event-list-container-responsive">
+                {((searchKeyword && eventDataForSearch) || eventDataForAll).map(
+                  (item) => (
                     <DesktopEventItemContainer
                       key={item.id}
                       onClick={() => {
@@ -368,22 +371,181 @@ const EventList = () => {
                         </Col>
                       </Row>
                     </DesktopEventItemContainer>
+                  )
+                )}
+                {loading &&
+                  ((searchKeyword && eventDataForSearch) || eventDataForAll)
+                    .length &&
+                  isMobile && (
+                    <div className="load-more">
+                      <LoadingOutlined />
+                      Loading...
+                    </div>
+                  )}
+              </div>
+            )) || (
+              <>
+                {!((searchKeyword && eventDataForSearch) || eventDataForAll)
+                  .length &&
+                  !loading && (
+                    <Row className="no-event-row">
+                      <Col span={24} className="no-event">
+                        <div style={{ margin: 'auto', textAlign: 'center' }}>
+                          <Image
+                            src={
+                              (searchKeyword && Images.NoSearchEventIcon) ||
+                              Images.NoEventIcon
+                            }
+                            alt=""
+                          />
+                          <p>
+                            {(searchKeyword &&
+                              'Aoh, no matching events found.') ||
+                              'Oops! No upcoming events for now.'}
+                          </p>
+                        </div>
+                      </Col>
+                    </Row>
+                  )}
+              </>
+            )}
+          </Col>
+        </Row>
+      </Col>
+      <Col
+        md={0}
+        xs={24}
+        className={(isOpenAppShow && 'page-main open-app') || 'page-main'}
+      >
+        <div className="carousel-banner">
+          <Row>
+            <Col span={24}>
+              <Carousel autoplay>
+                {eventListBanner &&
+                  eventListBanner.map((item) => (
+                    <div key={item.link} className="banner-item">
+                      <a href={item.link} target="_blank">
+                        <img src={item.image} alt="" />
+                      </a>
+                    </div>
                   ))}
-                  {loading &&
-                    ((searchKeyword && eventDataForSearch) || eventDataForAll)
-                      .length &&
-                    isMobile && (
+              </Carousel>
+            </Col>
+          </Row>
+        </div>
+        <Row>
+          <Col className="event-list mobile" span={24}>
+            <div className="page-title">
+              <Row>
+                <Col span={24} md={12} className="title">
+                  EVENTS
+                </Col>
+                {showSearchInput && (
+                  <Col span={24} md={12}>
+                    <Input.Search
+                      allowClear={{
+                        clearIcon: <Image src={Images.ClearIcon} alt="" />,
+                      }}
+                      defaultValue={searchKeyword}
+                      placeholder={searchInputPlaceholder}
+                      prefix={<SearchOutlined />}
+                      onChange={handleSearch}
+                      onFocus={() => setSearchInputPlaceholder('')}
+                      onBlur={handleBlur}
+                    />
+                  </Col>
+                )}
+              </Row>
+            </div>
+            {searchKeyword && (
+              <>
+                {(eventDataForSearch.length && (
+                  <div className="event-list-container">
+                    {eventDataForSearch.map((item) => (
+                      <EventItemContainer
+                        key={item.id}
+                        onClick={() => {
+                          Router.push(
+                            RouterKeys.eventDetail.replace(
+                              ':eventId',
+                              item.id.toString()
+                            )
+                          );
+                          dispatch(setIsDisableRequest(true));
+                          dispatch(
+                            setScrollValue(eventListRef.current.scrollTop)
+                          );
+                        }}
+                      >
+                        <div className="event-background">
+                          <Image
+                            src={item.image || Images.BackgroundLogo.src}
+                            layout="fill"
+                            alt=""
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = Images.BackgroundLogo.src;
+                            }}
+                          />
+                        </div>
+                        <div className="item-info">
+                          <Row className="item-info-row">
+                            <Col span={24} className="info-title">
+                              {item.name}
+                            </Col>
+                            <Col span={24} className="info-item">
+                              <Image
+                                className="info-item-icon"
+                                src={Images.ClockIcon}
+                                alt=""
+                              />
+                              <div className="info-description">
+                                {(item.startTime &&
+                                  item.endTime &&
+                                  `${formatTimeStrByTimeString(
+                                    item.startTime,
+                                    FormatTimeKeys.norm
+                                  )} - ${formatTimeStrByTimeString(
+                                    item.endTime,
+                                    FormatTimeKeys.norm
+                                  )}`) ||
+                                  '-'}
+                              </div>
+                            </Col>
+                            <Col span={24} className="info-item">
+                              <Image
+                                src={Images.LocationIcon}
+                                alt=""
+                                className="info-item-icon"
+                              />
+                              <div className="info-description">
+                                {item.location || '-'}
+                              </div>
+                            </Col>
+                            <Col span={24} className="info-item">
+                              <Image
+                                src={Images.OrganiserIcon}
+                                alt=""
+                                className="info-item-icon"
+                              />
+                              <span className="info-description">
+                                {item.organizerName || '-'}
+                              </span>
+                            </Col>
+                          </Row>
+                        </div>
+                      </EventItemContainer>
+                    ))}
+                    {loading && eventDataForSearch.length && isMobile && (
                       <div className="load-more">
                         <LoadingOutlined />
                         Loading...
                       </div>
                     )}
-                </div>
-              )) || (
-                <>
-                  {!((searchKeyword && eventDataForSearch) || eventDataForAll)
-                    .length &&
-                    !loading && (
+                  </div>
+                )) || (
+                  <>
+                    {!loading && (
                       <Row className="no-event-row">
                         <Col span={24} className="no-event">
                           <div style={{ margin: 'auto', textAlign: 'center' }}>
@@ -394,289 +556,126 @@ const EventList = () => {
                               }
                               alt=""
                             />
-                            <p>
-                              {(searchKeyword &&
-                                'Aoh, no matching events found.') ||
-                                'Oops! No upcoming events for now.'}
-                            </p>
+                            <p>Aoh, no matching events found.</p>
                           </div>
                         </Col>
                       </Row>
                     )}
-                </>
-              )}
-            </Col>
-          </Row>
-        </Col>
-        <Col
-          md={0}
-          xs={24}
-          className={(isOpenAppShow && 'page-main open-app') || 'page-main'}
-        >
-          <div className="carousel-banner">
-            <Row>
-              <Col span={24}>
-                <Carousel autoplay>
-                  {eventListBanner &&
-                    eventListBanner.map((item) => (
-                      <div key={item.link} className="banner-item">
-                        <a href={item.link} target="_blank">
-                          <img src={item.image} alt="" />
-                        </a>
-                      </div>
-                    ))}
-                </Carousel>
-              </Col>
-            </Row>
-          </div>
-          <Row>
-            <Col className="event-list mobile" span={24}>
-              <div className="page-title">
-                <Row>
-                  <Col span={24} md={12} className="title">
-                    EVENTS
-                  </Col>
-                  {showSearchInput && (
-                    <Col span={24} md={12}>
-                      <Input.Search
-                        allowClear={{
-                          clearIcon: <Image src={Images.ClearIcon} alt="" />,
+                  </>
+                )}
+              </>
+            )}
+            {!searchKeyword && (
+              <>
+                {(eventDataForAll.length && (
+                  <div className="event-list-container">
+                    {eventDataForAll.map((item) => (
+                      <EventItemContainer
+                        key={item.id}
+                        onClick={() => {
+                          Router.push(
+                            RouterKeys.eventDetail.replace(
+                              ':eventId',
+                              item.id.toString()
+                            )
+                          );
+                          dispatch(setIsDisableRequest(true));
+                          dispatch(
+                            setScrollValue(eventListRef.current.scrollTop)
+                          );
                         }}
-                        defaultValue={searchKeyword}
-                        placeholder={searchInputPlaceholder}
-                        prefix={<SearchOutlined />}
-                        onChange={handleSearch}
-                        onFocus={() => setSearchInputPlaceholder('')}
-                        onBlur={handleBlur}
-                      />
-                    </Col>
-                  )}
-                </Row>
-              </div>
-              {searchKeyword && (
-                <>
-                  {(eventDataForSearch.length && (
-                    <div className="event-list-container">
-                      {eventDataForSearch.map((item) => (
-                        <EventItemContainer
-                          key={item.id}
-                          onClick={() => {
-                            Router.push(
-                              RouterKeys.eventDetail.replace(
-                                ':eventId',
-                                item.id.toString()
-                              )
-                            );
-                            dispatch(setIsDisableRequest(true));
-                            dispatch(
-                              setScrollValue(eventListRef.current.scrollTop)
-                            );
-                          }}
-                        >
-                          <div className="event-background">
-                            <Image
-                              src={item.image || Images.BackgroundLogo.src}
-                              layout="fill"
-                              alt=""
-                              onError={(e: any) => {
-                                e.target.onerror = null;
-                                e.target.src = Images.BackgroundLogo.src;
-                              }}
-                            />
-                          </div>
-                          <div className="item-info">
-                            <Row className="item-info-row">
-                              <Col span={24} className="info-title">
-                                {item.name}
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
-                                  className="info-item-icon"
-                                  src={Images.ClockIcon}
-                                  alt=""
-                                />
-                                <div className="info-description">
-                                  {(item.startTime &&
-                                    item.endTime &&
-                                    `${formatTimeStrByTimeString(
-                                      item.startTime,
-                                      FormatTimeKeys.norm
-                                    )} - ${formatTimeStrByTimeString(
-                                      item.endTime,
-                                      FormatTimeKeys.norm
-                                    )}`) ||
-                                    '-'}
-                                </div>
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
-                                  src={Images.LocationIcon}
-                                  alt=""
-                                  className="info-item-icon"
-                                />
-                                <div className="info-description">
-                                  {item.location || '-'}
-                                </div>
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
-                                  src={Images.OrganiserIcon}
-                                  alt=""
-                                  className="info-item-icon"
-                                />
-                                <span className="info-description">
-                                  {item.organizerName || '-'}
-                                </span>
-                              </Col>
-                            </Row>
-                          </div>
-                        </EventItemContainer>
-                      ))}
-                      {loading && eventDataForSearch.length && isMobile && (
-                        <div className="load-more">
-                          <LoadingOutlined />
-                          Loading...
+                      >
+                        <div className="event-background">
+                          <Image
+                            src={item.image || Images.BackgroundLogo.src}
+                            layout="fill"
+                            alt=""
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = Images.BackgroundLogo.src;
+                            }}
+                          />
                         </div>
-                      )}
-                    </div>
-                  )) || (
-                    <>
-                      {!loading && (
-                        <Row className="no-event-row">
-                          <Col span={24} className="no-event">
-                            <div
-                              style={{ margin: 'auto', textAlign: 'center' }}
-                            >
+                        <div className="item-info">
+                          <Row className="item-info-row">
+                            <Col span={24} className="info-title">
+                              {item.name}
+                            </Col>
+                            <Col span={24} className="info-item">
                               <Image
-                                src={
-                                  (searchKeyword && Images.NoSearchEventIcon) ||
-                                  Images.NoEventIcon
-                                }
+                                className="info-item-icon"
+                                src={Images.ClockIcon}
                                 alt=""
                               />
-                              <p>Aoh, no matching events found.</p>
-                            </div>
-                          </Col>
-                        </Row>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-              {!searchKeyword && (
-                <>
-                  {(eventDataForAll.length && (
-                    <div className="event-list-container">
-                      {eventDataForAll.map((item) => (
-                        <EventItemContainer
-                          key={item.id}
-                          onClick={() => {
-                            Router.push(
-                              RouterKeys.eventDetail.replace(
-                                ':eventId',
-                                item.id.toString()
-                              )
-                            );
-                            dispatch(setIsDisableRequest(true));
-                            dispatch(
-                              setScrollValue(eventListRef.current.scrollTop)
-                            );
-                          }}
-                        >
-                          <div className="event-background">
-                            <Image
-                              src={item.image || Images.BackgroundLogo.src}
-                              layout="fill"
-                              alt=""
-                              onError={(e: any) => {
-                                e.target.onerror = null;
-                                e.target.src = Images.BackgroundLogo.src;
-                              }}
-                            />
-                          </div>
-                          <div className="item-info">
-                            <Row className="item-info-row">
-                              <Col span={24} className="info-title">
-                                {item.name}
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
-                                  className="info-item-icon"
-                                  src={Images.ClockIcon}
-                                  alt=""
-                                />
-                                <div className="info-description">
-                                  {(item.startTime &&
-                                    item.endTime &&
-                                    `${formatTimeStrByTimeString(
-                                      item.startTime,
-                                      FormatTimeKeys.norm
-                                    )} - ${formatTimeStrByTimeString(
-                                      item.endTime,
-                                      FormatTimeKeys.norm
-                                    )}`) ||
-                                    '-'}
-                                </div>
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
-                                  src={Images.LocationIcon}
-                                  alt=""
-                                  className="info-item-icon"
-                                />
-                                <div className="info-description">
-                                  {item.location || '-'}
-                                </div>
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
-                                  src={Images.OrganiserIcon}
-                                  alt=""
-                                  className="info-item-icon"
-                                />
-                                <span className="info-description">
-                                  {item.organizerName || '-'}
-                                </span>
-                              </Col>
-                            </Row>
-                          </div>
-                        </EventItemContainer>
-                      ))}
-                      {loading && eventDataForAll.length && isMobile && (
-                        <div className="load-more">
-                          <LoadingOutlined />
-                          Loading...
-                        </div>
-                      )}
-                    </div>
-                  )) || (
-                    <>
-                      {!loading && (
-                        <Row className="no-event-row">
-                          <Col span={24} className="no-event">
-                            <div
-                              style={{ margin: 'auto', textAlign: 'center' }}
-                            >
+                              <div className="info-description">
+                                {(item.startTime &&
+                                  item.endTime &&
+                                  `${formatTimeStrByTimeString(
+                                    item.startTime,
+                                    FormatTimeKeys.norm
+                                  )} - ${formatTimeStrByTimeString(
+                                    item.endTime,
+                                    FormatTimeKeys.norm
+                                  )}`) ||
+                                  '-'}
+                              </div>
+                            </Col>
+                            <Col span={24} className="info-item">
                               <Image
-                                src={
-                                  (searchKeyword && Images.NoSearchEventIcon) ||
-                                  Images.NoEventIcon
-                                }
+                                src={Images.LocationIcon}
                                 alt=""
+                                className="info-item-icon"
                               />
-                              <p>Oops! No upcoming events for now.</p>
-                            </div>
-                          </Col>
-                        </Row>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-            </Col>
-          </Row>
-        </Col>
-      </Spin>
+                              <div className="info-description">
+                                {item.location || '-'}
+                              </div>
+                            </Col>
+                            <Col span={24} className="info-item">
+                              <Image
+                                src={Images.OrganiserIcon}
+                                alt=""
+                                className="info-item-icon"
+                              />
+                              <span className="info-description">
+                                {item.organizerName || '-'}
+                              </span>
+                            </Col>
+                          </Row>
+                        </div>
+                      </EventItemContainer>
+                    ))}
+                    {loading && eventDataForAll.length && isMobile && (
+                      <div className="load-more">
+                        <LoadingOutlined />
+                        Loading...
+                      </div>
+                    )}
+                  </div>
+                )) || (
+                  <>
+                    {!loading && (
+                      <Row className="no-event-row">
+                        <Col span={24} className="no-event">
+                          <div style={{ margin: 'auto', textAlign: 'center' }}>
+                            <Image
+                              src={
+                                (searchKeyword && Images.NoSearchEventIcon) ||
+                                Images.NoEventIcon
+                              }
+                              alt=""
+                            />
+                            <p>Oops! No upcoming events for now.</p>
+                          </div>
+                        </Col>
+                      </Row>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </Col>
+        </Row>
+      </Col>
       {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}
       {contextHolder}
       {!menuState && <PageBottomComponent />}

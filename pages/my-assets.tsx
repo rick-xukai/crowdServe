@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Row, Col, Spin, message, Tabs, Button } from 'antd';
+import { Row, Col, message, Tabs, Button } from 'antd';
 import _ from 'lodash';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
@@ -270,6 +270,16 @@ const Tickets = () => {
     }
   };
 
+  if (loading && !ticketsDataForAllStatus.length) {
+    return (
+      <TicketsContainer ref={ticketsListRef}>
+        <div className="page-loading">
+          <LoadingOutlined />
+        </div>
+      </TicketsContainer>
+    );
+  }
+
   return (
     <TicketsContainer ref={ticketsListRef}>
       <Col md={24} xs={0}>
@@ -294,173 +304,167 @@ const Tickets = () => {
           />
         </div>
       )}
-      <Spin
-        spinning={loading && !ticketsDataForAllStatus.length}
-        indicator={<LoadingOutlined spin />}
-        size="large"
-      >
-        <div className={(isOpenAppShow && 'page-main open-app') || 'page-main'}>
-          <Row>
-            <Col className="tickets-list" span={24}>
-              {(ticketsDataForAllStatus.length && (
-                <div className="tickets-list-container">
-                  {ticketsDataForAllStatus.map((item) => (
-                    <TicketItemContainer
-                      key={item.id}
-                      onClick={() => {
-                        router.push(
-                          RouterKeys.ticketDetail.replace(
-                            ':ticketId',
-                            item.id.toString()
-                          )
-                        );
-                        dispatch(setIsDisableRequest(true));
-                        dispatch(
-                          setScrollValue(ticketsListRef.current.scrollTop)
-                        );
-                      }}
-                    >
-                      {item.status ===
-                        TicketStatus.find((v) => v.key === 5)?.key && (
-                        <div className="background-mask" />
+      <div className={(isOpenAppShow && 'page-main open-app') || 'page-main'}>
+        <Row>
+          <Col className="tickets-list" span={24}>
+            {(ticketsDataForAllStatus.length && (
+              <div className="tickets-list-container">
+                {ticketsDataForAllStatus.map((item) => (
+                  <TicketItemContainer
+                    key={item.id}
+                    onClick={() => {
+                      router.push(
+                        RouterKeys.ticketDetail.replace(
+                          ':ticketId',
+                          item.id.toString()
+                        )
+                      );
+                      dispatch(setIsDisableRequest(true));
+                      dispatch(
+                        setScrollValue(ticketsListRef.current.scrollTop)
+                      );
+                    }}
+                  >
+                    {item.status ===
+                      TicketStatus.find((v) => v.key === 5)?.key && (
+                      <div className="background-mask" />
+                    )}
+                    <div className="ticket-background">
+                      {(item.thumbnailType === 'Video' && (
+                        <>
+                          {(isSafari && (
+                            <video
+                              src={item.thumbnailUrl}
+                              autoPlay={false}
+                              poster={Images.BackgroundLogo.src}
+                            />
+                          )) || (
+                            <video src={item.thumbnailUrl} autoPlay={false} />
+                          )}
+                        </>
+                      )) || (
+                        <Image
+                          src={item.thumbnailUrl || Images.BackgroundLogo.src}
+                          layout="fill"
+                          alt=""
+                          onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src = Images.BackgroundLogo.src;
+                          }}
+                        />
                       )}
-                      <div className="ticket-background">
-                        {(item.thumbnailType === 'Video' && (
-                          <>
-                            {(isSafari && (
-                              <video
-                                src={item.thumbnailUrl}
-                                autoPlay={false}
-                                poster={Images.BackgroundLogo.src}
-                              />
-                            )) || (
-                              <video src={item.thumbnailUrl} autoPlay={false} />
-                            )}
-                          </>
-                        )) || (
-                          <Image
-                            src={item.thumbnailUrl || Images.BackgroundLogo.src}
-                            layout="fill"
-                            alt=""
-                            onError={(e: any) => {
-                              e.target.onerror = null;
-                              e.target.src = Images.BackgroundLogo.src;
-                            }}
-                          />
-                        )}
-                      </div>
-                      {checkStatusIcon(item.status) && (
-                        <div className="on-sale-icon">
-                          <Image src={checkStatusIcon(item.status)} alt="" />
-                        </div>
-                      )}
-                      <div
-                        className="status-warpper"
-                        style={{ textAlign: 'right' }}
-                      >
-                        {TicketStatus.map((status) => {
-                          if (status.key === item.status && status.text) {
-                            return (
-                              <TicketStatusContainer
-                                key={status.key}
-                                bgColor={status.bgColor}
-                                textColor={status.color}
-                              >
-                                {status.text}
-                              </TicketStatusContainer>
-                            );
-                          }
-                          return null;
-                        })}
-                      </div>
-                      <div className="item-info">
-                        <Row className="item-info-row">
-                          <Col span={24} className="info-title">
-                            {item.name}
-                          </Col>
-                          <Col span={24} className="info-item">
-                            <Image
-                              className="info-item-icon"
-                              src={Images.CalendarIcon}
-                              alt=""
-                            />
-                            <div className="info-description">
-                              {(item.startTime &&
-                                formatTimeStrByTimeString(
-                                  item.startTime,
-                                  FormatTimeKeys.norm
-                                )) ||
-                                '-'}
-                            </div>
-                          </Col>
-                          <Col span={24} className="info-item">
-                            <Image
-                              src={Images.LocationIcon}
-                              alt=""
-                              className="info-item-icon"
-                            />
-                            <div className="info-description">
-                              {item.location || '-'}
-                            </div>
-                          </Col>
-                          <Col span={24} className="info-item">
-                            <Image
-                              src={Images.OrganiserIcon}
-                              alt=""
-                              className="info-item-icon"
-                            />
-                            <span className="info-description">
-                              {item.organizerName || '-'}
-                            </span>
-                          </Col>
-                        </Row>
-                      </div>
-                    </TicketItemContainer>
-                  ))}
-                  {loading && ticketsDataForAllStatus.length && isMobile && (
-                    <div className="load-more">
-                      <LoadingOutlined />
-                      Loading...
                     </div>
-                  )}
-                </div>
-              )) || (
-                <>
-                  {!ticketsDataForAllStatus.length && !loading && (
-                    <Row className="no-ticket-row">
-                      <Col span={24} className="no-ticket">
-                        <div style={{ margin: 'auto', textAlign: 'center' }}>
-                          <Image src={Images.NoTicketsIcon} alt="" />
-                          <p>No Tickets Available</p>
-                        </div>
-                      </Col>
-                    </Row>
-                  )}
-                </>
-              )}
-              <div
-                className="open-app-collectibles"
-                style={{ display: (showMyCollectibles && 'flex') || 'none' }}
-              >
-                <div className="page-main-collectibles">
-                  <Image src={Images.MyCollectiblesIcon} alt="" />
-                  <p className="title">
-                    Open the app to access the full functionality.
-                  </p>
-                  <div className="page-bottom">
-                    <Button onClick={handleOpenApp}>OPEN NOW</Button>
+                    {checkStatusIcon(item.status) && (
+                      <div className="on-sale-icon">
+                        <Image src={checkStatusIcon(item.status)} alt="" />
+                      </div>
+                    )}
+                    <div
+                      className="status-warpper"
+                      style={{ textAlign: 'right' }}
+                    >
+                      {TicketStatus.map((status) => {
+                        if (status.key === item.status && status.text) {
+                          return (
+                            <TicketStatusContainer
+                              key={status.key}
+                              bgColor={status.bgColor}
+                              textColor={status.color}
+                            >
+                              {status.text}
+                            </TicketStatusContainer>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                    <div className="item-info">
+                      <Row className="item-info-row">
+                        <Col span={24} className="info-title">
+                          {item.name}
+                        </Col>
+                        <Col span={24} className="info-item">
+                          <Image
+                            className="info-item-icon"
+                            src={Images.CalendarIcon}
+                            alt=""
+                          />
+                          <div className="info-description">
+                            {(item.startTime &&
+                              formatTimeStrByTimeString(
+                                item.startTime,
+                                FormatTimeKeys.norm
+                              )) ||
+                              '-'}
+                          </div>
+                        </Col>
+                        <Col span={24} className="info-item">
+                          <Image
+                            src={Images.LocationIcon}
+                            alt=""
+                            className="info-item-icon"
+                          />
+                          <div className="info-description">
+                            {item.location || '-'}
+                          </div>
+                        </Col>
+                        <Col span={24} className="info-item">
+                          <Image
+                            src={Images.OrganiserIcon}
+                            alt=""
+                            className="info-item-icon"
+                          />
+                          <span className="info-description">
+                            {item.organizerName || '-'}
+                          </span>
+                        </Col>
+                      </Row>
+                    </div>
+                  </TicketItemContainer>
+                ))}
+                {loading && ticketsDataForAllStatus.length && isMobile && (
+                  <div className="load-more">
+                    <LoadingOutlined />
+                    Loading...
                   </div>
-                </div>
-                <a
-                  ref={openAppInIos}
-                  href={AppLandingPage}
-                  style={{ display: 'none' }}
-                />
+                )}
               </div>
-            </Col>
-          </Row>
-        </div>
-      </Spin>
+            )) || (
+              <>
+                {!ticketsDataForAllStatus.length && !loading && (
+                  <Row className="no-ticket-row">
+                    <Col span={24} className="no-ticket">
+                      <div style={{ margin: 'auto', textAlign: 'center' }}>
+                        <Image src={Images.NoTicketsIcon} alt="" />
+                        <p>No Tickets Available</p>
+                      </div>
+                    </Col>
+                  </Row>
+                )}
+              </>
+            )}
+            <div
+              className="open-app-collectibles"
+              style={{ display: (showMyCollectibles && 'flex') || 'none' }}
+            >
+              <div className="page-main-collectibles">
+                <Image src={Images.MyCollectiblesIcon} alt="" />
+                <p className="title">
+                  Open the app to access the full functionality.
+                </p>
+                <div className="page-bottom">
+                  <Button onClick={handleOpenApp}>OPEN NOW</Button>
+                </div>
+              </div>
+              <a
+                ref={openAppInIos}
+                href={AppLandingPage}
+                style={{ display: 'none' }}
+              />
+            </div>
+          </Col>
+        </Row>
+      </div>
       {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}
       {contextHolder}
       {!menuState && <PageBottomComponent />}

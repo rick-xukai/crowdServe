@@ -178,7 +178,7 @@ const PageHearderComponent = ({
   ]);
   const dispatch = useAppDispatch();
 
-  const [isUserToken, setIsUserToken] = useState<boolean>(false);
+  const [isUserToken, setIsUserToken] = useState<boolean | null>(null);
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
 
@@ -221,6 +221,8 @@ const PageHearderComponent = ({
     const token = cookie.getCookie(CookieKeys.userLoginToken);
     if (token) {
       setIsUserToken(true);
+    } else {
+      setIsUserToken(false);
     }
   }, []);
 
@@ -242,13 +244,17 @@ const PageHearderComponent = ({
       <>
         <Col span={12} className="right-container">
           <div className="hearder-action">
-            {!isUserToken && !showMenu && (
-              <div
-                className="user-login"
-                onClick={() => router.push(RouterKeys.login)}
-              >
-                LOG IN
-              </div>
+            {isUserToken !== null && (
+              <>
+                {!isUserToken && !showMenu && (
+                  <div
+                    className="user-login"
+                    onClick={() => router.push(RouterKeys.login)}
+                  >
+                    LOG IN
+                  </div>
+                )}
+              </>
             )}
             {(!showMenu && (
               <Image

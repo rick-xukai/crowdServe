@@ -4,14 +4,14 @@ html,
 body {
   padding: 0;
   margin: 0;
-  background-color: #27272A;
+  background-color: #27272a;
   font-family: Heebo, sans-serif;
   height: 100%;
 }
 
 #__next {
   height: 100%;
-  background: #27272A;
+  background: #27272a;
 }
 
 a {
@@ -44,7 +44,7 @@ a {
 
 .ant-spin {
   max-height: unset !important;
-  color: #FC0006;
+  color: #fc0006;
 }
 
 .ant-drawer-content-wrapper {
@@ -128,16 +128,16 @@ a {
   width: 90px;
   height: 35px;
   border: none;
-  background: #FC0006;
+  background: #fc0006;
   border-radius: 2px;
-  color: #F8F6F0;
+  color: #f8f6f0;
   font-weight: 700;
   font-size: 13px;
 }
 
 .ant-drawer-body .ant-btn-default:not(:disabled):hover {
-  color: #F8F6F0;
-  border-color: #F8F6F0;
+  color: #f8f6f0;
+  border-color: #f8f6f0;
 }
 
 .ant-qrcode .ant-qrcode-mask {
@@ -161,7 +161,7 @@ a {
 .error-message-event .ant-message-notice-content,
 .error-message-login .ant-message-notice-content {
   background-color: #717179;
-  color: #EEEEF3;
+  color: #eeeef3;
   opacity: 0.9;
   border-radius: 4px;
 }
@@ -208,13 +208,13 @@ a {
 
 .ant-modal .ant-modal-footer .ant-btn-primary {
   height: 35px;
-  background: #FC0006;
+  background: #fc0006;
   border-radius: 2px;
   width: 82px;
   border: none;
   font-weight: 700;
   font-size: 13px;
-  color: #F8F6F0;
+  color: #f8f6f0;
 }
 
 iframe {
@@ -294,7 +294,7 @@ iframe {
   cursor: pointer;
   width: 164px;
   height: 47px;
-  background: #F8F6F0;
+  background: #f8f6f0;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1) !important;
   border-radius: 4px !important;
 }
@@ -319,9 +319,9 @@ iframe {
 
 .logout-popover-title {
   position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    padding: 14px 12px !important;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 14px 12px !important;
 }
