@@ -191,6 +191,12 @@ const EventDetailContainer = styled.div`
       padding-bottom: 135px;
       .detail-background {
         height: 504px;
+        img {
+          border-radius: 4px;
+        }
+      }
+      .show-more {
+        cursor: pointer;
       }
       .event-detail-container {
         padding-left: 12px;
@@ -223,6 +229,9 @@ const EventDetailContainer = styled.div`
       padding-bottom: 90px;
       .detail-background {
         height: 344px;
+        img {
+          border-radius: 4px;
+        }
       }
       .event-detail-container {
         margin-top: 24px;
