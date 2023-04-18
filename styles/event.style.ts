@@ -7,6 +7,21 @@ const EventListContainer = styled.div`
   max-width: 1008px;
   margin: auto;
   position: relative;
+  .page-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    color: ${Colors.branding};
+    .anticon-loading {
+      margin: auto;
+      font-size: 30px;
+    }
+  }
   .carousel-banner {
     position: absolute;
     left: 0;

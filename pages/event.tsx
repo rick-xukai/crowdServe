@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import _ from 'lodash';
 import Router from 'next/router';
-import { Row, Col, Input, message, Spin, Carousel } from 'antd';
+import { Row, Col, Input, message, Carousel } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
@@ -230,9 +230,9 @@ const EventList = () => {
   if (loading && !eventDataForAll.length) {
     return (
       <EventListContainer ref={eventListRef}>
-        <Spin spinning indicator={<LoadingOutlined spin />} size="large">
-          <div />
-        </Spin>
+        <div className="page-loading">
+          <LoadingOutlined />
+        </div>
       </EventListContainer>
     );
   }
