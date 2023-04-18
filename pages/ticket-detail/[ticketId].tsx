@@ -2,7 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
 import Image from 'next/image';
-import { Row, Col, Spin, Drawer, QRCode, Button, message, FloatButton } from 'antd';
+import {
+  Row,
+  Col,
+  Spin,
+  Drawer,
+  QRCode,
+  Button,
+  message,
+  FloatButton,
+} from 'antd';
 import TextTruncate from 'react-text-truncate';
 import { LoadingOutlined } from '@ant-design/icons';
 
@@ -23,13 +32,23 @@ import {
   selectQrcodeError,
   selectTicketDetailLoading,
 } from '../../slice/tickets.slice';
-import { selectTicketsDataForAllStatus, setTicketsDataForAllStatus } from '../../slice/ticketsCache.slice';
+import {
+  selectTicketsDataForAllStatus,
+  setTicketsDataForAllStatus,
+} from '../../slice/ticketsCache.slice';
 import Messages from '../../constants/Messages';
 import { CookieKeys, RouterKeys } from '../../constants/Keys';
-import { TicketStatus, DefaultCodeRefreshTime, FormatTimeKeys, PriceUnit } from '../../constants/General';
+import {
+  TicketStatus,
+  DefaultCodeRefreshTime,
+  FormatTimeKeys,
+  PriceUnit,
+} from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
 import { TicketStatusContainer } from '../../styles/tickets.style';
 import PageHearderComponent from '../../components/pageHearder';
+import PageHearderResponsive from '../../components/pageHearderResponsive';
+import PageBottomComponent from '../../components/pageBottomComponent';
 
 let timer: NodeJS.Timer | null = null;
 
@@ -81,7 +100,10 @@ const TicketDetail = () => {
       const allTickets = _.cloneDeep(ticketsDataForAllStatus);
       allTickets.forEach((item, index) => {
         if (item.id === ticketDetailData.id) {
-          allTickets.splice(index, 1, { ...item, status: ticketDetailData.status });
+          allTickets.splice(index, 1, {
+            ...item,
+            status: ticketDetailData.status,
+          });
         }
       });
       dispatch(setTicketsDataForAllStatus(allTickets));
@@ -136,9 +158,7 @@ const TicketDetail = () => {
   // eslint-disable-next-line
   useEffect(() => {
     return () => {
-      if (cookie.getCookie(CookieKeys.userLoginToken)) {
-        router.push(RouterKeys.ticketsList);
-      } else {
+      if (!cookie.getCookie(CookieKeys.userLoginToken)) {
         router.push(RouterKeys.login);
       }
       clearInterval(Number(timer));
@@ -148,13 +168,22 @@ const TicketDetail = () => {
 
   return (
     <>
-      {!ticketDetailLoading && (
-        <TicketDetailContainer>
-          <PageHearderComponent setMenuState={setMenuState} />
-          <img src={Images.QrcodeNetworkError.src} alt="" style={{ display: 'none' }} />
+      {(!ticketDetailLoading && (
+        <TicketDetailContainer style={{ overflow: menuState && 'hidden' || 'unset' }}>
+          <Col md={24} xs={0}>
+            <PageHearderResponsive />
+          </Col>
+          <Col md={0} xs={24}>
+            <PageHearderComponent setMenuState={setMenuState} />
+          </Col>
+          <img
+            src={Images.QrcodeNetworkError.src}
+            alt=""
+            style={{ display: 'none' }}
+          />
           <Row>
             <Col span={24} className="detail-background">
-              {ticketDetailData.imageType.toLocaleLowerCase() === 'video' && (
+              {(ticketDetailData.imageType.toLocaleLowerCase() === 'video' && (
                 <video
                   src={ticketDetailData.image}
                   playsInline
@@ -162,7 +191,7 @@ const TicketDetail = () => {
                   autoPlay
                   loop
                 />
-              ) || (
+              )) || (
                 <img
                   src={ticketDetailData.image}
                   alt=""
@@ -176,15 +205,13 @@ const TicketDetail = () => {
           </Row>
           <div
             className={`detail-info ${
-              ticketDetailData.status !== TicketStatus[0].key &&
-              'detail-info-no-code' ||
-            ''}`}
+              (ticketDetailData.status !== TicketStatus[0].key &&
+                'detail-info-no-code') ||
+              ''
+            }`}
           >
             <div className="info-container">
               <Row className="container-top">
-                <Col span={24} className="ticket-name">
-                  {ticketDetailData.name || '-'}
-                </Col>
                 <Col span={24}>
                   {TicketStatus.map((status) => {
                     if (status.key === ticketDetailData.status && status.text) {
@@ -201,15 +228,18 @@ const TicketDetail = () => {
                     return null;
                   })}
                 </Col>
+                <Col span={24} className="ticket-name">
+                  {ticketDetailData.name || '-'}
+                </Col>
                 <Col span={24} className="organizer-name">
                   By {ticketDetailData.organizerName || '-'}
                 </Col>
                 <Col span={24} className="ticket-description">
-                  {textShowMore && (
+                  {(textShowMore && (
                     <p className="whole-description">
                       {ticketDetailData.description}
                     </p>
-                  ) || (
+                  )) || (
                     <TextTruncate
                       line={2}
                       element="div"
@@ -226,31 +256,29 @@ const TicketDetail = () => {
                       }
                     />
                   )}
-                  <div className="circle-left" />
-                  <div className="circle-right" />
                 </Col>
                 {checkStatusIcon(ticketDetailData.status) && (
                   <div className="ticket-status-icon">
-                    <Image src={checkStatusIcon(ticketDetailData.status)} alt="" />
+                    <Image
+                      src={checkStatusIcon(ticketDetailData.status)}
+                      alt=""
+                    />
                   </div>
                 )}
               </Row>
-              <Row className="border-line">
-                <Col span={24} style={{ textAlign: 'center' }}>
-                  <Image src={Images.BorderLine} alt="" />
-                </Col>
-              </Row>
               <div className="container-info-item">
-                <Row className="info-item-row">
-                  <Col span={24} className="info-item-title">
-                    Location
+                <Row gutter={{ md: 20, xs: 10 }} className="info-item-row-flex">
+                  <Col md={12} span={24} className="info-item-responsive">
+                    <Row className="info-item-row">
+                      <Col span={24} className="info-item-title">
+                        Location
+                      </Col>
+                      <Col span={24} className="info-item-value">
+                        {ticketDetailData.location || '-'}
+                      </Col>
+                    </Row>
                   </Col>
-                  <Col span={24} className="info-item-value">
-                    {ticketDetailData.location || '-'}
-                  </Col>
-                </Row>
-                <Row className="info-item-row-flex">
-                  <Col span={24}>
+                  <Col md={12} span={24} className="info-item-responsive">
                     <Row className="info-item-row">
                       <Col span={24} className="info-item-title">
                         Date
@@ -258,19 +286,19 @@ const TicketDetail = () => {
                       <Col span={24} className="info-item-value">
                         {(ticketDetailData.startTime &&
                           ticketDetailData.endTime &&
-                            `${formatTimeStrByTimeString(
-                              ticketDetailData.startTime,
-                              FormatTimeKeys.norm
-                            )} - ${formatTimeStrByTimeString(
-                              ticketDetailData.endTime,
-                              FormatTimeKeys.norm
-                            )}`) ||
-                        '-'}
+                          `${formatTimeStrByTimeString(
+                            ticketDetailData.startTime,
+                            FormatTimeKeys.norm
+                          )} - ${formatTimeStrByTimeString(
+                            ticketDetailData.endTime,
+                            FormatTimeKeys.norm
+                          )}`) ||
+                          '-'}
                       </Col>
                     </Row>
                   </Col>
                 </Row>
-                <Row className="info-item-row-flex">
+                <Row gutter={{ md: 20, xs: 10 }} className="info-item-row-flex">
                   <Col span={12}>
                     <Row className="info-item-row">
                       <Col span={24} className="info-item-title">
@@ -292,7 +320,7 @@ const TicketDetail = () => {
                     </Row>
                   </Col>
                 </Row>
-                <Row className="info-item-row-flex">
+                <Row gutter={{ md: 20, xs: 10 }} className="info-item-row-flex">
                   <Col span={12}>
                     <Row className="info-item-row">
                       <Col span={24} className="info-item-title">
@@ -315,28 +343,35 @@ const TicketDetail = () => {
                   </Col>
                 </Row>
               </div>
-              {ticketDetailData.collections && ticketDetailData.collections.length && (
-                <Row className="container-bottom">
-                  <Col span={24} style={{ textAlign: 'center' }}>
-                    <div>
-                      <Image src={Images.GoToLinkIcon} alt="" />
-                      <span className="view-blockchain">
-                        <a href={ticketDetailData.collections[0].address} target="_blank">
-                          VIEW ON BLOCKCHAIN
-                        </a>
-                      </span>
-                    </div>
-                  </Col>
-                </Row>
-              ) || null}
+              {(ticketDetailData.collections &&
+                ticketDetailData.collections.length && (
+                  <Row className="container-bottom">
+                    <Col span={24} style={{ textAlign: 'center' }}>
+                      <div>
+                        <Image src={Images.GoToLinkIcon} alt="" />
+                        <span className="view-blockchain">
+                          <a
+                            href={ticketDetailData.collections[0].address}
+                            target="_blank"
+                          >
+                            VIEW ON BLOCKCHAIN
+                          </a>
+                        </span>
+                      </div>
+                    </Col>
+                  </Row>
+                )) ||
+                null}
             </div>
           </div>
-          {(!showQrcode && ticketDetailData.status === TicketStatus[0].key && !menuState) && (
-            <FloatButton
-              onClick={() => setShowQrcode(true)}
-              icon={<Image src={Images.QrcodeIcon} alt="" />}
-            />
-          ) || (
+          {(!showQrcode &&
+            ticketDetailData.status === TicketStatus[0].key &&
+            !menuState && (
+              <FloatButton
+                onClick={() => setShowQrcode(true)}
+                icon={<Image src={Images.QrcodeIcon} alt="" />}
+              />
+            )) || (
             <Drawer
               placement="bottom"
               open={showQrcode}
@@ -344,9 +379,9 @@ const TicketDetail = () => {
               keyboard={false}
               onClose={() => setShowQrcode(false)}
             >
-              {!qrcodeError && (
+              {(!qrcodeError && (
                 <div style={{ height: '100%' }}>
-                  {!qrcodeLoading && (
+                  {(!qrcodeLoading && (
                     <>
                       <QRCode
                         value={qrcodeData}
@@ -356,25 +391,30 @@ const TicketDetail = () => {
                         onRefresh={() => setCountdownNumber(0)}
                       />
                       <p className="code-refreshes">
-                        QR Code refreshes in: {`${countdownNumber < 10 && '00:0' || '00:'}${countdownNumber}`}
+                        QR Code refreshes in:{' '}
+                        {`${
+                          (countdownNumber < 10 && '00:0') || '00:'
+                        }${countdownNumber}`}
                       </p>
                       <p className="code-info">
                         This QR code is your admission voucher, do not <br />
                         take screenshot or send to others!
                       </p>
                     </>
-                  ) || (
-                    <Spin spinning indicator={<LoadingOutlined spin />} size="large">
+                  )) || (
+                    <Spin
+                      spinning
+                      indicator={<LoadingOutlined spin />}
+                      size="large"
+                    >
                       <div />
                     </Spin>
                   )}
                 </div>
-              ) || (
+              )) || (
                 <div className="code-network-error-box">
                   <Image src={Images.QrcodeNetworkError} alt="" />
-                  <p className="error-title">
-                    Network request failed
-                  </p>
+                  <p className="error-title">Network request failed</p>
                   <p className="error-info">
                     QR code failed to get, please refresh the page
                   </p>
@@ -393,8 +433,9 @@ const TicketDetail = () => {
             </Drawer>
           )}
           {contextHolder}
+          {!menuState && <PageBottomComponent />}
         </TicketDetailContainer>
-      ) || (
+      )) || (
         <Spin spinning indicator={<LoadingOutlined spin />} size="large">
           <div />
         </Spin>

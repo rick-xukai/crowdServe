@@ -3,13 +3,16 @@ import styled from 'styled-components';
 import { Colors } from '../theme';
 
 const MyWalletContainer = styled.div`
-  display: flex;
-  align-items: center;
   height: 100%;
   padding: 20px;
   position: relative;
   max-width: 1240px;
   margin: auto;
+  .container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
   .page-main {
     text-align: center;
     margin: auto;
@@ -28,8 +31,8 @@ const MyWalletContainer = styled.div`
     }
   }
   .page-bottom {
-    position: absolute;
-    bottom: 28px;
+    margin: auto;
+    margin-top: 50px;
     width: calc(100% - 40px);
     .ant-btn {
       height: 45px;
@@ -42,6 +45,14 @@ const MyWalletContainer = styled.div`
       border: none;
       width: 100%;
     }
+  }
+  @media (min-width: 1200px) {
+    max-width: 1008px;
+    padding: 0;
+  }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    max-width: 688px;
+    padding: 0;
   }
 `;
 

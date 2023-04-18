@@ -29,6 +29,11 @@ export interface EventListResponseType {
   status: number;
 }
 
+export interface EventListBanner {
+  image: string;
+  link: string;
+}
+
 export interface EventDetailResponseType {
   id: number;
   name: string;
@@ -149,12 +154,44 @@ export const getEventTicketTypeAction = createAsyncThunk<
   },
 );
 
+/**
+ * Get event list banner
+ */
+export const getEventListBannerAction = createAsyncThunk<
+  EventListBanner[],
+  { page: number, size: number },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getEventListBanner/getEventListBannerAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventService.getEventListBanner(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  },
+);
+
 interface EventState {
   loading: boolean;
   eventDetailLoading: boolean,
   eventDetailData: EventDetailResponseType;
   eventListData: EventListResponseType[];
   eventTicketTypeData: EventTicketTypeResponseType[];
+  eventListBanner: EventListBanner[];
   eventDetailError:
     | {
       message: string | undefined;
@@ -174,6 +211,7 @@ const initialState: EventState = {
   eventDetailLoading: true,
   eventListData: [],
   eventTicketTypeData: [],
+  eventListBanner: [],
   error: null,
   eventDetailError: null,
   eventDetailData: {
@@ -253,6 +291,19 @@ export const eventSlice = createSlice({
         } else {
           state.eventDetailError = action.error as ErrorType;
         }
+      })
+      .addCase(getEventListBannerAction.pending, (state) => {
+        state.eventListBanner = [];
+      })
+      .addCase(getEventListBannerAction.fulfilled, (state, action: any) => {
+        state.eventListBanner = action.payload;
+      })
+      .addCase(getEventListBannerAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
       });
   },
 });
@@ -271,5 +322,6 @@ export const selectEventListData = (state: RootState) => state.event.eventListDa
 export const selectEventTicketTypeData = (state: RootState) => state.event.eventTicketTypeData;
 export const selectEventDetailData = (state: RootState) => state.event.eventDetailData;
 export const selectEventDetailError = (state: RootState) => state.event.eventDetailError;
+export const selectEventListBanner = (state: RootState) => state.event.eventListBanner;
 
 export default eventSlice.reducer;

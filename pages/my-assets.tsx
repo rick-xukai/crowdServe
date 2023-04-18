@@ -1,19 +1,19 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import { Row, Col, Spin, message, Tabs, Button } from "antd";
-import _ from "lodash";
-import { LoadingOutlined } from "@ant-design/icons";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { isSafari, isMobile, isIOS, isAndroid } from "react-device-detect";
-import type { TabsProps } from "antd";
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { Row, Col, Spin, message, Tabs, Button } from 'antd';
+import _ from 'lodash';
+import { LoadingOutlined } from '@ant-design/icons';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { isSafari, isMobile, isIOS, isAndroid } from 'react-device-detect';
+import type { TabsProps } from 'antd';
 
-import AuthHoc from "../components/hoc/AuthHoc";
+import AuthHoc from '../components/hoc/AuthHoc';
 import {
   formatTimeStrByTimeString,
   checkStatusIcon,
   openApp,
-} from "../utils/func";
-import { RouterKeys } from "../constants/Keys";
+} from '../utils/func';
+import { RouterKeys } from '../constants/Keys';
 import {
   TicketStatus,
   FormatTimeKeys,
@@ -23,15 +23,15 @@ import {
   MyTickets,
   MyCollectibles,
   AppLandingPage,
-} from "../constants/General";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
+} from '../constants/General';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   getTicketsListAction,
   selectLoading,
   selectError,
   selectTicketsListData,
   resetError,
-} from "../slice/tickets.slice";
+} from '../slice/tickets.slice';
 import {
   setTicketsDataForAllStatus,
   selectTicketsDataForAllStatus,
@@ -45,15 +45,17 @@ import {
   selectIsGetAllData,
   setScrollValue,
   selectScrollValue,
-} from "../slice/ticketsCache.slice";
-import { Images } from "../theme";
-import OpenAppComponent from "../components/openAppComponent";
-import PageHearderComponent from "../components/pageHearder";
+} from '../slice/ticketsCache.slice';
+import { Images } from '../theme';
+import OpenAppComponent from '../components/openAppComponent';
+import PageHearderComponent from '../components/pageHearder';
+import PageHearderResponsive from '../components/pageHearderResponsive';
+import PageBottomComponent from '../components/pageBottomComponent';
 import {
   TicketsContainer,
   TicketItemContainer,
   TicketStatusContainer,
-} from "../styles/tickets.style";
+} from '../styles/tickets.style';
 
 const Tickets = () => {
   const router = useRouter();
@@ -78,6 +80,7 @@ const Tickets = () => {
   const [showMyCollectibles, setShowMyCollectibles] = useState<boolean>(false);
   const [showMyAssetsTabs, setShowMyAssetsTabs] = useState<boolean>(true);
   const [currentTabsKeys, setCurrentTabsKeys] = useState<string>(MyTickets);
+  const [menuState, setMenuState] = useState<boolean>(false);
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -96,11 +99,11 @@ const Tickets = () => {
     if (!isFirstRender && error) {
       messageApi.open({
         content: error.message,
-        className: "error-message-tickets",
+        className: 'error-message-tickets',
       });
       if (ticketsListRef && ticketsListRef.current) {
         ticketsListRef.current.removeEventListener(
-          "scroll",
+          'scroll',
           scrollListener,
           true
         );
@@ -171,7 +174,7 @@ const Tickets = () => {
             dispatch(setIsGetAllData(true));
             if (ticketsListRef && ticketsListRef.current) {
               ticketsListRef.current.removeEventListener(
-                "scroll",
+                'scroll',
                 scrollListener,
                 true
               );
@@ -202,25 +205,35 @@ const Tickets = () => {
 
   useEffect(() => {
     if (!_.isEmpty(router.query)) {
-      if (router.query.sameAccount === "false") {
+      if (router.query.sameAccount === 'false') {
         messageApi.open({
           content: DifferentEmailErrorMessafe,
-          className: "error-message-tickets",
+          className: 'error-message-tickets',
         });
       }
     }
   }, [router.isReady]);
 
   useEffect(() => {
+    try {
+      if (showMyCollectibles) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'scroll';
+      }
+    } catch (_) {}
+  }, [showMyCollectibles]);
+
+  useEffect(() => {
     setIsFirstRender(false);
     if (!isGetAllData && ticketsListRef && ticketsListRef.current) {
-      ticketsListRef.current.addEventListener("scroll", scrollListener, true);
+      ticketsListRef.current.addEventListener('scroll', scrollListener, true);
     }
     return () => {
       dispatch(resetError());
       if (ticketsListRef && ticketsListRef.current) {
         ticketsListRef.current.removeEventListener(
-          "scroll",
+          'scroll',
           scrollListener,
           true
         );
@@ -228,7 +241,7 @@ const Tickets = () => {
     };
   }, []);
 
-  const tabsItem: TabsProps["items"] = [
+  const tabsItem: TabsProps['items'] = [
     {
       key: MyTickets,
       label: (
@@ -236,7 +249,7 @@ const Tickets = () => {
           <span>My Tickets</span>
         </div>
       ),
-      children: "",
+      children: '',
     },
     {
       key: MyCollectibles,
@@ -245,7 +258,7 @@ const Tickets = () => {
           <span>My Collectibles</span>
         </div>
       ),
-      children: "",
+      children: '',
     },
   ];
 
@@ -259,7 +272,16 @@ const Tickets = () => {
 
   return (
     <TicketsContainer ref={ticketsListRef}>
-      <PageHearderComponent showTabs setShowTabs={setShowMyAssetsTabs} />
+      <Col md={24} xs={0}>
+        <PageHearderResponsive />
+      </Col>
+      <Col md={0} xs={24}>
+        <PageHearderComponent
+          setMenuState={setMenuState}
+          showTabs
+          setShowTabs={setShowMyAssetsTabs}
+        />
+      </Col>
       {showMyAssetsTabs && (
         <div className="page-tabs">
           <Tabs
@@ -277,7 +299,7 @@ const Tickets = () => {
         indicator={<LoadingOutlined spin />}
         size="large"
       >
-        <div className={(isOpenAppShow && "page-main open-app") || "page-main"}>
+        <div className={(isOpenAppShow && 'page-main open-app') || 'page-main'}>
           <Row>
             <Col className="tickets-list" span={24}>
               {(ticketsDataForAllStatus.length && (
@@ -288,7 +310,7 @@ const Tickets = () => {
                       onClick={() => {
                         router.push(
                           RouterKeys.ticketDetail.replace(
-                            ":ticketId",
+                            ':ticketId',
                             item.id.toString()
                           )
                         );
@@ -303,7 +325,7 @@ const Tickets = () => {
                         <div className="background-mask" />
                       )}
                       <div className="ticket-background">
-                        {(item.thumbnailType === "Video" && (
+                        {(item.thumbnailType === 'Video' && (
                           <>
                             {(isSafari && (
                               <video
@@ -334,7 +356,7 @@ const Tickets = () => {
                       )}
                       <div
                         className="status-warpper"
-                        style={{ textAlign: "right" }}
+                        style={{ textAlign: 'right' }}
                       >
                         {TicketStatus.map((status) => {
                           if (status.key === item.status && status.text) {
@@ -368,7 +390,7 @@ const Tickets = () => {
                                   item.startTime,
                                   FormatTimeKeys.norm
                                 )) ||
-                                "-"}
+                                '-'}
                             </div>
                           </Col>
                           <Col span={24} className="info-item">
@@ -378,7 +400,7 @@ const Tickets = () => {
                               className="info-item-icon"
                             />
                             <div className="info-description">
-                              {item.location || "-"}
+                              {item.location || '-'}
                             </div>
                           </Col>
                           <Col span={24} className="info-item">
@@ -388,7 +410,7 @@ const Tickets = () => {
                               className="info-item-icon"
                             />
                             <span className="info-description">
-                              {item.organizerName || "-"}
+                              {item.organizerName || '-'}
                             </span>
                           </Col>
                         </Row>
@@ -407,7 +429,7 @@ const Tickets = () => {
                   {!ticketsDataForAllStatus.length && !loading && (
                     <Row className="no-ticket-row">
                       <Col span={24} className="no-ticket">
-                        <div style={{ margin: "auto", textAlign: "center" }}>
+                        <div style={{ margin: 'auto', textAlign: 'center' }}>
                           <Image src={Images.NoTicketsIcon} alt="" />
                           <p>No Tickets Available</p>
                         </div>
@@ -418,7 +440,7 @@ const Tickets = () => {
               )}
               <div
                 className="open-app-collectibles"
-                style={{ display: (showMyCollectibles && "flex") || "none" }}
+                style={{ display: (showMyCollectibles && 'flex') || 'none' }}
               >
                 <div className="page-main-collectibles">
                   <Image src={Images.MyCollectiblesIcon} alt="" />
@@ -432,7 +454,7 @@ const Tickets = () => {
                 <a
                   ref={openAppInIos}
                   href={AppLandingPage}
-                  style={{ display: "none" }}
+                  style={{ display: 'none' }}
                 />
               </div>
             </Col>
@@ -441,6 +463,7 @@ const Tickets = () => {
       </Spin>
       {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}
       {contextHolder}
+      {!menuState && <PageBottomComponent />}
     </TicketsContainer>
   );
 };
