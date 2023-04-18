@@ -246,22 +246,31 @@ const EventList = () => {
         <PageHearderComponent setMenuState={setMenuState} />
       </Col>
       <Col md={24} xs={0} className="page-main desktop-responsive">
+        {eventListBanner && eventListBanner.length && (
+          <Row>
+            <Col span={24}>
+              <Carousel autoplay>
+                {eventListBanner &&
+                  eventListBanner.map((item) => (
+                    <div key={item.link} className="banner-item">
+                      <a href={item.link} target="_blank">
+                        <img src={item.image} alt="" />
+                      </a>
+                    </div>
+                  ))}
+              </Carousel>
+            </Col>
+          </Row>
+        )}
         <Row>
-          <Col span={24}>
-            <Carousel autoplay>
-              {eventListBanner &&
-                eventListBanner.map((item) => (
-                  <div key={item.link} className="banner-item">
-                    <a href={item.link} target="_blank">
-                      <img src={item.image} alt="" />
-                    </a>
-                  </div>
-                ))}
-            </Carousel>
-          </Col>
-        </Row>
-        <Row>
-          <Col className="event-list" span={24}>
+          <Col
+            className="event-list"
+            span={24}
+            style={{
+              marginTop:
+                (!eventListBanner || !eventListBanner.length && 20) || 0,
+            }}
+          >
             <div className="page-title">
               <Row>
                 <Col span={24} className="title">
@@ -417,24 +426,33 @@ const EventList = () => {
         xs={24}
         className={(isOpenAppShow && 'page-main open-app') || 'page-main'}
       >
-        <div className="carousel-banner">
-          <Row>
-            <Col span={24}>
-              <Carousel autoplay>
-                {eventListBanner &&
-                  eventListBanner.map((item) => (
-                    <div key={item.link} className="banner-item">
-                      <a href={item.link} target="_blank">
-                        <img src={item.image} alt="" />
-                      </a>
-                    </div>
-                  ))}
-              </Carousel>
-            </Col>
-          </Row>
-        </div>
+        {eventListBanner && eventListBanner.length && (
+          <div className="carousel-banner">
+            <Row>
+              <Col span={24}>
+                <Carousel autoplay>
+                  {eventListBanner &&
+                    eventListBanner.map((item) => (
+                      <div key={item.link} className="banner-item">
+                        <a href={item.link} target="_blank">
+                          <img src={item.image} alt="" />
+                        </a>
+                      </div>
+                    ))}
+                </Carousel>
+              </Col>
+            </Row>
+          </div>
+        )}
         <Row>
-          <Col className="event-list mobile" span={24}>
+          <Col
+            className="event-list mobile"
+            span={24}
+            style={{
+              paddingTop:
+                (eventListBanner && eventListBanner.length && 215) || 0,
+            }}
+          >
             <div className="page-title">
               <Row>
                 <Col span={24} md={12} className="title">
