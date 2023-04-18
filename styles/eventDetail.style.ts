@@ -6,14 +6,14 @@ const EventDetailContainer = styled.div`
   padding-top: 45px;
   height: 100%;
   background: ${Colors.backgorund};
-  max-width: 1240px;
+  max-width: 1007px;
   margin: auto;
+  .page-main {
+    padding-bottom: 70px;
+  }
   .detail-background {
     width: 100%;
-    height: 250px;
-    @media (min-width: 1023px) {
-      height: 400px;
-    }
+    height: 188px;
     img {
       width: 100%;
       height: 100%;
@@ -23,8 +23,6 @@ const EventDetailContainer = styled.div`
   .event-detail-container {
     padding: 20px;
     background: ${Colors.backgorund};
-    border-radius: 20px 20px 0px 0px;
-    margin-top: -20px;
     position: relative;
     .item-info {
       .item-info-row {
@@ -64,7 +62,7 @@ const EventDetailContainer = styled.div`
     .dividing-line {
       height: 0.6px;
       background: ${Colors.grayScale90};
-      margin-top: 20px;
+      margin-top: -16px;
       margin-bottom: 15px;
     }
     .all-ticket-sold {
@@ -99,8 +97,18 @@ const EventDetailContainer = styled.div`
       color: ${Colors.white};
     }
   }
+  .ant-tabs {
+    margin-top: 30px;
+    @media (max-width: 576px) {
+      .ant-tabs-nav-wrap {
+        max-width: 375px;
+        margin: auto;
+      }
+    }
+  }
   .ant-tabs-nav {
     height: 35px;
+    margin: 0 0 13px 0;
   }
   @media (max-width: 374px) {
     .ant-tabs .ant-tabs-tab+.ant-tabs-tab {
@@ -108,7 +116,7 @@ const EventDetailContainer = styled.div`
     }
   }
   .ant-tabs-tab {
-    padding: 0;
+    padding: 0 0 6px 0;
     align-items: unset;
     font-weight: 400;
     font-size: 17px;
@@ -121,8 +129,8 @@ const EventDetailContainer = styled.div`
     }
   }
   .ant-tabs-tab-btn {
-    font-weight: 400;
-    font-size: 17px;
+    font-weight: 500;
+    font-size: 15px;
     @media (max-width: 374px) {
       font-size: 14px;
     }
@@ -176,6 +184,62 @@ const EventDetailContainer = styled.div`
       margin-top: 10px;
     }
   }
+  @media (min-width: 1200px) {
+    padding-top: 0;
+    .page-main {
+      margin-top: 104px;
+      padding-bottom: 135px;
+      .detail-background {
+        height: 504px;
+      }
+      .event-detail-container {
+        padding-left: 12px;
+        padding-right: 12px;
+        margin-top: 0;
+        border-radius: 0;
+      }
+    }
+    .item-tabs {
+      margin-top: 55px;
+    }
+    .ant-tabs-tab-btn,
+    .install-btn {
+      cursor: pointer;
+    }
+    .ant-tabs-nav {
+      margin-bottom: 28px;
+    }
+  }
+  @media(min-width: 1200px) {
+    .dividing-line {
+      margin-top: -28px !important;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    padding-top: 0;
+    max-width: 688px;
+    .page-main {
+      padding-top: 84px;
+      padding-bottom: 90px;
+      .detail-background {
+        height: 344px;
+      }
+      .event-detail-container {
+        margin-top: 24px;
+        padding: 0;
+        border-radius: 0;
+      }
+    }
+    .ant-tabs-nav {
+      margin-bottom: 22px;
+    }
+    .item-tabs {
+      margin-top: 35px;
+      .dividing-line {
+        margin-top: -22px;
+      }
+    }
+  }
 `;
 
 const TicketTypeItem = styled(Col)`
@@ -198,6 +262,7 @@ const TicketTypeItem = styled(Col)`
     background: ${Colors.grayScale70};
     border-radius: 6px;
     overflow: hidden;
+    height: calc(100% - 162px);
     .line {
       text-align: center;
       position: relative;
@@ -214,7 +279,8 @@ const TicketTypeItem = styled(Col)`
       text-align: center;
       margin-bottom: 6px;
     }
-    .title, .price {
+    .title,
+    .price {
       font-weight: 500;
       font-size: 15px;
       margin: 0;
@@ -252,6 +318,9 @@ const TicketTypeItem = styled(Col)`
     display: flex;
     justify-content: space-around;
     align-items: center;
+  }
+  @media (min-width: 1200px) {
+    cursor: pointer;
   }
 `;
 

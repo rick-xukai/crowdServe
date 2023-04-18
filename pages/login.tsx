@@ -2,14 +2,25 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
+import { isMobile } from 'react-device-detect';
 import { Row, Col, Form, Input, Button, message, Checkbox } from 'antd';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../hooks';
 import Messages from '../constants/Messages';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
-import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
-import { isEmail, getErrorMessage, isPassword, base64Decrypt, base64Encrypt } from '../utils/func';
+import {
+  TokenExpire,
+  PrivacyPolicyLink,
+  TermsConditionsLink,
+} from '../constants/General';
+import {
+  isEmail,
+  getErrorMessage,
+  isPassword,
+  base64Decrypt,
+  base64Encrypt,
+} from '../utils/func';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   loginAction,
@@ -27,7 +38,10 @@ import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';
 import { resetTicketsListData } from '../slice/tickets.slice';
-import { resetEventCache, setEventDataForSearch } from '../slice/eventCache.slice';
+import {
+  resetEventCache,
+  setEventDataForSearch,
+} from '../slice/eventCache.slice';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 
 const ActivateAccountComponent = ({
@@ -44,7 +58,8 @@ const ActivateAccountComponent = ({
   const [checked, setChecked] = useState<boolean>(false);
   const [isTextShak, setTextShak] = useState<boolean>(false);
   const [verifyUserSuccess, setVerifyUserSuccess] = useState<boolean>(false);
-  const [verificationCodeSuccess, setVerificationCodeSuccess] = useState<boolean>(false);
+  const [verificationCodeSuccess, setVerificationCodeSuccess] =
+    useState<boolean>(false);
   const [activateAccountValue, setActivateAccountValue] = useState({
     email: '',
     code: '',
@@ -69,7 +84,7 @@ const ActivateAccountComponent = ({
           ...values,
           email: activateAccountValue.email,
           type: 1,
-        }),
+        })
       );
       if (result.type === verificationCodeAction.fulfilled.toString()) {
         setVerificationCodeSuccess(true);
@@ -81,7 +96,7 @@ const ActivateAccountComponent = ({
         loginAction({
           ...activateAccountValue,
           password: activateAccountValue.password,
-        }),
+        })
       );
       if (result.type === loginAction.fulfilled.toString()) {
         router.push(RouterKeys.eventList);
@@ -112,13 +127,15 @@ const ActivateAccountComponent = ({
         <Form onFinish={onFinish}>
           <Form.Item name="email" style={{ marginBottom: 0 }}>
             <Input
-              className={`${(activateAccountValue.email && 'border-white') || ''}`}
+              className={`${
+                (activateAccountValue.email && 'border-white') || ''
+              }`}
               placeholder="Email for ticket booking"
               bordered={false}
               onChange={(e) =>
                 setActivateAccountValue({
                   ...activateAccountValue,
-                  email: isEmail(e.target.value) && e.target.value || '',
+                  email: (isEmail(e.target.value) && e.target.value) || '',
                 })
               }
             />
@@ -134,17 +151,32 @@ const ActivateAccountComponent = ({
               ACTIVATE
             </Button>
           </Form.Item>
-          <Form.Item style={{ marginBottom: 32 }} className={isTextShak && 'text-shak' || ''}>
+          <Form.Item
+            style={{ marginBottom: 32 }}
+            className={(isTextShak && 'text-shak') || ''}
+          >
             <div className="agreement-wrapper">
               <Checkbox
-                className={`${!checked && 'checkbox-show-error' || ''}`}
+                className={`${(!checked && 'checkbox-show-error') || ''}`}
                 checked={checked}
                 onChange={(e) => setChecked(e.target.checked)}
               />
               <div style={{ marginLeft: 8 }}>
                 <span className="agreement-label">
-                  I agree to CrowdServe <span className="agreement-label-action" onClick={() => checkGoogleDocAction(TermsConditionsLink)}>Terms&Conditions</span>
-                  and <span className="agreement-label-action"onClick={() => checkGoogleDocAction(PrivacyPolicyLink)}>Privacy Policy.</span>
+                  I agree to CrowdServe{' '}
+                  <span
+                    className="agreement-label-action"
+                    onClick={() => checkGoogleDocAction(TermsConditionsLink)}
+                  >
+                    Terms&Conditions
+                  </span>
+                  and{' '}
+                  <span
+                    className="agreement-label-action"
+                    onClick={() => checkGoogleDocAction(PrivacyPolicyLink)}
+                  >
+                    Privacy Policy.
+                  </span>
                 </span>
               </div>
             </div>
@@ -164,7 +196,9 @@ const ActivateAccountComponent = ({
           <Form onFinish={onFinish}>
             <Form.Item name="code" style={{ marginBottom: 0 }}>
               <Input
-                className={`${(activateAccountValue.code && 'border-white') || ''}`}
+                className={`${
+                  (activateAccountValue.code && 'border-white') || ''
+                }`}
                 placeholder="Enter verification code"
                 bordered={false}
                 onChange={(e) =>
@@ -192,17 +226,20 @@ const ActivateAccountComponent = ({
         <Form onFinish={onFinish}>
           <Form.Item name="password" style={{ marginBottom: 0 }}>
             <Input.Password
-              className={`${(activateAccountValue.password && 'border-white') || ''}`}
+              className={`${
+                (activateAccountValue.password && 'border-white') || ''
+              }`}
               placeholder="Set your password (at least 8 characters)"
               bordered={false}
               maxLength={20}
               iconRender={(visible) =>
-                (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
+                visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
               }
               onChange={(e) =>
                 setActivateAccountValue({
                   ...activateAccountValue,
-                  password: isPassword(e.target.value) && e.target.value || '',
+                  password:
+                    (isPassword(e.target.value) && e.target.value) || '',
                 })
               }
             />
@@ -235,7 +272,10 @@ const Login = ({
   const router: any = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
-  const cookies = useCookie([CookieKeys.userLoginToken, CookieKeys.userLoginEmail]);
+  const cookies = useCookie([
+    CookieKeys.userLoginToken,
+    CookieKeys.userLoginEmail,
+  ]);
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
@@ -246,16 +286,25 @@ const Login = ({
     email: defultLoginEmail || '',
     password: '',
   });
-  const [showActivateAccount, setShowActivateAccount] = useState<boolean>(false);
+  const [showActivateAccount, setShowActivateAccount] =
+    useState<boolean>(false);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
   const [googleDocLink, setgoogleDocLink] = useState<string>('');
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
 
   const onFinish = async (values: LoginPayloadType) => {
-    const response: any = await dispatch(loginAction(defultLoginEmail && loginFormValue || values));
-    if (response.payload.code === Messages.activateAccountUserDosentExist1001.code) {
+    const response: any = await dispatch(
+      loginAction((defultLoginEmail && loginFormValue) || values)
+    );
+    if (
+      response.payload.code === Messages.activateAccountUserDosentExist1001.code
+    ) {
       dispatch(verifyUserAction({ email: loginFormValue.email }));
-      router.push(`${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({ email: loginFormValue.email })}`);
+      router.push(
+        `${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({
+          email: loginFormValue.email,
+        })}`
+      );
     }
   };
 
@@ -277,7 +326,9 @@ const Login = ({
       dispatch(resetEventCache());
       dispatch(setEventDataForSearch([]));
       if (currentTicketId) {
-        router.push(RouterKeys.ticketDetail.replace(':ticketId', currentTicketId));
+        router.push(
+          RouterKeys.ticketDetail.replace(':ticketId', currentTicketId)
+        );
       } else {
         router.push(redirectPage || RouterKeys.eventList);
       }
@@ -308,17 +359,22 @@ const Login = ({
 
   return (
     <LoginContainer>
-      <div className="skip-login" onClick={() => router.push(RouterKeys.eventList)}>
+      <div
+        className="skip-login"
+        onClick={() => router.push(RouterKeys.eventList)}
+      >
         <span>Skip</span>
       </div>
-      {!checkGoogleDoc && (
+      {(!checkGoogleDoc && (
         <div className="page-main">
           <Row className="main-logo">
             <Col span={24} className="logo">
-              <div><Image src={Images.Logo} alt="" /></div>
+              <div>
+                <Image src={Images.Logo} alt="" />
+              </div>
             </Col>
           </Row>
-          {!showActivateAccount && (
+          {(!showActivateAccount && (
             <div>
               <Row className="main-title">
                 <Col span={24} className="title">
@@ -326,17 +382,17 @@ const Login = ({
                 </Col>
               </Row>
               <Form onFinish={onFinish}>
-                {defultLoginEmail && (
+                {(defultLoginEmail && (
                   <>
                     <div className="tips">Login with</div>
-                    <div className="tips signup-email">
-                      {defultLoginEmail}
-                    </div>
+                    <div className="tips signup-email">{defultLoginEmail}</div>
                   </>
-                ) || (
+                )) || (
                   <Form.Item name="email">
                     <Input
-                      className={`${(loginFormValue.email && 'border-white') || ''}`}
+                      className={`${
+                        (loginFormValue.email && 'border-white') || ''
+                      }`}
                       placeholder="Email"
                       bordered={false}
                       onChange={(e) =>
@@ -351,12 +407,14 @@ const Login = ({
                 <Form.Item name="password" style={{ marginBottom: 0 }}>
                   <div>
                     <Input.Password
-                      className={`${(loginFormValue.password && 'border-white') || ''}`}
+                      className={`${
+                        (loginFormValue.password && 'border-white') || ''
+                      }`}
                       placeholder="Password"
                       bordered={false}
                       maxLength={20}
                       iconRender={(visible) =>
-                        (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
+                        visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                       }
                       onChange={(e) =>
                         setLoginFormValue({
@@ -388,16 +446,18 @@ const Login = ({
                 <GoogleLoginComponent buttonText="CONTINUE WITH GOOGLE" /> */}
               </Form>
             </div>
-          ) || (
+          )) || (
             <ActivateAccountComponent
               checkGoogleDoc={setCheckGoogleDoc}
               googleDocLink={setgoogleDocLink}
             />
           )}
-          <div className={isOpenAppShow && 'page-bottom open-app' || 'page-bottom'}>
-            <p className="registered">
-              Don't have an account?
-            </p>
+          <div
+            className={
+              (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
+            }
+          >
+            <p className="registered">Don't have an account?</p>
             <p
               className="activate"
               onClick={() => router.push(RouterKeys.createAccount)}
@@ -406,13 +466,13 @@ const Login = ({
             </p>
           </div>
         </div>
-      ) || (
+      )) || (
         <GoogleDocComponent
           docLink={googleDocLink}
           checkGoogleDoc={setCheckGoogleDoc}
         />
       )}
-      <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
+      {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}
       {contextHolder}
     </LoginContainer>
   );

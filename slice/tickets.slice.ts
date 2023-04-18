@@ -176,7 +176,7 @@ interface TicketsState {
 }
 
 const initialState: TicketsState = {
-  loading: false,
+  loading: true,
   ticketDetailLoading: true,
   ticketsListData: [],
   ticketDetailData: {
