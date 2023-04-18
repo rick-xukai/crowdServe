@@ -5,7 +5,7 @@ const TicketDetailContainer = styled.div`
   height: 100%;
   position: relative;
   background: ${Colors.backgorund};
-  max-width: 1240px;
+  max-width: 335px;
   margin: auto;
   .goback-icon {
     position: absolute;
@@ -17,51 +17,25 @@ const TicketDetailContainer = styled.div`
   .detail-background {
     width: 100%;
     margin-top: 45px;
-    @media (min-width: 1023px) {
-      height: 400px;
-      img, video {
-        object-fit: cover;
-      }
-    }
-    img, video {
+    img,
+    video {
       width: 100%;
       height: 100%;
     }
   }
   .detail-info {
-    padding: 10px 10px 103px 10px;
     background: ${Colors.backgorund};
     overflow: hidden;
-    @media (min-width: 1023px) {
-      .info-container {
-        border: none !important;
-        box-shadow: unset !important;
-        background: ${Colors.backgorund} !important;
-      }
-    }
-    @media (min-width: 1280px) {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-      .info-container {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        border: none !important;
-        box-shadow: unset !important;
-        background: ${Colors.backgorund} !important;
-      }
-    }
+    padding-bottom: 90px;
+    padding-top: 20px;
     &.detail-info-no-code {
-      padding-bottom: 10px;
+      padding-bottom: 70px;
     }
     ::-webkit-scrollbar {
       display: none;
     }
     .info-container {
-      background: ${Colors.grayScale70};
-      border: 1px solid rgba(113, 113, 121, 0.5);
-      box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.25);
-      border-radius: 10px;
-      padding: 20px 15px;
+      background: ${Colors.backgorund};
       .container-top {
         position: relative;
         .ticket-status-icon {
@@ -80,21 +54,13 @@ const TicketDetailContainer = styled.div`
           left: 3px !important;
           object-fit: cover;
         }
-        @media (min-width: 1023px) {
-          border: 0.6px solid ${Colors.grayScale90};
-          margin-top: 20px;
-          margin-bottom: 20px;
-          .ant-col {
-            display: none;
-          }
-        }
       }
       .ticket-name {
         font-weight: 700;
         font-size: 24px;
         color: ${Colors.white};
         text-transform: uppercase;
-        margin-bottom: 10px;
+        margin-top: 20px;
       }
       .organizer-name {
         margin-top: 10px;
@@ -103,8 +69,9 @@ const TicketDetailContainer = styled.div`
         color: ${Colors.grayScale30};
       }
       .container-info-item {
+        margin-top: 20px;
         .info-item-row {
-          padding: 8px 10px;
+          padding: 10px 12px;
           border-radius: 4px;
           background: ${Colors.grayScale90};
           margin-bottom: 8px;
@@ -123,7 +90,6 @@ const TicketDetailContainer = styled.div`
         }
         .info-item-row-flex {
           .info-item-row {
-            margin-right: 8px;
             height: calc(100% - 10px);
           }
           > :last-child {
@@ -202,6 +168,7 @@ const TicketDetailContainer = styled.div`
     width: 72px;
     height: 72px;
     background: ${Colors.black};
+    z-index: 9999;
     .ant-float-btn-body {
       background: ${Colors.branding};
       box-shadow: 0px 1px 12px rgb(0 0 0 / 25%);
@@ -209,6 +176,48 @@ const TicketDetailContainer = styled.div`
     .ant-float-btn-icon {
       width: 40px !important;
       height: 40px !important;
+    }
+  }
+  @media (min-width: 1200px) {
+    max-width: 1007px;
+    padding: 0;
+    .detail-background {
+      margin-top: 104px;
+      height: 504px;
+      img,
+      video {
+        object-fit: cover;
+      }
+    }
+    .detail-info {
+      padding: 24px 0 103px 0;
+      &.detail-info-no-code {
+        padding-bottom: 80px;
+      }
+    }
+    .container-info-item {
+      margin-top: 40px;
+    }
+    .info-item-row-flex {
+      margin-bottom: 10px;
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    max-width: 688px;
+    padding: 0;
+    .detail-background {
+      margin-top: 85px;
+    }
+    .detail-info {
+      padding: 0;
+      padding-top: 20px;
+      padding-bottom: 70px;
+    }
+    .info-item-row-flex {
+      margin-bottom: 10px;
+    }
+    .container-info-item {
+      margin-top: 20px;
     }
   }
 `;

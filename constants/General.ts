@@ -23,6 +23,8 @@ export const PurchaseFromFan = 'Purchase From Fan';
 export const MyTickets = 'My Tickets';
 export const MyCollectibles = 'My Collectibles';
 export const DifferentEmailErrorMessafe = 'Please log in with the email address used to purchase your ticket to view your ticket details.';
+export const DefaultEventListBannerPageSize = 100;
+
 export const TicketStatus = [
   {
     text: 'UPCOMING',

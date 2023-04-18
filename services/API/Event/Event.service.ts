@@ -39,4 +39,14 @@ const getEventTicketType = async (payload: string) => {
   return response;
 };
 
-export default { getEventList, getEventTicketType, getEventDetail };
+const getEventListBanner = async (payload: any) => {
+  const uri = API.getEventListBanner.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setQueryParameter(payload)
+    .doGet();
+  return response;
+};
+
+export default { getEventList, getEventTicketType, getEventDetail, getEventListBanner };

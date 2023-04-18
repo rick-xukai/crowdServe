@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import { Colors } from "../theme";
+import { Colors } from '../theme';
 
 interface TicketStatusContainerProps {
   bgColor: string;
@@ -22,7 +22,7 @@ const TicketsContainer = styled.div`
       font-weight: 700;
       font-size: 28px;
       color: ${Colors.white};
-      font-family: "Oswald";
+      font-family: 'Oswald';
     }
   }
   .ant-spin-nested-loading {
@@ -42,7 +42,7 @@ const TicketsContainer = styled.div`
     .ant-tabs-tab {
       cursor: unset;
     }
-    .ant-tabs >.ant-tabs-nav {
+    .ant-tabs > .ant-tabs-nav {
       margin: 0;
     }
     .ant-tabs .ant-tabs-tab {
@@ -70,7 +70,7 @@ const TicketsContainer = styled.div`
       text-align: center;
     }
     .ant-tabs-ink-bar::after {
-      content: "";
+      content: '';
       position: absolute;
       width: 40px;
       height: 3px;
@@ -86,6 +86,7 @@ const TicketsContainer = styled.div`
   }
   .page-main {
     margin-top: 90px;
+    padding-bottom: 30px;
     .tickets-list {
       .load-more {
         color: ${Colors.white};
@@ -137,17 +138,13 @@ const TicketsContainer = styled.div`
     @media (min-width: 767px) {
       margin: auto;
       display: grid;
-      grid-template-columns: repeat(auto-fill, 358px);
+      grid-template-columns: repeat(auto-fill, 320px);
       grid-gap: 12px;
       justify-content: center;
     }
     @media (min-width: 1023px) {
       grid-template-columns: repeat(auto-fill, 320px);
       grid-gap: 12px;
-    }
-    @media (min-width: 1280px) {
-      grid-template-columns: repeat(auto-fill, 290px);
-      grid-gap: 24px;
     }
   }
   .open-app-collectibles {
@@ -197,20 +194,48 @@ const TicketsContainer = styled.div`
       }
     }
   }
-  @media (min-width: 1280px) {
+  @media (min-width: 1200px) {
+    max-width: 1007px;
+    padding: 0;
+    .ant-tabs-tab-btn {
+      cursor: pointer;
+    }
     .page-main {
-      margin-top: 120px;
+      margin-top: 160px;
+      padding-bottom: 80px;
     }
     .show-tabs {
       background: ${Colors.backgorund};
     }
     .page-tabs {
-      max-width: 1240px;
-      right: 0;
+      max-width: 1008px;
       margin: auto;
-      padding: 20px 0 0 0;
-      top: 60px;
+      right: 0;
+      top: 80px;
+      padding-left: 0;
+      padding-right: 0;
       background: ${Colors.backgorund};
+    }
+  }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    max-width: 688px;
+    padding: 0;
+    .page-tabs {
+      max-width: 688px;
+      margin: auto;
+      right: 0;
+      top: 60px;
+      padding-left: 0;
+      padding-right: 0;
+      background: ${Colors.backgorund};
+    }
+    .page-main {
+      margin-top: 140px;
+      padding-bottom: 70px;
+    }
+    .open-app-collectibles {
+      max-width: 688px;
+      padding: 0;
     }
   }
 `;
@@ -222,7 +247,6 @@ const TicketItemContainer = styled.div`
   margin-bottom: 20px;
   position: relative;
   @media (min-width: 767px) {
-    min-width: 358px;
     margin-bottom: 0;
   }
   @media (min-width: 1023px) {

@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Row, Col, Divider } from 'antd';
-import { CloseOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Row, Col } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import Image from 'next/image';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 
 import { useAppDispatch } from '../app/hooks';
 import { useCookie } from '../hooks';
-import { resetEventCache, setEventDataForSearch } from '../slice/eventCache.slice';
+import {
+  resetEventCache,
+  setEventDataForSearch,
+} from '../slice/eventCache.slice';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';
 import { resetTicketsListData } from '../slice/tickets.slice';
-import { PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { Images, Colors } from '../theme';
 import ClientModalComponent from './clientModal';
-import GoogleDocComponent from './googleDocComponent';
 
 const PageHearderContainer = styled(Row)`
   position: fixed;
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;
-  z-index: 2;
+  z-index: 1000;
   background: ${Colors.backgorund};
   top: 0;
   height: 45px;
@@ -30,12 +31,26 @@ const PageHearderContainer = styled(Row)`
   right: 0;
   margin: auto;
   max-width: 1240px;
+  .left-container,
+  .hearder-logo,
+  .right-container,
+  .hearder-action {
+    height: 45px !important;
+  }
   &.show-tabs {
     background: ${Colors.black10};
   }
-  @media (min-width: 1280px) {
-    padding: 0;
-    height: 60px;
+  &.show-menu {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    height: 100%;
+    .menu-container {
+      background: unset;
+      position: unset;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
   }
   .hearder-action {
     text-align: right;
@@ -45,50 +60,33 @@ const PageHearderContainer = styled(Row)`
   }
   .hearder-logo {
     width: 62px;
-    height: 30px;
     display: flex;
     align-items: center;
     cursor: pointer;
-    @media (min-width: 1280px) {
-      width: 100px;
-      height: 40px;
-    }
   }
   .hearder-back {
     color: ${Colors.white};
     font-size: 22px;
   }
   .user-login {
+    padding: 5px 20px;
+    background: ${Colors.branding};
+    border-radius: 2px;
+    font-weight: 700;
+    font-size: 13px;
+    color: ${Colors.grayScale10};
     margin-right: 20px;
-    font-weight: 400;
-    font-size: 15px;
-    color: ${Colors.branding};
   }
   .close-icon {
     font-size: 24px;
     color: ${Colors.white};
   }
   .menu-container {
-    position: fixed;
     height: calc(100% - 45px);
     width: 100%;
-    background: ${Colors.backgorund};
-    left: 0;
-    bottom: 0;
-    right: 0px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 20px;
-    margin: auto;
-    max-width: 1240px;
-    @media (min-width: 1280px) {
-      padding-left: 0;
-      padding-right: 0;
-      height: calc(100% - 55px);
-    }
     .menu-item-row {
       user-select: none;
-      margin-bottom: 20px;
+      margin-bottom: 50px;
     }
     .info-name,
     .arrow-right {
@@ -98,11 +96,32 @@ const PageHearderContainer = styled(Row)`
     }
     .info-name {
       user-select: none;
-      display: flex;
-      align-items: center;
+      text-align: center;
+      font-weight: 400;
+      font-size: 17px;
+      color: ${Colors.white};
       .name {
         user-select: none;
-        margin-left: 10px;
+        &.active {
+          border-bottom: 2px solid ${Colors.branding};
+          padding-bottom: 2px;
+        }
+      }
+      &.logout {
+        color: ${Colors.grayScale50};
+      }
+      &.login {
+        .user-login {
+          width: 185px;
+          margin: auto;
+          padding-top: 12px;
+          padding-bottom: 12px;
+          background: #fc0006;
+          font-weight: 700;
+          font-size: 15px;
+          color: #f8f6f0;
+          border-radius: 2px;
+        }
       }
     }
     .arrow-right {
@@ -138,6 +157,9 @@ const PageHearderContainer = styled(Row)`
       font-size: 15px;
     }
   }
+  .menu-container-item {
+    width: 100%;
+  }
 `;
 
 const PageHearderComponent = ({
@@ -149,19 +171,25 @@ const PageHearderComponent = ({
   setMenuState?: (status: boolean) => void;
   setShowTabs?: (status: boolean) => void;
 }) => {
-  const cookie = useCookie([CookieKeys.userLoginToken, CookieKeys.userLoginEmail]);
+  const router = useRouter();
+  const cookie = useCookie([
+    CookieKeys.userLoginToken,
+    CookieKeys.userLoginEmail,
+  ]);
   const dispatch = useAppDispatch();
 
   const [isUserToken, setIsUserToken] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
-  const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
-  const [iframeLink, setIframeLink] = useState<string>('');
   const [modalShow, setModalShow] = useState<boolean>(false);
 
   const userLogout = () => {
-    cookie.removeCookie(CookieKeys.userLoginToken, { domain: window.location.hostname });
-    cookie.removeCookie(CookieKeys.userLoginEmail, { domain: window.location.hostname });
-    Router.push(RouterKeys.login);
+    cookie.removeCookie(CookieKeys.userLoginToken, {
+      domain: window.location.hostname,
+    });
+    cookie.removeCookie(CookieKeys.userLoginEmail, {
+      domain: window.location.hostname,
+    });
+    router.push(RouterKeys.login);
   };
 
   const hanldeMenuClick = (path: string) => {
@@ -175,9 +203,19 @@ const PageHearderComponent = ({
       dispatch(setEventDataForSearch([]));
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());
-      Router.push(path);
+      router.push(path);
     }
   };
+
+  useEffect(() => {
+    try {
+      if (showMenu) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'scroll';
+      }
+    } catch (_) {}
+  }, [showMenu]);
 
   useEffect(() => {
     const token = cookie.getCookie(CookieKeys.userLoginToken);
@@ -187,61 +225,70 @@ const PageHearderComponent = ({
   }, []);
 
   return (
-    <PageHearderContainer className={(showTabs && !showMenu) && 'show-tabs' || ''}>
+    <PageHearderContainer
+      className={`${(showTabs && !showMenu && 'show-tabs') || ''} ${
+        (showMenu && 'show-menu') || ''
+      }`}
+    >
       <Col span={12} className="left-container">
         <div className="hearder-logo">
-          {checkGoogleDoc && (
-            <ArrowLeftOutlined onClick={() => setCheckGoogleDoc(false)} />
-          ) || (
-            <Image src={Images.LogoNameIcon} alt="" onClick={() => Router.push(RouterKeys.eventList)} />
-          )}
+          <Image
+            src={Images.LogoNameIcon}
+            alt=""
+            onClick={() => router.push(RouterKeys.eventList)}
+          />
         </div>
       </Col>
-      {!checkGoogleDoc && (
-        <>
-          <Col span={12} className="right-container">
-            <div
-              className="hearder-action"
-            >
-              {!isUserToken && (
-                <div className="user-login" onClick={() => Router.push(RouterKeys.login)}>
-                  LOG IN
-                </div>
-              )}
-              {!showMenu && (
-                <Image
-                  src={Images.MenuIcon}
-                  alt=""
-                  onClick={() => {
-                    setShowMenu(true);
-                    setMenuState(true);
-                    setShowTabs(false);
-                  }}
-                />
-              ) || (
-                <div
-                  className="close-icon"
-                  onClick={() => {
-                    setShowMenu(false);
-                    setMenuState(false);
-                    setShowTabs(true);
-                  }}
-                >
-                  <CloseOutlined />
-                </div>
-              )}
-            </div>
-          </Col>
-          {showMenu && (
-            <Col className="menu-container">
+      <>
+        <Col span={12} className="right-container">
+          <div className="hearder-action">
+            {!isUserToken && !showMenu && (
+              <div
+                className="user-login"
+                onClick={() => router.push(RouterKeys.login)}
+              >
+                LOG IN
+              </div>
+            )}
+            {(!showMenu && (
+              <Image
+                src={Images.MenuIcon}
+                alt=""
+                onClick={() => {
+                  setShowMenu(true);
+                  setMenuState(true);
+                  setShowTabs(false);
+                }}
+              />
+            )) || (
+              <div
+                className="close-icon"
+                onClick={() => {
+                  setShowMenu(false);
+                  setMenuState(false);
+                  setShowTabs(true);
+                }}
+              >
+                <CloseOutlined />
+              </div>
+            )}
+          </div>
+        </Col>
+        {showMenu && (
+          <Col className="menu-container">
+            <div className="menu-container-item">
               <Row
                 className="menu-item-row"
                 onClick={() => hanldeMenuClick(RouterKeys.eventList)}
               >
                 <Col span={24} className="info-name">
-                  <Image src={Images.MenuHomeIcon} alt="" />
-                  <span className="name">
-                    Home
+                  <span
+                    className={`name ${
+                      (router.pathname === RouterKeys.eventList && 'active') ||
+                      ''
+                    }`}
+                  >
+                    EVENTS
                   </span>
                 </Col>
               </Row>
@@ -250,9 +297,14 @@ const PageHearderComponent = ({
                 onClick={() => hanldeMenuClick(RouterKeys.ticketsList)}
               >
                 <Col span={24} className="info-name">
-                  <Image src={Images.MenuTicketIcon} alt="" />
-                  <span className="name">
-                    My Assets
+                  <span
+                    className={`name ${
+                      (router.pathname === RouterKeys.ticketsList &&
+                        'active') ||
+                      ''
+                    }`}
+                  >
+                    MY TICKETS
                   </span>
                 </Col>
               </Row>
@@ -261,55 +313,39 @@ const PageHearderComponent = ({
                 onClick={() => hanldeMenuClick(RouterKeys.myWallet)}
               >
                 <Col span={24} className="info-name">
-                  <Image src={Images.MenuWalletIcon} alt="" />
-                  <span className="name">
-                    My Wallet
-                  </span>
-                </Col>
-              </Row>
-              <Row
-                className="menu-item-row"
-                onClick={() => {
-                  setIframeLink(PrivacyPolicyLink);
-                  setCheckGoogleDoc(true);
-                }}
-              >
-                <Col span={24} className="info-name">
-                  <Image src={Images.MenuPrivacyIcon} alt="" />
-                  <span className="name">
-                    Privacy Policy
-                  </span>
-                </Col>
-              </Row>
-              <Row
-                className="menu-item-row"
-                onClick={() => {
-                  setIframeLink(TermsConditionsLink);
-                  setCheckGoogleDoc(true);
-                }}
-              >
-                <Col span={24} className="info-name">
-                  <Image src={Images.MenuTemsIcon} alt="" />
-                  <span className="name">
-                    Tems & Conditions
-                  </span>
-                </Col>
-              </Row>
-              {isUserToken && (
-                <>
-                  <Divider />
-                  <Row
-                    className="menu-item-row"
-                    onClick={() => setModalShow(true)}
+                  <span
+                    className={`name ${
+                      (router.pathname === RouterKeys.myWallet && 'active') ||
+                      ''
+                    }`}
                   >
-                    <Col span={24} className="info-name">
-                      <Image src={Images.MenuLogoutIcon} alt="" />
-                      <span className="name">
-                        Log Out
-                      </span>
-                    </Col>
-                  </Row>
-                </>
+                    MY WALLET
+                  </span>
+                </Col>
+              </Row>
+              {(isUserToken && (
+                <Row
+                  className="menu-item-row"
+                  onClick={() => setModalShow(true)}
+                >
+                  <Col span={24} className="info-name logout">
+                    <span className="name">LOG OUT</span>
+                  </Col>
+                </Row>
+              )) || (
+                <Row
+                  className="menu-item-row"
+                  onClick={() => setModalShow(true)}
+                >
+                  <Col span={24} className="info-name login">
+                    <div
+                      className="user-login"
+                      onClick={() => router.push(RouterKeys.login)}
+                    >
+                      LOG IN
+                    </div>
+                  </Col>
+                </Row>
               )}
               {modalShow && (
                 <ClientModalComponent
@@ -322,17 +358,10 @@ const PageHearderComponent = ({
                   <p>Are you sure you want to log out?</p>
                 </ClientModalComponent>
               )}
-            </Col>
-          )}
-        </>
-      ) || (
-        <Col className="menu-container google-doc">
-          <GoogleDocComponent
-            docLink={iframeLink}
-            checkGoogleDoc={setCheckGoogleDoc}
-          />
-        </Col>
-      )}
+            </div>
+          </Col>
+        )}
+      </>
     </PageHearderContainer>
   );
 };

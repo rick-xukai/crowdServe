@@ -47,7 +47,10 @@ const API = {
   },
   getEventDetailTicketType: {
     get: '/api/v1/event/{eventId}/type',
-  }
+  },
+  getEventListBanner: {
+    get: '/api/v1/banner',
+  },
 };
 
 export default API;
