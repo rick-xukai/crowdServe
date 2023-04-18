@@ -17,7 +17,6 @@ const EventListContainer = styled.div`
       height: 189px;
     }
     .slick-dots {
-      /* display: none !important; */
       bottom: 0;
     }
   }
@@ -63,7 +62,7 @@ const EventListContainer = styled.div`
   }
   .page-main {
     padding: 0px 20px 70px 20px;
-    margin-top: 45px;
+    margin-top: 50px;
     .event-list {
       .load-more {
         color: ${Colors.white};
@@ -127,16 +126,21 @@ const EventListContainer = styled.div`
         }
         .banner-item {
           height: 345px;
+          border-radius: 4px;
           img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 4px;
           }
         }
         .event-list-container-responsive {
           > :nth-last-child(2) {
             margin-bottom: 0;
           }
+        }
+        .slick-list {
+          border-radius: 4px;
         }
       }
     }
@@ -178,6 +182,15 @@ const EventListContainer = styled.div`
   @media (min-width: 1200px) {
     .ant-input-affix-wrapper {
       max-width: 496px;
+    }
+    .slick-list {
+      border-radius: 4px;
+    }
+    .banner-item {
+      border-radius: 4px;
+      img {
+        border-radius: 4px;
+      }
     }
   }
 `;
