@@ -68,6 +68,19 @@ const TicketDetailContainer = styled.div`
         font-size: 15px;
         color: ${Colors.grayScale30};
       }
+      .crowd-fund-link {
+        font-weight: 400;
+        font-size: 13px;
+        color: ${Colors.branding};
+        margin-top: 8px;
+        a:hover {
+          color: ${Colors.branding};
+        }
+        .anticon {
+          margin-left: 5px;
+          vertical-align: -0.24em;
+        }
+      }
       .container-info-item {
         margin-top: 20px;
         .info-item-row {

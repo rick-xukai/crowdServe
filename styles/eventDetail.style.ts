@@ -38,6 +38,19 @@ const EventDetailContainer = styled.div`
         margin-bottom: 10px;
         max-width: 100%;
       }
+      .crowd-fund-link {
+        font-weight: 400;
+        font-size: 13px;
+        color: ${Colors.branding};
+        margin-top: 8px;
+        a:hover {
+          color: ${Colors.branding};
+        }
+        .anticon {
+          margin-left: 5px;
+          vertical-align: -0.24em;
+        }
+      }
       .info-item {
         margin-bottom: 5px;
         display: flex;

@@ -44,6 +44,7 @@ export interface EventDetailResponseType {
   startTime: string;
   endTime: string;
   description: string;
+  crowdfundLink: string;
 }
 
 export interface EventTicketTypeResponseType {
@@ -224,6 +225,7 @@ const initialState: EventState = {
     endTime: '',
     description: '',
     status: 0,
+    crowdfundLink: '',
   }
 };
 

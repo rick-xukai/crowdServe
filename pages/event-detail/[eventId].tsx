@@ -3,7 +3,11 @@ import { useRouter } from 'next/router';
 import { Spin, Row, Col, Tabs, Tooltip, message } from 'antd';
 import { isAndroid, isIOS } from 'react-device-detect';
 import type { TabsProps } from 'antd';
-import { LoadingOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import {
+  LoadingOutlined,
+  QuestionCircleOutlined,
+  RightOutlined,
+} from '@ant-design/icons';
 import Image from 'next/image';
 import TextTruncate from 'react-text-truncate';
 
@@ -209,6 +213,13 @@ const EventDetail = () => {
                       {eventDetailData.organizerName || '-'}
                     </span>
                   </Col>
+                  {eventDetailData.crowdfundLink && (
+                    <Col span={24} className="crowd-fund-link">
+                      <a href={eventDetailData.crowdfundLink} target="_blank">
+                        View CrowdFund Progress <RightOutlined />
+                      </a>
+                    </Col>
+                  )}
                   <Col span={24} className="ticket-description">
                     {(textShowMore && (
                       <p className="whole-description">
