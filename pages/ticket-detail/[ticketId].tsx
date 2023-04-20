@@ -13,7 +13,7 @@ import {
   FloatButton,
 } from 'antd';
 import TextTruncate from 'react-text-truncate';
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../../hooks';
 import AuthHoc from '../../components/hoc/AuthHoc';
@@ -169,7 +169,9 @@ const TicketDetail = () => {
   return (
     <>
       {(!ticketDetailLoading && (
-        <TicketDetailContainer style={{ overflow: menuState && 'hidden' || 'unset' }}>
+        <TicketDetailContainer
+          style={{ overflow: (menuState && 'hidden') || 'unset' }}
+        >
           <Col md={24} xs={0}>
             <PageHearderResponsive />
           </Col>
@@ -234,6 +236,13 @@ const TicketDetail = () => {
                 <Col span={24} className="organizer-name">
                   By {ticketDetailData.organizerName || '-'}
                 </Col>
+                {ticketDetailData.crowdfundLink && (
+                  <Col span={24} className="crowd-fund-link">
+                    <a href={ticketDetailData.crowdfundLink} target="_blank">
+                      View CrowdFund Progress <RightOutlined />
+                    </a>
+                  </Col>
+                )}
                 <Col span={24} className="ticket-description">
                   {(textShowMore && (
                     <p className="whole-description">
