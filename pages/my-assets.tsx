@@ -82,6 +82,27 @@ const Tickets = () => {
   const [currentTabsKeys, setCurrentTabsKeys] = useState<string>(MyTickets);
   const [menuState, setMenuState] = useState<boolean>(false);
 
+  const tabsItem: TabsProps['items'] = [
+    {
+      key: MyTickets,
+      label: (
+        <div>
+          <span>My Tickets</span>
+        </div>
+      ),
+      children: '',
+    },
+    {
+      key: MyCollectibles,
+      label: (
+        <div>
+          <span>My Collectibles</span>
+        </div>
+      ),
+      children: '',
+    },
+  ];
+
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
     dispatch(setScrollValue(scrollTop));
@@ -94,6 +115,18 @@ const Tickets = () => {
   const scrollListener = useCallback((e: any) => {
     handleScroll(e);
   }, []);
+
+  const saveScrollValue = () => {
+    dispatch(setScrollValue(ticketsListRef.current.scrollTop));
+  };
+
+  const handleOpenApp = () => {
+    if (isIOS) {
+      openAppInIos.current.click();
+    } else if (isAndroid) {
+      openApp();
+    }
+  };
 
   useEffect(() => {
     if (!isFirstRender && error) {
@@ -241,35 +274,6 @@ const Tickets = () => {
     };
   }, []);
 
-  const tabsItem: TabsProps['items'] = [
-    {
-      key: MyTickets,
-      label: (
-        <div>
-          <span>My Tickets</span>
-        </div>
-      ),
-      children: '',
-    },
-    {
-      key: MyCollectibles,
-      label: (
-        <div>
-          <span>My Collectibles</span>
-        </div>
-      ),
-      children: '',
-    },
-  ];
-
-  const handleOpenApp = () => {
-    if (isIOS) {
-      openAppInIos.current.click();
-    } else if (isAndroid) {
-      openApp();
-    }
-  };
-
   if (loading && !ticketsDataForAllStatus.length) {
     return (
       <TicketsContainer ref={ticketsListRef}>
@@ -283,10 +287,11 @@ const Tickets = () => {
   return (
     <TicketsContainer ref={ticketsListRef}>
       <Col md={24} xs={0}>
-        <PageHearderResponsive />
+        <PageHearderResponsive saveScrollValue={saveScrollValue} />
       </Col>
       <Col md={0} xs={24}>
         <PageHearderComponent
+          saveScrollValue={saveScrollValue}
           setMenuState={setMenuState}
           showTabs
           setShowTabs={setShowMyAssetsTabs}

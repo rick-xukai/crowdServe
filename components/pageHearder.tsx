@@ -5,14 +5,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { useAppDispatch } from '../app/hooks';
 import { useCookie } from '../hooks';
-import {
-  resetEventCache,
-  setEventDataForSearch,
-} from '../slice/eventCache.slice';
-import { resetTicketsCache } from '../slice/ticketsCache.slice';
-import { resetTicketsListData } from '../slice/tickets.slice';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { Images, Colors } from '../theme';
 import ClientModalComponent from './clientModal';
@@ -30,7 +23,9 @@ const PageHearderContainer = styled(Row)`
   left: 0;
   right: 0;
   margin: auto;
-  max-width: 1240px;
+  &.backgroundTransparent {
+    background: rgba(39, 39, 42, 0.3);
+  }
   .left-container,
   .hearder-logo,
   .right-container,
@@ -164,20 +159,22 @@ const PageHearderContainer = styled(Row)`
 
 const PageHearderComponent = ({
   showTabs = false,
+  backgroundTransparent = false,
   setMenuState = () => {},
   setShowTabs = () => {},
+  saveScrollValue = () => {},
 }: {
   showTabs?: boolean;
+  backgroundTransparent?: boolean;
   setMenuState?: (status: boolean) => void;
   setShowTabs?: (status: boolean) => void;
+  saveScrollValue?: () => void;
 }) => {
   const router = useRouter();
   const cookie = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
   ]);
-  const dispatch = useAppDispatch();
-
   const [isUserToken, setIsUserToken] = useState<boolean | null>(null);
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [modalShow, setModalShow] = useState<boolean>(false);
@@ -199,10 +196,7 @@ const PageHearderComponent = ({
         setShowTabs(true);
       }
     } else {
-      dispatch(resetEventCache());
-      dispatch(setEventDataForSearch([]));
-      dispatch(resetTicketsListData());
-      dispatch(resetTicketsCache());
+      saveScrollValue();
       router.push(path);
     }
   };
@@ -230,7 +224,7 @@ const PageHearderComponent = ({
     <PageHearderContainer
       className={`${(showTabs && !showMenu && 'show-tabs') || ''} ${
         (showMenu && 'show-menu') || ''
-      }`}
+      } ${(backgroundTransparent && 'backgroundTransparent') || ''}`}
     >
       <Col span={12} className="left-container">
         <div className="hearder-logo">
@@ -241,133 +235,138 @@ const PageHearderComponent = ({
           />
         </div>
       </Col>
-      <>
-        <Col span={12} className="right-container">
-          <div className="hearder-action">
-            {isUserToken !== null && (
-              <>
-                {!isUserToken && !showMenu && (
+      <Col span={12} className="right-container">
+        <div className="hearder-action">
+          {isUserToken !== null && (
+            <>
+              {!isUserToken && !showMenu && (
+                <div
+                  className="user-login"
+                  onClick={() => router.push(RouterKeys.login)}
+                >
+                  LOG IN
+                </div>
+              )}
+            </>
+          )}
+          {(!showMenu && (
+            <Image
+              src={Images.MenuIcon}
+              alt=""
+              onClick={() => {
+                setShowMenu(true);
+                setMenuState(true);
+                setShowTabs(false);
+              }}
+            />
+          )) || (
+            <div
+              className="close-icon"
+              onClick={() => {
+                setShowMenu(false);
+                setMenuState(false);
+                setShowTabs(true);
+              }}
+            >
+              <CloseOutlined />
+            </div>
+          )}
+        </div>
+      </Col>
+      {showMenu && (
+        <Col className="menu-container">
+          <div className="menu-container-item">
+            <Row
+              className="menu-item-row"
+              onClick={() => hanldeMenuClick(RouterKeys.eventList)}
+            >
+              <Col span={24} className="info-name">
+                <span
+                  className={`name ${
+                    (router.pathname === RouterKeys.eventList && 'active') || ''
+                  }`}
+                >
+                  EVENTS
+                </span>
+              </Col>
+            </Row>
+            <Row
+              className="menu-item-row"
+              onClick={() => hanldeMenuClick(RouterKeys.crowdFundList)}
+            >
+              <Col span={24} className="info-name">
+                <span
+                  className={`name ${
+                    (router.pathname === RouterKeys.crowdFundList &&
+                      'active') ||
+                    ''
+                  }`}
+                >
+                  CROWDFUND
+                </span>
+              </Col>
+            </Row>
+            <Row
+              className="menu-item-row"
+              onClick={() => hanldeMenuClick(RouterKeys.ticketsList)}
+            >
+              <Col span={24} className="info-name">
+                <span
+                  className={`name ${
+                    (router.pathname === RouterKeys.ticketsList && 'active') ||
+                    ''
+                  }`}
+                >
+                  MY TICKETS
+                </span>
+              </Col>
+            </Row>
+            <Row
+              className="menu-item-row"
+              onClick={() => hanldeMenuClick(RouterKeys.myWallet)}
+            >
+              <Col span={24} className="info-name">
+                <span
+                  className={`name ${
+                    (router.pathname === RouterKeys.myWallet && 'active') || ''
+                  }`}
+                >
+                  MY WALLET
+                </span>
+              </Col>
+            </Row>
+            {(isUserToken && (
+              <Row className="menu-item-row" onClick={() => setModalShow(true)}>
+                <Col span={24} className="info-name logout">
+                  <span className="name">LOG OUT</span>
+                </Col>
+              </Row>
+            )) || (
+              <Row className="menu-item-row" onClick={() => setModalShow(true)}>
+                <Col span={24} className="info-name login">
                   <div
                     className="user-login"
                     onClick={() => router.push(RouterKeys.login)}
                   >
                     LOG IN
                   </div>
-                )}
-              </>
+                </Col>
+              </Row>
             )}
-            {(!showMenu && (
-              <Image
-                src={Images.MenuIcon}
-                alt=""
-                onClick={() => {
-                  setShowMenu(true);
-                  setMenuState(true);
-                  setShowTabs(false);
-                }}
-              />
-            )) || (
-              <div
-                className="close-icon"
-                onClick={() => {
-                  setShowMenu(false);
-                  setMenuState(false);
-                  setShowTabs(true);
-                }}
+            {modalShow && (
+              <ClientModalComponent
+                title="Log out"
+                modalShow={modalShow}
+                closable={false}
+                handleOk={userLogout}
+                handleCancel={() => setModalShow(false)}
               >
-                <CloseOutlined />
-              </div>
+                <p>Are you sure you want to log out?</p>
+              </ClientModalComponent>
             )}
           </div>
         </Col>
-        {showMenu && (
-          <Col className="menu-container">
-            <div className="menu-container-item">
-              <Row
-                className="menu-item-row"
-                onClick={() => hanldeMenuClick(RouterKeys.eventList)}
-              >
-                <Col span={24} className="info-name">
-                  <span
-                    className={`name ${
-                      (router.pathname === RouterKeys.eventList && 'active') ||
-                      ''
-                    }`}
-                  >
-                    EVENTS
-                  </span>
-                </Col>
-              </Row>
-              <Row
-                className="menu-item-row"
-                onClick={() => hanldeMenuClick(RouterKeys.ticketsList)}
-              >
-                <Col span={24} className="info-name">
-                  <span
-                    className={`name ${
-                      (router.pathname === RouterKeys.ticketsList &&
-                        'active') ||
-                      ''
-                    }`}
-                  >
-                    MY TICKETS
-                  </span>
-                </Col>
-              </Row>
-              <Row
-                className="menu-item-row"
-                onClick={() => hanldeMenuClick(RouterKeys.myWallet)}
-              >
-                <Col span={24} className="info-name">
-                  <span
-                    className={`name ${
-                      (router.pathname === RouterKeys.myWallet && 'active') ||
-                      ''
-                    }`}
-                  >
-                    MY WALLET
-                  </span>
-                </Col>
-              </Row>
-              {(isUserToken && (
-                <Row
-                  className="menu-item-row"
-                  onClick={() => setModalShow(true)}
-                >
-                  <Col span={24} className="info-name logout">
-                    <span className="name">LOG OUT</span>
-                  </Col>
-                </Row>
-              )) || (
-                <Row
-                  className="menu-item-row"
-                  onClick={() => setModalShow(true)}
-                >
-                  <Col span={24} className="info-name login">
-                    <div
-                      className="user-login"
-                      onClick={() => router.push(RouterKeys.login)}
-                    >
-                      LOG IN
-                    </div>
-                  </Col>
-                </Row>
-              )}
-              {modalShow && (
-                <ClientModalComponent
-                  title="Log out"
-                  modalShow={modalShow}
-                  closable={false}
-                  handleOk={userLogout}
-                  handleCancel={() => setModalShow(false)}
-                >
-                  <p>Are you sure you want to log out?</p>
-                </ClientModalComponent>
-              )}
-            </div>
-          </Col>
-        )}
-      </>
+      )}
     </PageHearderContainer>
   );
 };

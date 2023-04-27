@@ -325,3 +325,19 @@ iframe {
   left: 0;
   padding: 14px 12px !important;
 }
+
+.ant-progress-bg {
+  background-color: unset;
+  background: linear-gradient(270.19deg, #fc0006 0.17%, #880808 99.83%);
+}
+
+.ant-progress-inner {
+  background: #dcdce1;
+  border-radius: 14px;
+}
+
+.ant-progress-text {
+  font-weight: 400;
+  font-size: 13px;
+  color: #ABACB6 !important;
+}

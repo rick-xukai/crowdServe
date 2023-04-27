@@ -9,6 +9,7 @@ export const Encrypt = 'encrypt';
 export const Decrypt = 'decrypt';
 export const DefaultPage = 1;
 export const DefaultPageSize = isMobile && 10 || 12;
+export const DefaultCrowdFundListPageSize = 10;
 export const DefaultCodeRefreshTime = 30;
 export const TokenExpire = 7 * 24 * 60 * 60 * 1000;
 export const PriceUnit = 'SGD';
@@ -74,4 +75,9 @@ export const FormatTimeKeys = {
   mdy: 'MMM dd, yyyy',
   hms: 'HH:mm:ss',
   hm: 'HH:mm',
+};
+export const CrowdFundStatus = {
+  inProgress: 1,
+  succeeded: 2,
+  failed: 3,
 };

@@ -48,6 +48,11 @@ import AllTicketSold from '../static/images/all-ticket-sold.svg';
 import LogoActivateAccount from '../static/images/logo-activate-account.png';
 import GoogleIcon from '../static/images/google-icon.svg';
 import MyCollectiblesIcon from '../static/images/my-collectibles.svg';
+import CrowdFundListBanner from '../static/images/crowd-fund-banner.png';
+import NoCrowdFundIcon from '../static/images/no-crowd-fund.svg';
+import HourglassIcon from '../static/images/hourglass.svg';
+import StarBackgroundIcon from '../static/images/star_bg.svg';
+import FundIcon from '../static/images/fund-icon.svg';
 
 const Images = {
   Safety,
@@ -100,6 +105,11 @@ const Images = {
   GoogleIcon,
   MyCollectiblesIcon,
   LogoNameDesktopIcon,
+  CrowdFundListBanner,
+  NoCrowdFundIcon,
+  HourglassIcon,
+  StarBackgroundIcon,
+  FundIcon,
 };
 
 export default Images;
