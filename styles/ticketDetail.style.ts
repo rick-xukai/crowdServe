@@ -17,10 +17,12 @@ const TicketDetailContainer = styled.div`
   .detail-background {
     width: 100%;
     margin-top: 45px;
+    border-radius: 6px;
     img,
     video {
       width: 100%;
       height: 100%;
+      border-radius: 6px;
     }
   }
   .detail-info {

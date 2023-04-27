@@ -2,16 +2,22 @@ import CryptoJS from 'crypto-js';
 import { format } from 'date-fns';
 
 import Messages from '../constants/Messages';
-import { Encrypt, TicketStatus, GooglePlayLink, AppHost } from '../constants/General';
+import {
+  Encrypt,
+  TicketStatus,
+  GooglePlayLink,
+  AppHost,
+} from '../constants/General';
 
 const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY as string;
 
-export const verificationApi = (response: any) => response.code === 200 && response.message === 'OK';
+export const verificationApi = (response: any) =>
+  response.code === 200 && response.message === 'OK';
 
 export const qs = <T extends { [k: string]: string | boolean }>(
   search: string = globalThis.location
     ? globalThis.location.search.slice(1)
-    : '',
+    : ''
 ): Partial<T> =>
   search
     .split('&')
@@ -32,7 +38,7 @@ export const dataEncryption = (data: any, type: string) => {
       formatData = CryptoJS.AES.encrypt(data, encryptionKey).toString();
     } else {
       formatData = CryptoJS.AES.decrypt(data, encryptionKey).toString(
-        CryptoJS.enc.Utf8,
+        CryptoJS.enc.Utf8
       );
     }
   } catch (_) {}
@@ -41,7 +47,7 @@ export const dataEncryption = (data: any, type: string) => {
 
 export const formatTimeStrByTimeString = (
   timeString: string,
-  formatType: string,
+  formatType: string
 ) => {
   try {
     if (timeString) {
@@ -65,16 +71,12 @@ export const isEmail = (value: string) =>
 export const isPassword = (value: string) =>
   /* eslint-disable max-len */
   /* eslint-disable no-useless-escape */
-  /^\S*(?=\S{8,})\S*$/.test(
-    value
-  );
+  /^\S*(?=\S{8,})\S*$/.test(value);
 
 export const isUserName = (value: string) =>
   /* eslint-disable max-len */
   /* eslint-disable no-useless-escape */
-  /^[a-zA-Z0-9\s]+$/.test(
-    value
-  );
+  /^[a-zA-Z0-9\s]+$/.test(value);
 
 export const getErrorMessage = (errorCode: number | undefined | string) => {
   let errorMessage = Messages.notFound.text;
@@ -114,4 +116,24 @@ export const base64Decrypt = (code: string) => {
 export const base64Encrypt = (parameters: {}) => {
   const wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(parameters));
   return CryptoJS.enc.Base64.stringify(wordArray);
+};
+
+export const toPercent = (num: number, total: number) => {
+  return Math.round((num / total) * 10000) / 100;
+};
+
+export const getTimeDifference = (dateString: string) => {
+  const currentTimeStamp = new Date().getTime();
+  const targetTimeStamp = new Date(dateString).getTime();
+  const difference = targetTimeStamp - currentTimeStamp;
+  if (difference > 0) {
+    return {
+      days: Math.floor(difference / (24 * 3600 * 1000)),
+      hours: Math.floor((difference % (24 * 3600 * 1000)) / (3600 * 1000)),
+    };
+  }
+  return {
+    days: 0,
+    hours: 0,
+  };
 };

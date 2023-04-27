@@ -24,4 +24,6 @@ export const RouterKeys = {
   activateAccount: '/activate-account',
   activateAccountNormalFlow: '/activate-account-normal-flow',
   createAccount: '/create-account',
+  crowdFundList: '/crowdfund',
+  crowdFundDetail: '/crowdfund/:crowdFundId',
 };

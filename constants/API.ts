@@ -51,6 +51,12 @@ const API = {
   getEventListBanner: {
     get: '/api/v1/banner',
   },
+  getCrowdFundList: {
+    get: '/api/v1/crowdfund',
+  },
+  getCrowdFundDetail: {
+    get: '/api/v1/crowdfund/{id}',
+  },
 };
 
 export default API;

@@ -204,12 +204,14 @@ const EventList = () => {
 
   useEffect(() => {
     setIsFirstRender(false);
-    dispatch(
-      getEventListBannerAction({
-        page: DefaultPage,
-        size: DefaultEventListBannerPageSize,
-      })
-    );
+    if (!eventDataForAll.length) {
+      dispatch(
+        getEventListBannerAction({
+          page: DefaultPage,
+          size: DefaultEventListBannerPageSize,
+        })
+      );
+    }
     if (!isGetAllData && eventListRef && eventListRef.current) {
       eventListRef.current.addEventListener('scroll', scrollListener, true);
     }
@@ -227,6 +229,10 @@ const EventList = () => {
     };
   }, []);
 
+  const saveScrollValue = () => {
+    dispatch(setScrollValue(eventListRef.current.scrollTop));
+  };
+
   if (loading && !eventDataForAll.length) {
     return (
       <EventListContainer ref={eventListRef}>
@@ -240,10 +246,13 @@ const EventList = () => {
   return (
     <EventListContainer ref={eventListRef}>
       <Col md={24} xs={0}>
-        <PageHearderResponsive />
+        <PageHearderResponsive saveScrollValue={saveScrollValue} />
       </Col>
       <Col md={0} xs={24}>
-        <PageHearderComponent setMenuState={setMenuState} />
+        <PageHearderComponent
+          saveScrollValue={saveScrollValue}
+          setMenuState={setMenuState}
+        />
       </Col>
       <Col md={24} xs={0} className="page-main desktop-responsive">
         {eventListBanner && eventListBanner.length && (
@@ -261,14 +270,14 @@ const EventList = () => {
               </Carousel>
             </Col>
           </Row>
-        )}
+        ) || null}
         <Row>
           <Col
             className="event-list"
             span={24}
             style={{
               marginTop:
-                (!eventListBanner || !eventListBanner.length && 20) || 0,
+                !eventListBanner || (!eventListBanner.length && 20) || 0,
             }}
           >
             <div className="page-title">
@@ -443,7 +452,7 @@ const EventList = () => {
               </Col>
             </Row>
           </div>
-        )}
+        ) || null}
         <Row>
           <Col
             className="event-list mobile"

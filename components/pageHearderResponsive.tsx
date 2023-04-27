@@ -9,8 +9,6 @@ import { useCookie } from '../hooks';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 
 const PageHearderResponsiveContainer = styled.div`
-  max-width: 1008px;
-  margin: auto;
   padding-top: 18px;
   padding-bottom: 18px;
   position: fixed;
@@ -18,6 +16,11 @@ const PageHearderResponsiveContainer = styled.div`
   background: rgba(39, 39, 42, 0.96);
   z-index: 1000;
   user-select: none;
+  left: 0;
+  right: 0;
+  &.backgroundTransparent {
+    background: rgba(39, 39, 42, 0.3);
+  }
   .header-logo {
     width: 102px;
     height: 40px;
@@ -25,6 +28,8 @@ const PageHearderResponsiveContainer = styled.div`
   }
   .header-main {
     height: 45px;
+    max-width: 1008px;
+    margin: auto;
   }
   .header-menu {
     margin-left: 50px;
@@ -32,6 +37,9 @@ const PageHearderResponsiveContainer = styled.div`
     font-size: 15px;
     color: ${Colors.white};
     display: flex;
+    > :last-child {
+      margin-right: 0 !important;
+    }
     .menu-item {
       margin-right: 35px;
       font-weight: 400;
@@ -106,7 +114,6 @@ const PageHearderResponsiveContainer = styled.div`
     top: 50px;
   }
   @media (min-width: 768px) and (max-width: 1200px) {
-    max-width: 688px;
     left: 0;
     right: 0;
     padding-top: 0;
@@ -117,11 +124,18 @@ const PageHearderResponsiveContainer = styled.div`
     .header-main {
       height: 40px;
       width: 100%;
+      max-width: 688px;
     }
   }
 `;
 
-const PageHearderResponsive = () => {
+const PageHearderResponsive = ({
+  backgroundTransparent = false,
+  saveScrollValue = () => {},
+}: {
+  backgroundTransparent?: boolean;
+  saveScrollValue?: () => void;
+}) => {
   const router = useRouter();
   const cookie = useCookie([
     CookieKeys.userLoginToken,
@@ -143,6 +157,13 @@ const PageHearderResponsive = () => {
     router.push(RouterKeys.login);
   };
 
+  const hanldeMenuClick = (path: string) => {
+    if (path !== router.pathname) {
+      saveScrollValue();
+      router.push(path);
+    }
+  };
+
   useEffect(() => {
     const token = cookie.getCookie(CookieKeys.userLoginToken);
     const email = cookie.getCookie(CookieKeys.userLoginEmail);
@@ -157,22 +178,24 @@ const PageHearderResponsive = () => {
   }, []);
 
   return (
-    <PageHearderResponsiveContainer>
+    <PageHearderResponsiveContainer
+      className={(backgroundTransparent && 'backgroundTransparent') || ''}
+    >
       <div className="header-main">
         <Row>
-          <Col span={18}>
+          <Col span={20}>
             <Row>
               <Col className="header-logo">
                 <Image
                   src={Images.LogoNameDesktopIcon}
                   alt=""
-                  onClick={() => router.push(RouterKeys.eventList)}
+                  onClick={() => hanldeMenuClick(RouterKeys.eventList)}
                 />
               </Col>
               <Col className="header-menu">
                 <div
                   className="menu-item"
-                  onClick={() => router.push(RouterKeys.eventList)}
+                  onClick={() => hanldeMenuClick(RouterKeys.eventList)}
                 >
                   <span
                     className={
@@ -185,7 +208,21 @@ const PageHearderResponsive = () => {
                 </div>
                 <div
                   className="menu-item"
-                  onClick={() => router.push(RouterKeys.ticketsList)}
+                  onClick={() => hanldeMenuClick(RouterKeys.crowdFundList)}
+                >
+                  <span
+                    className={
+                      (router.pathname === RouterKeys.crowdFundList &&
+                        'active') ||
+                      ''
+                    }
+                  >
+                    CROWDFUND
+                  </span>
+                </div>
+                <div
+                  className="menu-item"
+                  onClick={() => hanldeMenuClick(RouterKeys.ticketsList)}
                 >
                   <span
                     className={
@@ -199,7 +236,7 @@ const PageHearderResponsive = () => {
                 </div>
                 <div
                   className="menu-item"
-                  onClick={() => router.push(RouterKeys.myWallet)}
+                  onClick={() => hanldeMenuClick(RouterKeys.myWallet)}
                 >
                   <span
                     className={
@@ -213,11 +250,11 @@ const PageHearderResponsive = () => {
               </Col>
             </Row>
           </Col>
-          <Col span={6} className="right-button">
+          <Col span={4} className="right-button">
             {isUserToken !== null && (
               <>
                 {(!isUserToken && (
-                  <Button onClick={() => router.push(RouterKeys.login)}>
+                  <Button onClick={() => hanldeMenuClick(RouterKeys.login)}>
                     LOG IN
                   </Button>
                 )) || (

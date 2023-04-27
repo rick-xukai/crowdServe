@@ -38,6 +38,7 @@ import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';
 import { resetTicketsListData } from '../slice/tickets.slice';
+import { resetCrowdFundCache } from '../slice/crowdFundCache.slice';
 import {
   resetEventCache,
   setEventDataForSearch,
@@ -324,6 +325,7 @@ const Login = ({
       dispatch(resetTicketsListData());
       dispatch(resetTicketsCache());
       dispatch(resetEventCache());
+      dispatch(resetCrowdFundCache());
       dispatch(setEventDataForSearch([]));
       if (currentTicketId) {
         router.push(

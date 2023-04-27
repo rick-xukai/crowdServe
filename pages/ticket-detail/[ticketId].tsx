@@ -21,7 +21,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { checkStatusIcon, formatTimeStrByTimeString } from '../../utils/func';
 import { Images } from '../../theme';
 import {
-  reset,
+  resetDetail,
   resetQrcodeError,
   getTicketDetailAction,
   getTicketQrcodeAction,
@@ -162,7 +162,7 @@ const TicketDetail = () => {
         router.push(RouterKeys.login);
       }
       clearInterval(Number(timer));
-      dispatch(reset());
+      dispatch(resetDetail());
     };
   }, []);
 
@@ -185,7 +185,7 @@ const TicketDetail = () => {
           />
           <Row>
             <Col span={24} className="detail-background">
-              {(ticketDetailData.imageType.toLocaleLowerCase() === 'video' && (
+              {(ticketDetailData.imageType.includes('video') && (
                 <video
                   src={ticketDetailData.image}
                   playsInline

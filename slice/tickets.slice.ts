@@ -217,6 +217,12 @@ export const ticketsSlice = createSlice({
     resetError: (state) => {
       state.error = null;
     },
+    resetDetail: (state) => {
+      state.error = null;
+      state.qrcodeError = null;
+      state.qrcodeLoading = true;
+      state.ticketDetailLoading = true;
+    },
     resetQrcodeError: (state) => {
       state.qrcodeError = null;
     },
@@ -281,6 +287,7 @@ export const ticketsSlice = createSlice({
 
 export const {
   reset,
+  resetDetail,
   resetQrcodeError,
   resetError,
   resetTicketsListData,
