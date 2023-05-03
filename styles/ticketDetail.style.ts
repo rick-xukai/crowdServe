@@ -40,12 +40,6 @@ const TicketDetailContainer = styled.div`
       background: ${Colors.backgorund};
       .container-top {
         position: relative;
-        .ticket-status-icon {
-          width: 72px;
-          height: 72px;
-          position: absolute;
-          right: 0;
-        }
       }
       .border-line {
         margin-bottom: 15px;
@@ -62,7 +56,25 @@ const TicketDetailContainer = styled.div`
         font-size: 24px;
         color: ${Colors.white};
         text-transform: uppercase;
-        margin-top: 20px;
+      }
+      .share-button {
+        padding-top: 4px;
+        text-align: right;
+        z-index: 1;
+        .share-text {
+          font-weight: 700;
+          font-size: 16px;
+          color: ${Colors.grayScale10};
+          margin-left: 8px;
+        }
+        .share-trigger {
+          display: flex;
+          align-items: center;
+          justify-content: end;
+          span {
+            cursor: pointer;
+          }
+        }
       }
       .organizer-name {
         margin-top: 10px;
@@ -193,6 +205,54 @@ const TicketDetailContainer = styled.div`
       height: 40px !important;
     }
   }
+  .ticket-poster {
+    width: 335px;
+    min-height: 338px;
+    background: ${Colors.grayScale90};
+    padding: 12px;
+    position: absolute;
+    bottom: -90px;
+    z-index: -99999999;
+    .poster {
+      min-height: 200px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      position: relative;
+      img {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 8px;
+      }
+    }
+    .poster-name {
+      font-weight: 700;
+      font-size: 18px;
+      color: ${Colors.grayScale10};
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .poster-organizerName {
+      font-weight: 500;
+      font-size: 15px;
+      color: ${Colors.grayScale20};
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .poster-logo {
+      text-align: center;
+      img {
+        width: 68px;
+        height: 27px;
+      }
+    }
+  }
+  .ticket-status-icon {
+    width: 62px;
+    height: 62px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
   @media (min-width: 1200px) {
     max-width: 1007px;
     padding: 0;
@@ -216,6 +276,10 @@ const TicketDetailContainer = styled.div`
     .info-item-row-flex {
       margin-bottom: 10px;
     }
+    .ticket-status-icon {
+      width: 148px;
+      height: 148px;
+    }
   }
   @media (min-width: 768px) and (max-width: 1200px) {
     max-width: 688px;
@@ -233,6 +297,10 @@ const TicketDetailContainer = styled.div`
     }
     .container-info-item {
       margin-top: 20px;
+    }
+    .ticket-status-icon {
+      width: 85px;
+      height: 85px;
     }
   }
 `;

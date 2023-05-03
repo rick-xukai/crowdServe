@@ -53,6 +53,7 @@ import NoCrowdFundIcon from '../static/images/no-crowd-fund.svg';
 import HourglassIcon from '../static/images/hourglass.svg';
 import StarBackgroundIcon from '../static/images/star_bg.svg';
 import FundIcon from '../static/images/fund-icon.svg';
+import ShareIcon from '../static/images/share-icon.svg';
 
 const Images = {
   Safety,
@@ -110,6 +111,7 @@ const Images = {
   HourglassIcon,
   StarBackgroundIcon,
   FundIcon,
+  ShareIcon,
 };
 
 export default Images;

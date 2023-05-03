@@ -254,7 +254,7 @@ const Tickets = () => {
       } else {
         document.body.style.overflow = 'scroll';
       }
-    } catch (_) {}
+    } catch (error) {}
   }, [showMyCollectibles]);
 
   useEffect(() => {

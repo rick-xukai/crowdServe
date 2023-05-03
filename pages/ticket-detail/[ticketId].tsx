@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import {
   Row,
   Col,
@@ -11,9 +11,12 @@ import {
   Button,
   message,
   FloatButton,
+  Dropdown,
 } from 'antd';
 import TextTruncate from 'react-text-truncate';
 import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
+import copy from 'copy-to-clipboard';
+import html2canvas from 'html2canvas';
 
 import { useCookie } from '../../hooks';
 import AuthHoc from '../../components/hoc/AuthHoc';
@@ -43,6 +46,12 @@ import {
   DefaultCodeRefreshTime,
   FormatTimeKeys,
   PriceUnit,
+  CopyLink,
+  SaveImage,
+  ShareEventLink,
+  LinkCopied,
+  ImageSaved,
+  ImageSaveFailed,
 } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
 import { TicketStatusContainer } from '../../styles/tickets.style';
@@ -53,6 +62,8 @@ import PageBottomComponent from '../../components/pageBottomComponent';
 let timer: NodeJS.Timer | null = null;
 
 const TicketDetail = () => {
+  const saveImageElement: any = useRef(null);
+
   const cookie = useCookie([CookieKeys.userLoginToken]);
   const [messageApi, contextHolder] = message.useMessage();
   const router = useRouter();
@@ -66,6 +77,7 @@ const TicketDetail = () => {
   const ticketsDataForAllStatus = useAppSelector(selectTicketsDataForAllStatus);
 
   const [id, setTicketId] = useState<string>('');
+  const [saveImageUrl, setSaveImageUrl] = useState<any>('');
   const [menuState, setMenuState] = useState<boolean>(false);
   const [showQrcode, setShowQrcode] = useState<boolean>(false);
   const [textShowMore, setTextShowMore] = useState<boolean>(false);
@@ -87,6 +99,86 @@ const TicketDetail = () => {
       });
     }, 1000);
   };
+
+  const copyUrl = () => {
+    copy(
+      ShareEventLink.replace('{eventName}', ticketDetailData.name)
+        .replace('{OrganizerName}', ticketDetailData.organizerName)
+        .replace(
+          '{currentLink}',
+          `${window.location.origin}/event-detail/${ticketDetailData.eventId}?ticket=${ticketDetailData.id}&source=sharing`
+        )
+    );
+    messageApi.open({
+      content: LinkCopied,
+      className: 'default-message',
+    });
+  };
+
+  const saveImage = () => {
+    setSaveImageUrl('');
+    let request = new XMLHttpRequest();
+    request.open('get', ticketDetailData.image, true);
+    request.responseType = 'blob';
+    request.setRequestHeader('Cache-Control', 'no-cache');
+    request.onload = function () {
+      if (this.status === 200) {
+        let blob = this.response;
+        if (
+          ticketDetailData.imageType.toLowerCase().includes('video') ||
+          ticketDetailData.imageType.toLowerCase().includes('gif')
+        ) {
+          const elA = document.createElement('a');
+          const objectUrl = window.URL.createObjectURL(blob);
+          elA.download = `${ticketDetailData.name}.${
+            (ticketDetailData.imageType.toLowerCase().includes('gif') &&
+              'gif') ||
+            'mp4'
+          }`;
+          elA.href = objectUrl;
+          elA.click();
+          window.URL.revokeObjectURL(objectUrl);
+          elA.remove();
+        } else {
+          let oFileReader = new FileReader();
+          oFileReader.onloadend = function (e: any) {
+            const base64 = e.target.result;
+            setSaveImageUrl(base64);
+          };
+          oFileReader.readAsDataURL(blob);
+        }
+      }
+    };
+    request.send();
+    request.onreadystatechange = () => {
+      if (request.status !== 200) {
+        messageApi.open({
+          content: ImageSaveFailed,
+          className: 'default-message',
+        });
+      }
+    };
+  };
+
+  useEffect(() => {
+    if (saveImageUrl) {
+      html2canvas(saveImageElement.current, {
+        allowTaint: true,
+        useCORS: true,
+      }).then((canvas) => {
+        const imageBase64 = canvas.toDataURL('image/png');
+        const elA = document.createElement('a');
+        elA.download = `${ticketDetailData.name}.png`;
+        elA.href = imageBase64;
+        elA.click();
+        elA.remove();
+        messageApi.open({
+          content: ImageSaved,
+          className: 'default-message',
+        });
+      });
+    }
+  }, [saveImageUrl]);
 
   useEffect(() => {
     const { ticketId } = router.query;
@@ -183,9 +275,9 @@ const TicketDetail = () => {
             alt=""
             style={{ display: 'none' }}
           />
-          <Row>
+          <Row style={{ position: 'relative' }}>
             <Col span={24} className="detail-background">
-              {(ticketDetailData.imageType.includes('video') && (
+              {(ticketDetailData.imageType.toLowerCase().includes('video') && (
                 <video
                   src={ticketDetailData.image}
                   playsInline
@@ -204,6 +296,14 @@ const TicketDetail = () => {
                 />
               )}
             </Col>
+            {checkStatusIcon(ticketDetailData.status) && (
+              <div className="ticket-status-icon">
+                <NextImage
+                  src={checkStatusIcon(ticketDetailData.status)}
+                  alt=""
+                />
+              </div>
+            )}
           </Row>
           <div
             className={`detail-info ${
@@ -230,8 +330,43 @@ const TicketDetail = () => {
                     return null;
                   })}
                 </Col>
-                <Col span={24} className="ticket-name">
-                  {ticketDetailData.name || '-'}
+                <Col span={24}>
+                  <Row style={{ marginTop: 20 }}>
+                    <Col span={20} className="ticket-name">
+                      {ticketDetailData.name || '-'}
+                    </Col>
+                    <Col span={4} className="share-button">
+                      <Dropdown
+                        menu={{
+                          items: [
+                            {
+                              label: <span onClick={copyUrl}>{CopyLink}</span>,
+                              key: CopyLink,
+                            },
+                            {
+                              label: (
+                                <span onClick={saveImage}>{SaveImage}</span>
+                              ),
+                              key: SaveImage,
+                            },
+                          ],
+                        }}
+                        trigger={['click']}
+                      >
+                        <div>
+                          <Col xl={0} span={24}>
+                            <NextImage src={Images.ShareIcon} alt="" />
+                          </Col>
+                          <Col xl={24} span={0}>
+                            <div className="share-trigger">
+                              <NextImage src={Images.ShareIcon} alt="" />
+                              <span className="share-text">Share</span>
+                            </div>
+                          </Col>
+                        </div>
+                      </Dropdown>
+                    </Col>
+                  </Row>
                 </Col>
                 <Col span={24} className="organizer-name">
                   By {ticketDetailData.organizerName || '-'}
@@ -266,14 +401,6 @@ const TicketDetail = () => {
                     />
                   )}
                 </Col>
-                {checkStatusIcon(ticketDetailData.status) && (
-                  <div className="ticket-status-icon">
-                    <Image
-                      src={checkStatusIcon(ticketDetailData.status)}
-                      alt=""
-                    />
-                  </div>
-                )}
               </Row>
               <div className="container-info-item">
                 <Row gutter={{ md: 20, xs: 10 }} className="info-item-row-flex">
@@ -357,7 +484,7 @@ const TicketDetail = () => {
                   <Row className="container-bottom">
                     <Col span={24} style={{ textAlign: 'center' }}>
                       <div>
-                        <Image src={Images.GoToLinkIcon} alt="" />
+                        <NextImage src={Images.GoToLinkIcon} alt="" />
                         <span className="view-blockchain">
                           <a
                             href={ticketDetailData.collections[0].address}
@@ -378,7 +505,7 @@ const TicketDetail = () => {
             !menuState && (
               <FloatButton
                 onClick={() => setShowQrcode(true)}
-                icon={<Image src={Images.QrcodeIcon} alt="" />}
+                icon={<NextImage src={Images.QrcodeIcon} alt="" />}
               />
             )) || (
             <Drawer
@@ -422,7 +549,7 @@ const TicketDetail = () => {
                 </div>
               )) || (
                 <div className="code-network-error-box">
-                  <Image src={Images.QrcodeNetworkError} alt="" />
+                  <NextImage src={Images.QrcodeNetworkError} alt="" />
                   <p className="error-title">Network request failed</p>
                   <p className="error-info">
                     QR code failed to get, please refresh the page
@@ -443,6 +570,18 @@ const TicketDetail = () => {
           )}
           {contextHolder}
           {!menuState && <PageBottomComponent />}
+          <div ref={saveImageElement} className="ticket-poster">
+            <div className="poster">
+              <img src={saveImageUrl} alt="" />
+            </div>
+            <div className="poster-name">{ticketDetailData.name}</div>
+            <div className="poster-organizerName">
+              {ticketDetailData.organizerName}
+            </div>
+            <div className="poster-logo">
+              <img src={Images.LogoNameIcon.src} alt="" />
+            </div>
+          </div>
         </TicketDetailContainer>
       )) || (
         <Spin spinning indicator={<LoadingOutlined spin />} size="large">

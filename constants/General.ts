@@ -25,6 +25,12 @@ export const MyTickets = 'My Tickets';
 export const MyCollectibles = 'My Collectibles';
 export const DifferentEmailErrorMessafe = 'Please log in with the email address used to purchase your ticket to view your ticket details.';
 export const DefaultEventListBannerPageSize = 100;
+export const CopyLink = 'Copy Link';
+export const SaveImage = 'Save Image';
+export const ShareEventLink = 'Join me at {eventName} by {OrganizerName}\n\ {currentLink}`';
+export const LinkCopied = 'Link copied.';
+export const ImageSaved = 'Image saved.';
+export const ImageSaveFailed = 'Image save failed.';
 
 export const TicketStatus = [
   {
