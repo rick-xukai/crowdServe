@@ -27,10 +27,12 @@ export const DifferentEmailErrorMessafe = 'Please log in with the email address 
 export const DefaultEventListBannerPageSize = 100;
 export const CopyLink = 'Copy Link';
 export const SaveImage = 'Save Image';
-export const ShareEventLink = 'Join me at {eventName} by {OrganizerName}\n\ {currentLink}`';
+export const ShareEventLink = 'Join me at {eventName} by {OrganizerName}\n\ {currentLink}';
 export const LinkCopied = 'Link copied.';
 export const ImageSaved = 'Image saved.';
 export const ImageSaveFailed = 'Image save failed.';
+export const FirebaseEventEnv = process.env.NEXT_PUBLIC_FIREBASE_EVENT_ENV || '';
+export const AppDomain = process.env.NEXT_PUBLIC_DOMAIN;
 
 export const TicketStatus = [
   {

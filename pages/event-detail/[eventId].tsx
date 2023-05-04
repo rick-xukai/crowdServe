@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import Image from 'next/image';
 import TextTruncate from 'react-text-truncate';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 
 import { formatTimeStrByTimeString, openApp } from '../../utils/func';
 import {
@@ -18,6 +19,7 @@ import {
   PrimaryMarket,
   PurchaseFromFan,
   AppLandingPage,
+  FirebaseEventEnv,
 } from '../../constants/General';
 import { Images } from '../../theme';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -38,6 +40,7 @@ import {
 import PageHearderComponent from '../../components/pageHearder';
 import PageHearderResponsive from '../../components/pageHearderResponsive';
 import PageBottomComponent from '../../components/pageBottomComponent';
+import firebaseApp from '../../firebase';
 
 const EventDetail = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -113,6 +116,16 @@ const EventDetail = () => {
       setEventId(eventId as string);
     }
   }, [router.isReady]);
+
+  useEffect(() => {
+    const { source } = router.query;
+    if (eventDetailData.name && source === 'sharing') {
+      const analytics = getAnalytics(firebaseApp);
+      logEvent(analytics, `page_view_web${FirebaseEventEnv}`, {
+        event: eventDetailData.name,
+      });
+    }
+  }, [eventDetailData]);
 
   useEffect(() => {
     if (error) {

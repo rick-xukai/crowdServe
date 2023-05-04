@@ -17,6 +17,7 @@ import TextTruncate from 'react-text-truncate';
 import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
 import copy from 'copy-to-clipboard';
 import html2canvas from 'html2canvas';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 
 import { useCookie } from '../../hooks';
 import AuthHoc from '../../components/hoc/AuthHoc';
@@ -52,12 +53,15 @@ import {
   LinkCopied,
   ImageSaved,
   ImageSaveFailed,
+  FirebaseEventEnv,
+  AppDomain,
 } from '../../constants/General';
 import { TicketDetailContainer } from '../../styles/ticketDetail.style';
 import { TicketStatusContainer } from '../../styles/tickets.style';
 import PageHearderComponent from '../../components/pageHearder';
 import PageHearderResponsive from '../../components/pageHearderResponsive';
 import PageBottomComponent from '../../components/pageBottomComponent';
+import firebaseApp from '../../firebase';
 
 let timer: NodeJS.Timer | null = null;
 
@@ -101,14 +105,14 @@ const TicketDetail = () => {
   };
 
   const copyUrl = () => {
+    const analytics = getAnalytics(firebaseApp);
+    const link = `${AppDomain}/event-detail/${ticketDetailData.eventId}?ticket=${ticketDetailData.id}&source=sharing`;
     copy(
       ShareEventLink.replace('{eventName}', ticketDetailData.name)
         .replace('{OrganizerName}', ticketDetailData.organizerName)
-        .replace(
-          '{currentLink}',
-          `${window.location.origin}/event-detail/${ticketDetailData.eventId}?ticket=${ticketDetailData.id}&source=sharing`
-        )
+        .replace('{currentLink}', link)
     );
+    logEvent(analytics, `copy_link_web${FirebaseEventEnv}`, { link });
     messageApi.open({
       content: LinkCopied,
       className: 'default-message',
@@ -116,6 +120,8 @@ const TicketDetail = () => {
   };
 
   const saveImage = () => {
+    const analytics = getAnalytics(firebaseApp);
+    logEvent(analytics, `save_image_web${FirebaseEventEnv}`, { event: ticketDetailData.name });
     setSaveImageUrl('');
     let request = new XMLHttpRequest();
     request.open('get', ticketDetailData.image, true);
@@ -337,6 +343,14 @@ const TicketDetail = () => {
                     </Col>
                     <Col span={4} className="share-button">
                       <Dropdown
+                        onOpenChange={(status: boolean) => {
+                          if (status) {
+                            const analytics = getAnalytics(firebaseApp);
+                            logEvent(analytics, `share_button_web${FirebaseEventEnv}`, {
+                              event: ticketDetailData.name,
+                            });
+                          }
+                        }}
                         menu={{
                           items: [
                             {
