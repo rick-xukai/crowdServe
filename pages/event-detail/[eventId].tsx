@@ -177,7 +177,7 @@ const EventDetail = ({
           description: (openGraphDetail && openGraphDetail.description) || '',
           images: [
             {
-              url: openGraphDetail.image,
+              url: (openGraphDetail && openGraphDetail.image) || '',
               alt: '',
             },
           ],
