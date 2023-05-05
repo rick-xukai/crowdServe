@@ -148,10 +148,6 @@ const TicketDetail = () => {
           elA.click();
           window.URL.revokeObjectURL(objectUrl);
           elA.remove();
-          messageApi.open({
-            content: ImageSaved,
-            className: 'default-message',
-          });
         } else {
           let oFileReader = new FileReader();
           oFileReader.onloadend = function (e: any) {
@@ -160,6 +156,10 @@ const TicketDetail = () => {
           };
           oFileReader.readAsDataURL(blob);
         }
+        messageApi.open({
+          content: ImageSaved,
+          className: 'default-message',
+        });
       }
     };
     request.send();
@@ -185,10 +185,6 @@ const TicketDetail = () => {
         elA.href = imageBase64;
         elA.click();
         elA.remove();
-        messageApi.open({
-          content: ImageSaved,
-          className: 'default-message',
-        });
       });
     }
   }, [saveImageUrl]);
@@ -259,6 +255,13 @@ const TicketDetail = () => {
       }, 100);
     }
   }, [countdownNumber]);
+
+  useEffect(() => {
+    if (showShareMenu) {
+      const analytics = getAnalytics(firebaseApp);
+      logEvent(analytics, `web_share_button_click${FirebaseEventEnv}`);
+    }
+  }, [showShareMenu]);
 
   // eslint-disable-next-line
   useEffect(() => {
