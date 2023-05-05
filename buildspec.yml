@@ -21,5 +21,4 @@ artifacts:
         - deployspec.yml
         - release
         - Dockerfile
-        - .env
     discard-paths: no

@@ -126,11 +126,11 @@ const EventDetail = ({
   }, [router.isReady]);
 
   useEffect(() => {
-    const { source } = router.query;
-    if (eventDetailData.name && source === 'sharing') {
+    const { source, ticket } = router.query;
+    if (eventDetailData.name && source === 'sharing' && ticket) {
       const analytics = getAnalytics(firebaseApp);
-      logEvent(analytics, `page_view_web${FirebaseEventEnv}`, {
-        event: eventDetailData.name,
+      logEvent(analytics, `web_event_page_view${FirebaseEventEnv}`, {
+        ticketMark: `<${ticket}>: ${eventDetailData.name}`,
       });
     }
   }, [eventDetailData]);

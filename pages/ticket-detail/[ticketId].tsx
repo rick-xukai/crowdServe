@@ -11,7 +11,7 @@ import {
   Button,
   message,
   FloatButton,
-  Dropdown,
+  Popover,
 } from 'antd';
 import TextTruncate from 'react-text-truncate';
 import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
@@ -85,6 +85,7 @@ const TicketDetail = () => {
   const [menuState, setMenuState] = useState<boolean>(false);
   const [showQrcode, setShowQrcode] = useState<boolean>(false);
   const [textShowMore, setTextShowMore] = useState<boolean>(false);
+  const [showShareMenu, setShowShareMenu] = useState<boolean>(false);
   const [countdownNumber, setCountdownNumber] = useState<
     number | ((prevTime: number) => void)
   >(DefaultCodeRefreshTime);
@@ -105,6 +106,7 @@ const TicketDetail = () => {
   };
 
   const copyUrl = () => {
+    setShowShareMenu(false);
     const analytics = getAnalytics(firebaseApp);
     const link = `${AppDomain}/event-detail/${ticketDetailData.eventId}?ticket=${ticketDetailData.id}&source=sharing`;
     copy(
@@ -112,7 +114,7 @@ const TicketDetail = () => {
         .replace('{OrganizerName}', ticketDetailData.organizerName)
         .replace('{currentLink}', link)
     );
-    logEvent(analytics, `copy_link_web${FirebaseEventEnv}`, { link });
+    logEvent(analytics, `web_copy_link_click${FirebaseEventEnv}`);
     messageApi.open({
       content: LinkCopied,
       className: 'default-message',
@@ -120,10 +122,9 @@ const TicketDetail = () => {
   };
 
   const saveImage = () => {
+    setShowShareMenu(false);
     const analytics = getAnalytics(firebaseApp);
-    logEvent(analytics, `save_image_web${FirebaseEventEnv}`, {
-      event: ticketDetailData.name,
-    });
+    logEvent(analytics, `web_save_image_click${FirebaseEventEnv}`);
     setSaveImageUrl('');
     let request = new XMLHttpRequest();
     request.open('get', ticketDetailData.image, true);
@@ -131,10 +132,6 @@ const TicketDetail = () => {
     request.setRequestHeader('Cache-Control', 'no-cache');
     request.onload = function () {
       if (this.status === 200) {
-        messageApi.open({
-          content: ImageSaved,
-          className: 'default-message',
-        });
         let blob = this.response;
         if (
           ticketDetailData.imageType.toLowerCase().includes('video') ||
@@ -151,6 +148,10 @@ const TicketDetail = () => {
           elA.click();
           window.URL.revokeObjectURL(objectUrl);
           elA.remove();
+          messageApi.open({
+            content: ImageSaved,
+            className: 'default-message',
+          });
         } else {
           let oFileReader = new FileReader();
           oFileReader.onloadend = function (e: any) {
@@ -343,47 +344,35 @@ const TicketDetail = () => {
                       {ticketDetailData.name || '-'}
                     </Col>
                     <Col span={4} className="share-button">
-                      <Dropdown
-                        onOpenChange={(status: boolean) => {
-                          if (status) {
-                            const analytics = getAnalytics(firebaseApp);
-                            logEvent(
-                              analytics,
-                              `share_button_web${FirebaseEventEnv}`,
-                              {
-                                event: ticketDetailData.name,
-                              }
-                            );
-                          }
-                        }}
-                        menu={{
-                          items: [
-                            {
-                              label: <span onClick={copyUrl}>{CopyLink}</span>,
-                              key: CopyLink,
-                            },
-                            {
-                              label: (
-                                <span onClick={saveImage}>{SaveImage}</span>
-                              ),
-                              key: SaveImage,
-                            },
-                          ],
-                        }}
-                        trigger={['click']}
+                      <Popover
+                        overlayClassName="share-popover"
+                        content={
+                          <div className="share-menu">
+                            <ul>
+                              <li onClick={copyUrl}>
+                                <span>{CopyLink}</span>
+                              </li>
+                              <li onClick={saveImage}>
+                                <span>{SaveImage}</span>
+                              </li>
+                            </ul>
+                          </div>
+                        }
+                        trigger="click"
+                        open={showShareMenu}
+                        placement="bottomRight"
+                        onOpenChange={() => setShowShareMenu(!showShareMenu)}
                       >
-                        <div>
-                          <Col xl={0} span={24}>
+                        <Col xl={0} span={24}>
+                          <NextImage src={Images.ShareIcon} alt="" />
+                        </Col>
+                        <Col xl={24} span={0}>
+                          <div className="share-trigger">
                             <NextImage src={Images.ShareIcon} alt="" />
-                          </Col>
-                          <Col xl={24} span={0}>
-                            <div className="share-trigger">
-                              <NextImage src={Images.ShareIcon} alt="" />
-                              <span className="share-text">Share</span>
-                            </div>
-                          </Col>
-                        </div>
-                      </Dropdown>
+                            <span className="share-text">Share</span>
+                          </div>
+                        </Col>
+                      </Popover>
                     </Col>
                   </Row>
                 </Col>
