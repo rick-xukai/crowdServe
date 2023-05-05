@@ -15,6 +15,7 @@ import {
   DefaultPageSize,
   DefaultEventListBannerPageSize,
   DefaultPage,
+  ListPageScrollDifference,
 } from '../constants/General';
 import { Images } from '../theme';
 import {
@@ -83,10 +84,12 @@ const EventList = () => {
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
     dispatch(setScrollValue(scrollTop));
-    if (scrollTop + clientHeight + 80 > scrollHeight) {
+    if (scrollTop + clientHeight + ListPageScrollDifference > scrollHeight) {
       dispatch(setIsDisableRequest(false));
     }
-    setIsPageBottom(scrollTop + clientHeight + 80 > scrollHeight);
+    setIsPageBottom(
+      scrollTop + clientHeight + ListPageScrollDifference > scrollHeight
+    );
   };
 
   const scrollListener = useCallback((e: any) => {
@@ -255,7 +258,7 @@ const EventList = () => {
         />
       </Col>
       <Col md={24} xs={0} className="page-main desktop-responsive">
-        {eventListBanner && eventListBanner.length && (
+        {(eventListBanner && eventListBanner.length && (
           <Row>
             <Col span={24}>
               <Carousel autoplay>
@@ -270,7 +273,8 @@ const EventList = () => {
               </Carousel>
             </Col>
           </Row>
-        ) || null}
+        )) ||
+          null}
         <Row>
           <Col
             className="event-list"
@@ -435,7 +439,7 @@ const EventList = () => {
         xs={24}
         className={(isOpenAppShow && 'page-main open-app') || 'page-main'}
       >
-        {eventListBanner && eventListBanner.length && (
+        {(eventListBanner && eventListBanner.length && (
           <div className="carousel-banner">
             <Row>
               <Col span={24}>
@@ -452,7 +456,8 @@ const EventList = () => {
               </Col>
             </Row>
           </div>
-        ) || null}
+        )) ||
+          null}
         <Row>
           <Col
             className="event-list mobile"

@@ -121,7 +121,9 @@ const TicketDetail = () => {
 
   const saveImage = () => {
     const analytics = getAnalytics(firebaseApp);
-    logEvent(analytics, `save_image_web${FirebaseEventEnv}`, { event: ticketDetailData.name });
+    logEvent(analytics, `save_image_web${FirebaseEventEnv}`, {
+      event: ticketDetailData.name,
+    });
     setSaveImageUrl('');
     let request = new XMLHttpRequest();
     request.open('get', ticketDetailData.image, true);
@@ -129,6 +131,10 @@ const TicketDetail = () => {
     request.setRequestHeader('Cache-Control', 'no-cache');
     request.onload = function () {
       if (this.status === 200) {
+        messageApi.open({
+          content: ImageSaved,
+          className: 'default-message',
+        });
         let blob = this.response;
         if (
           ticketDetailData.imageType.toLowerCase().includes('video') ||
@@ -276,11 +282,6 @@ const TicketDetail = () => {
           <Col md={0} xs={24}>
             <PageHearderComponent setMenuState={setMenuState} />
           </Col>
-          <img
-            src={Images.QrcodeNetworkError.src}
-            alt=""
-            style={{ display: 'none' }}
-          />
           <Row style={{ position: 'relative' }}>
             <Col span={24} className="detail-background">
               {(ticketDetailData.imageType.toLowerCase().includes('video') && (
@@ -346,9 +347,13 @@ const TicketDetail = () => {
                         onOpenChange={(status: boolean) => {
                           if (status) {
                             const analytics = getAnalytics(firebaseApp);
-                            logEvent(analytics, `share_button_web${FirebaseEventEnv}`, {
-                              event: ticketDetailData.name,
-                            });
+                            logEvent(
+                              analytics,
+                              `share_button_web${FirebaseEventEnv}`,
+                              {
+                                event: ticketDetailData.name,
+                              }
+                            );
                           }
                         }}
                         menu={{
@@ -590,7 +595,7 @@ const TicketDetail = () => {
             </div>
             <div className="poster-name">{ticketDetailData.name}</div>
             <div className="poster-organizerName">
-              {ticketDetailData.organizerName}
+              By {ticketDetailData.organizerName}
             </div>
             <div className="poster-logo">
               <img src={Images.LogoNameIcon.src} alt="" />

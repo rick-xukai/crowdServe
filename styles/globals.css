@@ -351,12 +351,17 @@ iframe {
   padding: 0 !important;
 }
 
+.ant-dropdown .ant-dropdown-menu {
+  max-width: 120px;
+  float: right;
+}
+
 .ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item {
   font-weight: 400;
   font-size: 13px;
-  color: #FFFFFF;
-  background-color: #27272A;
-  padding: 12px 20px;
+  color: #ffffff;
+  background-color: #27272a;
+  padding: 12px 22px;
 }
 
 .ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item:hover {

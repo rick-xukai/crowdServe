@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { Colors } from '../theme';
 
 const TicketDetailContainer = styled.div`
-  height: 100%;
   position: relative;
   background: ${Colors.backgorund};
   max-width: 335px;
@@ -66,11 +65,16 @@ const TicketDetailContainer = styled.div`
           font-size: 16px;
           color: ${Colors.grayScale10};
           margin-left: 8px;
+          padding-top: 3px;
         }
         .share-trigger {
           display: flex;
           align-items: center;
           justify-content: end;
+          > :first-child {
+            width: 20px !important;
+            height: 20px !important;
+          }
           span {
             cursor: pointer;
           }
@@ -207,14 +211,12 @@ const TicketDetailContainer = styled.div`
   }
   .ticket-poster {
     width: 335px;
-    min-height: 338px;
     background: ${Colors.grayScale90};
     padding: 12px;
     position: absolute;
-    bottom: -90px;
+    bottom: 0;
     z-index: -99999999;
     .poster {
-      min-height: 200px;
       border-radius: 8px;
       margin-bottom: 24px;
       position: relative;
@@ -252,6 +254,10 @@ const TicketDetailContainer = styled.div`
     position: absolute;
     right: 0;
     bottom: 0;
+    > :first-child {
+      height: 100% !important;
+      width: 100% !important;
+    }
   }
   @media (min-width: 1200px) {
     max-width: 1007px;

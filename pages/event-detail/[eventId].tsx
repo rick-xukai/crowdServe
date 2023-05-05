@@ -9,6 +9,7 @@ import {
   RightOutlined,
 } from '@ant-design/icons';
 import Image from 'next/image';
+import { NextSeo } from 'next-seo';
 import TextTruncate from 'react-text-truncate';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 
@@ -20,6 +21,7 @@ import {
   PurchaseFromFan,
   AppLandingPage,
   FirebaseEventEnv,
+  AppDomain,
 } from '../../constants/General';
 import { Images } from '../../theme';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -33,6 +35,7 @@ import {
   resetError,
   EventTicketTypeResponseType,
 } from '../../slice/event.slice';
+import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
   EventDetailContainer,
   TicketTypeItem,
@@ -41,8 +44,13 @@ import PageHearderComponent from '../../components/pageHearder';
 import PageHearderResponsive from '../../components/pageHearderResponsive';
 import PageBottomComponent from '../../components/pageBottomComponent';
 import firebaseApp from '../../firebase';
+import EventService from '../../services/API/Event/Event.service';
 
-const EventDetail = () => {
+const EventDetail = ({
+  openGraphDetail,
+}: {
+  openGraphDetail: TicketDetailResponseType;
+}) => {
   const [messageApi, contextHolder] = message.useMessage();
   const openAppInIos = useRef<any>(null);
   const router = useRouter();
@@ -159,6 +167,27 @@ const EventDetail = () => {
 
   return (
     <>
+      <NextSeo
+        title="CrowdServe"
+        description="CrowdServe Web App"
+        openGraph={{
+          type: 'website',
+          title: (openGraphDetail && openGraphDetail.name) || '',
+          url: AppDomain,
+          description: (openGraphDetail && openGraphDetail.description) || '',
+          images: [
+            {
+              url: openGraphDetail.image,
+              alt: '',
+            },
+          ],
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+          site: '@CrowdServe',
+          handle: '@CrowdServe',
+        }}
+      />
       {(!loading && (
         <EventDetailContainer>
           <Col md={24} xs={0}>
@@ -352,6 +381,25 @@ const EventDetail = () => {
       )}
     </>
   );
+};
+
+EventDetail.getInitialProps = async (ctx: any) => {
+  const { query } = ctx;
+  if (query.ticket && query.source === 'sharing') {
+    try {
+      const response = await EventService.getEventDetail(query.eventId);
+      if (response.code === 200) {
+        return { openGraphDetail: response.data };
+      }
+    } catch (error) {
+      return {
+        props: {},
+      };
+    }
+  }
+  return {
+    props: {},
+  };
 };
 
 export default EventDetail;
