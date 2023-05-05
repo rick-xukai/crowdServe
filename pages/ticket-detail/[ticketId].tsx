@@ -587,7 +587,8 @@ const TicketDetail = () => {
             </div>
             <div className="poster-name">{ticketDetailData.name}</div>
             <div className="poster-organizerName">
-              By {ticketDetailData.organizerName}
+              <span style={{ fontWeight: 400, marginRight: 5 }}>By</span>
+              <span>{ticketDetailData.organizerName}</span>
             </div>
             <div className="poster-logo">
               <img src={Images.LogoNameIcon.src} alt="" />
