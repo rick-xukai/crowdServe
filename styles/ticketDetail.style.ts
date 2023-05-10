@@ -79,6 +79,11 @@ const TicketDetailContainer = styled.div`
             cursor: pointer;
           }
         }
+        .dropdown-btn {
+          background: unset;
+          border: none;
+          padding: 0;
+        }
       }
       .organizer-name {
         margin-top: 10px;
@@ -211,34 +216,55 @@ const TicketDetailContainer = styled.div`
   }
   .ticket-poster {
     width: 335px;
+    height: 483px;
     background: ${Colors.grayScale90};
     padding: 12px;
     position: absolute;
     bottom: 0;
     z-index: -99999999;
     .poster {
+      width: 311px;
+      height: 311px;
       border-radius: 8px;
       margin-bottom: 24px;
       position: relative;
+      background: ${Colors.black};
       img {
-        width: 100% !important;
-        height: 100% !important;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        outline: none;
         border-radius: 8px;
       }
     }
     .poster-name {
-      font-weight: 700;
-      font-size: 18px;
-      color: ${Colors.grayScale10};
       margin-bottom: 8px;
       text-align: center;
+      height: 53px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .text-typography {
+        font-weight: 700;
+        font-size: 18px;
+        color: ${Colors.grayScale10};
+      }
     }
     .poster-organizerName {
+      margin-bottom: 8px;
+      text-align: center;
+      padding-left: 12px;
+      padding-right: 12px;
       font-weight: 500;
       font-size: 15px;
       color: ${Colors.grayScale20};
-      margin-bottom: 8px;
-      text-align: center;
     }
     .poster-logo {
       text-align: center;
@@ -246,6 +272,14 @@ const TicketDetailContainer = styled.div`
         width: 68px;
         height: 27px;
       }
+    }
+    .poster-info {
+      position: absolute;
+      bottom: 10px;
+      right: 0;
+      left: 0;
+      margin: auto;
+      width: calc(100% - 24px);
     }
   }
   .ticket-status-icon {

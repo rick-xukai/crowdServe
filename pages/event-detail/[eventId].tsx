@@ -168,13 +168,15 @@ const EventDetail = ({
   return (
     <>
       <NextSeo
-        title="CrowdServe"
-        description="CrowdServe Web App"
         openGraph={{
           type: 'website',
           title: (openGraphDetail && openGraphDetail.name) || '',
-          url: AppDomain,
-          description: (openGraphDetail && openGraphDetail.description) || '',
+          url: `${AppDomain}${
+            (openGraphDetail && openGraphDetail.shareUrl) || ''
+          }`,
+          description:
+            (openGraphDetail && openGraphDetail.description.slice(0, 300)) ||
+            '',
           images: [
             {
               url: (openGraphDetail && openGraphDetail.image) || '',
@@ -384,12 +386,12 @@ const EventDetail = ({
 };
 
 EventDetail.getInitialProps = async (ctx: any) => {
-  const { query } = ctx;
+  const { query, req } = ctx;
   if (query.ticket && query.source === 'sharing') {
     try {
       const response = await EventService.getEventDetail(query.eventId);
       if (response.code === 200) {
-        return { openGraphDetail: response.data };
+        return { openGraphDetail: { ...response.data, shareUrl: req.url } };
       }
     } catch (error) {
       return {

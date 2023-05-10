@@ -11,13 +11,14 @@ import {
   Button,
   message,
   FloatButton,
-  Popover,
 } from 'antd';
 import TextTruncate from 'react-text-truncate';
 import { LoadingOutlined, RightOutlined } from '@ant-design/icons';
 import copy from 'copy-to-clipboard';
 import html2canvas from 'html2canvas';
 import { getAnalytics, logEvent } from 'firebase/analytics';
+import Dropdown from 'rc-dropdown';
+import 'rc-dropdown/assets/index.css';
 
 import { useCookie } from '../../hooks';
 import AuthHoc from '../../components/hoc/AuthHoc';
@@ -51,7 +52,6 @@ import {
   SaveImage,
   ShareEventLink,
   LinkCopied,
-  ImageSaved,
   ImageSaveFailed,
   FirebaseEventEnv,
   AppDomain,
@@ -108,7 +108,10 @@ const TicketDetail = () => {
   const copyUrl = () => {
     setShowShareMenu(false);
     const analytics = getAnalytics(firebaseApp);
-    const link = `${AppDomain}/event-detail/${ticketDetailData.eventId}?ticket=${ticketDetailData.id}&source=sharing`;
+    const link = `${AppDomain}${RouterKeys.eventDetail.replace(
+      ':eventId',
+      ticketDetailData.eventId.toString()
+    )}?ticket=${ticketDetailData.id}&source=sharing`;
     copy(
       ShareEventLink.replace('{eventName}', ticketDetailData.name)
         .replace('{OrganizerName}', ticketDetailData.organizerName)
@@ -130,6 +133,23 @@ const TicketDetail = () => {
     request.open('get', ticketDetailData.image, true);
     request.responseType = 'blob';
     request.setRequestHeader('Cache-Control', 'no-cache');
+    messageApi.open({
+      content: (
+        <div className="message-content">
+          <img
+            className="image-ani-hourglass"
+            src={Images.HourglassWhite.src}
+            alt=""
+          />
+          <div>
+            Downloading
+            <span className="dot-ani" />
+          </div>
+        </div>
+      ),
+      className: 'default-message default-message-download',
+      duration: 0,
+    });
     request.onload = function () {
       if (this.status === 200) {
         let blob = this.response;
@@ -156,15 +176,13 @@ const TicketDetail = () => {
           };
           oFileReader.readAsDataURL(blob);
         }
-        messageApi.open({
-          content: ImageSaved,
-          className: 'default-message',
-        });
+        messageApi.destroy();
       }
     };
     request.send();
     request.onreadystatechange = () => {
       if (request.status !== 200) {
+        messageApi.destroy();
         messageApi.open({
           content: ImageSaveFailed,
           className: 'default-message',
@@ -178,6 +196,7 @@ const TicketDetail = () => {
       html2canvas(saveImageElement.current, {
         allowTaint: true,
         useCORS: true,
+        removeContainer: true,
       }).then((canvas) => {
         const imageBase64 = canvas.toDataURL('image/png');
         const elA = document.createElement('a');
@@ -185,6 +204,7 @@ const TicketDetail = () => {
         elA.href = imageBase64;
         elA.click();
         elA.remove();
+        messageApi.destroy();
       });
     }
   }, [saveImageUrl]);
@@ -347,9 +367,10 @@ const TicketDetail = () => {
                       {ticketDetailData.name || '-'}
                     </Col>
                     <Col span={4} className="share-button">
-                      <Popover
-                        overlayClassName="share-popover"
-                        content={
+                      <Dropdown
+                        trigger={['click']}
+                        animation="slide-up"
+                        overlay={
                           <div className="share-menu">
                             <ul>
                               <li onClick={copyUrl}>
@@ -361,21 +382,19 @@ const TicketDetail = () => {
                             </ul>
                           </div>
                         }
-                        trigger="click"
-                        open={showShareMenu}
-                        placement="bottomRight"
-                        onOpenChange={() => setShowShareMenu(!showShareMenu)}
                       >
-                        <Col xl={0} span={24}>
-                          <NextImage src={Images.ShareIcon} alt="" />
-                        </Col>
-                        <Col xl={24} span={0}>
-                          <div className="share-trigger">
+                        <button className="dropdown-btn">
+                          <Col xl={0} span={24}>
                             <NextImage src={Images.ShareIcon} alt="" />
-                            <span className="share-text">Share</span>
-                          </div>
-                        </Col>
-                      </Popover>
+                          </Col>
+                          <Col xl={24} span={0}>
+                            <div className="share-trigger">
+                              <NextImage src={Images.ShareIcon} alt="" />
+                              <span className="share-text">Share</span>
+                            </div>
+                          </Col>
+                        </button>
+                      </Dropdown>
                     </Col>
                   </Row>
                 </Col>
@@ -585,13 +604,27 @@ const TicketDetail = () => {
             <div className="poster">
               <img src={saveImageUrl} alt="" />
             </div>
-            <div className="poster-name">{ticketDetailData.name}</div>
-            <div className="poster-organizerName">
-              <span style={{ fontWeight: 400, marginRight: 5 }}>By</span>
-              <span>{ticketDetailData.organizerName}</span>
-            </div>
-            <div className="poster-logo">
-              <img src={Images.LogoNameIcon.src} alt="" />
+            <div className="poster-info">
+              <div className="poster-name">
+                <TextTruncate
+                  line={2}
+                  element="div"
+                  truncateText="…"
+                  containerClassName="text-typography"
+                  text={ticketDetailData.name || '-'}
+                />
+              </div>
+              <div className="poster-organizerName">
+                <div>
+                  <span style={{ fontWeight: 400, marginRight: 5 }}>By</span>
+                  {`${ticketDetailData.organizerName.slice(0, 32)}${
+                    (ticketDetailData.organizerName.length > 32 && '...') || ''
+                  }`}
+                </div>
+              </div>
+              <div className="poster-logo">
+                <img src={Images.LogoNameIcon.src} alt="" />
+              </div>
             </div>
           </div>
         </TicketDetailContainer>

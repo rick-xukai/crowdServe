@@ -54,6 +54,7 @@ import HourglassIcon from '../static/images/hourglass.svg';
 import StarBackgroundIcon from '../static/images/star_bg.svg';
 import FundIcon from '../static/images/fund-icon.svg';
 import ShareIcon from '../static/images/share-icon.svg';
+import HourglassWhite from '../static/images/hourglass-white.svg';
 
 const Images = {
   Safety,
@@ -112,6 +113,7 @@ const Images = {
   StarBackgroundIcon,
   FundIcon,
   ShareIcon,
+  HourglassWhite,
 };
 
 export default Images;

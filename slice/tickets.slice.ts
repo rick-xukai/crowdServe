@@ -58,6 +58,7 @@ export interface TicketDetailResponseType {
   canSell: boolean;
   crowdfundLink: string;
   eventId: number;
+  shareUrl?: string;
 }
 
 /**
