@@ -23,6 +23,7 @@ import {
   MyTickets,
   MyCollectibles,
   AppLandingPage,
+  ListPageScrollDifference,
 } from '../constants/General';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -106,10 +107,12 @@ const Tickets = () => {
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
     dispatch(setScrollValue(scrollTop));
-    if (scrollTop + clientHeight + 80 > scrollHeight) {
+    if (scrollTop + clientHeight + ListPageScrollDifference > scrollHeight) {
       dispatch(setIsDisableRequest(false));
     }
-    setIsPageBottom(scrollTop + clientHeight + 80 > scrollHeight);
+    setIsPageBottom(
+      scrollTop + clientHeight + ListPageScrollDifference > scrollHeight
+    );
   };
 
   const scrollListener = useCallback((e: any) => {
@@ -254,7 +257,7 @@ const Tickets = () => {
       } else {
         document.body.style.overflow = 'scroll';
       }
-    } catch (_) {}
+    } catch (e) {}
   }, [showMyCollectibles]);
 
   useEffect(() => {
@@ -335,7 +338,7 @@ const Tickets = () => {
                       <div className="background-mask" />
                     )}
                     <div className="ticket-background">
-                      {(item.thumbnailType === 'Video' && (
+                      {(item.thumbnailType.toLowerCase().includes('video') && (
                         <>
                           {(isSafari && (
                             <video

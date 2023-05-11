@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { Colors } from '../theme';
 
 const TicketDetailContainer = styled.div`
-  height: 100%;
   position: relative;
   background: ${Colors.backgorund};
   max-width: 335px;
@@ -40,12 +39,6 @@ const TicketDetailContainer = styled.div`
       background: ${Colors.backgorund};
       .container-top {
         position: relative;
-        .ticket-status-icon {
-          width: 72px;
-          height: 72px;
-          position: absolute;
-          right: 0;
-        }
       }
       .border-line {
         margin-bottom: 15px;
@@ -62,7 +55,35 @@ const TicketDetailContainer = styled.div`
         font-size: 24px;
         color: ${Colors.white};
         text-transform: uppercase;
-        margin-top: 20px;
+      }
+      .share-button {
+        padding-top: 4px;
+        text-align: right;
+        z-index: 1;
+        .share-text {
+          font-weight: 700;
+          font-size: 16px;
+          color: ${Colors.grayScale10};
+          margin-left: 8px;
+          padding-top: 3px;
+        }
+        .share-trigger {
+          display: flex;
+          align-items: center;
+          justify-content: end;
+          > :first-child {
+            width: 20px !important;
+            height: 20px !important;
+          }
+          span {
+            cursor: pointer;
+          }
+        }
+        .dropdown-btn {
+          background: unset;
+          border: none;
+          padding: 0;
+        }
       }
       .organizer-name {
         margin-top: 10px;
@@ -193,6 +214,85 @@ const TicketDetailContainer = styled.div`
       height: 40px !important;
     }
   }
+  .ticket-poster {
+    width: 335px;
+    height: 483px;
+    background: ${Colors.grayScale90};
+    padding: 12px;
+    position: absolute;
+    bottom: 0;
+    z-index: -99999999;
+    .poster {
+      width: 311px;
+      height: 311px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      position: relative;
+      background: ${Colors.black};
+      img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        outline: none;
+        border-radius: 8px;
+      }
+    }
+    .poster-name {
+      margin-bottom: 8px;
+      text-align: center;
+      height: 53px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .text-typography {
+        font-weight: 700;
+        font-size: 18px;
+        color: ${Colors.grayScale10};
+      }
+    }
+    .poster-organizerName {
+      margin-bottom: 8px;
+      text-align: center;
+      padding-left: 12px;
+      padding-right: 12px;
+      font-weight: 500;
+      font-size: 15px;
+      color: ${Colors.grayScale20};
+    }
+    .poster-logo {
+      text-align: center;
+      img {
+        width: 68px;
+        height: 27px;
+      }
+    }
+    .poster-info {
+      position: absolute;
+      bottom: 10px;
+      right: 0;
+      left: 0;
+      margin: auto;
+      width: calc(100% - 24px);
+    }
+  }
+  .ticket-status-icon {
+    width: 62px;
+    height: 62px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    > :first-child {
+      height: 100% !important;
+      width: 100% !important;
+    }
+  }
   @media (min-width: 1200px) {
     max-width: 1007px;
     padding: 0;
@@ -216,6 +316,10 @@ const TicketDetailContainer = styled.div`
     .info-item-row-flex {
       margin-bottom: 10px;
     }
+    .ticket-status-icon {
+      width: 148px;
+      height: 148px;
+    }
   }
   @media (min-width: 768px) and (max-width: 1200px) {
     max-width: 688px;
@@ -233,6 +337,10 @@ const TicketDetailContainer = styled.div`
     }
     .container-info-item {
       margin-top: 20px;
+    }
+    .ticket-status-icon {
+      width: 85px;
+      height: 85px;
     }
   }
 `;

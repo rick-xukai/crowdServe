@@ -9,7 +9,9 @@ import {
   RightOutlined,
 } from '@ant-design/icons';
 import Image from 'next/image';
+import { NextSeo } from 'next-seo';
 import TextTruncate from 'react-text-truncate';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 
 import { formatTimeStrByTimeString, openApp } from '../../utils/func';
 import {
@@ -18,6 +20,8 @@ import {
   PrimaryMarket,
   PurchaseFromFan,
   AppLandingPage,
+  FirebaseEventEnv,
+  AppDomain,
 } from '../../constants/General';
 import { Images } from '../../theme';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -31,6 +35,7 @@ import {
   resetError,
   EventTicketTypeResponseType,
 } from '../../slice/event.slice';
+import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
   EventDetailContainer,
   TicketTypeItem,
@@ -38,8 +43,14 @@ import {
 import PageHearderComponent from '../../components/pageHearder';
 import PageHearderResponsive from '../../components/pageHearderResponsive';
 import PageBottomComponent from '../../components/pageBottomComponent';
+import firebaseApp from '../../firebase';
+import EventService from '../../services/API/Event/Event.service';
 
-const EventDetail = () => {
+const EventDetail = ({
+  openGraphDetail,
+}: {
+  openGraphDetail: TicketDetailResponseType;
+}) => {
   const [messageApi, contextHolder] = message.useMessage();
   const openAppInIos = useRef<any>(null);
   const router = useRouter();
@@ -115,6 +126,16 @@ const EventDetail = () => {
   }, [router.isReady]);
 
   useEffect(() => {
+    const { source, ticket } = router.query;
+    if (eventDetailData.name && source === 'sharing' && ticket) {
+      const analytics = getAnalytics(firebaseApp);
+      logEvent(analytics, `web_event_page_view${FirebaseEventEnv}`, {
+        ticketMark: `<${ticket}>: ${eventDetailData.name}`,
+      });
+    }
+  }, [eventDetailData]);
+
+  useEffect(() => {
     if (error) {
       messageApi.open({
         content: error.message,
@@ -146,6 +167,29 @@ const EventDetail = () => {
 
   return (
     <>
+      <NextSeo
+        openGraph={{
+          type: 'website',
+          title: (openGraphDetail && openGraphDetail.name) || '',
+          url: `${AppDomain}${
+            (openGraphDetail && openGraphDetail.shareUrl) || ''
+          }`,
+          description:
+            (openGraphDetail && openGraphDetail.description.slice(0, 300)) ||
+            '',
+          images: [
+            {
+              url: (openGraphDetail && openGraphDetail.image) || '',
+              alt: '',
+            },
+          ],
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+          site: '@CrowdServe',
+          handle: '@CrowdServe',
+        }}
+      />
       {(!loading && (
         <EventDetailContainer>
           <Col md={24} xs={0}>
@@ -339,6 +383,25 @@ const EventDetail = () => {
       )}
     </>
   );
+};
+
+EventDetail.getInitialProps = async (ctx: any) => {
+  const { query, req } = ctx;
+  if (query.ticket && query.source === 'sharing') {
+    try {
+      const response = await EventService.getEventDetail(query.eventId);
+      if (response.code === 200) {
+        return { openGraphDetail: { ...response.data, shareUrl: req.url } };
+      }
+    } catch (error) {
+      return {
+        props: {},
+      };
+    }
+  }
+  return {
+    props: {},
+  };
 };
 
 export default EventDetail;

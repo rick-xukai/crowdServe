@@ -12,6 +12,7 @@ export const DefaultPageSize = isMobile && 10 || 12;
 export const DefaultCrowdFundListPageSize = 10;
 export const DefaultCodeRefreshTime = 30;
 export const TokenExpire = 7 * 24 * 60 * 60 * 1000;
+export const ListPageScrollDifference = 80;
 export const PriceUnit = 'SGD';
 export const PrivacyPolicyLink = 'https://docs.google.com/document/d/1M1ay69Paa9vi7YWTbKUawmn8cqOYROTNT3JnQ0MOMgg/mobilebasic';
 export const TermsConditionsLink = 'https://docs.google.com/document/d/1kzJJhxsjlOtZW7s7OCbQVfDpBrUghrOl8ExbAs5QcBg/mobilebasic';
@@ -25,6 +26,14 @@ export const MyTickets = 'My Tickets';
 export const MyCollectibles = 'My Collectibles';
 export const DifferentEmailErrorMessafe = 'Please log in with the email address used to purchase your ticket to view your ticket details.';
 export const DefaultEventListBannerPageSize = 100;
+export const CopyLink = 'Copy Link';
+export const SaveImage = 'Save Image';
+export const ShareEventLink = 'Join me at {eventName} by {OrganizerName}\n\ {currentLink}';
+export const LinkCopied = 'Link copied.';
+export const ImageSaved = 'Image saved.';
+export const ImageSaveFailed = 'Image save failed.';
+export const FirebaseEventEnv = process.env.NEXT_PUBLIC_FIREBASE_EVENT_ENV || '';
+export const AppDomain = process.env.NEXT_PUBLIC_DOMAIN;
 
 export const TicketStatus = [
   {

@@ -13,6 +13,7 @@ import { RouterKeys } from '../constants/Keys';
 import {
   DefaultCrowdFundListPageSize,
   CrowdFundStatus,
+  ListPageScrollDifference,
 } from '../constants/General';
 import {
   CrowdFundListContainer,
@@ -65,10 +66,12 @@ const CrowdFundList = () => {
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
     dispatch(setScrollValue(scrollTop));
-    if (scrollTop + clientHeight + 80 > scrollHeight) {
+    if (scrollTop + clientHeight + ListPageScrollDifference > scrollHeight) {
       dispatch(setIsDisableRequest(false));
     }
-    setIsPageBottom(scrollTop + clientHeight + 80 > scrollHeight);
+    setIsPageBottom(
+      scrollTop + clientHeight + ListPageScrollDifference > scrollHeight
+    );
   };
 
   const scrollListener = useCallback((e: any) => {

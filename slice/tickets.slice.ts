@@ -57,6 +57,8 @@ export interface TicketDetailResponseType {
   }[];
   canSell: boolean;
   crowdfundLink: string;
+  eventId: number;
+  shareUrl?: string;
 }
 
 /**
@@ -202,6 +204,7 @@ const initialState: TicketsState = {
     collections: [],
     canSell: true,
     crowdfundLink: '',
+    eventId: 0,
   },
   ticketQrcodeData: '-',
   qrcodeLoading: true,

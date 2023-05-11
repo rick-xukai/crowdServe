@@ -20,7 +20,7 @@ const LandingPage: NextPage = () => {
     let packageName = '';
     if (isAndroid) {
       const CallApp = require('callapp-lib');
-      packageName =  process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
+      packageName = process.env.NEXT_PUBLIC_APP_PACKAGE_NAME_ANDROID as string;
       const options = {
         scheme: {
           protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
@@ -54,23 +54,17 @@ const LandingPage: NextPage = () => {
           <div className="content-download">
             <div className="download-left">
               <p className="download-title">
-                DOWNLOAD <br />CROWDSERVE APP
+                DOWNLOAD <br />
+                CROWDSERVE APP
               </p>
               <div className="red-line" />
               <p className="download-description">
-                Serving the Crowd, empowering fans and artists <br /> through blockchain
+                Serving the Crowd, empowering fans and artists <br /> through
+                blockchain
               </p>
               <div className="download-link">
-                <a
-                  href={AppleStoreLink}
-                  target="_blank"
-                  title="App Store"
-                >
-                  <Image
-                    className="app-store"
-                    src={Images.AppStore}
-                    alt=""
-                  />
+                <a href={AppleStoreLink} target="_blank" title="App Store">
+                  <Image className="app-store" src={Images.AppStore} alt="" />
                 </a>
                 <a
                   href={GooglePlayLink}
@@ -88,11 +82,7 @@ const LandingPage: NextPage = () => {
             </div>
           </div>
           <div className="content-detail">
-            <Image
-              className="phone-detail"
-              src={Images.PhoneDetail}
-              alt=""
-            />
+            <Image className="phone-detail" src={Images.PhoneDetail} alt="" />
           </div>
         </div>
       </div>
@@ -109,10 +99,17 @@ LandingPage.getInitialProps = async (ctx: any) => {
       if (token) {
         if (parameters.email === req.cookies[CookieKeys.userLoginEmail]) {
           if (parameters.ticketId) {
-            res.writeHead(302, { Location: RouterKeys.ticketDetail.replace(':ticketId', parameters.ticketId) });
+            res.writeHead(302, {
+              Location: RouterKeys.ticketDetail.replace(
+                ':ticketId',
+                parameters.ticketId
+              ),
+            });
           }
-        } else  {
-          res.writeHead(302, { Location: `${RouterKeys.ticketsList}?sameAccount=false` });
+        } else {
+          res.writeHead(302, {
+            Location: `${RouterKeys.ticketsList}?sameAccount=false`,
+          });
         }
         res.end();
       } else {
@@ -122,9 +119,13 @@ LandingPage.getInitialProps = async (ctx: any) => {
           type: 1,
         });
         if (response.code !== 1005) {
-          res.writeHead(302, { Location: `${RouterKeys.activateAccount}?${Object.keys(query)[0]}` });
+          res.writeHead(302, {
+            Location: `${RouterKeys.activateAccount}?${Object.keys(query)[0]}`,
+          });
         } else {
-          res.writeHead(302, { Location: `${RouterKeys.login}?${Object.keys(query)[0]}` });
+          res.writeHead(302, {
+            Location: `${RouterKeys.login}?${Object.keys(query)[0]}`,
+          });
         }
         res.end();
       }
@@ -138,11 +139,11 @@ LandingPage.getInitialProps = async (ctx: any) => {
       res.end();
     }
     return {
-      props: {}
+      location: (isAndroid && GooglePlayLink) || AppleStoreLink,
     };
   }
   return {
-    props: {}
+    location: (isAndroid && GooglePlayLink) || AppleStoreLink,
   };
 };
 

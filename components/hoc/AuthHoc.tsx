@@ -27,7 +27,9 @@ const AuthHoc = (AuthComponent: any) => (
         if (!token) {
           res.writeHead(302, { Location: `${RouterKeys.login}?redirect=${req.url}` });
           res.end();
-          return {};
+          return {
+            token: ''
+          };
         }
         // const isApiMaintenance = await UserService.checkApiMaintenance();
         // if (isApiMaintenance === 1) {
@@ -35,12 +37,14 @@ const AuthHoc = (AuthComponent: any) => (
         //   res.end();
         //   return {};
         // }
-        const initialProps = AuthComponent.getInitialProps ? await AuthComponent.getInitialProps(ctx) : {};
+        const initialProps = AuthComponent.getInitialProps ? await AuthComponent.getInitialProps(ctx) : { token };
         return {
           ...initialProps
         };
       } catch (e) {
-        return {};
+        return {
+          token: ''
+        };
       }
     }
 
