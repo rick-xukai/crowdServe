@@ -382,6 +382,15 @@ const TicketDetail = () => {
                             </ul>
                           </div>
                         }
+                        onVisibleChange={(status) => {
+                          if (status) {
+                            const analytics = getAnalytics(firebaseApp);
+                            logEvent(
+                              analytics,
+                              `web_share_button_click${FirebaseEventEnv}`
+                            );
+                          }
+                        }}
                       >
                         <button className="dropdown-btn">
                           <Col xl={0} span={24}>
