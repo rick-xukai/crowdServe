@@ -30,6 +30,19 @@ const EventListContainer = styled.div`
     z-index: 1;
     .banner-item {
       height: 189px;
+      img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        outline: none;
+      }
     }
     .slick-dots {
       bottom: 0;
@@ -141,21 +154,11 @@ const EventListContainer = styled.div`
         }
         .banner-item {
           height: 345px;
-          border-radius: 4px;
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 4px;
-          }
         }
         .event-list-container-responsive {
           > :nth-last-child(2) {
             margin-bottom: 0;
           }
-        }
-        .slick-list {
-          border-radius: 4px;
         }
       }
     }
@@ -188,24 +191,25 @@ const EventListContainer = styled.div`
   }
   .banner-item {
     height: 505px;
+    position: relative;
+    background: ${Colors.black};
     img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      outline: none;
     }
   }
   @media (min-width: 1200px) {
     .ant-input-affix-wrapper {
       max-width: 496px;
-    }
-    .slick-list {
-      border-radius: 4px;
-    }
-    .banner-item {
-      border-radius: 4px;
-      img {
-        border-radius: 4px;
-      }
     }
   }
 `;

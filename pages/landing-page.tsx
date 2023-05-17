@@ -4,7 +4,7 @@ import Image from 'next/image';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { isAndroid } from 'react-device-detect';
+import { isAndroid, isDesktop } from 'react-device-detect';
 
 import { base64Decrypt } from '../utils/func';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
@@ -131,12 +131,14 @@ LandingPage.getInitialProps = async (ctx: any) => {
       }
     } catch (error) {}
   } else {
-    if (isAndroid) {
-      res.writeHead(302, { Location: GooglePlayLink });
-      res.end();
-    } else {
-      res.writeHead(302, { Location: AppleStoreLink });
-      res.end();
+    if (!isDesktop) {
+      if (isAndroid) {
+        res.writeHead(302, { Location: GooglePlayLink });
+        res.end();
+      } else {
+        res.writeHead(302, { Location: AppleStoreLink });
+        res.end();
+      }
     }
     return {
       location: (isAndroid && GooglePlayLink) || AppleStoreLink,

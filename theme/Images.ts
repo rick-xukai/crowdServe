@@ -55,6 +55,8 @@ import StarBackgroundIcon from '../static/images/star_bg.svg';
 import FundIcon from '../static/images/fund-icon.svg';
 import ShareIcon from '../static/images/share-icon.svg';
 import HourglassWhite from '../static/images/hourglass-white.svg';
+import CloseIcon from '../static/images/close-icon.svg';
+import PageNotFoundIcon from '../static/images/404-page-icon.svg';
 
 const Images = {
   Safety,
@@ -114,6 +116,8 @@ const Images = {
   FundIcon,
   ShareIcon,
   HourglassWhite,
+  CloseIcon,
+  PageNotFoundIcon,
 };
 
 export default Images;

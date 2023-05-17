@@ -4,7 +4,6 @@ import { Colors } from '../theme';
 const TicketDetailContainer = styled.div`
   position: relative;
   background: ${Colors.backgorund};
-  max-width: 335px;
   margin: auto;
   .goback-icon {
     position: absolute;
@@ -16,19 +15,32 @@ const TicketDetailContainer = styled.div`
   .detail-background {
     width: 100%;
     margin-top: 45px;
-    border-radius: 6px;
+    height: 188px;
+    background: ${Colors.black};
     img,
     video {
-      width: 100%;
-      height: 100%;
-      border-radius: 6px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      outline: none;
+      &.error-full-image {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover;
+      }
     }
   }
   .detail-info {
     background: ${Colors.backgorund};
     overflow: hidden;
-    padding-bottom: 90px;
-    padding-top: 20px;
+    padding: 20px 20px 90px 20px;
     &.detail-info-no-code {
       padding-bottom: 70px;
     }
@@ -299,10 +311,6 @@ const TicketDetailContainer = styled.div`
     .detail-background {
       margin-top: 104px;
       height: 504px;
-      img,
-      video {
-        object-fit: cover;
-      }
     }
     .detail-info {
       padding: 24px 0 103px 0;
@@ -325,6 +333,7 @@ const TicketDetailContainer = styled.div`
     max-width: 688px;
     padding: 0;
     .detail-background {
+      height: 344px;
       margin-top: 85px;
     }
     .detail-info {

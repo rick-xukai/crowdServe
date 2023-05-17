@@ -102,6 +102,7 @@ export const getCrowdFundDetailAction = createAsyncThunk<
         return response.data;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -128,6 +129,7 @@ interface CrowdFundState {
     | null;
   crowdFundDetailError:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined
