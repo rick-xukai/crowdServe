@@ -6,7 +6,7 @@ const EventDetailContainer = styled.div`
   padding-top: 45px;
   height: 100%;
   background: ${Colors.backgorund};
-  max-width: 1007px;
+  max-width: 1008px;
   margin: auto;
   .page-main {
     padding-bottom: 70px;
@@ -21,18 +21,10 @@ const EventDetailContainer = styled.div`
       height: 100% !important;
       img {
         inset: unset !important;
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        -webkit-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-        max-width: 100% !important;
-        max-height: 100% !important;
-        outline: none;
-        min-width: unset !important;
-        min-height: unset !important;
-        width: unset !important;
-        height: unset !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain;
+        object-position: center;
         &.error-full-image {
           width: 100% !important;
           height: 100% !important;
