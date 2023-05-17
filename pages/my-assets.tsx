@@ -322,10 +322,7 @@ const Tickets = () => {
                     key={item.id}
                     onClick={() => {
                       router.push(
-                        RouterKeys.ticketDetail.replace(
-                          ':ticketId',
-                          item.id.toString()
-                        )
+                        RouterKeys.ticketDetail.replace(':slug', item.slug)
                       );
                       dispatch(setIsDisableRequest(true));
                       dispatch(

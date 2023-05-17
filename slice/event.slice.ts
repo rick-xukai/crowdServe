@@ -17,6 +17,13 @@ export interface GetEventListPayloadType {
   keyword?: string;
 }
 
+export interface GetEventMarketPayload {
+  event: string;
+  ticketType?: string;
+  page?: number;
+  size?: number;
+}
+
 export interface EventListResponseType {
   id: number;
   name: string;
@@ -27,6 +34,7 @@ export interface EventListResponseType {
   endTime: string;
   description: string;
   status: number;
+  slug: string;
 }
 
 export interface EventListBanner {
@@ -45,6 +53,7 @@ export interface EventDetailResponseType {
   endTime: string;
   description: string;
   crowdfundLink: string;
+  slug: string;
 }
 
 export interface EventTicketTypeResponseType {
@@ -62,6 +71,22 @@ export interface EventTicketTypeResponseType {
   blockchainUrl: string;
 }
 
+export interface EventMarketResponseType {
+  id: string;
+  name: string;
+  organizerName: string;
+  thumbnailUrl: string;
+  thumbnailType: string;
+  location: string;
+  startTime: string;
+  endTime: string;
+  type: string;
+  status: number;
+  userName: string;
+  currency: string;
+  sellPrice: number;
+}
+
 /**
  * Get event list
  */
@@ -71,27 +96,24 @@ export const getEventListAction = createAsyncThunk<
   {
     rejectValue: ErrorType;
   }
->(
-  'getEventList/getEventListAction',
-  async (payload, { rejectWithValue }) => {
-    try {
-      const response = await EventService.getEventList(payload);
-      if (verificationApi(response)) {
-        return response.data;
-      }
-      return rejectWithValue({
-        message: response.message,
-      } as ErrorType);
-    } catch (err: any) {
-      if (!err.response) {
-        throw err;
-      }
-      return rejectWithValue({
-        message: err.response,
-      } as ErrorType);
+>('getEventList/getEventListAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await EventService.getEventList(payload);
+    if (verificationApi(response)) {
+      return response.data;
     }
-  },
-);
+    return rejectWithValue({
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
 
 /**
  * Get event detail
@@ -111,6 +133,7 @@ export const getEventDetailAction = createAsyncThunk<
         return response.data;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -121,7 +144,7 @@ export const getEventDetailAction = createAsyncThunk<
         message: err.response,
       } as ErrorType);
     }
-  },
+  }
 );
 
 /**
@@ -152,7 +175,38 @@ export const getEventTicketTypeAction = createAsyncThunk<
         message: err.response,
       } as ErrorType);
     }
-  },
+  }
+);
+
+/**
+ * Get event market
+ */
+export const getEventMarketAction = createAsyncThunk<
+  EventMarketResponseType[],
+  GetEventMarketPayload,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getEventMarket/getEventMarketAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventService.getEventMarket(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  }
 );
 
 /**
@@ -160,7 +214,7 @@ export const getEventTicketTypeAction = createAsyncThunk<
  */
 export const getEventListBannerAction = createAsyncThunk<
   EventListBanner[],
-  { page: number, size: number },
+  { page: number; size: number },
   {
     rejectValue: ErrorType;
   }
@@ -183,20 +237,22 @@ export const getEventListBannerAction = createAsyncThunk<
         message: err.response,
       } as ErrorType);
     }
-  },
+  }
 );
 
 interface EventState {
   loading: boolean;
-  eventDetailLoading: boolean,
+  eventDetailLoading: boolean;
   eventDetailData: EventDetailResponseType;
   eventListData: EventListResponseType[];
   eventTicketTypeData: EventTicketTypeResponseType[];
   eventListBanner: EventListBanner[];
+  eventMarket: EventMarketResponseType[];
   eventDetailError:
     | {
-      message: string | undefined;
-    }
+        code: number | undefined;
+        message: string | undefined;
+      }
     | undefined
     | null;
   error:
@@ -226,7 +282,9 @@ const initialState: EventState = {
     description: '',
     status: 0,
     crowdfundLink: '',
-  }
+    slug: '',
+  },
+  eventMarket: [],
 };
 
 export const eventSlice = createSlice({
@@ -234,6 +292,21 @@ export const eventSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    resetEventDatail: (state) => {
+      state.eventDetailData = {
+        id: 0,
+        name: '',
+        organizerName: '',
+        image: '',
+        location: '',
+        startTime: '',
+        endTime: '',
+        description: '',
+        status: 0,
+        crowdfundLink: '',
+        slug: '',
+      };
+    },
     resetError: (state) => {
       state.error = null;
       state.eventDetailError = null;
@@ -306,24 +379,45 @@ export const eventSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(getEventMarketAction.pending, (state) => {
+        state.eventMarket = [];
+      })
+      .addCase(getEventMarketAction.fulfilled, (state, action: any) => {
+        state.eventMarket = action.payload;
+      })
+      .addCase(getEventMarketAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.eventDetailError = action.payload as ErrorType;
+        } else {
+          state.eventDetailError = action.error as ErrorType;
+        }
       });
   },
 });
 
 export const {
   reset,
+  resetEventDatail,
   resetError,
   resetEventListData,
   resetEventDetailLoading,
 } = eventSlice.actions;
 
 export const selectLoading = (state: RootState) => state.event.loading;
-export const selectEventDetailLoading = (state: RootState) => state.event.eventDetailLoading;
+export const selectEventDetailLoading = (state: RootState) =>
+  state.event.eventDetailLoading;
 export const selectError = (state: RootState) => state.event.error;
-export const selectEventListData = (state: RootState) => state.event.eventListData;
-export const selectEventTicketTypeData = (state: RootState) => state.event.eventTicketTypeData;
-export const selectEventDetailData = (state: RootState) => state.event.eventDetailData;
-export const selectEventDetailError = (state: RootState) => state.event.eventDetailError;
-export const selectEventListBanner = (state: RootState) => state.event.eventListBanner;
+export const selectEventListData = (state: RootState) =>
+  state.event.eventListData;
+export const selectEventTicketTypeData = (state: RootState) =>
+  state.event.eventTicketTypeData;
+export const selectEventDetailData = (state: RootState) =>
+  state.event.eventDetailData;
+export const selectEventDetailError = (state: RootState) =>
+  state.event.eventDetailError;
+export const selectEventListBanner = (state: RootState) =>
+  state.event.eventListBanner;
+export const selectEventMarket = (state: RootState) => state.event.eventMarket;
 
 export default eventSlice.reducer;

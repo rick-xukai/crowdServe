@@ -30,6 +30,7 @@ export interface TicketsListResponseType {
   endTime: string;
   type: string;
   status: number;
+  slug: string;
 }
 
 export interface TicketDetailResponseType {
@@ -59,6 +60,7 @@ export interface TicketDetailResponseType {
   crowdfundLink: string;
   eventId: number;
   shareUrl?: string;
+  slug: string;
 }
 
 /**
@@ -89,7 +91,7 @@ export const getTicketsListAction = createAsyncThunk<
         message: err.response,
       } as ErrorType);
     }
-  },
+  }
 );
 
 /**
@@ -110,6 +112,7 @@ export const getTicketDetailAction = createAsyncThunk<
         return response.data;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -120,7 +123,7 @@ export const getTicketDetailAction = createAsyncThunk<
         message: err.response,
       } as ErrorType);
     }
-  },
+  }
 );
 
 /**
@@ -153,7 +156,7 @@ export const getTicketQrcodeAction = createAsyncThunk<
         message: err.response,
       } as ErrorType);
     }
-  },
+  }
 );
 
 interface TicketsState {
@@ -165,13 +168,14 @@ interface TicketsState {
   qrcodeLoading: boolean;
   qrcodeError:
     | {
-      code: number | undefined;
-      message: string | undefined;
-    }
+        code: number | undefined;
+        message: string | undefined;
+      }
     | undefined
     | null;
   error:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined
@@ -205,6 +209,7 @@ const initialState: TicketsState = {
     canSell: true,
     crowdfundLink: '',
     eventId: 0,
+    slug: '',
   },
   ticketQrcodeData: '-',
   qrcodeLoading: true,
@@ -225,6 +230,31 @@ export const ticketsSlice = createSlice({
       state.qrcodeError = null;
       state.qrcodeLoading = true;
       state.ticketDetailLoading = true;
+      state.ticketDetailData = {
+        id: 0,
+        name: '',
+        organizerName: '',
+        description: '',
+        image: '',
+        imageType: '',
+        thumbnailUrl: '',
+        thumbnailType: '',
+        location: '',
+        startTime: '',
+        endTime: '',
+        type: '',
+        seat: '',
+        price: 0,
+        ticketNo: '',
+        status: 0,
+        redeemedAt: '',
+        cancelledAt: '',
+        collections: [],
+        canSell: true,
+        crowdfundLink: '',
+        eventId: 0,
+        slug: '',
+      };
     },
     resetQrcodeError: (state) => {
       state.qrcodeError = null;
@@ -297,12 +327,18 @@ export const {
 } = ticketsSlice.actions;
 
 export const selectLoading = (state: RootState) => state.tickets.loading;
-export const selectTicketDetailLoading = (state: RootState) => state.tickets.ticketDetailLoading;
+export const selectTicketDetailLoading = (state: RootState) =>
+  state.tickets.ticketDetailLoading;
 export const selectError = (state: RootState) => state.tickets.error;
-export const selectTicketsListData = (state: RootState) => state.tickets.ticketsListData;
-export const selectTicketDetailData = (state: RootState) => state.tickets.ticketDetailData;
-export const selectTicketQrcodeData = (state: RootState) => state.tickets.ticketQrcodeData;
-export const selectQrcodeLoading = (state: RootState) => state.tickets.qrcodeLoading;
-export const selectQrcodeError = (state: RootState) => state.tickets.qrcodeError;
+export const selectTicketsListData = (state: RootState) =>
+  state.tickets.ticketsListData;
+export const selectTicketDetailData = (state: RootState) =>
+  state.tickets.ticketDetailData;
+export const selectTicketQrcodeData = (state: RootState) =>
+  state.tickets.ticketQrcodeData;
+export const selectQrcodeLoading = (state: RootState) =>
+  state.tickets.qrcodeLoading;
+export const selectQrcodeError = (state: RootState) =>
+  state.tickets.qrcodeError;
 
 export default ticketsSlice.reducer;

@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { Button, Col } from 'antd';
-import { isAndroid, isIOS } from 'react-device-detect';
+import { isAndroid, isIOS, isDesktop } from 'react-device-detect';
 
 import { Images } from '../theme';
 import { openApp } from '../utils/func';
+import { RouterKeys } from '../constants/Keys';
 import { AppLandingPage } from '../constants/General';
 import PageHearderComponent from '../components/pageHearder';
 import { MyWalletContainer } from '../styles/my-wallet.style';
@@ -13,14 +15,19 @@ import PageBottomComponent from '../components/pageBottomComponent';
 
 const MyWallet = () => {
   const openAppInIos = useRef<any>(null);
+  const router = useRouter();
 
   const [menuState, setMenuState] = useState<boolean>(false);
 
   const handleOpenApp = () => {
-    if (isIOS) {
-      openAppInIos.current.click();
-    } else if (isAndroid) {
-      openApp();
+    if (isDesktop) {
+      router.push(RouterKeys.landingPage);
+    } else {
+      if (isIOS) {
+        openAppInIos.current.click();
+      } else if (isAndroid) {
+        openApp();
+      }
     }
   };
 

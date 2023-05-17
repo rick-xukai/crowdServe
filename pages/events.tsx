@@ -315,10 +315,7 @@ const EventList = () => {
                       key={item.id}
                       onClick={() => {
                         Router.push(
-                          RouterKeys.eventDetail.replace(
-                            ':eventId',
-                            item.id.toString()
-                          )
+                          RouterKeys.eventDetail.replace(':slug', item.slug)
                         );
                         dispatch(setIsDisableRequest(true));
                         dispatch(
@@ -498,10 +495,7 @@ const EventList = () => {
                         key={item.id}
                         onClick={() => {
                           Router.push(
-                            RouterKeys.eventDetail.replace(
-                              ':eventId',
-                              item.id.toString()
-                            )
+                            RouterKeys.eventDetail.replace(':slug', item.slug)
                           );
                           dispatch(setIsDisableRequest(true));
                           dispatch(
@@ -606,10 +600,7 @@ const EventList = () => {
                         key={item.id}
                         onClick={() => {
                           Router.push(
-                            RouterKeys.eventDetail.replace(
-                              ':eventId',
-                              item.id.toString()
-                            )
+                            RouterKeys.eventDetail.replace(':slug', item.slug)
                           );
                           dispatch(setIsDisableRequest(true));
                           dispatch(
