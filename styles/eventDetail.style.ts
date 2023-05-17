@@ -14,10 +14,31 @@ const EventDetailContainer = styled.div`
   .detail-background {
     width: 100%;
     height: 188px;
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    background: ${Colors.black};
+    > :first-child {
+      position: relative !important;
+      width: 100% !important;
+      height: 100% !important;
+      img {
+        inset: unset !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        max-width: 100% !important;
+        max-height: 100% !important;
+        outline: none;
+        min-width: unset !important;
+        min-height: unset !important;
+        width: unset !important;
+        height: unset !important;
+        &.error-full-image {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover;
+        }
+      }
     }
   }
   .event-detail-container {
@@ -114,7 +135,6 @@ const EventDetailContainer = styled.div`
     margin-top: 30px;
     @media (max-width: 576px) {
       .ant-tabs-nav-wrap {
-        max-width: 375px;
         margin: auto;
       }
     }
@@ -173,10 +193,12 @@ const EventDetailContainer = styled.div`
     border-radius: 2px;
   }
   .ant-tabs-nav-list {
-    justify-content: space-between;
     width: 100%;
     @media (min-width: 767px) {
       display: block !important;
+    }
+    @media (max-width: 375px) {
+      justify-content: space-between;
     }
   }
   .install-app {
@@ -204,9 +226,6 @@ const EventDetailContainer = styled.div`
       padding-bottom: 135px;
       .detail-background {
         height: 504px;
-        img {
-          border-radius: 4px;
-        }
       }
       .show-more {
         cursor: pointer;
@@ -242,9 +261,6 @@ const EventDetailContainer = styled.div`
       padding-bottom: 90px;
       .detail-background {
         height: 344px;
-        img {
-          border-radius: 4px;
-        }
       }
       .event-detail-container {
         margin-top: 24px;
@@ -311,6 +327,11 @@ const TicketTypeItem = styled(Col)`
       margin-top: 6px;
       color: ${Colors.white};
       margin-bottom: 6px;
+      white-space: nowrap;
+      padding-left: 10px;
+      padding-right: 10px;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     .price {
       color: ${Colors.branding};
@@ -346,4 +367,59 @@ const TicketTypeItem = styled(Col)`
   }
 `;
 
-export { EventDetailContainer, TicketTypeItem };
+const SecondaryMarketItem = styled.div`
+  position: relative;
+  border-radius: 4px;
+  padding: 6px;
+  height: 167px;
+  .item-background {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+  }
+  .item-price {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    left: 0px;
+    padding: 8px;
+    background: rgba(78, 78, 78, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 0px 0px 4px 4px;
+    span {
+      font-weight: 700;
+      font-size: 18px;
+      color: ${Colors.white};
+    }
+  }
+  .item-type {
+    line-height: 24px;
+    padding-top: 0;
+    padding-bottom: 0;
+    white-space: nowrap;
+    max-width: 75px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0px 6px;
+    background: ${Colors.grayScale10};
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 15px;
+    color: ${Colors.grayScale70};
+    position: absolute;
+    right: 6px;
+  }
+  @media (min-width: 1200px) {
+    cursor: pointer;
+  }
+`;
+
+export { EventDetailContainer, TicketTypeItem, SecondaryMarketItem };

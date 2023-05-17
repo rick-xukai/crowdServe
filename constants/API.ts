@@ -57,6 +57,9 @@ const API = {
   getCrowdFundDetail: {
     get: '/api/v1/crowdfund/{id}',
   },
+  getEventMarket: {
+    get: '/api/v1/market',
+  },
 };
 
 export default API;
