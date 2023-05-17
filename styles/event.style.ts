@@ -30,18 +30,15 @@ const EventListContainer = styled.div`
     z-index: 1;
     .banner-item {
       height: 189px;
+      position: relative;
+      background: ${Colors.black};
       img {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        -webkit-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-        display: block;
         max-width: 100%;
         max-height: 100%;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        outline: none;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
       }
     }
     .slick-dots {
@@ -50,6 +47,19 @@ const EventListContainer = styled.div`
   }
   @media (min-width: 768px) and (max-width: 1200px) {
     max-width: 688px;
+    .banner-item {
+      height: 345px;
+      position: relative;
+      background: ${Colors.black};
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+    }
   }
   ::-webkit-scrollbar {
     display: none;
@@ -189,25 +199,20 @@ const EventListContainer = styled.div`
       }
     }
   }
-  .banner-item {
-    height: 505px;
-    position: relative;
-    background: ${Colors.black};
-    img {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -webkit-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
-      display: block;
-      max-width: 100%;
-      max-height: 100%;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      outline: none;
-    }
-  }
   @media (min-width: 1200px) {
+    .banner-item {
+      height: 505px;
+      position: relative;
+      background: ${Colors.black};
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+    }
     .ant-input-affix-wrapper {
       max-width: 496px;
     }

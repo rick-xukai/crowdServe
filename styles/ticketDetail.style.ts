@@ -19,17 +19,12 @@ const TicketDetailContainer = styled.div`
     background: ${Colors.black};
     img,
     video {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -webkit-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
-      display: block;
       max-width: 100%;
       max-height: 100%;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      outline: none;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
       &.error-full-image {
         width: 100% !important;
         height: 100% !important;
@@ -306,7 +301,7 @@ const TicketDetailContainer = styled.div`
     }
   }
   @media (min-width: 1200px) {
-    max-width: 1007px;
+    max-width: 1008px;
     padding: 0;
     .detail-background {
       margin-top: 104px;
