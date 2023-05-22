@@ -394,7 +394,7 @@ const CrowdFundList = () => {
                               onClick={() => {
                                 router.push(
                                   RouterKeys.eventDetail.replace(
-                                    ':eventId',
+                                    ':slug',
                                     item.eventId.toString()
                                   )
                                 );

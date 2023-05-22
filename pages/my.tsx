@@ -58,7 +58,7 @@ import {
   TicketStatusContainer,
 } from '../styles/tickets.style';
 
-const Tickets = () => {
+const Tickets = ({ isSameAccount }: { isSameAccount: boolean }) => {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
@@ -240,15 +240,15 @@ const Tickets = () => {
   }, [ticketsDataForAllStatus]);
 
   useEffect(() => {
-    if (!_.isEmpty(router.query)) {
-      if (router.query.sameAccount === 'false') {
-        messageApi.open({
+    if (isSameAccount !== undefined) {
+      if (!isSameAccount) {
+        message.open({
           content: DifferentEmailErrorMessafe,
           className: 'error-message-tickets',
         });
       }
     }
-  }, [router.isReady]);
+  }, [isSameAccount]);
 
   useEffect(() => {
     try {
@@ -475,6 +475,17 @@ const Tickets = () => {
       {!menuState && <PageBottomComponent />}
     </TicketsContainer>
   );
+};
+
+Tickets.getInitialProps = async (ctx: any) => {
+  const { query } = ctx;
+  let isSameAccount = true;
+  if (!_.isEmpty(query)) {
+    if (query.sameAccount && query.sameAccount === 'false') {
+      isSameAccount = false;
+    }
+  }
+  return { isSameAccount };
 };
 
 export default AuthHoc(Tickets);
