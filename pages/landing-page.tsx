@@ -101,7 +101,7 @@ LandingPage.getInitialProps = async (ctx: any) => {
           if (parameters.ticketId) {
             res.writeHead(302, {
               Location: RouterKeys.ticketDetail.replace(
-                ':ticketId',
+                ':slug',
                 parameters.ticketId
               ),
             });

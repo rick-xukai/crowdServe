@@ -329,7 +329,7 @@ const Login = ({
       dispatch(setEventDataForSearch([]));
       if (currentTicketId) {
         router.push(
-          RouterKeys.ticketDetail.replace(':ticketId', currentTicketId)
+          RouterKeys.ticketDetail.replace(':slug', currentTicketId)
         );
       } else {
         router.push(redirectPage || RouterKeys.eventList);

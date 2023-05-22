@@ -23,7 +23,10 @@ import 'rc-dropdown/assets/index.css';
 import { useCookie } from '../../../hooks';
 import AuthHoc from '../../../components/hoc/AuthHoc';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { checkStatusIcon, formatTimeStrByTimeString } from '../../../utils/func';
+import {
+  checkStatusIcon,
+  formatTimeStrByTimeString,
+} from '../../../utils/func';
 import { Images } from '../../../theme';
 import {
   resetDetail,
@@ -604,13 +607,15 @@ const TicketDetail = ({ notFound }: { notFound: boolean }) => {
                     <div style={{ height: '100%' }}>
                       {(!qrcodeLoading && (
                         <>
-                          <QRCode
-                            value={qrcodeData}
-                            bordered={false}
-                            size={270}
-                            status="expired"
-                            onRefresh={() => setCountdownNumber(0)}
-                          />
+                          <div>
+                            <QRCode
+                              value={qrcodeData}
+                              bordered={false}
+                              size={270}
+                              status="expired"
+                              onRefresh={() => setCountdownNumber(0)}
+                            />
+                          </div>
                           <p className="code-refreshes">
                             QR Code refreshes in:{' '}
                             {`${
@@ -618,9 +623,8 @@ const TicketDetail = ({ notFound }: { notFound: boolean }) => {
                             }${countdownNumber}`}
                           </p>
                           <p className="code-info">
-                            This QR code is your admission voucher, do not{' '}
-                            <br />
-                            take screenshot or send to others!
+                            This QR code is your admission voucher, do not take
+                            screenshot or send to others!
                           </p>
                         </>
                       )) || (

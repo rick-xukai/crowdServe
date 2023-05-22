@@ -266,7 +266,7 @@ const ActivateAccount = ({
         domain: window.location.hostname,
       });
       if (currentTicketId) {
-        router.push(RouterKeys.ticketDetail.replace(':ticketId', currentTicketId));
+        router.push(RouterKeys.ticketDetail.replace(':slug', currentTicketId));
       } else {
         router.push(RouterKeys.ticketsList);
       }
