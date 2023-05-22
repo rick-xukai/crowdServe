@@ -69,7 +69,7 @@ a {
 
 @media (max-width: 320px) {
   .ant-drawer-body {
-    padding: 24px !important;
+    padding: 12px !important;
   }
 }
 
@@ -80,7 +80,6 @@ a {
 .ant-qrcode {
   width: 100% !important;
   max-width: 270px !important;
-  height: 270px !important;
   margin: auto;
   border: none;
   padding: 0 !important;

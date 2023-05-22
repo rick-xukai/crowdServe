@@ -314,7 +314,7 @@ const CrowdFundDetail = () => {
                             onClick={() => {
                               router.push(
                                 RouterKeys.eventDetail.replace(
-                                  ':eventId',
+                                  ':slug',
                                   data.eventId.toString()
                                 )
                               );
@@ -491,7 +491,7 @@ const CrowdFundDetail = () => {
                               onClick={() => {
                                 router.push(
                                   RouterKeys.eventDetail.replace(
-                                    ':eventId',
+                                    ':slug',
                                     data.eventId.toString()
                                   )
                                 );

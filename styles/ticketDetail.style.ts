@@ -129,6 +129,9 @@ const TicketDetailContainer = styled.div`
             font-weight: 500;
             font-size: 15px;
             color: ${Colors.white};
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
         .info-item-row-flex {
