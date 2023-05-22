@@ -67,13 +67,21 @@ a {
   padding: 40px !important;
 }
 
+@media (max-width: 320px) {
+  .ant-drawer-body {
+    padding: 24px !important;
+  }
+}
+
 .ant-drawer-body .ant-spin-nested-loading {
   position: unset;
 }
 
 .ant-qrcode {
   width: 100% !important;
+  max-width: 270px !important;
   height: 270px !important;
+  margin: auto;
   border: none;
   padding: 0 !important;
   background-color: unset;
