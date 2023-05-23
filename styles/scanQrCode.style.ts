@@ -53,7 +53,11 @@ const ScanQrCodePageContainers = styled.div`
       }
     }
     .border-box {
-      background: linear-gradient(180deg, ${Colors.grayScale80} -7.43%, rgba(213, 213, 213, 0) 100.99%);
+      background: linear-gradient(
+        180deg,
+        ${Colors.grayScale80} -7.43%,
+        rgba(213, 213, 213, 0) 100.99%
+      );
       padding: 0.5px;
       border-radius: 2px;
       position: relative;
@@ -79,7 +83,12 @@ const ScanQrCodePageContainers = styled.div`
     }
     .result-container {
       width: 100%;
-      background: linear-gradient(180deg,rgba(39, 39, 42, 0.8) 0%,rgba(39, 39, 42, 0.8) 35.94%,rgba(39, 39, 42, 0.9) 100%);
+      background: linear-gradient(
+        180deg,
+        rgba(39, 39, 42, 0.8) 0%,
+        rgba(39, 39, 42, 0.8) 35.94%,
+        rgba(39, 39, 42, 0.9) 100%
+      );
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
       backdrop-filter: blur(5px);
       border-radius: 2px;
@@ -99,7 +108,7 @@ const ScanQrCodePageContainers = styled.div`
         color: ${Colors.white};
         margin-top: 5px;
         margin-bottom: 20px;
-        word-wrap:break-word;
+        word-wrap: break-word;
         font-weight: 400;
       }
       &.display-flex {
@@ -115,7 +124,7 @@ const ScanQrCodePageContainers = styled.div`
     height: 100%;
     background-image: url(${Images.BackGround.src});
     background-position: center;
-	  background-repeat: no-repeat;
+    background-repeat: no-repeat;
     background-size: cover;
     display: flex;
     align-items: center;
@@ -125,7 +134,11 @@ const ScanQrCodePageContainers = styled.div`
       top: 0;
       position: absolute;
       left: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.7) 100%);
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.58) 0%,
+        rgba(0, 0, 0, 0.7) 100%
+      );
       z-index: -1;
     }
     p {
@@ -164,7 +177,37 @@ const ScanQrCodePageContainers = styled.div`
       color: ${Colors.white};
       text-align: center;
       margin-top: 20px;
-      margin-bottom: 69px;
+      margin-bottom: 35px;
+    }
+    .total-info {
+      padding: 8px 12px;
+      background: ${Colors.grayScale70};
+      border-radius: 2px;
+      margin-bottom: 40px;
+      p {
+        margin: 0;
+      }
+      .total-info-type {
+        margin-bottom: 5px;
+        color: ${Colors.white};
+        font-weight: 500;
+        font-size: 15px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .total-info-redeemed {
+        font-weight: 400;
+        font-size: 13px;
+        color: ${Colors.grayScale40};
+        > :first-child {
+          width: 16px !important;
+          height: 16px !important;
+          img {
+            margin-top: 3px !important;
+          }
+        }
+      }
     }
     .back-home {
       border: 1px solid #fff;

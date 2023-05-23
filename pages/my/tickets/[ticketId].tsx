@@ -609,6 +609,7 @@ const TicketDetail = ({ notFound }: { notFound: boolean }) => {
                         <>
                           <div>
                             <QRCode
+                              errorLevel="L"
                               value={qrcodeData}
                               bordered={false}
                               size={270}
