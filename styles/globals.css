@@ -69,7 +69,7 @@ a {
 
 @media (max-width: 320px) {
   .ant-drawer-body {
-    padding: 12px !important;
+    padding: 6px !important;
   }
 }
 
