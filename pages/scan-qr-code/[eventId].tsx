@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { RouterKeys, CookieKeys } from '../../constants/Keys';
+import { PriceUnit } from '../../constants/General';
 import TicketService from '../../services/API/Ticket/Ticket.service';
 import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
 import { Images } from '../../theme';
@@ -20,12 +21,15 @@ interface ScanQrCodeDetail {
     seat: number;
     status: number;
     type: number;
+    price: number;
+    redeemed: number;
+    total: number;
   };
   user: {
     email: string;
     id: number;
     name: string;
-  }
+  };
 }
 
 interface VerifyMessage {
@@ -115,7 +119,10 @@ const ScanQrCodeResult = ({
   const handleGetScanQrCodeDetail = async (value: string) => {
     if (value) {
       try {
-        const response = await TicketService.doVerifyTicket({ code: value, eventId: currentEventId });
+        const response = await TicketService.doVerifyTicket({
+          code: value,
+          eventId: currentEventId,
+        });
         if (verificationApi(response)) {
           setDetail(response.data);
           setRedeemCode(response.data.redeemCode);
@@ -152,6 +159,11 @@ const ScanQrCodeResult = ({
     setLoading(true);
     try {
       const response = await TicketService.doRedeemTicket({ code: redeemCode });
+      if (verificationApi(response)) {
+        setDetail(response.data);
+      } else {
+        setDetail({} as ScanQrCodeDetail);
+      }
       if (response) {
         const { ticket } = response.data || {};
         checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
@@ -160,6 +172,7 @@ const ScanQrCodeResult = ({
     } catch (error: any) {
       checkStatusType(Messages.networkError.code);
       setLoading(false);
+      setDetail({} as ScanQrCodeDetail);
     }
     setVerify(true);
   };
@@ -176,7 +189,7 @@ const ScanQrCodeResult = ({
             <Image src={Images.BackArrow} alt="" />
             <span style={{ marginLeft: 8 }}>BACK</span>
           </div>
-          {!verify && (
+          {(!verify && (
             <div className="result-detail">
               <div style={{ width: '100%', marginTop: -50 }}>
                 <div className="result-logo">
@@ -185,63 +198,46 @@ const ScanQrCodeResult = ({
                 <div className="border-box">
                   <div className="result-container">
                     <div className="result-items">
-                      <p className="items-title">
-                        Participant
-                      </p>
-                      <p className="items-value">
-                        {detail.user.name}
-                      </p>
+                      <p className="items-title">Participant</p>
+                      <p className="items-value">{detail.user.name}</p>
                     </div>
                     <div className="result-items">
-                      <p className="items-title">
-                        Email
-                      </p>
-                      <p className="items-value">
-                        {detail.user.email}
-                      </p>
+                      <p className="items-title">Email</p>
+                      <p className="items-value">{detail.user.email}</p>
+                    </div>
+                    <div className="result-items">
+                      <div>
+                        <p className="items-title">Ticket Type</p>
+                        <p className="items-value">{detail.ticket.type}</p>
+                      </div>
                     </div>
                     <div className="result-items display-flex">
                       <div style={{ width: '50%' }}>
-                        <p className="items-title">
-                          Ticket Type
-                        </p>
+                        <p className="items-title">Ticket Price</p>
                         <p className="items-value">
-                          {detail.ticket.type}
+                          {`${detail.ticket.price.toFixed(2)} ${PriceUnit}`}
                         </p>
                       </div>
                       <div style={{ width: '50%' }}>
-                        <p className="items-title">
-                          Seat Number
-                        </p>
-                        <p className="items-value">
-                          {detail.ticket.seat}
-                        </p>
+                        <p className="items-title">Seat Number</p>
+                        <p className="items-value">{detail.ticket.seat}</p>
                       </div>
                     </div>
                     <div className="result-items">
-                      <p className="items-title">
-                        Ticket Number
-                      </p>
-                      <p className="items-value">
-                        {detail.ticket.no}
-                      </p>
+                      <p className="items-title">Ticket Number</p>
+                      <p className="items-value">{detail.ticket.no}</p>
                     </div>
                   </div>
-                  <div
-                    className="action-button"
-                    onClick={handleVerify}
-                  >
+                  <div className="action-button" onClick={handleVerify}>
                     <Image src={Images.ButtonVerify} alt="" />
                     <p className="button-text">
-                      {loading && (
-                        <p className="laoding-cover" />
-                      ) || 'VERIFY'}
+                      {(loading && <p className="laoding-cover" />) || 'VERIFY'}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-          ) || (
+          )) || (
             <div className="verify-container">
               <div className="items" style={{ width: '100%' }}>
                 <div style={{ textAlign: 'center' }}>
@@ -253,12 +249,28 @@ const ScanQrCodeResult = ({
                     dangerouslySetInnerHTML={{ __html: verifyMessage.message }}
                   />
                 </div>
+                {detail && detail.ticket && (
+                  <div className="total-info">
+                    <p className="total-info-type">{detail.ticket.type}</p>
+                    <p className="total-info-redeemed">
+                      <Image src={Images.OrganiserIcon} alt="" />
+                      <span style={{ color: '#FFFFFF', marginLeft: 5 }}>
+                        {detail.ticket.redeemed.toLocaleString()}
+                      </span>{' '}
+                      / <span>{detail.ticket.total.toLocaleString()}</span>
+                    </p>
+                  </div>
+                )}
                 <div style={{ textAlign: 'center' }}>
                   <button onClick={() => setResult('')}>
-                    {verifyMessage.success && 'CONTINUE TO SCAN' || 'SCAN QR CODE'}
+                    {(verifyMessage.success && 'CONTINUE TO SCAN') ||
+                      'SCAN QR CODE'}
                   </button>
                   {verifyMessage.success && (
-                    <button className="back-home" onClick={() => setShowQrReader(false)}>
+                    <button
+                      className="back-home"
+                      onClick={() => setShowQrReader(false)}
+                    >
                       BACK TO HOME
                     </button>
                   )}
@@ -302,9 +314,9 @@ const ScanQrCodePage: NextPage = () => {
       <Head>
         <title>Scan QR Code</title>
       </Head>
-      {showQrReader && (
+      {(showQrReader && (
         <>
-          {!result && (
+          {(!result && (
             <div>
               <div className="scan-back" onClick={() => setShowQrReader(false)}>
                 <Image src={Images.BackArrow} alt="" />
@@ -321,7 +333,7 @@ const ScanQrCodePage: NextPage = () => {
                 constraints={{ facingMode: 'environment' }}
               />
             </div>
-          ) || (
+          )) || (
             <ScanQrCodeResult
               result={result}
               currentEventId={id}
@@ -330,9 +342,9 @@ const ScanQrCodePage: NextPage = () => {
             />
           )}
         </>
-      ) || (
+      )) || (
         <>
-          {eventCorrect && !loading && (
+          {(eventCorrect && !loading && (
             <div className="scan-start">
               <div className="scan-start-mask" />
               <div className="scan-start-container">
@@ -344,23 +356,19 @@ const ScanQrCodePage: NextPage = () => {
                 </button>
               </div>
             </div>
-         ) || (
+          )) || (
             <div className="verify-container">
               <div className="items" style={{ width: '100%' }}>
                 <div style={{ textAlign: 'center' }}>
-                  {loading && (
+                  {(loading && (
                     <div className="loading-box">
                       <LoadingOutlined />
                     </div>
-                  ) || (
-                    <Image src={Images.Dissatisfaction} alt="" />
-                  )}
+                  )) || <Image src={Images.Dissatisfaction} alt="" />}
                 </div>
                 {!loading && (
                   <div>
-                    <p className="verify-message">
-                      Invalid URL
-                    </p>
+                    <p className="verify-message">Invalid URL</p>
                   </div>
                 )}
               </div>
@@ -379,10 +387,12 @@ export async function getServerSideProps(ctx: any) {
     const handleAuth = () => {
       const token = req.cookies[CookieKeys.authUser];
       if (!token) {
-        res.writeHead(302, { Location: `${RouterKeys.scanLogin}?eventId=${query.eventId || ''}` });
+        res.writeHead(302, {
+          Location: `${RouterKeys.scanLogin}?eventId=${query.eventId || ''}`,
+        });
         res.end();
         return {
-          props: {}
+          props: {},
         };
       }
     };
@@ -390,13 +400,13 @@ export async function getServerSideProps(ctx: any) {
       await handleAuth();
     }
     return {
-      props: {}
+      props: {},
     };
   } catch (error) {
     return {
-      props: {}
+      props: {},
     };
   }
-};
+}
 
 export default ScanQrCodePage;
