@@ -200,148 +200,150 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
         </MyEventsContainer>
       )) || (
         <MyEventsContainer ref={myTicketsUserEventsRef}>
-          <Col md={24} xs={0}>
-            <PageHearderResponsive saveScrollValue={saveScrollValue} />
-          </Col>
-          <Col md={0} xs={24}>
-            <PageHearderComponent
-              saveScrollValue={saveScrollValue}
-              setMenuState={setMenuState}
-            />
-          </Col>
-          <Col className="page-main">
-            {(myTicketsUserEventsForAll.length && (
-              <Row
-                gutter={[{ md: 24 }, { xs: 24, md: 32 }]}
-                className="list-row"
-              >
-                {myTicketsUserEventsForAll.map((item) => (
-                  <Col key={item.id} xl={8} md={12} span={24}>
-                    <EventItemContainer
-                      onClick={() => {
-                        router.push(
-                          RouterKeys.myTicketsEventDetail.replace(
-                            ':slug',
-                            item.slug
-                          )
-                        );
-                        saveScrollValue();
-                      }}
-                    >
-                      {item.status &&
-                        item.status !==
-                          EventStatus.find(
-                            (status) => status.text === 'UPCOMING'
-                          )?.key && <div className="background-mask" />}
-                      <div className="event-background">
-                        <Image
-                          src={item.image || Images.BackgroundLogo.src}
-                          layout="fill"
-                          alt=""
-                          onError={(e: any) => {
-                            e.target.onerror = null;
-                            e.target.src = Images.BackgroundLogo.src;
-                          }}
-                        />
-                      </div>
-                      {checkStatusIcon(item.status) && (
-                        <div className="on-sale-icon">
-                          <Image src={checkStatusIcon(item.status)} alt="" />
-                        </div>
-                      )}
-                      <div
-                        className="status-warpper"
-                        style={{ textAlign: 'right' }}
+          <div className="container-wrap">
+            <Col md={24} xs={0}>
+              <PageHearderResponsive saveScrollValue={saveScrollValue} />
+            </Col>
+            <Col md={0} xs={24}>
+              <PageHearderComponent
+                saveScrollValue={saveScrollValue}
+                setMenuState={setMenuState}
+              />
+            </Col>
+            <Col className="page-main">
+              {(myTicketsUserEventsForAll.length && (
+                <Row
+                  gutter={[{ md: 24 }, { xs: 24, md: 32 }]}
+                  className="list-row"
+                >
+                  {myTicketsUserEventsForAll.map((item) => (
+                    <Col key={item.id} xl={8} md={12} span={24}>
+                      <EventItemContainer
+                        onClick={() => {
+                          router.push(
+                            RouterKeys.myTicketsEventDetail.replace(
+                              ':slug',
+                              item.slug
+                            )
+                          );
+                          saveScrollValue();
+                        }}
                       >
-                        {EventStatus.map((status) => {
-                          if (status.key === item.status && status.text) {
-                            return (
-                              <MyEventStatusContainer
-                                key={status.key}
-                                bgColor={status.bgColor}
-                                textColor={status.color}
-                              >
-                                {status.text}
-                              </MyEventStatusContainer>
-                            );
-                          }
-                          return null;
-                        })}
-                      </div>
-                      <div className="item-info">
-                        <Row className="item-info-row">
-                          <Col span={24} className="info-title">
-                            {item.name}
-                          </Col>
-                          <Col span={24} className="info-item">
-                            <Image
-                              className="info-item-icon"
-                              src={Images.ClockIcon}
-                              alt=""
-                            />
-                            <div className="info-description">
-                              {(item.startTime &&
-                                item.endTime &&
-                                `${formatTimeStrByTimeString(
-                                  item.startTime,
-                                  FormatTimeKeys.norm
-                                )} - ${formatTimeStrByTimeString(
-                                  item.endTime,
-                                  FormatTimeKeys.norm
-                                )}`) ||
-                                '-'}
-                            </div>
-                            ;
-                          </Col>
-                          <Col span={24} className="info-item">
-                            <Image
-                              src={Images.LocationIcon}
-                              alt=""
-                              className="info-item-icon"
-                            />
-                            <div className="info-description">
-                              {item.location || '-'}
-                            </div>
-                          </Col>
-                          <Col span={24} className="info-item">
-                            <Image
-                              src={Images.OrganiserIcon}
-                              alt=""
-                              className="info-item-icon"
-                            />
-                            <span className="info-description">
-                              {item.organizerName || '-'}
-                            </span>
-                          </Col>
-                        </Row>
-                      </div>
-                    </EventItemContainer>
-                  </Col>
-                ))}
-              </Row>
-            )) || (
-              <>
-                {!myTicketsUserEventsForAll.length && !loading && (
-                  <Row className="no-ticket-row">
-                    <Col span={24} className="no-ticket">
-                      <div style={{ margin: 'auto', textAlign: 'center' }}>
-                        <Image src={Images.NoTicketsIcon} alt="" />
-                        <p>No Tickets Available</p>
-                      </div>
+                        {item.status &&
+                          item.status !==
+                            EventStatus.find(
+                              (status) => status.text === 'UPCOMING'
+                            )?.key && <div className="background-mask" />}
+                        <div className="event-background">
+                          <Image
+                            src={item.image || Images.BackgroundLogo.src}
+                            layout="fill"
+                            alt=""
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = Images.BackgroundLogo.src;
+                            }}
+                          />
+                        </div>
+                        {checkStatusIcon(item.status) && (
+                          <div className="on-sale-icon">
+                            <Image src={checkStatusIcon(item.status)} alt="" />
+                          </div>
+                        )}
+                        <div
+                          className="status-warpper"
+                          style={{ textAlign: 'right' }}
+                        >
+                          {EventStatus.map((status) => {
+                            if (status.key === item.status && status.text) {
+                              return (
+                                <MyEventStatusContainer
+                                  key={status.key}
+                                  bgColor={status.bgColor}
+                                  textColor={status.color}
+                                >
+                                  {status.text}
+                                </MyEventStatusContainer>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
+                        <div className="item-info">
+                          <Row className="item-info-row">
+                            <Col span={24} className="info-title">
+                              {item.name}
+                            </Col>
+                            <Col span={24} className="info-item">
+                              <Image
+                                className="info-item-icon"
+                                src={Images.ClockIcon}
+                                alt=""
+                              />
+                              <div className="info-description">
+                                {(item.startTime &&
+                                  item.endTime &&
+                                  `${formatTimeStrByTimeString(
+                                    item.startTime,
+                                    FormatTimeKeys.norm
+                                  )} - ${formatTimeStrByTimeString(
+                                    item.endTime,
+                                    FormatTimeKeys.norm
+                                  )}`) ||
+                                  '-'}
+                              </div>
+                              ;
+                            </Col>
+                            <Col span={24} className="info-item">
+                              <Image
+                                src={Images.LocationIcon}
+                                alt=""
+                                className="info-item-icon"
+                              />
+                              <div className="info-description">
+                                {item.location || '-'}
+                              </div>
+                            </Col>
+                            <Col span={24} className="info-item">
+                              <Image
+                                src={Images.OrganiserIcon}
+                                alt=""
+                                className="info-item-icon"
+                              />
+                              <span className="info-description">
+                                {item.organizerName || '-'}
+                              </span>
+                            </Col>
+                          </Row>
+                        </div>
+                      </EventItemContainer>
                     </Col>
-                  </Row>
-                )}
-              </>
-            )}
-            {loading && myTicketsUserEventsForAll.length && (
-              <div className="load-more">
-                <LoadingOutlined />
-                Loading...
-              </div>
-            )}
-          </Col>
-          {contextHolder}
-          {!menuState && <PageBottomComponent />}
+                  ))}
+                </Row>
+              )) || (
+                <>
+                  {!myTicketsUserEventsForAll.length && !loading && (
+                    <Row className="no-ticket-row">
+                      <Col span={24} className="no-ticket">
+                        <div style={{ margin: 'auto', textAlign: 'center' }}>
+                          <Image src={Images.NoTicketsIcon} alt="" />
+                          <p>No Tickets Available</p>
+                        </div>
+                      </Col>
+                    </Row>
+                  )}
+                </>
+              )}
+              {loading && myTicketsUserEventsForAll.length && (
+                <div className="load-more">
+                  <LoadingOutlined />
+                  Loading...
+                </div>
+              )}
+            </Col>
+            {contextHolder}
+            {!menuState && <PageBottomComponent />}
+          </div>
         </MyEventsContainer>
       )}
     </>

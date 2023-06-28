@@ -4,9 +4,11 @@ import { Colors } from '../theme';
 const EventListContainer = styled.div`
   height: 100%;
   overflow: auto;
-  max-width: 1008px;
-  margin: auto;
   position: relative;
+  .container-wrap {
+    max-width: 1008px;
+    margin: auto;
+  }
   .page-loading {
     position: absolute;
     top: 0;
@@ -46,7 +48,9 @@ const EventListContainer = styled.div`
     }
   }
   @media (min-width: 768px) and (max-width: 1200px) {
-    max-width: 688px;
+    .container-wrap {
+      max-width: 688px;
+    }
     .banner-item {
       height: 345px;
       position: relative;

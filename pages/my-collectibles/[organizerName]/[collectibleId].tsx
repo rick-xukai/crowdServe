@@ -387,471 +387,491 @@ const CollectibleDetail = () => {
             </CollectibleDetailContainer>
           )) || (
             <CollectibleDetailContainer ref={collectibleDetailRef}>
-              <Col md={24} xs={0}>
-                <PageHearderResponsive />
-              </Col>
-              <Col md={0} xs={24}>
-                <PageHearderComponent />
-              </Col>
-              <div
-                className={
-                  (checkIsShowQRCodeBottom() && 'page-main page-bottom-show') ||
-                  'page-main'
-                }
-              >
-                <Row>
-                  <Col xl={12} span={24} className="collectible-info">
-                    <Col className="collectible-info-image">
-                      {(collectibleDetail.imageType &&
-                        collectibleDetail.imageType
-                          .toLowerCase()
-                          .includes('video') && (
-                          <video
+              <div className="container-wrap">
+                <Col md={24} xs={0}>
+                  <PageHearderResponsive />
+                </Col>
+                <Col md={0} xs={24}>
+                  <PageHearderComponent />
+                </Col>
+                <div
+                  className={
+                    (checkIsShowQRCodeBottom() &&
+                      'page-main page-bottom-show') ||
+                    'page-main'
+                  }
+                >
+                  <Row>
+                    <Col xl={12} span={24} className="collectible-info">
+                      <Col className="collectible-info-image">
+                        {(collectibleDetail.imageType &&
+                          collectibleDetail.imageType
+                            .toLowerCase()
+                            .includes('video') && (
+                            <video
+                              src={collectibleDetail.image}
+                              playsInline
+                              muted
+                              autoPlay
+                              loop
+                            />
+                          )) || (
+                          <img
                             src={collectibleDetail.image}
-                            playsInline
-                            muted
-                            autoPlay
-                            loop
-                          />
-                        )) || (
-                        <img
-                          src={collectibleDetail.image}
-                          alt=""
-                          onError={(e: any) => {
-                            e.target.onerror = null;
-                            e.target.src = Images.BackgroundLogo.src;
-                            e.target.className = 'error-full-image';
-                          }}
-                        />
-                      )}
-                      {collectibleDetail.saleStatus ===
-                        TicketSaleStatus.onsale.status && (
-                        <div className="on-sale-icon">
-                          <Image src={Images.OnSaleIcon} alt="" />
-                        </div>
-                      )}
-                    </Col>
-                    <Row style={{ alignItems: 'start' }}>
-                      <Col span={20} className="info-name">
-                        {collectibleDetail.name || '-'}
-                      </Col>
-                      <Col span={4} className="info-share-button">
-                        <div className="share-content">
-                          <Dropdown
-                            trigger={['click']}
-                            animation="slide-up"
-                            overlay={
-                              <div className="share-menu">
-                                <ul>
-                                  <li onClick={copyUrl}>
-                                    <span>{CopyLink}</span>
-                                  </li>
-                                  <li onClick={saveImage}>
-                                    <span>{SaveImage}</span>
-                                  </li>
-                                </ul>
-                              </div>
-                            }
-                            onVisibleChange={(status) => {
-                              if (status) {
-                                const analytics = getAnalytics(firebaseApp);
-                                logEvent(
-                                  analytics,
-                                  `web_share_button_click${FirebaseEventEnv}`
-                                );
-                              }
-                            }}
-                          >
-                            <button className="dropdown-btn">
-                              <Col xl={0} span={24}>
-                                <Image src={Images.ShareIcon} alt="" />
-                              </Col>
-                              <Col xl={24} span={0}>
-                                <div className="share-trigger">
-                                  <Image src={Images.ShareIcon} alt="" />
-                                  <span className="share-text">Share</span>
-                                </div>
-                              </Col>
-                            </button>
-                          </Dropdown>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Col span={24} className="info-organiser">
-                      <div style={{ fontWeight: 300, marginRight: 5 }}>By</div>
-                      <div>{collectibleDetail.organizerName || '-'}</div>
-                    </Col>
-                    <Col span={24} className="info-view-blockchain">
-                      <LoginOutlined />
-                      <a href={collectibleDetail.blockchainUrl} target="_blank">
-                        VIEW ON BLOCKCHAIN
-                      </a>
-                    </Col>
-                    <Col className="info-description">
-                      {collectibleDetail.description || '-'}
-                    </Col>
-                  </Col>
-                  <Col xl={12} span={24} className="event-info">
-                    <Col className="event-info-top">
-                      <Col className="event-info-title">EVENT DETAILS</Col>
-                      <EventDetailCard
-                        onClick={() => {
-                          if (window.innerWidth <= 576) {
-                            setShowEventDetailDrawer(true);
-                          } else {
-                            setShowEventDetail(true);
-                          }
-                        }}
-                      >
-                        <div className="event-background">
-                          <Image
-                            src={
-                              collectibleDetail.event.image ||
-                              Images.BackgroundLogo.src
-                            }
-                            layout="fill"
                             alt=""
                             onError={(e: any) => {
                               e.target.onerror = null;
                               e.target.src = Images.BackgroundLogo.src;
+                              e.target.className = 'error-full-image';
                             }}
                           />
-                        </div>
-                        <div className="item-info">
-                          <Row className="item-info-row">
-                            <Col span={24}>
-                              {TicketStatus.map((status) => {
-                                if (
-                                  status.key === collectibleDetail.status &&
-                                  status.text
-                                ) {
-                                  return (
-                                    <MyEventStatusContainer
-                                      key={status.key}
-                                      bgColor={status.bgColor}
-                                      textColor={status.color}
-                                    >
-                                      {status.text}
-                                    </MyEventStatusContainer>
-                                  );
-                                }
-                                return null;
-                              })}
-                            </Col>
-                            <Col span={24} className="info-title">
-                              {collectibleDetail.event.name || '-'}
-                            </Col>
-                            <Col span={24} className="info-item">
-                              <Image
-                                className="info-item-icon"
-                                src={Images.ClockIcon}
-                                alt=""
-                              />
-                              <div className="info-detail-description">
-                                {(collectibleDetail.event.startTime &&
-                                  collectibleDetail.event.endTime &&
-                                  `${formatTimeStrByTimeString(
-                                    collectibleDetail.event.startTime,
-                                    FormatTimeKeys.norm
-                                  )} - ${formatTimeStrByTimeString(
-                                    collectibleDetail.event.endTime,
-                                    FormatTimeKeys.norm
-                                  )}`) ||
-                                  '-'}
-                              </div>
-                            </Col>
-                            <Col span={24} className="info-item">
-                              <Image
-                                src={Images.LocationIcon}
-                                alt=""
-                                className="info-item-icon"
-                              />
-                              <div className="info-detail-description">
-                                {collectibleDetail.event.location || '-'}
-                              </div>
-                            </Col>
-                          </Row>
-                        </div>
-                      </EventDetailCard>
-                    </Col>
-                    {(connectedEvents.length && (
-                      <Col className="connected-events">
-                        <Col className="connected-events-title">
-                          CONNECTED EVENTS
+                        )}
+                        {collectibleDetail.saleStatus ===
+                          TicketSaleStatus.onsale.status && (
+                          <div className="on-sale-icon">
+                            <Image src={Images.OnSaleIcon} alt="" />
+                          </div>
+                        )}
+                      </Col>
+                      <Row style={{ alignItems: 'start' }}>
+                        <Col span={20} className="info-name">
+                          {collectibleDetail.name || '-'}
                         </Col>
-                        {connectedEvents.map(
-                          (item: ConnectedEventsResponseType) => (
-                            <ConnectedEventsItem
-                              key={item.id}
-                              onClick={() => {
-                                setCurrentConnectedEvent(item);
-                                if (window.innerWidth <= 576) {
-                                  setShowConnectedEventDrawer(true);
-                                } else {
-                                  setShowConnectedEventModal(true);
+                        <Col span={4} className="info-share-button">
+                          <div className="share-content">
+                            <Dropdown
+                              trigger={['click']}
+                              animation="slide-up"
+                              overlay={
+                                <div className="share-menu">
+                                  <ul>
+                                    <li onClick={copyUrl}>
+                                      <span>{CopyLink}</span>
+                                    </li>
+                                    <li onClick={saveImage}>
+                                      <span>{SaveImage}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              }
+                              onVisibleChange={(status) => {
+                                if (status) {
+                                  const analytics = getAnalytics(firebaseApp);
+                                  logEvent(
+                                    analytics,
+                                    `web_share_button_click${FirebaseEventEnv}`
+                                  );
                                 }
                               }}
                             >
-                              <Col xs={24} sm={0} className="info-title-col">
-                                <p>{item.event.name || '-'}</p>
-                              </Col>
-                              <Row className="desktop-event-row">
-                                <Col span={20}>
-                                  <Row>
-                                    <Col span={7} className="event-background">
-                                      <Image
-                                        src={
-                                          item.ticketType.thumbnailUrl ||
-                                          Images.BackgroundLogo.src
-                                        }
-                                        layout="fill"
-                                        alt=""
-                                        onError={(e: any) => {
-                                          e.target.onerror = null;
-                                          e.target.src =
-                                            Images.BackgroundLogo.src;
-                                        }}
-                                      />
-                                      {item.privilegeType !==
-                                        PrivilegeType.discount.status && (
-                                        <div className="status-bar">
-                                          {TicketStatus.map((status) => {
-                                            if (
-                                              status.key === item.status &&
-                                              status.text
-                                            ) {
-                                              return (
-                                                <MyEventStatusContainer
-                                                  key={status.key}
-                                                  bgColor={status.bgColor}
-                                                  textColor={status.color}
-                                                >
-                                                  {status.text}
-                                                </MyEventStatusContainer>
-                                              );
-                                            }
-                                            return null;
-                                          })}
-                                        </div>
-                                      )}
-                                    </Col>
-                                    <Col span={17}>
-                                      <div className="item-info">
-                                        <Row className="item-info-row">
-                                          <Col
-                                            xs={0}
-                                            sm={24}
-                                            className="info-title"
-                                          >
-                                            {item.event.name || '-'}
-                                          </Col>
-                                          <Col span={24} className="info-item">
-                                            <Image
-                                              src={Images.TicketsIcon}
-                                              alt=""
-                                              className="info-item-icon"
-                                            />
-                                            <span className="info-detail-description">
-                                              {item.ticketType.name}
-                                            </span>
-                                          </Col>
-                                          <Col span={24} className="info-item">
-                                            <Image
-                                              className="info-item-icon"
-                                              src={Images.ClockIcon}
-                                              alt=""
-                                            />
-                                            <div className="info-detail-description">
-                                              {(item.event.startTime &&
-                                                `${formatTimeStrByTimeString(
-                                                  item.event.startTime,
-                                                  FormatTimeKeys.norm
-                                                )}`) ||
-                                                '-'}
-                                            </div>
-                                          </Col>
-                                          <Col span={24} className="info-item">
-                                            <Image
-                                              src={Images.LocationIcon}
-                                              alt=""
-                                              className="info-item-icon"
-                                            />
-                                            <div className="info-detail-description">
-                                              {item.event.location || '-'}
-                                            </div>
-                                          </Col>
-                                        </Row>
-                                      </div>
-                                    </Col>
-                                  </Row>
+                              <button className="dropdown-btn">
+                                <Col xl={0} span={24}>
+                                  <Image src={Images.ShareIcon} alt="" />
                                 </Col>
-                                <Col span={4}>
-                                  <div className="right-icon">
-                                    {(item.privilegeType ===
-                                      PrivilegeType.discount.status && (
-                                      <Image src={Images.CouponIcon} alt="" />
-                                    )) || (
-                                      <Image
-                                        src={
-                                          Images.ConnectedEventsDetailTrigger
-                                        }
-                                        alt=""
-                                      />
-                                    )}
+                                <Col xl={24} span={0}>
+                                  <div className="share-trigger">
+                                    <Image src={Images.ShareIcon} alt="" />
+                                    <span className="share-text">Share</span>
                                   </div>
                                 </Col>
-                              </Row>
-                            </ConnectedEventsItem>
-                          )
-                        )}
+                              </button>
+                            </Dropdown>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Col span={24} className="info-organiser">
+                        <div style={{ fontWeight: 300, marginRight: 5 }}>
+                          By
+                        </div>
+                        <div>{collectibleDetail.organizerName || '-'}</div>
                       </Col>
-                    )) ||
-                      null}
-                    <Col className="chart-content">
-                      <Col className="chart-title">ALL TIME AVG.PRICE</Col>
-                      {(priceChartData.length && (
-                        <Col>
-                          <div>
-                            <canvas
-                              ref={chartRef}
-                              aria-label="ALL TIME AVG.PRICE"
-                              role="img"
+                      <Col span={24} className="info-view-blockchain">
+                        <LoginOutlined />
+                        <a
+                          href={collectibleDetail.blockchainUrl}
+                          target="_blank"
+                        >
+                          VIEW ON BLOCKCHAIN
+                        </a>
+                      </Col>
+                      <Col className="info-description">
+                        {collectibleDetail.description || '-'}
+                      </Col>
+                    </Col>
+                    <Col xl={12} span={24} className="event-info">
+                      <Col className="event-info-top">
+                        <Col className="event-info-title">EVENT DETAILS</Col>
+                        <EventDetailCard
+                          onClick={() => {
+                            if (window.innerWidth <= 576) {
+                              setShowEventDetailDrawer(true);
+                            } else {
+                              setShowEventDetail(true);
+                            }
+                          }}
+                        >
+                          <div className="event-background">
+                            <Image
+                              src={
+                                collectibleDetail.event.image ||
+                                Images.BackgroundLogo.src
+                              }
+                              layout="fill"
+                              alt=""
+                              onError={(e: any) => {
+                                e.target.onerror = null;
+                                e.target.src = Images.BackgroundLogo.src;
+                              }}
                             />
                           </div>
-                        </Col>
-                      )) || (
-                        <Col>
-                          <div className="no-chart">
-                            <Image src={Images.ChartIcon} alt="" />
-                            <p>No data yet.</p>
+                          <div className="item-info">
+                            <Row className="item-info-row">
+                              <Col span={24}>
+                                {TicketStatus.map((status) => {
+                                  if (
+                                    status.key === collectibleDetail.status &&
+                                    status.text
+                                  ) {
+                                    return (
+                                      <MyEventStatusContainer
+                                        key={status.key}
+                                        bgColor={status.bgColor}
+                                        textColor={status.color}
+                                      >
+                                        {status.text}
+                                      </MyEventStatusContainer>
+                                    );
+                                  }
+                                  return null;
+                                })}
+                              </Col>
+                              <Col span={24} className="info-title">
+                                {collectibleDetail.event.name || '-'}
+                              </Col>
+                              <Col span={24} className="info-item">
+                                <Image
+                                  className="info-item-icon"
+                                  src={Images.ClockIcon}
+                                  alt=""
+                                />
+                                <div className="info-detail-description">
+                                  {(collectibleDetail.event.startTime &&
+                                    collectibleDetail.event.endTime &&
+                                    `${formatTimeStrByTimeString(
+                                      collectibleDetail.event.startTime,
+                                      FormatTimeKeys.norm
+                                    )} - ${formatTimeStrByTimeString(
+                                      collectibleDetail.event.endTime,
+                                      FormatTimeKeys.norm
+                                    )}`) ||
+                                    '-'}
+                                </div>
+                              </Col>
+                              <Col span={24} className="info-item">
+                                <Image
+                                  src={Images.LocationIcon}
+                                  alt=""
+                                  className="info-item-icon"
+                                />
+                                <div className="info-detail-description">
+                                  {collectibleDetail.event.location || '-'}
+                                </div>
+                              </Col>
+                            </Row>
                           </div>
+                        </EventDetailCard>
+                      </Col>
+                      {(connectedEvents.length && (
+                        <Col className="connected-events">
+                          <Col className="connected-events-title">
+                            CONNECTED EVENTS
+                          </Col>
+                          {connectedEvents.map(
+                            (item: ConnectedEventsResponseType) => (
+                              <ConnectedEventsItem
+                                key={item.id}
+                                onClick={() => {
+                                  setCurrentConnectedEvent(item);
+                                  if (window.innerWidth <= 576) {
+                                    setShowConnectedEventDrawer(true);
+                                  } else {
+                                    setShowConnectedEventModal(true);
+                                  }
+                                }}
+                              >
+                                <Col xs={24} sm={0} className="info-title-col">
+                                  <p>{item.event.name || '-'}</p>
+                                </Col>
+                                <Row className="desktop-event-row">
+                                  <Col span={20}>
+                                    <Row>
+                                      <Col
+                                        span={7}
+                                        className="event-background"
+                                      >
+                                        <Image
+                                          src={
+                                            item.ticketType.thumbnailUrl ||
+                                            Images.BackgroundLogo.src
+                                          }
+                                          layout="fill"
+                                          alt=""
+                                          onError={(e: any) => {
+                                            e.target.onerror = null;
+                                            e.target.src =
+                                              Images.BackgroundLogo.src;
+                                          }}
+                                        />
+                                        {item.privilegeType !==
+                                          PrivilegeType.discount.status && (
+                                          <div className="status-bar">
+                                            {TicketStatus.map((status) => {
+                                              if (
+                                                status.key === item.status &&
+                                                status.text
+                                              ) {
+                                                return (
+                                                  <MyEventStatusContainer
+                                                    key={status.key}
+                                                    bgColor={status.bgColor}
+                                                    textColor={status.color}
+                                                  >
+                                                    {status.text}
+                                                  </MyEventStatusContainer>
+                                                );
+                                              }
+                                              return null;
+                                            })}
+                                          </div>
+                                        )}
+                                      </Col>
+                                      <Col span={17}>
+                                        <div className="item-info">
+                                          <Row className="item-info-row">
+                                            <Col
+                                              xs={0}
+                                              sm={24}
+                                              className="info-title"
+                                            >
+                                              {item.event.name || '-'}
+                                            </Col>
+                                            <Col
+                                              span={24}
+                                              className="info-item"
+                                            >
+                                              <Image
+                                                src={Images.TicketsIcon}
+                                                alt=""
+                                                className="info-item-icon"
+                                              />
+                                              <span className="info-detail-description">
+                                                {item.ticketType.name}
+                                              </span>
+                                            </Col>
+                                            <Col
+                                              span={24}
+                                              className="info-item"
+                                            >
+                                              <Image
+                                                className="info-item-icon"
+                                                src={Images.ClockIcon}
+                                                alt=""
+                                              />
+                                              <div className="info-detail-description">
+                                                {(item.event.startTime &&
+                                                  `${formatTimeStrByTimeString(
+                                                    item.event.startTime,
+                                                    FormatTimeKeys.norm
+                                                  )}`) ||
+                                                  '-'}
+                                              </div>
+                                            </Col>
+                                            <Col
+                                              span={24}
+                                              className="info-item"
+                                            >
+                                              <Image
+                                                src={Images.LocationIcon}
+                                                alt=""
+                                                className="info-item-icon"
+                                              />
+                                              <div className="info-detail-description">
+                                                {item.event.location || '-'}
+                                              </div>
+                                            </Col>
+                                          </Row>
+                                        </div>
+                                      </Col>
+                                    </Row>
+                                  </Col>
+                                  <Col span={4}>
+                                    <div className="right-icon">
+                                      {(item.privilegeType ===
+                                        PrivilegeType.discount.status && (
+                                        <Image src={Images.CouponIcon} alt="" />
+                                      )) || (
+                                        <Image
+                                          src={
+                                            Images.ConnectedEventsDetailTrigger
+                                          }
+                                          alt=""
+                                        />
+                                      )}
+                                    </div>
+                                  </Col>
+                                </Row>
+                              </ConnectedEventsItem>
+                            )
+                          )}
                         </Col>
-                      )}
+                      )) ||
+                        null}
+                      <Col className="chart-content">
+                        <Col className="chart-title">ALL TIME AVG.PRICE</Col>
+                        {(priceChartData.length && (
+                          <Col>
+                            <div>
+                              <canvas
+                                ref={chartRef}
+                                aria-label="ALL TIME AVG.PRICE"
+                                role="img"
+                              />
+                            </div>
+                          </Col>
+                        )) || (
+                          <Col>
+                            <div className="no-chart">
+                              <Image src={Images.ChartIcon} alt="" />
+                              <p>No data yet.</p>
+                            </div>
+                          </Col>
+                        )}
+                      </Col>
                     </Col>
-                  </Col>
-                </Row>
-              </div>
-              {checkIsShowQRCodeBottom() && (
-                <div className="page-bottom">
-                  <Button
-                    onClick={() => {
-                      if (window.innerWidth <= 576) {
-                        setShowQrCodeDrawer(true);
-                      } else {
-                        setShowQrCodeModal(true);
-                      }
-                    }}
-                  >
-                    CHECK TICKET QR CODE
-                  </Button>
+                  </Row>
                 </div>
-              )}
-              <Drawer
-                placement="bottom"
-                open={showEventDetailDrawer}
-                closable={false}
-                keyboard={false}
-                destroyOnClose
-                getContainer={false}
-                className="eventDetailDrawer"
-                onClose={() => setShowEventDetailDrawer(false)}
-              >
-                <EventDetailPopupElement
-                  collectibleDetail={collectibleDetail}
-                />
-              </Drawer>
-              <Modal
-                title=""
-                centered
-                closable={false}
-                footer={null}
-                open={showEventDetail}
-                className="eventDetailModal"
-                destroyOnClose
-                getContainer={false}
-                onCancel={() => setShowEventDetail(false)}
-              >
-                <EventDetailPopupElement
-                  collectibleDetail={collectibleDetail}
-                />
-                <div className="close-modal">
-                  <Image
-                    src={Images.CloseIcon}
-                    alt=""
-                    onClick={() => setShowEventDetail(false)}
-                  />
-                </div>
-              </Modal>
-              <Modal
-                title=""
-                centered
-                closable={false}
-                footer={null}
-                open={showConnectedEventModal}
-                className="connectedEventDetailModal"
-                destroyOnClose
-                getContainer={false}
-                onCancel={() => setShowConnectedEventModal(false)}
-              >
-                <ConnectedEventPopupElement
-                  connectedEventItemDetail={currentConnectedEvent}
-                />
-                <div className="close-modal">
-                  <Image
-                    src={Images.CloseIcon}
-                    alt=""
-                    onClick={() => setShowConnectedEventModal(false)}
-                  />
-                </div>
-              </Modal>
-              <Drawer
-                placement="bottom"
-                open={showConnectedEventDrawer}
-                closable={false}
-                keyboard={false}
-                destroyOnClose
-                getContainer={false}
-                className="connectedEventDetailDrawer"
-                onClose={() => setShowConnectedEventDrawer(false)}
-              >
-                <ConnectedEventPopupElement
-                  connectedEventItemDetail={currentConnectedEvent}
-                />
-              </Drawer>
-              <ShowQRCodeElementComponent
-                showDrawer={showQrCodeDrawer}
-                showModal={showQrCodeModal}
-                setShowDrawer={setShowQrCodeDrawer}
-                setShowModal={setShowQrCodeModal}
-              >
-                <TicketQRCodeComponent
-                  requestId={requestId}
-                  handleError={handleQRCodeError}
-                />
-              </ShowQRCodeElementComponent>
-              {contextHolder}
-              <div ref={saveImageElement} className="ticket-poster">
-                <div className="poster">
-                  <img src={saveImageUrl} alt="" />
-                </div>
-                <div className="poster-info">
-                  <div className="poster-name">
-                    <p>{collectibleDetail.name || '-'}</p>
+                {checkIsShowQRCodeBottom() && (
+                  <div className="page-bottom">
+                    <Button
+                      onClick={() => {
+                        if (window.innerWidth <= 576) {
+                          setShowQrCodeDrawer(true);
+                        } else {
+                          setShowQrCodeModal(true);
+                        }
+                      }}
+                    >
+                      CHECK TICKET QR CODE
+                    </Button>
                   </div>
-                  <div className="poster-organizerName">
-                    <div>
-                      <span style={{ fontWeight: 400, marginRight: 5 }}>
-                        By
-                      </span>
-                      {`${collectibleDetail.organizerName.slice(0, 32)}${
-                        (collectibleDetail.organizerName.length > 32 &&
-                          '...') ||
-                        ''
-                      }`}
+                )}
+                <Drawer
+                  placement="bottom"
+                  open={showEventDetailDrawer}
+                  closable={false}
+                  keyboard={false}
+                  destroyOnClose
+                  getContainer={false}
+                  className="eventDetailDrawer"
+                  onClose={() => setShowEventDetailDrawer(false)}
+                >
+                  <EventDetailPopupElement
+                    collectibleDetail={collectibleDetail}
+                  />
+                </Drawer>
+                <Modal
+                  title=""
+                  centered
+                  closable={false}
+                  footer={null}
+                  open={showEventDetail}
+                  className="eventDetailModal"
+                  destroyOnClose
+                  getContainer={false}
+                  onCancel={() => setShowEventDetail(false)}
+                >
+                  <EventDetailPopupElement
+                    collectibleDetail={collectibleDetail}
+                  />
+                  <div className="close-modal">
+                    <Image
+                      src={Images.CloseIcon}
+                      alt=""
+                      onClick={() => setShowEventDetail(false)}
+                    />
+                  </div>
+                </Modal>
+                <Modal
+                  title=""
+                  centered
+                  closable={false}
+                  footer={null}
+                  open={showConnectedEventModal}
+                  className="connectedEventDetailModal"
+                  destroyOnClose
+                  getContainer={false}
+                  onCancel={() => setShowConnectedEventModal(false)}
+                >
+                  <ConnectedEventPopupElement
+                    connectedEventItemDetail={currentConnectedEvent}
+                  />
+                  <div className="close-modal">
+                    <Image
+                      src={Images.CloseIcon}
+                      alt=""
+                      onClick={() => setShowConnectedEventModal(false)}
+                    />
+                  </div>
+                </Modal>
+                <Drawer
+                  placement="bottom"
+                  open={showConnectedEventDrawer}
+                  closable={false}
+                  keyboard={false}
+                  destroyOnClose
+                  getContainer={false}
+                  className="connectedEventDetailDrawer"
+                  onClose={() => setShowConnectedEventDrawer(false)}
+                >
+                  <ConnectedEventPopupElement
+                    connectedEventItemDetail={currentConnectedEvent}
+                  />
+                </Drawer>
+                <ShowQRCodeElementComponent
+                  showDrawer={showQrCodeDrawer}
+                  showModal={showQrCodeModal}
+                  setShowDrawer={setShowQrCodeDrawer}
+                  setShowModal={setShowQrCodeModal}
+                >
+                  <TicketQRCodeComponent
+                    requestId={requestId}
+                    handleError={handleQRCodeError}
+                  />
+                </ShowQRCodeElementComponent>
+                {contextHolder}
+                <div ref={saveImageElement} className="ticket-poster">
+                  <div className="poster">
+                    <img src={saveImageUrl} alt="" />
+                  </div>
+                  <div className="poster-info">
+                    <div className="poster-name">
+                      <p>{collectibleDetail.name || '-'}</p>
                     </div>
-                  </div>
-                  <div className="poster-logo">
-                    <img src={Images.LogoNameIcon.src} alt="" />
+                    <div className="poster-organizerName">
+                      <div>
+                        <span style={{ fontWeight: 400, marginRight: 5 }}>
+                          By
+                        </span>
+                        {`${collectibleDetail.organizerName.slice(0, 32)}${
+                          (collectibleDetail.organizerName.length > 32 &&
+                            '...') ||
+                          ''
+                        }`}
+                      </div>
+                    </div>
+                    <div className="poster-logo">
+                      <img src={Images.LogoNameIcon.src} alt="" />
+                    </div>
                   </div>
                 </div>
               </div>

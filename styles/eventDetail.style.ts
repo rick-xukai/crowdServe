@@ -6,10 +6,12 @@ const EventDetailContainer = styled.div`
   padding-top: 45px;
   height: 100%;
   background: ${Colors.backgorund};
-  max-width: 1008px;
-  margin: auto;
   overflow-y: scroll;
   overflow-x: hidden;
+  .container-wrap {
+    max-width: 1008px;
+    margin: auto;
+  }
   ::-webkit-scrollbar {
     display: none;
   }
@@ -254,7 +256,9 @@ const EventDetailContainer = styled.div`
   }
   @media (min-width: 768px) and (max-width: 1200px) {
     padding-top: 0;
-    max-width: 688px;
+    .container-wrap {
+      max-width: 688px;
+    }
     .page-main {
       padding-top: 84px;
       padding-bottom: 90px;
