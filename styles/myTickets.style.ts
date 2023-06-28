@@ -11,8 +11,10 @@ interface MyEventStatusContainerProps {
 const MyEventsContainer = styled.div`
   height: 100%;
   overflow: auto;
-  max-width: 1008px;
-  margin: auto;
+  .container-wrap {
+    max-width: 1008px;
+    margin: auto;
+  }
   ::-webkit-scrollbar {
     display: none;
   }
@@ -119,7 +121,9 @@ const MyEventsContainer = styled.div`
     }
   }
   @media (min-width: 768px) and (max-width: 1200px) {
-    max-width: 688px;
+    .container-wrap {
+      max-width: 688px;
+    }
     .page-main {
       padding: 20px 0 70px 0;
       margin-top: 50px;

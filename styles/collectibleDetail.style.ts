@@ -7,6 +7,9 @@ const CollectibleDetailContainer = styled.div`
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
+  .container-wrap {
+    margin: auto;
+  }
   ::-webkit-scrollbar {
     display: none;
   }
@@ -326,12 +329,17 @@ const CollectibleDetailContainer = styled.div`
     }
   }
   @media (min-width: 1200px) {
-    max-width: 1008px;
+    .container-wrap {
+      max-width: 1008px;
+    }
     .page-main {
       margin-top: 80px;
       padding: 25px 0 0px 0;
       &.page-bottom-show {
         padding-bottom: 100px;
+        .event-info {
+          height: calc(100vh - 205px);
+        }
       }
       .collectible-info {
         padding-right: 30px;
@@ -350,7 +358,7 @@ const CollectibleDetailContainer = styled.div`
         padding-left: 30px;
         border-left: 1.5px solid ${Colors.grayScale90};
         overflow: auto;
-        height: calc(100vh - 205px);
+        height: calc(100vh - 135px);
         overflow: auto;
         padding-bottom: 24px;
         ::-webkit-scrollbar {
@@ -397,7 +405,9 @@ const CollectibleDetailContainer = styled.div`
     }
   }
   @media (min-width: 768px) and (max-width: 1200px) {
-    max-width: 688px;
+    .container-wrap {
+      max-width: 688px;
+    }
     .page-main {
       margin-top: 60px;
       &.page-bottom-show {

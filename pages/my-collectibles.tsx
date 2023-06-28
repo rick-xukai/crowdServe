@@ -234,60 +234,62 @@ const MyCollectibles = () => {
         </MyCollectiblesContainer>
       )) || (
         <MyCollectiblesContainer ref={myCollectiblesListRef}>
-          <Col md={24} xs={0}>
-            <PageHearderResponsive saveScrollValue={saveScrollValue} />
-          </Col>
-          <Col md={0} xs={24}>
-            <PageHearderComponent
-              saveScrollValue={saveScrollValue}
-              setMenuState={setMenuState}
-            />
-          </Col>
-          <Col className="page-main">
-            {(myCollectiblesListForAll.length && (
-              <Row gutter={[24, 24]}>
-                {myCollectiblesListForAll.map((item) => (
-                  <Col key={item.id} xl={8} md={12} sm={12} xs={24}>
-                    <CollectiblesItem
-                      onClick={() => {
-                        dispatch(resetCollectionDetailCache());
-                        dispatch(setCollectiblesOrganizerDetailLoading(true));
-                        router.push(
-                          RouterKeys.collectionDetail.replace(
-                            ':slug',
-                            item.slug
-                          )
-                        );
-                        saveScrollValue();
-                      }}
-                    >
-                      <Col sm={24} xs={0} className="content">
-                        {collectibleItemElement(item, 12, 2)}
-                      </Col>
-                      <Col sm={0} xs={24} className="content">
-                        {collectibleItemElement(item, 8, 3)}
-                      </Col>
-                    </CollectiblesItem>
-                  </Col>
-                ))}
-              </Row>
-            )) || (
-              <div className="no-collectibles">
-                <div className="page-main-no-collectibles">
-                  <Image src={Images.MyCollectiblesIcon} alt="" />
-                  <p className="title">No Collectibles.</p>
+          <div className="container-wrap">
+            <Col md={24} xs={0}>
+              <PageHearderResponsive saveScrollValue={saveScrollValue} />
+            </Col>
+            <Col md={0} xs={24}>
+              <PageHearderComponent
+                saveScrollValue={saveScrollValue}
+                setMenuState={setMenuState}
+              />
+            </Col>
+            <Col className="page-main">
+              {(myCollectiblesListForAll.length && (
+                <Row gutter={[24, 24]}>
+                  {myCollectiblesListForAll.map((item) => (
+                    <Col key={item.id} xl={8} md={12} sm={12} xs={24}>
+                      <CollectiblesItem
+                        onClick={() => {
+                          dispatch(resetCollectionDetailCache());
+                          dispatch(setCollectiblesOrganizerDetailLoading(true));
+                          router.push(
+                            RouterKeys.collectionDetail.replace(
+                              ':slug',
+                              item.slug
+                            )
+                          );
+                          saveScrollValue();
+                        }}
+                      >
+                        <Col sm={24} xs={0} className="content">
+                          {collectibleItemElement(item, 12, 2)}
+                        </Col>
+                        <Col sm={0} xs={24} className="content">
+                          {collectibleItemElement(item, 8, 3)}
+                        </Col>
+                      </CollectiblesItem>
+                    </Col>
+                  ))}
+                </Row>
+              )) || (
+                <div className="no-collectibles">
+                  <div className="page-main-no-collectibles">
+                    <Image src={Images.MyCollectiblesIcon} alt="" />
+                    <p className="title">No Collectibles.</p>
+                  </div>
                 </div>
-              </div>
-            )}
-            {loading && myCollectiblesListForAll.length && (
-              <div className="load-more">
-                <LoadingOutlined />
-                Loading...
-              </div>
-            )}
-          </Col>
-          {contextHolder}
-          {!menuState && <PageBottomComponent />}
+              )}
+              {loading && myCollectiblesListForAll.length && (
+                <div className="load-more">
+                  <LoadingOutlined />
+                  Loading...
+                </div>
+              )}
+            </Col>
+            {contextHolder}
+            {!menuState && <PageBottomComponent />}
+          </div>
         </MyCollectiblesContainer>
       )}
     </>
