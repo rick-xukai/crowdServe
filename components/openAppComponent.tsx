@@ -19,7 +19,7 @@ const OpenAppContainer = styled.div`
   box-shadow: 0px 4px 10px rgb(0 0 0 / 10%);
   border-radius: 6px;
   padding: 10px;
-  z-index: 9999;
+  z-index: 99;
   max-width: 1240px;
   left: 0;
   right: 0;

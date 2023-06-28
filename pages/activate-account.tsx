@@ -2,8 +2,24 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { Row, Col, Form, Input, Button, message, Checkbox } from 'antd';
-import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Button,
+  message,
+  Checkbox,
+  Select,
+  DatePicker,
+} from 'antd';
+import {
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  CaretDownOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
+import { format } from 'date-fns';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -14,9 +30,18 @@ import {
   selectLoading,
   selectData,
   reset,
+  getUserGenderAction,
+  selectUserGender,
+  selectGetUserGenderLoading,
 } from '../slice/user.slice';
 import { isPassword, base64Decrypt, getErrorMessage } from '../utils/func';
-import { TokenExpire, PrivacyPolicyLink, TermsConditionsLink } from '../constants/General';
+import {
+  TokenExpire,
+  PrivacyPolicyLink,
+  TermsConditionsLink,
+  PasswordNotMatch,
+  BirthdayNotVaild,
+} from '../constants/General';
 import { Images, Colors } from '../theme';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
@@ -29,6 +54,34 @@ const ActivateAccountContainer = styled.div`
   position: relative;
   max-width: 400px;
   margin: auto;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  &.open-app-show {
+    @media (max-width: 576px) {
+      display: block;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      .page-main {
+        padding-top: 62px;
+        padding-bottom: 62px;
+      }
+    }
+  }
+  .page-loading {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    color: ${Colors.branding};
+    .anticon {
+      margin: auto;
+    }
+  }
   .skip-login {
     position: absolute;
     color: ${Colors.white};
@@ -36,6 +89,18 @@ const ActivateAccountContainer = styled.div`
     right: 20px;
     font-weight: 400;
     font-size: 15px;
+    z-index: 1;
+  }
+  .page-bottom {
+    color: #fff;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    left: 0;
+    &.open-app {
+      padding-bottom: 120px;
+    }
   }
   .page-main {
     width: 100%;
@@ -49,6 +114,10 @@ const ActivateAccountContainer = styled.div`
           height: 62px;
         }
       }
+    }
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      padding-top: 8px;
     }
     .main-title {
       margin-bottom: 38px;
@@ -70,9 +139,10 @@ const ActivateAccountContainer = styled.div`
       .ant-input-suffix {
         display: flex;
         align-items: center;
+        padding-top: 15px;
       }
       &.border-white {
-        border-bottom: 0.7px solid ${Colors.white};
+        border-bottom: 1px solid ${Colors.white};
         .anticon {
           color: ${Colors.white};
         }
@@ -98,9 +168,9 @@ const ActivateAccountContainer = styled.div`
       height: 50px;
       border: none;
       border-bottom: 0.7px solid ${Colors.grayScale50};
-      padding: 4px 4px;
+      padding: 15px 4px 4px 4px;
       border-radius: unset;
-      background: transparent; 
+      background: transparent;
       color: ${Colors.white};
       &.ant-input-status-success {
         color: ${Colors.white};
@@ -109,7 +179,7 @@ const ActivateAccountContainer = styled.div`
         color: ${Colors.grayScale50};
       }
       &.border-white {
-        border-bottom: 0.7px solid ${Colors.white};
+        border-bottom: 1px solid ${Colors.white};
       }
     }
     .signin-btn {
@@ -191,10 +261,13 @@ const ActivateAccountContainer = styled.div`
     background-color: ${Colors.branding};
     border-color: ${Colors.branding};
   }
-  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-checked:not(.ant-checkbox-disabled) .ant-checkbox-inner {
+  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+    .ant-checkbox-checked:not(.ant-checkbox-disabled)
+    .ant-checkbox-inner {
     background-color: ${Colors.branding};
   }
-  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
+  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+    .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
     border-color: ${Colors.branding} !important;
     border-radius: 2px;
   }
@@ -213,18 +286,114 @@ const ActivateAccountContainer = styled.div`
       margin-bottom: -5px;
     }
   }
+  .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
+    .ant-select-selector {
+    border-color: ${Colors.grayScale50};
+  }
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector input {
+    cursor: default;
+  }
+  .ant-select-focused.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+    .ant-select-selector {
+    box-shadow: none;
+  }
+  .ant-select-focused {
+    border: none;
+  }
+  .ant-select-focused.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+    .ant-select-selector {
+    border-color: ${Colors.grayScale50};
+  }
+  .ant-select-single .ant-select-selector .ant-select-selection-item {
+    line-height: 50px;
+    color: ${Colors.white};
+  }
+  .ant-picker-focused {
+    box-shadow: none;
+  }
+  .ant-picker .ant-picker-input > input:focus {
+    border-color: ${Colors.grayScale50};
+  }
+  .ant-picker {
+    height: 50px;
+    width: 100%;
+    background: ${Colors.backgorund};
+    border: none;
+    border-bottom: 0.7px solid ${Colors.grayScale50};
+    border-radius: 0;
+    padding: 0;
+    padding-top: 15px;
+    &.border-white {
+      border-bottom: 1px solid ${Colors.white};
+      .ant-picker-suffix {
+        color: ${Colors.white};
+      }
+    }
+    .ant-picker-input {
+      input {
+        color: ${Colors.white};
+        background: ${Colors.backgorund};
+        &::placeholder {
+          color: ${Colors.grayScale50};
+        }
+      }
+    }
+    .ant-picker-suffix {
+      color: ${Colors.grayScale50};
+    }
+  }
+  .gender-select {
+    cursor: default;
+    &.border-white {
+      .ant-select-selector {
+        border-bottom: 1px solid ${Colors.white};
+      }
+      .ant-select-arrow {
+        color: ${Colors.white};
+      }
+    }
+    .ant-select-selector {
+      height: 50px;
+      background: transparent;
+      border: none;
+      border-bottom: 0.7px solid ${Colors.grayScale50};
+      padding: 0;
+      border-radius: 0;
+      .ant-select-selection-search {
+        width: 100%;
+        inset-inline-start: unset;
+        inset-inline-end: unset;
+      }
+      .ant-select-selection-search-input {
+        height: 50px;
+      }
+    }
+    .ant-select-arrow {
+      font-size: 20px;
+      inset-inline-end: -2px;
+      color: ${Colors.grayScale50};
+      padding-top: 15px;
+    }
+    .ant-select-selection-placeholder {
+      line-height: 50px;
+      color: ${Colors.grayScale50};
+      font-weight: 300;
+      font-size: 14px;
+    }
+  }
 `;
 
 const ActivateAccount = ({
   defultEmail,
   activateCode,
   currentTicketId,
+  currentTicketEventSlug,
 }: {
   defultEmail: string;
   activateCode: string;
   currentTicketId: string;
+  currentTicketEventSlug: string;
 }) => {
-  const [messageApi, contextHolder] = message.useMessage();
   const cookies = useCookie([CookieKeys.userLoginToken]);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -232,25 +401,76 @@ const ActivateAccount = ({
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
+  const getUserGenderLoading = useAppSelector(selectGetUserGenderLoading);
+  const userGender = useAppSelector(selectUserGender);
 
   const [checked, setChecked] = useState<boolean>(false);
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [isTextShak, setTextShak] = useState<boolean>(false);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
   const [googleDocLink, setGoogleDocLink] = useState<string>('');
-  const [activateAccountFormValue, setActivateAccountFormValue] = useState<any>({
-    email: defultEmail,
-    code: activateCode,
-    password: '',
-  });
+  const [passwordValue, setPasswordValue] = useState<string>('');
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
+  const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
+  const [formatGenderData, setFormatGenderData] = useState<
+    {
+      value: number;
+      label: string;
+    }[]
+  >([]);
+  const [activateAccountFormValue, setActivateAccountFormValue] = useState<any>(
+    {
+      email: defultEmail,
+      code: activateCode,
+      password: '',
+      birthday: '',
+      genderId: '',
+    }
+  );
 
   const onFinish = () => {
     if (checked) {
+      if (activateAccountFormValue.password !== confirmPasswordValue) {
+        setPasswordValue('');
+        setConfirmPasswordValue('');
+        setActivateAccountFormValue({
+          ...activateAccountFormValue,
+          password: '',
+        });
+        message.open({
+          content: PasswordNotMatch,
+          className: 'error-message-event',
+        });
+        return;
+      }
+      if (
+        new Date(activateAccountFormValue.birthday).getTime() >
+        new Date().getTime()
+      ) {
+        message.open({
+          content: BirthdayNotVaild,
+          className: 'error-message-event',
+        });
+        return;
+      }
       dispatch(loginAction(activateAccountFormValue));
     } else {
       setTextShak(true);
     }
   };
+
+  useEffect(() => {
+    if (userGender.length) {
+      const genderOptions: any = [];
+      userGender.forEach((item) => {
+        genderOptions.push({
+          value: item.id,
+          label: item.label,
+        });
+      });
+      setFormatGenderData(genderOptions);
+    }
+  }, [userGender]);
 
   useEffect(() => {
     if (data.token) {
@@ -260,22 +480,44 @@ const ActivateAccount = ({
         path: '/',
         domain: window.location.hostname,
       });
-      cookies.setCookie(CookieKeys.userLoginEmail, activateAccountFormValue.email, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      if (currentTicketId) {
-        router.push(RouterKeys.ticketDetail.replace(':slug', currentTicketId));
-      } else {
-        router.push(RouterKeys.ticketsList);
+      cookies.setCookie(
+        CookieKeys.userLoginEmail,
+        activateAccountFormValue.email,
+        {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+          domain: window.location.hostname,
+        }
+      );
+      cookies.setCookie(
+        CookieKeys.userLoginEmail,
+        activateAccountFormValue.email,
+        {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+          domain: window.location.hostname,
+        }
+      );
+      if (currentTicketId && !currentTicketEventSlug) {
+        router.push(RouterKeys.myTickets);
+        return;
       }
+      if (currentTicketEventSlug) {
+        router.push(
+          RouterKeys.myTicketsEventDetail.replace(
+            ':slug',
+            currentTicketEventSlug
+          )
+        );
+        return;
+      }
+      router.push(RouterKeys.myTickets);
     }
-  }, [data]);
+  }, [data.token]);
 
   useEffect(() => {
     if (error && !isFirstRender) {
-      messageApi.open({
+      message.open({
         content: getErrorMessage(error.code),
         className: 'error-message-login',
       });
@@ -283,6 +525,7 @@ const ActivateAccount = ({
   }, [error]);
 
   useEffect(() => {
+    dispatch(getUserGenderAction());
     setIsFirstRender(false);
     return () => {
       dispatch(reset());
@@ -290,86 +533,184 @@ const ActivateAccount = ({
   }, []);
 
   return (
-    <ActivateAccountContainer>
-      <div className="skip-login" onClick={() => router.push(RouterKeys.eventList)}>
-        <span>Skip</span>
-      </div>
-      {!checkGoogleDoc && (
-        <div className="page-main">
-          <Row className="main-logo">
-            <Col span={24} className="logo">
-              <div><Image src={Images.Logo} alt="" /></div>
-            </Col>
-          </Row>
-          <Row className="main-title">
-            <Col span={24} className="title">
-              ACTIVATE YOUR ACCOUNT
-            </Col>
-          </Row>
-          <Form onFinish={onFinish}>
-            <div className="tips">Signup with</div>
-            <div className="tips signup-email">
-              {defultEmail}
+    <>
+      {(getUserGenderLoading && (
+        <ActivateAccountContainer>
+          <div className="page-loading">
+            <LoadingOutlined />
+          </div>
+        </ActivateAccountContainer>
+      )) || (
+        <ActivateAccountContainer
+          className={(isOpenAppShow && 'open-app-show') || ''}
+        >
+          <div
+            className="skip-login"
+            onClick={() => router.push(RouterKeys.eventList)}
+          >
+            <span>Skip</span>
+          </div>
+          {(!checkGoogleDoc && (
+            <div className="page-main">
+              <Row className="main-logo">
+                <Col span={24} className="logo">
+                  <div>
+                    <Image src={Images.Logo} alt="" />
+                  </div>
+                </Col>
+              </Row>
+              <Row className="main-title">
+                <Col span={24} className="title">
+                  ACTIVATE YOUR ACCOUNT
+                </Col>
+              </Row>
+              <Form onFinish={onFinish}>
+                <div className="tips">Signup with</div>
+                <div className="tips signup-email">{defultEmail}</div>
+                {activateAccountFormValue.password && (
+                  <div className="tips password">
+                    Set your password (at least 8 characters)
+                  </div>
+                )}
+                <Form.Item style={{ marginBottom: 0 }}>
+                  <div>
+                    <Input.Password
+                      value={passwordValue}
+                      className={`${(passwordValue && 'border-white') || ''}`}
+                      placeholder="Set your password (at least 8 characters)"
+                      bordered={false}
+                      maxLength={20}
+                      iconRender={(visible) =>
+                        visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                      }
+                      onChange={(e) => {
+                        setPasswordValue(e.target.value);
+                        setActivateAccountFormValue({
+                          ...activateAccountFormValue,
+                          password: e.target.value,
+                        });
+                      }}
+                    />
+                  </div>
+                </Form.Item>
+                <Form.Item style={{ marginBottom: 0 }}>
+                  <Input.Password
+                    value={confirmPasswordValue}
+                    className={`${
+                      (confirmPasswordValue && 'border-white') || ''
+                    }`}
+                    iconRender={(visible) =>
+                      visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                    }
+                    placeholder="Confirm your password"
+                    bordered={false}
+                    maxLength={20}
+                    onChange={(e) => setConfirmPasswordValue(e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item name="genderId" style={{ marginBottom: 0 }}>
+                  <Select
+                    popupClassName="gender-select-dropdown"
+                    className={`${
+                      (activateAccountFormValue.genderId &&
+                        'gender-select border-white') ||
+                      'gender-select'
+                    }`}
+                    defaultValue={undefined}
+                    placeholder="Gender"
+                    onChange={(e) =>
+                      setActivateAccountFormValue({
+                        ...activateAccountFormValue,
+                        genderId: e,
+                      })
+                    }
+                    options={formatGenderData}
+                    suffixIcon={<CaretDownOutlined />}
+                  />
+                </Form.Item>
+                <Form.Item name="birthday" style={{ marginBottom: 0 }}>
+                  <DatePicker
+                    inputReadOnly
+                    className={`${
+                      (activateAccountFormValue.birthday && 'border-white') ||
+                      ''
+                    }`}
+                    format="MMM DD, YYYY"
+                    showToday={false}
+                    popupClassName="birth-picker-dropdown"
+                    allowClear={false}
+                    placeholder="Date of Birth"
+                    onChange={(_, dateString) =>
+                      setActivateAccountFormValue({
+                        ...activateAccountFormValue,
+                        birthday: format(new Date(dateString), 'yyyy-MM-dd'),
+                      })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item>
+                  <Button
+                    className="signin-btn"
+                    disabled={
+                      !isPassword(activateAccountFormValue.password) ||
+                      !isPassword(confirmPasswordValue) ||
+                      !activateAccountFormValue.email ||
+                      !activateAccountFormValue.genderId ||
+                      !activateAccountFormValue.birthday ||
+                      loading
+                    }
+                    type="primary"
+                    htmlType="submit"
+                    onClick={() => setTextShak(false)}
+                  >
+                    ACTIVATE
+                  </Button>
+                </Form.Item>
+                <Form.Item className={(isTextShak && 'text-shak') || ''}>
+                  <div className="agreement-wrapper">
+                    <Checkbox
+                      className={`${(!checked && 'checkbox-show-error') || ''}`}
+                      checked={checked}
+                      onChange={(e) => setChecked(e.target.checked)}
+                    />
+                    <div style={{ marginLeft: 8 }}>
+                      <span className="agreement-label">
+                        I agree to CrowdServe{' '}
+                        <span
+                          className="agreement-label-action"
+                          onClick={() => {
+                            setGoogleDocLink(TermsConditionsLink);
+                            setCheckGoogleDoc(true);
+                          }}
+                        >
+                          Terms&Conditions
+                        </span>
+                        and{' '}
+                        <span
+                          className="agreement-label-action"
+                          onClick={() => {
+                            setGoogleDocLink(PrivacyPolicyLink);
+                            setCheckGoogleDoc(true);
+                          }}
+                        >
+                          Privacy Policy.
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </Form.Item>
+              </Form>
             </div>
-            {activateAccountFormValue.password && (
-              <div className="tips password">Set your password (at least 8 characters)</div>
-            )}
-            <Form.Item name="password" style={{ marginBottom: 0 }}>
-              <div>
-                <Input.Password
-                  className={`${(activateAccountFormValue.password && 'border-white') || ''}`}
-                  placeholder="Set your password (at least 8 characters)"
-                  bordered={false}
-                  maxLength={20}
-                  iconRender={(visible) =>
-                    (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
-                  }
-                  onChange={(e) =>
-                    setActivateAccountFormValue({
-                      ...activateAccountFormValue,
-                      password: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            </Form.Item>
-            <Form.Item>
-              <Button
-                className="signin-btn"
-                disabled={!isPassword(activateAccountFormValue.password) || !activateAccountFormValue.email || loading}
-                type="primary"
-                htmlType="submit"
-                onClick={() => setTextShak(false)}
-              >
-                ACTIVATE
-              </Button>
-            </Form.Item>
-            <Form.Item style={{ marginBottom: 32 }} className={isTextShak && 'text-shak' || ''}>
-              <div className="agreement-wrapper">
-                <Checkbox
-                  className={`${!checked && 'checkbox-show-error' || ''}`}
-                  checked={checked}
-                  onChange={(e) => setChecked(e.target.checked)}
-                />
-                <div style={{ marginLeft: 8 }}>
-                  <span className="agreement-label">
-                    I agree to CrowdServe <span className="agreement-label-action" onClick={() => { setGoogleDocLink(TermsConditionsLink); setCheckGoogleDoc(true); }}>Terms&Conditions</span>
-                    and <span className="agreement-label-action" onClick={() => { setGoogleDocLink(PrivacyPolicyLink); setCheckGoogleDoc(true); }}>Privacy Policy.</span>
-                  </span>
-                </div>
-              </div>
-            </Form.Item>
-          </Form>
-        </div>
-      ) || (
-        <GoogleDocComponent
-          docLink={googleDocLink}
-          checkGoogleDoc={setCheckGoogleDoc}
-        />
+          )) || (
+            <GoogleDocComponent
+              docLink={googleDocLink}
+              checkGoogleDoc={setCheckGoogleDoc}
+            />
+          )}
+          <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
+        </ActivateAccountContainer>
       )}
-      <OpenAppComponent setIsOpenAppShow={() => {}} />
-      {contextHolder}
-    </ActivateAccountContainer>
+    </>
   );
 };
 
@@ -378,13 +719,15 @@ ActivateAccount.getInitialProps = async (ctx: any) => {
   let defultEmail = '';
   let activateCode = '';
   let currentTicketId = '';
+  let currentTicketEventSlug = '';
   try {
     const parameters = base64Decrypt(Object.keys(query)[0]);
     defultEmail = parameters.email;
     activateCode = parameters.code;
     currentTicketId = parameters.ticketId;
+    currentTicketEventSlug = parameters.eventSlug;
   } catch (_) {}
-  return { defultEmail, activateCode, currentTicketId };
+  return { defultEmail, activateCode, currentTicketId, currentTicketEventSlug };
 };
 
 export default ActivateAccount;

@@ -13,8 +13,10 @@ export interface ErrorType {
 
 export interface LoginPayloadType {
   email: string;
-  code?: string;
   password: string;
+  code?: string;
+  birthday?: string;
+  genderId?: string;
 }
 
 export interface LoginResponseType {
@@ -40,8 +42,15 @@ export interface RegisterAccountPayload {
   code: string;
   username: string;
   password: string;
+  birthday: string;
+  genderId: string;
   externalChannel?: string;
   externalId?: string;
+}
+
+export interface UserGenderResponseType {
+  id: number;
+  label: string;
 }
 
 /**
@@ -53,28 +62,54 @@ export const loginAction = createAsyncThunk<
   {
     rejectValue: ErrorType;
   }
->(
-  'login/loginAction',
-  async (payload, { rejectWithValue }) => {
-    try {
-      const response = await UserService.doLogin(payload);
-      if (verificationApi(response)) {
-        return response.data;
-      }
-      return rejectWithValue({
-        code: response.code,
-        message: response.message,
-      } as ErrorType);
-    } catch (err: any) {
-      if (!err.response) {
-        throw err;
-      }
-      return rejectWithValue({
-        message: err.response,
-      } as ErrorType);
+>('login/loginAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await UserService.doLogin(payload);
+    if (verificationApi(response)) {
+      return response.data;
     }
-  },
-);
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
+/**
+ * get user gender
+ */
+export const getUserGenderAction = createAsyncThunk<
+  UserGenderResponseType[],
+  undefined,
+  {
+    rejectValue: ErrorType;
+  }
+>('getUserGender/getUserGenderAction', async (_, { rejectWithValue }) => {
+  try {
+    const response = await UserService.getUserGender();
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
 
 /**
  * RegisterAccount
@@ -105,38 +140,33 @@ export const registerAccountAction = createAsyncThunk<
         message: err.response,
       } as ErrorType);
     }
-  },
+  }
 );
 
 /**
  * Logout
  */
-export const logoutAction = createAsyncThunk<
-  {
-    rejectValue: ErrorType;
-  }
->(
-  'logout/logoutAction',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await UserService.doLogout();
-      if (verificationApi(response)) {
-        return response.data;
-      }
-      return rejectWithValue({
-        code: response.code,
-        message: response.message,
-      } as ErrorType);
-    } catch (err: any) {
-      if (!err.response) {
-        throw err;
-      }
-      return rejectWithValue({
-        message: err.response,
-      } as ErrorType);
+export const logoutAction = createAsyncThunk<{
+  rejectValue: ErrorType;
+}>('logout/logoutAction', async (_, { rejectWithValue }) => {
+  try {
+    const response = await UserService.doLogout();
+    if (verificationApi(response)) {
+      return response.data;
     }
-  },
-);
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
 
 /**
  * verifyUser
@@ -147,28 +177,25 @@ export const verifyUserAction = createAsyncThunk<
   {
     rejectValue: ErrorType;
   }
->(
-  'verifyUser/verifyUserAction',
-  async (payload, { rejectWithValue }) => {
-    try {
-      const response = await UserService.doVerifyUser(payload);
-      if (verificationApi(response)) {
-        return response.data;
-      }
-      return rejectWithValue({
-        code: response.code,
-        message: response.message,
-      } as ErrorType);
-    } catch (err: any) {
-      if (!err.response) {
-        throw err;
-      }
-      return rejectWithValue({
-        message: err.response,
-      } as ErrorType);
+>('verifyUser/verifyUserAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await UserService.doVerifyUser(payload);
+    if (verificationApi(response)) {
+      return response.data;
     }
-  },
-);
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
 
 /**
  * verificationCode
@@ -199,12 +226,14 @@ export const verificationCodeAction = createAsyncThunk<
         message: err.response,
       } as ErrorType);
     }
-  },
+  }
 );
 
 interface UserState {
   loading: boolean;
+  getUserGenderLoading: boolean;
   data: LoginResponseType;
+  userGender: UserGenderResponseType[];
   error:
     | {
         code: number | undefined;
@@ -216,6 +245,8 @@ interface UserState {
 
 const initialState: UserState = {
   loading: false,
+  getUserGenderLoading: true,
+  userGender: [],
   data: {
     user: {
       userId: 0,
@@ -244,6 +275,22 @@ export const userSlice = createSlice({
       })
       .addCase(loginAction.rejected, (state, action) => {
         state.loading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(getUserGenderAction.pending, (state) => {
+        state.userGender = [];
+        state.getUserGenderLoading = true;
+      })
+      .addCase(getUserGenderAction.fulfilled, (state, action: any) => {
+        state.getUserGenderLoading = false;
+        state.userGender = action.payload;
+      })
+      .addCase(getUserGenderAction.rejected, (state, action) => {
+        state.getUserGenderLoading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -302,5 +349,8 @@ export const { reset } = userSlice.actions;
 export const selectLoading = (state: RootState) => state.user.loading;
 export const selectError = (state: RootState) => state.user.error;
 export const selectData = (state: RootState) => state.user.data;
+export const selectUserGender = (state: RootState) => state.user.userGender;
+export const selectGetUserGenderLoading = (state: RootState) =>
+  state.user.getUserGenderLoading;
 
 export default userSlice.reducer;

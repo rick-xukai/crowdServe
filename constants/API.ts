@@ -9,6 +9,9 @@ const API = {
   registerAccount: {
     post: '/api/v1/user',
   },
+  getUserGender: {
+    get: 'api/v1/user_gender',
+  },
   verifyUser: {
     post: '/api/v1/user/status/verify',
   },
@@ -59,6 +62,33 @@ const API = {
   },
   getEventMarket: {
     get: '/api/v1/market',
+  },
+  getMyTicketsListUserEventsList: {
+    get: '/api/v1/my/event',
+  },
+  getMyEventTicketList: {
+    get: '/api/v1/my/event/{eventId}',
+  },
+  getMyEventTicketDetail: {
+    get: '/api/v1/my/collectible/ticket/{userTicketId}',
+  },
+  getMyCollectiblesList: {
+    get: '/api/v1/my/collectible',
+  },
+  getMyCollectiblesOrganizerTicketList: {
+    get: '/api/v1/my/collectible/{organizerId}',
+  },
+  getMyCollectiblesOrganizerInfo: {
+    get: '/api/v1/organizer/{organizerId}',
+  },
+  getConnectedEvents: {
+    get: '/api/v1/collectible/ticket/{userTicketUuid}/privilege',
+  },
+  getQRcodeData: {
+    get: '/api/v1/my/collectible/ticket/{userTicketUuid}/code',
+  },
+  getPriceChartData: {
+    get: '/api/v1/collectible/ticket/{userTicketUuid}/price_chart',
   },
 };
 

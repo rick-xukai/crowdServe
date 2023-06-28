@@ -55,6 +55,14 @@ const Messages = {
     code: 1011,
     text: 'user token is deprecated',
   },
+  ticketCancelled: {
+    code: 1014,
+    text: 'Ticket cancelled',
+  },
+  ticketOnSale: {
+    code: 1016,
+    text: 'Ticket is on sale',
+  },
   ticketSold: {
     code: 1017,
     text: 'Ticket already sold',

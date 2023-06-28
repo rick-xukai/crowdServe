@@ -43,7 +43,7 @@ export interface EventListBanner {
 }
 
 export interface EventDetailResponseType {
-  id: number;
+  id: string;
   name: string;
   organizerName: string;
   image: string;
@@ -272,7 +272,7 @@ const initialState: EventState = {
   error: null,
   eventDetailError: null,
   eventDetailData: {
-    id: 0,
+    id: '',
     name: '',
     organizerName: '',
     image: '',
@@ -294,7 +294,7 @@ export const eventSlice = createSlice({
     reset: () => initialState,
     resetEventDatail: (state) => {
       state.eventDetailData = {
-        id: 0,
+        id: '',
         name: '',
         organizerName: '',
         image: '',

@@ -208,24 +208,26 @@ const ScanQrCodeResult = ({
                     <div className="result-items">
                       <div>
                         <p className="items-title">Ticket Type</p>
-                        <p className="items-value">{detail.ticket.type}</p>
+                        <p className="items-value">{detail.ticket.type || '-'}</p>
                       </div>
                     </div>
                     <div className="result-items display-flex">
                       <div style={{ width: '50%' }}>
                         <p className="items-title">Ticket Price</p>
                         <p className="items-value">
-                          {`${detail.ticket.price.toFixed(2)} ${PriceUnit}`}
+                          {(detail.ticket.price &&
+                            `${detail.ticket.price.toFixed(2)} ${PriceUnit}`) ||
+                            '-'}
                         </p>
                       </div>
                       <div style={{ width: '50%' }}>
                         <p className="items-title">Seat Number</p>
-                        <p className="items-value">{detail.ticket.seat}</p>
+                        <p className="items-value">{detail.ticket.seat || '-'}</p>
                       </div>
                     </div>
                     <div className="result-items">
                       <p className="items-title">Ticket Number</p>
-                      <p className="items-value">{detail.ticket.no}</p>
+                      <p className="items-value">{detail.ticket.no || '-'}</p>
                     </div>
                   </div>
                   <div className="action-button" onClick={handleVerify}>
@@ -251,17 +253,24 @@ const ScanQrCodeResult = ({
                 </div>
                 {detail && detail.ticket && (
                   <div className="total-info">
-                    <p className="total-info-type">{detail.ticket.type}</p>
+                    <p className="total-info-type">{detail.ticket.type || '-'}</p>
                     <p className="total-info-redeemed">
                       <Image src={Images.OrganiserIcon} alt="" />
                       <span style={{ color: '#FFFFFF', marginLeft: 5 }}>
-                        {detail.ticket.redeemed.toLocaleString()}
+                        {(detail.ticket.redeemed &&
+                          detail.ticket.redeemed.toLocaleString()) ||
+                          '-'}
                       </span>{' '}
-                      / <span>{detail.ticket.total.toLocaleString()}</span>
+                      /{' '}
+                      <span>
+                        {(detail.ticket.total &&
+                          detail.ticket.total.toLocaleString()) ||
+                          '-'}
+                      </span>
                     </p>
                   </div>
                 )}
-                <div style={{ textAlign: 'center' }}>
+                <div className="button-action" style={{ textAlign: 'center' }}>
                   <button onClick={() => setResult('')}>
                     {(verifyMessage.success && 'CONTINUE TO SCAN') ||
                       'SCAN QR CODE'}

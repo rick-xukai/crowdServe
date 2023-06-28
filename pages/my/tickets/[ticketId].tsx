@@ -652,8 +652,8 @@ const TicketDetail = ({ notFound }: { notFound: boolean }) => {
                         REFRESH
                       </Button>
                       <p className="code-info">
-                        This QR code is your admission voucher, do not <br />
-                        take screenshot or send to others!
+                        This QR code is your admission voucher, do not take
+                        screenshot or send to others!
                       </p>
                     </div>
                   )}

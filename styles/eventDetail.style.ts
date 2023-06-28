@@ -8,8 +8,13 @@ const EventDetailContainer = styled.div`
   background: ${Colors.backgorund};
   max-width: 1008px;
   margin: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  ::-webkit-scrollbar {
+    display: none;
+  }
   .page-main {
-    padding-bottom: 70px;
+    padding-bottom: 50px;
   }
   .detail-background {
     width: 100%;
@@ -173,6 +178,7 @@ const EventDetailContainer = styled.div`
     height: 3px !important;
     background: transparent;
     text-align: center;
+    overflow: hidden;
   }
   .ant-tabs-ink-bar::after {
     content: "";
@@ -186,6 +192,7 @@ const EventDetailContainer = styled.div`
   }
   .ant-tabs-nav-list {
     width: 100%;
+    overflow: hidden;
     @media (min-width: 767px) {
       display: block !important;
     }
@@ -215,7 +222,7 @@ const EventDetailContainer = styled.div`
     padding-top: 0;
     .page-main {
       margin-top: 104px;
-      padding-bottom: 135px;
+      padding-bottom: 90px;
       .detail-background {
         height: 504px;
       }
@@ -284,8 +291,8 @@ const TicketTypeItem = styled(Col)`
     img {
       width: 100%;
       height: 100%;
-      border-radius: 4px;
       object-fit: cover;
+      border-radius: 4px;
     }
   }
   .type-info {
@@ -315,15 +322,25 @@ const TicketTypeItem = styled(Col)`
       font-size: 15px;
       margin: 0;
     }
+    .title-content {
+      max-height: 68px;
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .title {
       margin-top: 6px;
       color: ${Colors.white};
       margin-bottom: 6px;
-      white-space: nowrap;
       padding-left: 10px;
       padding-right: 10px;
-      text-overflow: ellipsis;
       overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      text-align: center;
     }
     .price {
       color: ${Colors.branding};

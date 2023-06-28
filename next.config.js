@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
+  swcMinify: false,
   compiler: {
     styledComponents: true
   },
@@ -16,6 +16,21 @@ const nextConfig = {
     return [
       {
         source: '/',
+        destination: '/events',
+        permanent: true,
+      },
+      {
+        source: '/my',
+        destination: '/events',
+        permanent: true,
+      },
+      {
+        source: '/crowdfund',
+        destination: '/events',
+        permanent: true,
+      },
+      {
+        source: '/my/tickets/:slug',
         destination: '/events',
         permanent: true,
       },

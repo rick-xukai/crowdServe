@@ -9,6 +9,9 @@ const LandingPageContainer = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   min-height: 100vh;
+  &.no-background {
+    background-image: unset;
+  }
   .page-header {
     max-width: 1140px;
     margin: auto;

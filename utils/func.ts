@@ -1,13 +1,39 @@
 import CryptoJS from 'crypto-js';
 import { format } from 'date-fns';
+import {
+  LineController,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Chart,
+  ChartTypeRegistry,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import _ from 'lodash';
 
 import Messages from '../constants/Messages';
+import { Colors } from '../theme';
 import {
   Encrypt,
   TicketStatus,
   GooglePlayLink,
   AppHost,
+  PriceUnit,
 } from '../constants/General';
+
+Chart.register(
+  LineController,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend
+);
 
 const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY as string;
 
@@ -136,4 +162,160 @@ export const getTimeDifference = (dateString: string) => {
     days: 0,
     hours: 0,
   };
+};
+
+export const formatChartLabelDate = (value: string) => {
+  return value.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
+};
+
+export const bodyOverflow = (status: string) => {
+  try {
+    document.body.style.overflow = status;
+  } catch (_) {}
+};
+
+export const loadChart = (
+  ctx: any,
+  labels: string[],
+  data: number[],
+  type: keyof ChartTypeRegistry
+) => {
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(11, 255, 255, 0.3)');
+  gradient.addColorStop(0.5, 'rgba(11, 255, 255, 0.1)');
+  gradient.addColorStop(1, 'rgba(11, 255, 255, 0)');
+  let pointSize = 3;
+  let hoverPointSize = 5;
+  let maxValue: number | undefined = undefined;
+  if (window.innerWidth <= 576) {
+    pointSize = 4;
+    hoverPointSize = 6;
+  }
+  if (_.max(data) !== 0) {
+    maxValue = _.max(data);
+  }
+  new Chart(ctx, {
+    type,
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          fill: true,
+          borderColor: Colors.chartBg,
+          backgroundColor: gradient,
+        },
+      ],
+    },
+    options: {
+      clip: false,
+      elements: {
+        point: {
+          radius: pointSize,
+          hoverRadius: hoverPointSize,
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: Colors.grayScale40,
+            font: {
+              size: 12,
+              weight: '300',
+            },
+          },
+          grid: {
+            display: false,
+          },
+        },
+        y: {
+          max: maxValue,
+          min: 0,
+          beginAtZero: false,
+          ticks: {
+            color: Colors.grayScale40,
+            font: {
+              size: 12,
+              weight: '300',
+            },
+            autoSkip: false,
+          },
+          grid: {
+            color: Colors.grayScale90,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          enabled: false,
+          intersect: false,
+          external: function (context) {
+            let tooltipEl = document.getElementById('chartjs-tooltip');
+            if (!tooltipEl) {
+              tooltipEl = document.createElement('div');
+              tooltipEl.id = 'chartjs-tooltip';
+              tooltipEl.innerHTML = '<table></table>';
+              document.body.appendChild(tooltipEl);
+            }
+            const tooltipModel: any = context.tooltip;
+            if (tooltipModel.opacity === 0) {
+              tooltipEl.style.opacity = '0';
+              return;
+            }
+            tooltipEl.classList.remove('above', 'below', 'no-transform');
+            if (tooltipModel.yAlign) {
+              tooltipEl.classList.add(tooltipModel.yAlign);
+            } else {
+              tooltipEl.classList.add('no-transform');
+            }
+            function getBody(bodyItem: any) {
+              return bodyItem.lines;
+            }
+            if (tooltipModel.body) {
+              const titleLines = tooltipModel.title || [];
+              const bodyLines = tooltipModel.body.map(getBody);
+              let innerHtml = '<thead>';
+              titleLines.forEach(function (title: string) {
+                innerHtml += '<tr><th>' + title + '</th></tr>';
+              });
+              innerHtml += '</thead><tbody>';
+              bodyLines.forEach(function (body: string[]) {
+                let value = '';
+                if (body.length) {
+                  value = `${body[0]} ${PriceUnit}`;
+                }
+                const span = '<span>' + value + '</span>';
+                innerHtml += '<tr><td>' + span + '</td></tr>';
+              });
+              innerHtml += '</tbody>';
+              let tableRoot: any = tooltipEl.querySelector('table');
+              tableRoot.innerHTML = innerHtml;
+            }
+            const position = context.chart.canvas.getBoundingClientRect();
+            tooltipEl.style.opacity = '1';
+            tooltipEl.style.position = 'absolute';
+            tooltipEl.style.left =
+              position.left +
+              window.pageXOffset +
+              tooltipModel.caretX -
+              40 +
+              'px';
+            tooltipEl.style.top =
+              position.top +
+              window.pageYOffset +
+              tooltipModel.caretY -
+              10 +
+              'px';
+            tooltipEl.style.padding =
+              tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
+            tooltipEl.style.pointerEvents = 'none';
+          },
+        },
+      },
+      responsive: true,
+    },
+  });
 };

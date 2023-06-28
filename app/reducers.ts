@@ -7,6 +7,13 @@ import eventSliceReducer from '../slice/event.slice';
 import eventCacheSliceReducer from '../slice/eventCache.slice';
 import crowdFundSliceReducer from '../slice/crowdFund.slice';
 import crowdFundCacheSliceReducer from '../slice/crowdFundCache.slice';
+import myTicketsSliceReducer from '../slice/myTickets.slice';
+import myTicketsCacheSliceReducer from '../slice/myTicketsCache.slice';
+import myCollectiblesSliceReducer from '../slice/myCollectibles.slice';
+import myCollectiblesCacheSliceReducer from '../slice/myCollectiblesCache.slice';
+import collectibleSliceReducer from '../slice/collectible.slice';
+import qrCodeDataSliceReducer from '../slice/getQRCode.slice';
+import collectionDetailCacheReducer from '../slice/collectionDetailCache.slice';
 
 const createRootReducer = () => combineReducers({
   user: userReducer,
@@ -16,6 +23,13 @@ const createRootReducer = () => combineReducers({
   eventCache: eventCacheSliceReducer,
   crowdFund: crowdFundSliceReducer,
   crowdFundCache: crowdFundCacheSliceReducer,
+  myTickets: myTicketsSliceReducer,
+  myTicketsCache: myTicketsCacheSliceReducer,
+  myCollectibles: myCollectiblesSliceReducer,
+  myCollectiblesCache: myCollectiblesCacheSliceReducer,
+  collectible: collectibleSliceReducer,
+  qrCodeData: qrCodeDataSliceReducer,
+  collectionDetailCache: collectionDetailCacheReducer,
 });
 
 export default createRootReducer;

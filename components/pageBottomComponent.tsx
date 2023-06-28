@@ -11,7 +11,7 @@ const PageBottomComponentContainer = styled(Row)`
   left: 0;
   height: 50px;
   background: ${Colors.backgorund};
-  z-index: 1000;
+  z-index: 90;
   bottom: 0;
   border-top: 1px solid ${Colors.grayScale90};
   user-select: none;

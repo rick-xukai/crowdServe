@@ -40,6 +40,7 @@ import MenuHomeIcon from '../static/images/menu-home.svg';
 import MenuTicketIcon from '../static/images/menu-ticket.svg';
 import MenuWalletIcon from '../static/images/menu-wallet.svg';
 import MenuPrivacyIcon from '../static/images/menu-privacy.svg';
+import TriangleDown from '../static/images/triangle-down.svg';
 import MenuTemsIcon from '../static/images/menu-tems.svg';
 import MenuLogoutIcon from '../static/images/menu-logout.svg';
 import MyWalletIcon from '../static/images/my-wallet.svg';
@@ -57,6 +58,18 @@ import ShareIcon from '../static/images/share-icon.svg';
 import HourglassWhite from '../static/images/hourglass-white.svg';
 import CloseIcon from '../static/images/close-icon.svg';
 import PageNotFoundIcon from '../static/images/404-page-icon.svg';
+import QrCodeButton from '../static/images/qr-code-button.svg';
+import TicketDetailContainerBackground from '../static/images/ticket-detail-bg.svg';
+import TicketDetailContainerBackgroundDesktop from '../static/images/ticket-detail-bg-desktop.svg';
+import LineTicketDetailDesktop from '../static/images/line-ticket-detail-desktop.svg';
+import StarBackground from '../static/images/star-background.png';
+import ConnectedEventsDetailTrigger from '../static/images/connected-events-detail-trigger.svg';
+import CouponIcon from '../static/images/coupon.svg';
+import TicketsIcon from '../static/images/tickets-icon.svg';
+import ChartIcon from '../static/images/chart-icon.svg';
+import TicketsOnSaleIcon from '../static/images/tickets-onsale.svg';
+import CollectibleDetailBackgroundDesktop from '../static/images/collectible-detail-bg-desktop.svg';
+import LineCollectibleDetailDesktop from '../static/images/line-collectible-detail-desktop.svg';
 
 const Images = {
   Safety,
@@ -101,6 +114,7 @@ const Images = {
   MenuPrivacyIcon,
   MenuTemsIcon,
   MenuLogoutIcon,
+  TriangleDown,
   MyWalletIcon,
   LogoNameIcon,
   ClearIcon,
@@ -118,6 +132,18 @@ const Images = {
   HourglassWhite,
   CloseIcon,
   PageNotFoundIcon,
+  QrCodeButton,
+  TicketDetailContainerBackground,
+  TicketDetailContainerBackgroundDesktop,
+  LineTicketDetailDesktop,
+  StarBackground,
+  ConnectedEventsDetailTrigger,
+  CouponIcon,
+  TicketsIcon,
+  ChartIcon,
+  TicketsOnSaleIcon,
+  CollectibleDetailBackgroundDesktop,
+  LineCollectibleDetailDesktop,
 };
 
 export default Images;

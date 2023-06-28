@@ -24,6 +24,7 @@ const Colors = {
   whiteMask: '#ACACAE',
   brandingMask: '#9B2621',
   blueGray: '#056790',
+  chartBg: '#0BFFFF',
 };
 
 export default Colors;

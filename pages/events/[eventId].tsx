@@ -56,13 +56,10 @@ import { RouterKeys } from '../../constants/Keys';
 import PageNotFound from '../404';
 
 const EventDetail = ({
-  notFound,
   openGraphDetail,
 }: {
-  notFound: boolean;
   openGraphDetail: TicketDetailResponseType;
 }) => {
-  const [messageApi, contextHolder] = message.useMessage();
   const openAppInIos = useRef<any>(null);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -147,8 +144,10 @@ const EventDetail = ({
     const { eventId } = router.query;
     if (eventId) {
       const parameterArr = (eventId as string).split('-');
-      if (!notFound) {
+      if (_.last(parameterArr)) {
         setEventId(_.last(parameterArr) || '');
+      } else {
+        setEventCorrect(false);
       }
     }
   }, [router.isReady]);
@@ -180,7 +179,7 @@ const EventDetail = ({
       ) {
         setEventCorrect(false);
       }
-      messageApi.open({
+      message.open({
         content: error.message,
         className: 'error-message-event',
       });
@@ -211,7 +210,7 @@ const EventDetail = ({
 
   return (
     <>
-      {((notFound || !eventCorrect) && <PageNotFound />) || (
+      {(!eventCorrect && <PageNotFound />) || (
         <>
           <NextSeo
             openGraph={{
@@ -394,7 +393,11 @@ const EventDetail = ({
                                     />
                                   </div>
                                   <div className="info-des">
-                                    <p className="title">{item.name}</p>
+                                    <div className="title-content">
+                                      <p className="title" title={item.name}>
+                                        {item.name}
+                                      </p>
+                                    </div>
                                     <p className="price">
                                       {`${item.price.toFixed(2)} ${PriceUnit}`}
                                     </p>
@@ -462,7 +465,6 @@ const EventDetail = ({
                   </div>
                 </div>
               </div>
-              {contextHolder}
               {!menuState && <PageBottomComponent />}
               <Modal
                 title=""
@@ -517,24 +519,19 @@ EventDetail.getInitialProps = async (ctx: any) => {
   const { query, req } = ctx;
   const { ticket, source, eventId } = query;
   if (eventId) {
-    const parameterArr = (eventId as string).split('-');
-    const lastItem = Number(_.last(parameterArr));
-    if (isNaN(lastItem) || lastItem === 0) {
-      return { notFound: true };
-    } else {
-      if (ticket && source === 'sharing') {
-        try {
-          const response = await EventService.getEventDetail(
-            lastItem.toString()
-          );
-          if (response.code === 200) {
-            return { openGraphDetail: { ...response.data, shareUrl: req.url } };
-          }
-        } catch (error) {
-          return {
-            props: {},
-          };
+    const parameterArr = eventId.split('-');
+    if (ticket && source === 'sharing') {
+      try {
+        const response = await EventService.getEventDetail(
+          _.last(parameterArr) as string
+        );
+        if (response.code === 200) {
+          return { openGraphDetail: { ...response.data, shareUrl: req.url } };
         }
+      } catch (error) {
+        return {
+          props: {},
+        };
       }
     }
   }
