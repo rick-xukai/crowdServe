@@ -10,6 +10,20 @@ const LoginContainer = styled.div`
   position: relative;
   max-width: 400px;
   margin: auto;
+  .page-loading {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    color: ${Colors.branding};
+    .anticon {
+      margin: auto;
+    }
+  }
   .skip-login {
     position: absolute;
     color: ${Colors.white};
@@ -17,6 +31,7 @@ const LoginContainer = styled.div`
     right: 20px;
     font-weight: 400;
     font-size: 15px;
+    z-index: 1;
     cursor: pointer;
   }
   .page-main {
@@ -24,6 +39,10 @@ const LoginContainer = styled.div`
     position: relative;
     max-width: 375px;
     margin: auto;
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      padding-top: 8px;
+    }
     .main-logo {
       .logo {
         display: flex;
@@ -54,9 +73,10 @@ const LoginContainer = styled.div`
       .ant-input-suffix {
         display: flex;
         align-items: center;
+        padding-top: 15px;
       }
       &.border-white {
-        border-bottom: 0.7px solid ${Colors.white};
+        border-bottom: 1px solid ${Colors.white};
         .anticon {
           color: ${Colors.white};
         }
@@ -81,9 +101,10 @@ const LoginContainer = styled.div`
       border: none;
       border-bottom: 0.7px solid ${Colors.grayScale50};
       border-radius: unset;
-      background: transparent; 
+      background: transparent;
       color: ${Colors.white};
       padding: 0;
+      padding-top: 15px;
       &.ant-input-status-success {
         color: ${Colors.white};
       }
@@ -91,7 +112,7 @@ const LoginContainer = styled.div`
         color: ${Colors.grayScale50};
       }
       &.border-white {
-        border-bottom: 0.7px solid ${Colors.white};
+        border-bottom: 1px solid ${Colors.white};
       }
     }
     .signin-btn {
@@ -153,6 +174,9 @@ const LoginContainer = styled.div`
       color: ${Colors.branding};
       margin: 0;
       line-height: 22px;
+      @media (min-width: 1024px) {
+        cursor: pointer;
+      }
     }
   }
   .agreement-wrapper {
@@ -210,10 +234,13 @@ const LoginContainer = styled.div`
     background-color: ${Colors.branding};
     border-color: ${Colors.branding};
   }
-  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-checked:not(.ant-checkbox-disabled) .ant-checkbox-inner {
+  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+    .ant-checkbox-checked:not(.ant-checkbox-disabled)
+    .ant-checkbox-inner {
     background-color: ${Colors.branding};
   }
-  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
+  .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+    .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
     border-color: ${Colors.branding} !important;
     border-radius: 2px;
   }
@@ -242,6 +269,101 @@ const LoginContainer = styled.div`
   .ant-divider-horizontal.ant-divider-with-text::before,
   .ant-divider-horizontal.ant-divider-with-text::after {
     background: ${Colors.grayScale50};
+  }
+  .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
+    .ant-select-selector {
+    border-color: ${Colors.grayScale50};
+  }
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector input {
+    cursor: default;
+  }
+  .ant-select-focused.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+    .ant-select-selector {
+    box-shadow: none;
+  }
+  .ant-select-focused {
+    border: none;
+  }
+  .ant-select-focused.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer)
+    .ant-select-selector {
+    border-color: ${Colors.grayScale50};
+  }
+  .ant-select-single .ant-select-selector .ant-select-selection-item {
+    line-height: 50px;
+    color: ${Colors.white};
+  }
+  .ant-picker-focused {
+    box-shadow: none;
+  }
+  .ant-picker .ant-picker-input > input:focus {
+    border-color: ${Colors.grayScale50};
+  }
+  .ant-picker {
+    height: 50px;
+    width: 100%;
+    background: ${Colors.backgorund};
+    border: none;
+    border-bottom: 0.7px solid ${Colors.grayScale50};
+    border-radius: 0;
+    padding: 0;
+    padding-top: 15px;
+    &.border-white {
+      border-bottom: 1px solid ${Colors.white};
+      .ant-picker-suffix {
+        color: ${Colors.white};
+      }
+    }
+    .ant-picker-input {
+      input {
+        color: ${Colors.white};
+        background: ${Colors.backgorund};
+        &::placeholder {
+          color: ${Colors.grayScale50};
+        }
+      }
+    }
+    .ant-picker-suffix {
+      color: ${Colors.grayScale50};
+    }
+  }
+  .gender-select {
+    cursor: default;
+    &.border-white {
+      .ant-select-selector {
+        border-bottom: 1px solid ${Colors.white};
+      }
+      .ant-select-arrow {
+        color: ${Colors.white};
+      }
+    }
+    .ant-select-selector {
+      height: 50px;
+      background: transparent;
+      border: none;
+      border-bottom: 0.7px solid ${Colors.grayScale50};
+      padding: 0;
+      border-radius: 0;
+      .ant-select-selection-search {
+        width: 100%;
+        inset-inline-start: unset;
+        inset-inline-end: unset;
+      }
+      .ant-select-selection-search-input {
+        height: 50px;
+      }
+    }
+    .ant-select-arrow {
+      font-size: 20px;
+      inset-inline-end: -2px;
+      color: ${Colors.grayScale50};
+      padding-top: 15px;
+    }
+    .ant-select-selection-placeholder {
+      line-height: 50px;
+      color: ${Colors.grayScale50};
+      font-weight: 300;
+      font-size: 14px;
+    }
   }
 `;
 

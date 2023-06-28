@@ -121,6 +121,9 @@ const PageHearderResponsiveContainer = styled.div`
     height: 60px;
     display: flex;
     align-items: center;
+    .header-menu {
+      margin-left: 35px;
+    }
     .header-main {
       height: 40px;
       width: 100%;
@@ -183,7 +186,7 @@ const PageHearderResponsive = ({
     >
       <div className="header-main">
         <Row>
-          <Col span={20}>
+          <Col span={22}>
             <Row>
               <Col className="header-logo">
                 <Image
@@ -206,7 +209,7 @@ const PageHearderResponsive = ({
                     EVENTS
                   </span>
                 </div>
-                <div
+                {/* <div
                   className="menu-item"
                   onClick={() => hanldeMenuClick(RouterKeys.crowdFundList)}
                 >
@@ -219,8 +222,35 @@ const PageHearderResponsive = ({
                   >
                     CROWDFUND
                   </span>
+                </div> */}
+                <div
+                  className="menu-item"
+                  onClick={() => hanldeMenuClick(RouterKeys.myTickets)}
+                >
+                  <span
+                    className={
+                      (router.pathname === RouterKeys.myTickets && 'active') ||
+                      ''
+                    }
+                  >
+                    MY TICKETS
+                  </span>
                 </div>
                 <div
+                  className="menu-item"
+                  onClick={() => hanldeMenuClick(RouterKeys.myCollectibles)}
+                >
+                  <span
+                    className={
+                      (router.pathname === RouterKeys.myCollectibles &&
+                        'active') ||
+                      ''
+                    }
+                  >
+                    MY COLLECTIBLES
+                  </span>
+                </div>
+                {/* <div
                   className="menu-item"
                   onClick={() => hanldeMenuClick(RouterKeys.ticketsList)}
                 >
@@ -233,7 +263,7 @@ const PageHearderResponsive = ({
                   >
                     MY TICKETS
                   </span>
-                </div>
+                </div> */}
                 <div
                   className="menu-item"
                   onClick={() => hanldeMenuClick(RouterKeys.myWallet)}
@@ -250,7 +280,7 @@ const PageHearderResponsive = ({
               </Col>
             </Row>
           </Col>
-          <Col span={4} className="right-button">
+          <Col span={2} className="right-button">
             {isUserToken !== null && (
               <>
                 {(!isUserToken && (

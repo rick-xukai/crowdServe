@@ -11,7 +11,7 @@ import { Images } from '../theme';
 import { toPercent, getTimeDifference } from '../utils/func';
 import { RouterKeys } from '../constants/Keys';
 import {
-  DefaultCrowdFundListPageSize,
+  DefaultPageSize,
   CrowdFundStatus,
   ListPageScrollDifference,
 } from '../constants/General';
@@ -95,13 +95,13 @@ const CrowdFundList = () => {
     dispatch(
       getCrowdFundListAction({
         page: currentPage,
-        size: DefaultCrowdFundListPageSize,
+        size: DefaultPageSize,
       })
     ).then((response: any) => {
       if (response.type === getCrowdFundListAction.fulfilled.toString()) {
         if (
           !response.payload.length ||
-          response.payload.length < DefaultCrowdFundListPageSize
+          response.payload.length < DefaultPageSize
         ) {
           dispatch(setIsGetAllData(true));
           dispatch(setIsDisableRequest(true));

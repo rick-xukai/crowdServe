@@ -1,13 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Form, Input, Button, message } from 'antd';
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Button,
+  message,
+  Select,
+  DatePicker,
+} from 'antd';
+import {
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  CaretDownOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { format } from 'date-fns';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { isPassword, getErrorMessage, base64Decrypt } from '../utils/func';
-import { TokenExpire } from '../constants/General';
+import {
+  TokenExpire,
+  PasswordNotMatch,
+  BirthdayNotVaild,
+} from '../constants/General';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { Images } from '../theme';
 import { LoginContainer } from '../styles/login-style';
@@ -19,25 +38,47 @@ import {
   selectError,
   selectLoading,
   reset,
+  getUserGenderAction,
+  selectUserGender,
+  selectGetUserGenderLoading,
 } from '../slice/user.slice';
 
-const ActivateAccountNormalFlow = ({ accountEmail }: { accountEmail: string }) => {
-  const cookies = useCookie([CookieKeys.userLoginToken, CookieKeys.userLoginEmail]);
+const ActivateAccountNormalFlow = ({
+  accountEmail,
+}: {
+  accountEmail: string;
+}) => {
+  const cookies = useCookie([
+    CookieKeys.userLoginToken,
+    CookieKeys.userLoginEmail,
+  ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [messageApi, contextHolder] = message.useMessage();
 
   const data = useAppSelector(selectData);
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
+  const getUserGenderLoading = useAppSelector(selectGetUserGenderLoading);
+  const userGender = useAppSelector(selectUserGender);
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
-  const [verificationCodeSuccess, setVerificationCodeSuccess] = useState<boolean>(false);
+  const [passwordValue, setPasswordValue] = useState<string>('');
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
+  const [verificationCodeSuccess, setVerificationCodeSuccess] =
+    useState<boolean>(false);
+  const [formatGenderData, setFormatGenderData] = useState<
+    {
+      value: number;
+      label: string;
+    }[]
+  >([]);
   const [activateAccountValue, setActivateAccountValue] = useState({
     email: accountEmail,
     code: '',
     password: '',
+    birthday: '',
+    genderId: '',
   });
 
   const onFinish = async (values: any) => {
@@ -47,7 +88,7 @@ const ActivateAccountNormalFlow = ({ accountEmail }: { accountEmail: string }) =
           ...values,
           email: activateAccountValue.email,
           type: 1,
-        }),
+        })
       );
       if (result.type === verificationCodeAction.fulfilled.toString()) {
         setVerificationCodeSuccess(true);
@@ -55,12 +96,44 @@ const ActivateAccountNormalFlow = ({ accountEmail }: { accountEmail: string }) =
       return;
     }
     if (verificationCodeSuccess) {
-      dispatch(loginAction({
-        ...activateAccountValue,
-        password: activateAccountValue.password,
-      }));
+      if (activateAccountValue.password !== confirmPasswordValue) {
+        setPasswordValue('');
+        setConfirmPasswordValue('');
+        setActivateAccountValue({
+          ...activateAccountValue,
+          password: '',
+        });
+        message.open({
+          content: PasswordNotMatch,
+          className: 'error-message-event',
+        });
+        return;
+      }
+      if (
+        new Date(activateAccountValue.birthday).getTime() > new Date().getTime()
+      ) {
+        message.open({
+          content: BirthdayNotVaild,
+          className: 'error-message-event',
+        });
+        return;
+      }
+      dispatch(loginAction(activateAccountValue));
     }
   };
+
+  useEffect(() => {
+    if (userGender.length) {
+      const genderOptions: any = [];
+      userGender.forEach((item) => {
+        genderOptions.push({
+          value: item.id,
+          label: item.label,
+        });
+      });
+      setFormatGenderData(genderOptions);
+    }
+  }, [userGender]);
 
   useEffect(() => {
     if (data.token) {
@@ -75,13 +148,13 @@ const ActivateAccountNormalFlow = ({ accountEmail }: { accountEmail: string }) =
         path: '/',
         domain: window.location.hostname,
       });
-      router.push(RouterKeys.ticketsList);
+      router.push(RouterKeys.myTickets);
     }
   }, [data]);
 
   useEffect(() => {
     if (error && !isFirstRender) {
-      messageApi.open({
+      message.open({
         content: getErrorMessage(error.code),
         className: 'error-message-login',
       });
@@ -89,9 +162,11 @@ const ActivateAccountNormalFlow = ({ accountEmail }: { accountEmail: string }) =
   }, [error]);
 
   useEffect(() => {
+    dispatch(getUserGenderAction());
     setIsFirstRender(false);
-    messageApi.open({
-      content: 'Your account has not been activated yet. Please activate your account to continue.',
+    message.open({
+      content:
+        'Your account has not been activated yet. Please activate your account to continue.',
       className: 'error-message-login',
     });
     return () => {
@@ -100,106 +175,188 @@ const ActivateAccountNormalFlow = ({ accountEmail }: { accountEmail: string }) =
   }, []);
 
   return (
-    <LoginContainer>
-      <div className="skip-login" onClick={() => router.push(RouterKeys.eventList)}>
-        <span>Skip</span>
-      </div>
-      <div className="page-main">
-        <Row className="main-logo">
-          <Col span={24} className="logo">
-            <div><Image src={Images.Logo} alt="" /></div>
-          </Col>
-        </Row>
-        <div>
-          <Row className="main-title">
-            <Col span={24} className="title">
-              ACTIVATE YOUR ACCOUNT
-            </Col>
-          </Row>
-          {!verificationCodeSuccess && (
-            <>
-              <Row className="code-sent">
+    <>
+      {(getUserGenderLoading && (
+        <LoginContainer>
+          <div className="page-loading">
+            <LoadingOutlined />
+          </div>
+        </LoginContainer>
+      )) || (
+        <LoginContainer>
+          <div
+            className="skip-login"
+            onClick={() => router.push(RouterKeys.eventList)}
+          >
+            <span>Skip</span>
+          </div>
+          <div className="page-main">
+            <Row className="main-logo">
+              <Col span={24} className="logo">
+                <div>
+                  <Image src={Images.Logo} alt="" />
+                </div>
+              </Col>
+            </Row>
+            <div>
+              <Row className="main-title">
                 <Col span={24} className="title">
-                  Verification code has been sent to
-                </Col>
-                <Col span={24} className="value">
-                  {activateAccountValue.email}
+                  ACTIVATE YOUR ACCOUNT
                 </Col>
               </Row>
-              <Form onFinish={onFinish}>
-                <Form.Item name="code" style={{ marginBottom: 0 }}>
-                  <Input
-                    className={`${(activateAccountValue.code && 'border-white') || ''}`}
-                    placeholder="Enter verification code"
-                    bordered={false}
-                    onChange={(e) =>
-                      setActivateAccountValue({
-                        ...activateAccountValue,
-                        code: e.target.value,
-                      })
-                    }
-                   />
-                </Form.Item>
-                <Form.Item style={{ marginBottom: 25 }}>
-                  <Button
-                    className="signin-btn"
-                    disabled={!activateAccountValue.code || loading}
-                    type="primary"
-                    htmlType="submit"
-                  >
-                    NEXT
-                  </Button>
-                </Form.Item>
-              </Form>
-            </>
-          )}
-          {verificationCodeSuccess && (
-            <Form onFinish={onFinish}>
-              <Form.Item name="password" style={{ marginBottom: 0 }}>
-                <Input.Password
-                  className={`${(activateAccountValue.password && 'border-white') || ''}`}
-                  placeholder="Set your password (at least 8 characters)"
-                  bordered={false}
-                  maxLength={20}
-                  iconRender={(visible) =>
-                    (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)
-                  }
-                  onChange={(e) =>
-                    setActivateAccountValue({
-                      ...activateAccountValue,
-                      password: isPassword(e.target.value) && e.target.value || '',
-                    })
-                  }
-                />
-              </Form.Item>
-              <Form.Item style={{ marginBottom: 25 }}>
-                <Button
-                  className="signin-btn"
-                  disabled={!activateAccountValue.password || loading}
-                  type="primary"
-                  htmlType="submit"
-                >
-                  DONE
-                </Button>
-              </Form.Item>
-            </Form>
-          )}
-        </div>
-        <div className={isOpenAppShow && 'page-bottom open-app' || 'page-bottom'}>
-          <p className="registered">
-            Already have an account?
-          </p>
-          <p
-            className="activate"
-            onClick={() => router.push(RouterKeys.login)}
-          >
-            LOGIN
-          </p>
-        </div>
-      </div>
-      <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
-      {contextHolder}
-    </LoginContainer>
+              {!verificationCodeSuccess && (
+                <>
+                  <Row className="code-sent">
+                    <Col span={24} className="title">
+                      Verification code has been sent to
+                    </Col>
+                    <Col span={24} className="value">
+                      {activateAccountValue.email}
+                    </Col>
+                  </Row>
+                  <Form onFinish={onFinish}>
+                    <Form.Item name="code" style={{ marginBottom: 0 }}>
+                      <Input
+                        className={`${
+                          (activateAccountValue.code && 'border-white') || ''
+                        }`}
+                        placeholder="Enter verification code"
+                        bordered={false}
+                        onChange={(e) =>
+                          setActivateAccountValue({
+                            ...activateAccountValue,
+                            code: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item style={{ marginBottom: 25 }}>
+                      <Button
+                        className="signin-btn"
+                        disabled={!activateAccountValue.code || loading}
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        NEXT
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </>
+              )}
+              {verificationCodeSuccess && (
+                <Form onFinish={onFinish}>
+                  <Form.Item style={{ marginBottom: 0 }}>
+                    <Input.Password
+                      value={passwordValue}
+                      className={`${(passwordValue && 'border-white') || ''}`}
+                      placeholder="Set your password (at least 8 characters)"
+                      bordered={false}
+                      maxLength={20}
+                      iconRender={(visible) =>
+                        visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                      }
+                      onChange={(e) => {
+                        setPasswordValue(e.target.value);
+                        setActivateAccountValue({
+                          ...activateAccountValue,
+                          password:
+                            (isPassword(e.target.value) && e.target.value) ||
+                            '',
+                        });
+                      }}
+                    />
+                  </Form.Item>
+                  <Form.Item style={{ marginBottom: 0 }}>
+                    <Input.Password
+                      value={confirmPasswordValue}
+                      className={`${
+                        (confirmPasswordValue && 'border-white') || ''
+                      }`}
+                      iconRender={(visible) =>
+                        visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                      }
+                      placeholder="Confirm your password"
+                      bordered={false}
+                      maxLength={20}
+                      onChange={(e) => setConfirmPasswordValue(e.target.value)}
+                    />
+                  </Form.Item>
+                  <Form.Item name="genderId" style={{ marginBottom: 0 }}>
+                    <Select
+                      popupClassName="gender-select-dropdown"
+                      className={`${
+                        (activateAccountValue.genderId &&
+                          'gender-select border-white') ||
+                        'gender-select'
+                      }`}
+                      defaultValue={undefined}
+                      placeholder="Gender"
+                      onChange={(e) =>
+                        setActivateAccountValue({
+                          ...activateAccountValue,
+                          genderId: e || '',
+                        })
+                      }
+                      options={formatGenderData}
+                      suffixIcon={<CaretDownOutlined />}
+                    />
+                  </Form.Item>
+                  <Form.Item name="birthday" style={{ marginBottom: 0 }}>
+                    <DatePicker
+                      inputReadOnly
+                      className={`${
+                        (activateAccountValue.birthday && 'border-white') || ''
+                      }`}
+                      format="MMM DD, YYYY"
+                      showToday={false}
+                      popupClassName="birth-picker-dropdown"
+                      allowClear={false}
+                      placeholder="Date of Birth"
+                      onChange={(_, dateString) =>
+                        setActivateAccountValue({
+                          ...activateAccountValue,
+                          birthday: format(new Date(dateString), 'yyyy-MM-dd'),
+                        })
+                      }
+                    />
+                  </Form.Item>
+                  <Form.Item style={{ marginBottom: 25 }}>
+                    <Button
+                      className="signin-btn"
+                      disabled={
+                        !activateAccountValue.password ||
+                        !isPassword(confirmPasswordValue) ||
+                        !activateAccountValue.birthday ||
+                        !activateAccountValue.genderId ||
+                        loading
+                      }
+                      type="primary"
+                      htmlType="submit"
+                    >
+                      DONE
+                    </Button>
+                  </Form.Item>
+                </Form>
+              )}
+            </div>
+            <div
+              className={
+                (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
+              }
+            >
+              <p className="registered">Already have an account?</p>
+              <p
+                className="activate"
+                onClick={() => router.push(RouterKeys.login)}
+              >
+                LOGIN
+              </p>
+            </div>
+          </div>
+          <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
+        </LoginContainer>
+      )}
+    </>
   );
 };
 

@@ -43,6 +43,9 @@ import {
   resetEventCache,
   setEventDataForSearch,
 } from '../slice/eventCache.slice';
+import { resetMyTicketsCache } from '../slice/myTicketsCache.slice';
+import { resetMyCollectiblesCache } from '../slice/myCollectiblesCache.slice';
+import { resetCollectionDetailCache } from '../slice/collectionDetailCache.slice';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 
 const ActivateAccountComponent = ({
@@ -263,11 +266,13 @@ const ActivateAccountComponent = ({
 
 const Login = ({
   defultLoginEmail,
-  currentTicketId,
+  currentTicketEventSlug,
+  ticketIdFormEmailLink,
   redirectPage,
 }: {
   defultLoginEmail: undefined | string;
-  currentTicketId: string;
+  currentTicketEventSlug: string;
+  ticketIdFormEmailLink: string;
   redirectPage: string;
 }) => {
   const router: any = useRouter();
@@ -309,6 +314,17 @@ const Login = ({
     }
   };
 
+  const handleResetPageCache = () => {
+    dispatch(resetTicketsListData());
+    dispatch(resetTicketsCache());
+    dispatch(resetEventCache());
+    dispatch(resetMyTicketsCache());
+    dispatch(resetMyCollectiblesCache());
+    dispatch(resetCollectionDetailCache());
+    dispatch(resetCrowdFundCache());
+    dispatch(setEventDataForSearch([]));
+  };
+
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
@@ -322,14 +338,17 @@ const Login = ({
         path: '/',
         domain: window.location.hostname,
       });
-      dispatch(resetTicketsListData());
-      dispatch(resetTicketsCache());
-      dispatch(resetEventCache());
-      dispatch(resetCrowdFundCache());
-      dispatch(setEventDataForSearch([]));
-      if (currentTicketId) {
+      handleResetPageCache();
+      if (ticketIdFormEmailLink && !currentTicketEventSlug) {
+        router.push(RouterKeys.myTickets);
+        return;
+      }
+      if (currentTicketEventSlug) {
         router.push(
-          RouterKeys.ticketDetail.replace(':slug', currentTicketId)
+          RouterKeys.myTicketsEventDetail.replace(
+            ':slug',
+            currentTicketEventSlug
+          )
         );
       } else {
         router.push(redirectPage || RouterKeys.eventList);
@@ -349,6 +368,14 @@ const Login = ({
       });
     }
   }, [error]);
+
+  useEffect(() => {
+    const { query } = router;
+    const userToken = cookies.getCookie(CookieKeys.userLoginToken);
+    if (userToken) {
+      router.push(query.redirect || RouterKeys.eventList);
+    }
+  }, [router.isReady]);
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -481,19 +508,32 @@ const Login = ({
 };
 
 Login.getInitialProps = async (ctx: any) => {
-  const { query } = ctx;
+  const { query, req, res } = ctx;
   let defultLoginEmail = undefined;
-  let currentTicketId = '';
+  let currentTicketEventSlug = '';
+  let ticketIdFormEmailLink = '';
   let redirectPage = '';
   if (!isEmpty(query)) {
     redirectPage = query.redirect || '';
   }
   try {
-    const parameters = base64Decrypt(Object.keys(query)[0]);
-    defultLoginEmail = parameters.email;
-    currentTicketId = parameters.ticketId;
+    const token = req.cookies[CookieKeys.userLoginToken];
+    if (token) {
+      res.writeHead(302, { Location: redirectPage || RouterKeys.eventList });
+      res.end();
+    } else {
+      const parameters = base64Decrypt(Object.keys(query)[0]);
+      defultLoginEmail = parameters.email;
+      currentTicketEventSlug = parameters.eventSlug;
+      ticketIdFormEmailLink = parameters.ticketId;
+    }
   } catch (_) {}
-  return { defultLoginEmail, currentTicketId, redirectPage };
+  return {
+    defultLoginEmail,
+    currentTicketEventSlug,
+    redirectPage,
+    ticketIdFormEmailLink,
+  };
 };
 
 export default Login;

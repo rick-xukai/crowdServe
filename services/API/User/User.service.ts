@@ -63,6 +63,14 @@ const checkApiMaintenance = async () => {
   return response;
 };
 
+const getUserGender = async () => {
+  const uri = API.getUserGender.get;
+  const response = await requestClient()
+    .setUri(uri)
+    .doGet();
+  return response;
+};
+
 export default {
   doLogin,
   doLogout,
@@ -70,4 +78,5 @@ export default {
   doVerificationCode,
   checkApiMaintenance,
   doRegisterAccount,
+  getUserGender,
 };

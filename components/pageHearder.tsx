@@ -290,7 +290,7 @@ const PageHearderComponent = ({
                 </span>
               </Col>
             </Row>
-            <Row
+            {/* <Row
               className="menu-item-row"
               onClick={() => hanldeMenuClick(RouterKeys.crowdFundList)}
             >
@@ -305,8 +305,40 @@ const PageHearderComponent = ({
                   CROWDFUND
                 </span>
               </Col>
+            </Row> */}
+            <Row
+              className="menu-item-row"
+              onClick={() => hanldeMenuClick(RouterKeys.myTickets)}
+            >
+              <Col span={24} className="info-name">
+                <span
+                  className={`name ${
+                    (router.pathname === RouterKeys.myTickets &&
+                      'active') ||
+                    ''
+                  }`}
+                >
+                  MY TICKETS
+                </span>
+              </Col>
             </Row>
             <Row
+              className="menu-item-row"
+              onClick={() => hanldeMenuClick(RouterKeys.myCollectibles)}
+            >
+              <Col span={24} className="info-name">
+                <span
+                  className={`name ${
+                    (router.pathname === RouterKeys.myCollectibles &&
+                      'active') ||
+                    ''
+                  }`}
+                >
+                  MY COLLECTIBLES
+                </span>
+              </Col>
+            </Row>
+            {/* <Row
               className="menu-item-row"
               onClick={() => hanldeMenuClick(RouterKeys.ticketsList)}
             >
@@ -320,7 +352,7 @@ const PageHearderComponent = ({
                   MY TICKETS
                 </span>
               </Col>
-            </Row>
+            </Row> */}
             <Row
               className="menu-item-row"
               onClick={() => hanldeMenuClick(RouterKeys.myWallet)}

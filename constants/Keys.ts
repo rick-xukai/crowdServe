@@ -27,4 +27,9 @@ export const RouterKeys = {
   crowdFundList: '/crowdfund',
   crowdFundDetail: '/crowdfund/:crowdFundId',
   pageNotFound: '/404',
+  myTickets: '/my-tickets',
+  myTicketsEventDetail: '/my-tickets/:slug',
+  myCollectibles: '/my-collectibles',
+  collectionDetail: '/my-collectibles/:slug',
+  collectibleDetail: '/my-collectibles/:orgname-slug/:slug',
 };

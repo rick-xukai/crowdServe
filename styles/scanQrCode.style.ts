@@ -171,6 +171,10 @@ const ScanQrCodePageContainers = styled.div`
     height: 100%;
     display: flex;
     align-items: center;
+    .items {
+      max-width: 1008px;
+      margin: auto;
+    }
     .verify-message {
       font-weight: 700;
       font-size: 22px;
@@ -235,6 +239,30 @@ const ScanQrCodePageContainers = styled.div`
     }
     100% {
       transform: rotate(360deg);
+    }
+  }
+  @media (min-width: 576px) and (max-width: 1200px) {
+    .total-info {
+      max-width: 500px;
+      margin: auto;
+      margin-bottom: 40px;
+    }
+    .button-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  @media (min-width: 1200px) {
+    .total-info {
+      max-width: 500px;
+      margin: auto;
+      margin-bottom: 40px;
+    }
+    .button-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
   }
 `;
