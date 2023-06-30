@@ -18,6 +18,7 @@ import {
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { format } from 'date-fns';
+import _ from 'lodash';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -26,6 +27,11 @@ import {
   TokenExpire,
   PasswordNotMatch,
   BirthdayNotVaild,
+  RegisterVerifyType,
+  VerificationCodeLength,
+  ForgotPasswordAccountNotActivate,
+  ActivateAccountFirst,
+  AccountNotActivate,
 } from '../constants/General';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { Images } from '../theme';
@@ -87,7 +93,7 @@ const ActivateAccountNormalFlow = ({
         verificationCodeAction({
           ...values,
           email: activateAccountValue.email,
-          type: 1,
+          type: RegisterVerifyType,
         })
       );
       if (result.type === verificationCodeAction.fulfilled.toString()) {
@@ -153,6 +159,26 @@ const ActivateAccountNormalFlow = ({
   }, [data]);
 
   useEffect(() => {
+    const { query } = router;
+    if (query && !_.isEmpty(query)) {
+      const parameters = base64Decrypt(Object.keys(query)[0]);
+      if (parameters.source) {
+        if (parameters.source === ForgotPasswordAccountNotActivate) {
+          message.open({
+            content: ActivateAccountFirst,
+            className: 'error-message-login',
+          });
+        }
+      } else {
+        message.open({
+          content: AccountNotActivate,
+          className: 'error-message-login',
+        });
+      }
+    }
+  }, [router.isReady]);
+
+  useEffect(() => {
     if (error && !isFirstRender) {
       message.open({
         content: getErrorMessage(error.code),
@@ -164,11 +190,6 @@ const ActivateAccountNormalFlow = ({
   useEffect(() => {
     dispatch(getUserGenderAction());
     setIsFirstRender(false);
-    message.open({
-      content:
-        'Your account has not been activated yet. Please activate your account to continue.',
-      className: 'error-message-login',
-    });
     return () => {
       dispatch(reset());
     };
@@ -233,7 +254,12 @@ const ActivateAccountNormalFlow = ({
                     <Form.Item style={{ marginBottom: 25 }}>
                       <Button
                         className="signin-btn"
-                        disabled={!activateAccountValue.code || loading}
+                        disabled={
+                          !activateAccountValue.code ||
+                          activateAccountValue.code.length <
+                            VerificationCodeLength ||
+                          loading
+                        }
                         type="primary"
                         htmlType="submit"
                       >

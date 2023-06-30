@@ -6,6 +6,10 @@ const API = {
   login: {
     post: '/api/v1/user/session',
   },
+  forgotPassword: {
+    delete: '/api/v1/user/password',
+    put: '/api/v1/user/password',
+  },
   registerAccount: {
     post: '/api/v1/user',
   },

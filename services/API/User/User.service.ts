@@ -5,9 +5,11 @@ import {
   VerifyUserPayload,
   VerificationCodePayload,
   RegisterAccountPayload,
+  ForgotPasswordResetPayload,
 } from '../../../slice/user.slice';
 
-const requestClient = () => new RequestClientClass(process.env.NEXT_PUBLIC_API_SERVER);
+const requestClient = () =>
+  new RequestClientClass(process.env.NEXT_PUBLIC_API_SERVER);
 
 const doLogin = async (payload: LoginPayloadType) => {
   const uri = API.login.post;
@@ -15,6 +17,26 @@ const doLogin = async (payload: LoginPayloadType) => {
     .setUri(uri)
     .setPayload(payload)
     .doPost();
+  return response;
+};
+
+const doForgotPasswordSendVerificationCode = async (payload: {
+  email: string;
+}) => {
+  const uri = API.forgotPassword.delete;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .doDelete();
+  return response;
+};
+
+const doForgotPasswordReset = async (payload: ForgotPasswordResetPayload) => {
+  const uri = API.forgotPassword.put;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .doPut();
   return response;
 };
 
@@ -54,20 +76,15 @@ const doVerificationCode = async (payload: VerificationCodePayload) => {
   return response;
 };
 
-
 const checkApiMaintenance = async () => {
   const uri = API.apiMaintenance.get;
-  const response = await requestClient()
-    .setUri(uri)
-    .doGet();
+  const response = await requestClient().setUri(uri).doGet();
   return response;
 };
 
 const getUserGender = async () => {
   const uri = API.getUserGender.get;
-  const response = await requestClient()
-    .setUri(uri)
-    .doGet();
+  const response = await requestClient().setUri(uri).doGet();
   return response;
 };
 
@@ -79,4 +96,6 @@ export default {
   checkApiMaintenance,
   doRegisterAccount,
   getUserGender,
+  doForgotPasswordReset,
+  doForgotPasswordSendVerificationCode,
 };

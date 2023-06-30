@@ -35,6 +35,8 @@ import {
   TokenExpire,
   PasswordNotMatch,
   BirthdayNotVaild,
+  RegisterVerifyType,
+  AccountNotActivate,
 } from '../constants/General';
 import { Images } from '../theme';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
@@ -121,7 +123,7 @@ const CreateAccount = () => {
         verificationCodeAction({
           ...values,
           email: createAccountValue.email,
-          type: 1,
+          type: RegisterVerifyType,
         })
       );
       if (result.type === verificationCodeAction.fulfilled.toString()) {

@@ -150,6 +150,10 @@ const LoginContainer = styled.div`
         margin-bottom: 15px;
       }
     }
+    .user-email {
+      font-size: 17px;
+      color: ${Colors.white};
+    }
   }
   .page-bottom {
     color: #fff;
@@ -363,6 +367,11 @@ const LoginContainer = styled.div`
       color: ${Colors.grayScale50};
       font-weight: 300;
       font-size: 14px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .forgot-password {
+      cursor: pointer;
     }
   }
 `;
