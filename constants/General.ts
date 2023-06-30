@@ -1,8 +1,6 @@
 /**
  * General constants
  */
-import { isMobile } from 'react-device-detect';
-
 import { Colors, Images } from '../theme';
 
 export const Encrypt = 'encrypt';
@@ -44,6 +42,14 @@ export const FirebaseEventEnv =
 export const AppDomain = process.env.NEXT_PUBLIC_DOMAIN;
 export const PasswordNotMatch = 'The passwords entered do not match.';
 export const BirthdayNotVaild = 'Please enter a valid birthday.';
+export const UserNotExist = `User doesn't exist`;
+export const ActivateAccountFirst = 'Please activate your account first.';
+export const AccountNotActivate = 'Your account has not been activated yet. Please activate your account to continue.';
+export const InviteVerifyType = 0;
+export const RegisterVerifyType = 1;
+export const ForgotPasswordVerifyType = 2;
+export const VerificationCodeLength = 6;
+export const ForgotPasswordAccountNotActivate = 'forgotPasswordAccountNotActivate';
 
 export const TicketStatus = [
   {

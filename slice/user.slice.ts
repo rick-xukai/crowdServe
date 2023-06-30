@@ -27,6 +27,12 @@ export interface LoginResponseType {
   token: string;
 }
 
+export interface ForgotPasswordResetPayload {
+  email: string;
+  code: string;
+  password: string;
+}
+
 export interface VerifyUserPayload {
   email: string;
 }
@@ -81,6 +87,72 @@ export const loginAction = createAsyncThunk<
     } as ErrorType);
   }
 });
+
+/**
+ * Forgot Password Send Verification Code
+ */
+export const forgotPasswordSendVerificationCodeAction = createAsyncThunk<
+  {},
+  { email: string },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'forgotPasswordSendVerificationCode/forgotPasswordSendVerificationCodeAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await UserService.doForgotPasswordSendVerificationCode(
+        payload
+      );
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  }
+);
+
+/**
+ * Forgot Password Reset
+ */
+export const forgotPasswordResetAction = createAsyncThunk<
+  {},
+  ForgotPasswordResetPayload,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'forgotPasswordReset/forgotPasswordResetAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await UserService.doForgotPasswordReset(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        code: response.code,
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  }
+);
 
 /**
  * get user gender
@@ -232,8 +304,16 @@ export const verificationCodeAction = createAsyncThunk<
 interface UserState {
   loading: boolean;
   getUserGenderLoading: boolean;
+  forgotPasswordLoading: boolean;
   data: LoginResponseType;
   userGender: UserGenderResponseType[];
+  forgotPasswordError:
+    | {
+        code: number | undefined;
+        message: string | undefined;
+      }
+    | undefined
+    | null;
   error:
     | {
         code: number | undefined;
@@ -245,6 +325,7 @@ interface UserState {
 
 const initialState: UserState = {
   loading: false,
+  forgotPasswordLoading: false,
   getUserGenderLoading: true,
   userGender: [],
   data: {
@@ -255,6 +336,7 @@ const initialState: UserState = {
     token: '',
   },
   error: null,
+  forgotPasswordError: null,
 };
 
 export const userSlice = createSlice({
@@ -262,6 +344,10 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    resetForgotPasswordValue: (state) => {
+      state.forgotPasswordError = null;
+      state.forgotPasswordLoading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -279,6 +365,37 @@ export const userSlice = createSlice({
           state.error = action.payload as ErrorType;
         } else {
           state.error = action.error as ErrorType;
+        }
+      })
+      .addCase(forgotPasswordSendVerificationCodeAction.pending, (state) => {
+        state.forgotPasswordLoading = true;
+      })
+      .addCase(forgotPasswordSendVerificationCodeAction.fulfilled, (state) => {
+        state.forgotPasswordLoading = false;
+      })
+      .addCase(
+        forgotPasswordSendVerificationCodeAction.rejected,
+        (state, action) => {
+          state.forgotPasswordLoading = false;
+          if (action.payload) {
+            state.forgotPasswordError = action.payload as ErrorType;
+          } else {
+            state.forgotPasswordError = action.error as ErrorType;
+          }
+        }
+      )
+      .addCase(forgotPasswordResetAction.pending, (state) => {
+        state.forgotPasswordLoading = true;
+      })
+      .addCase(forgotPasswordResetAction.fulfilled, (state) => {
+        state.forgotPasswordLoading = false;
+      })
+      .addCase(forgotPasswordResetAction.rejected, (state, action) => {
+        state.forgotPasswordLoading = false;
+        if (action.payload) {
+          state.forgotPasswordError = action.payload as ErrorType;
+        } else {
+          state.forgotPasswordError = action.error as ErrorType;
         }
       })
       .addCase(getUserGenderAction.pending, (state) => {
@@ -313,16 +430,21 @@ export const userSlice = createSlice({
       })
       .addCase(verificationCodeAction.pending, (state) => {
         state.loading = true;
+        state.forgotPasswordLoading = true;
       })
       .addCase(verificationCodeAction.fulfilled, (state) => {
         state.loading = false;
+        state.forgotPasswordLoading = false;
       })
       .addCase(verificationCodeAction.rejected, (state, action) => {
         state.loading = false;
+        state.forgotPasswordLoading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
+          state.forgotPasswordError = action.payload as ErrorType;
         } else {
           state.error = action.error as ErrorType;
+          state.forgotPasswordError = action.error as ErrorType;
         }
       })
       .addCase(registerAccountAction.pending, (state) => {
@@ -344,9 +466,13 @@ export const userSlice = createSlice({
   },
 });
 
-export const { reset } = userSlice.actions;
+export const { reset, resetForgotPasswordValue } = userSlice.actions;
 
 export const selectLoading = (state: RootState) => state.user.loading;
+export const selectForgotPasswordLoading = (state: RootState) =>
+  state.user.forgotPasswordLoading;
+export const selectForgotPasswordError = (state: RootState) =>
+  state.user.forgotPasswordError;
 export const selectError = (state: RootState) => state.user.error;
 export const selectData = (state: RootState) => state.user.data;
 export const selectUserGender = (state: RootState) => state.user.userGender;

@@ -12,6 +12,7 @@ export const CookieKeys = {
 
 export const RouterKeys = {
   login: '/login',
+  forgotPassword: '/forgot-password',
   scanQrCode: '/scan-qr-code/:eventId',
   scanLogin: '/scan-login',
   ticketsList: '/my',
