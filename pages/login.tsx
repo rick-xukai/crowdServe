@@ -78,9 +78,11 @@ const Login = ({
   useEffect(() => {
     const { query } = router;
     if (query && !isEmpty(query)) {
-      const parameters = base64Decrypt(Object.keys(query)[0]);
-      if (parameters.email) {
-        setLoginEmailParameter(parameters.email);
+      if (!query.redirect) {
+        const parameters = base64Decrypt(Object.keys(query)[0]);
+        if (parameters.email) {
+          setLoginEmailParameter(parameters.email);
+        }
       }
     }
   }, [router.isReady]);
