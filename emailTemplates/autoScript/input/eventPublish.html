@@ -1,0 +1,69 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Event Publish</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+  </head>
+  <body style="margin: auto;">
+    <div class="email-container-nft">
+      <div class="email-header">
+        <img src="https://static.wixstatic.com/media/8bf0ac_92df1da1bb4c457b90dd8fa00ed5221c~mv2.png/v1/fill/w_360,h_142,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/CROWDSERVE_LOGO_LONG_WHT.png" alt="" class="email-logo">
+      </div>
+      <div class="email-content">
+        <div class="content-title">
+          Your event is on live now!
+        </div>
+        <div class="content-detail">
+          <p class="detail-text">Dear {{organizer_name}},</p>
+          <p class="detail-text">
+            Exciting news! Your event is now live on CrowdServe and ready to be shared with event-goers everywhere.
+          </p>
+          <div class="ticket-img event-publish" style="background-image: url({{event_image}});"></div>
+          <div class="ticket-info">
+            <p class="title">
+              <a href="{{event_web_link}}" target="_blank" style="color: #303034 !important; text-decoration: underline;">
+                <span style="margin: auto;">{{event_name}}</span>
+              </a>
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt="" />
+              {{event_time}}
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt="" />
+              {{event_location}}
+            </p>
+          </div>
+          <p class="detail-text">
+            We encourage you to regularly monitor the progress of your event, stay engaged with your attendees, and ensure that everything is set for an exceptional event experience.
+          </p>
+          <p class="detail-text">
+            To view your event details and manage it effectively, simply click on the button below:
+          </p>
+          <button class="click-nft-ticket">
+            <a href="{{event_bo_link}}" target="_blank" style="color: #F8F6F0 !important;">
+              <span style="margin: auto;">CHECK MY EVENT</span>
+            </a>
+          </button>
+          <p class="detail-text">
+            Spread the word, get the party started, and let's make your event a roaring success. Thank you for choosing CrowdServe—we're thrilled to be part of your journey!
+          </p>
+          <p class="detail-text">
+            Yours Sincerely,<br />
+            CrowdServe
+          </p>
+          <p class="unsubscribe">
+            If you don't want to receive this type of email in the future, please
+            <a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank">unsubscribe</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
