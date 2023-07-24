@@ -292,7 +292,6 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
                                   )}`) ||
                                   '-'}
                               </div>
-                              ;
                             </Col>
                             <Col span={24} className="info-item">
                               <Image
