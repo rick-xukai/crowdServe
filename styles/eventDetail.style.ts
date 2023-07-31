@@ -142,6 +142,9 @@ const EventDetailContainer = styled.div`
     height: 35px;
     margin: 0 0 13px 0;
   }
+  .ant-tabs-top >.ant-tabs-nav::before {
+    border-bottom: none;
+  }
   @media (max-width: 374px) {
     .ant-tabs .ant-tabs-tab+.ant-tabs-tab {
       margin: 0 0 0 10px;

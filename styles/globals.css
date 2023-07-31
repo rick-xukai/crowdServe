@@ -218,17 +218,22 @@ a {
   color: #fff;
   background: #fc0006;
 }
-.birth-picker-dropdown .ant-picker-header >button:hover {
+.birth-picker-dropdown .ant-picker-header > button:hover {
   color: #fff;
 }
 .default-message .ant-message-notice-content,
 .error-message-tickets .ant-message-notice-content,
 .error-message-event .ant-message-notice-content,
 .error-message-login .ant-message-notice-content {
-  background-color: #717179;
+  background-color: #717179 !important;
   color: #eeeef3;
   opacity: 0.9;
-  border-radius: 4px;
+  border-radius: 4px !important;
+}
+
+.ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
+  color: #fff;
+  border-color: #fff;
 }
 
 .default-message-download .ant-message-notice-content {

@@ -130,6 +130,9 @@ a {
 
 .event-publish {
   margin: initial;
+  width: 100%;
+  height: 240px;
+  background-size: contain;
 }
 
 .ticket-info {
