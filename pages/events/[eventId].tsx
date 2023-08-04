@@ -14,7 +14,11 @@ import { NextSeo } from 'next-seo';
 import TextTruncate from 'react-text-truncate';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 
-import { formatTimeStrByTimeString, openApp } from '../../utils/func';
+import {
+  formatTimeStrByTimeString,
+  openApp,
+  formatLocation,
+} from '../../utils/func';
 import {
   FormatTimeKeys,
   PriceUnit,
@@ -133,11 +137,14 @@ const EventDetail = ({
     }
   };
 
-  const toShopify = (link: string, stock: number) => {
-    if (stock === 0 || !link) {
+  const toShopify = (data: EventTicketTypeResponseType) => {
+    if (data.stock === 0 || !data.externalLink) {
       return;
     }
-    window.open(link, '_blank');
+    if (!data.onSale) {
+      return;
+    }
+    window.open(data.externalLink, '_blank');
   };
 
   useEffect(() => {
@@ -287,16 +294,6 @@ const EventDetail = ({
                         </Col>
                         <Col span={24} className="info-item">
                           <Image
-                            src={Images.LocationIcon}
-                            alt=""
-                            className="info-item-icon"
-                          />
-                          <div className="info-description">
-                            {eventDetailData.location || '-'}
-                          </div>
-                        </Col>
-                        <Col span={24} className="info-item">
-                          <Image
                             src={Images.OrganiserIcon}
                             alt=""
                             className="info-item-icon"
@@ -304,6 +301,19 @@ const EventDetail = ({
                           <span className="info-description">
                             {eventDetailData.organizerName || '-'}
                           </span>
+                        </Col>
+                        <Col span={24} className="info-item">
+                          <Image
+                            src={Images.LocationIcon}
+                            alt=""
+                            className="info-item-icon"
+                          />
+                          <div className="info-description">
+                            {formatLocation(
+                              eventDetailData.location,
+                              eventDetailData.address
+                            )}
+                          </div>
                         </Col>
                         {eventDetailData.crowdfundLink && (
                           <Col span={24} className="crowd-fund-link">
@@ -350,63 +360,76 @@ const EventDetail = ({
                         <Col span={24} className="dividing-line" />
                       </Row>
                       {(tabActiveKey === PrimaryMarket && (
-                        <Row gutter={[10, 10]}>
+                        <Row gutter={[16, 16]}>
                           {(eventTicketTypeFilter.length && (
                             <>
                               {eventTicketTypeFilter.map((item) => (
                                 <TicketTypeItem
-                                  span={12}
-                                  sm={6}
-                                  md={6}
-                                  xl={4}
-                                  lg={6}
+                                  xs={24}
+                                  sm={12}
+                                  md={12}
+                                  xl={12}
+                                  lg={12}
                                   key={item.id}
-                                  onClick={() =>
-                                    toShopify(item.externalLink, item.stock)
-                                  }
+                                  onClick={() => toShopify(item)}
                                 >
-                                  <div className="type-img">
-                                    <img
-                                      src={item.thumbnailUrl}
-                                      alt=""
-                                      onError={(e: any) => {
-                                        e.target.onerror = null;
-                                        e.target.src =
-                                          Images.BackgroundLogo.src;
-                                      }}
-                                    />
-                                    {item.stock === 0 && (
-                                      <div className="out-stock-mask">
-                                        OUT OF STOCK
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div
-                                    className={
-                                      (item.stock === 0 &&
-                                        'type-info out-stock') ||
-                                      'type-info'
-                                    }
-                                  >
-                                    <div className="line">
+                                  <Row>
+                                    <Col className="type-img" xl={8} span={10}>
                                       <img
-                                        src={Images.EventLineIcon.src}
+                                        src={item.thumbnailUrl}
                                         alt=""
+                                        onError={(e: any) => {
+                                          e.target.onerror = null;
+                                          e.target.src =
+                                            Images.BackgroundLogo.src;
+                                        }}
                                       />
-                                    </div>
-                                    <div className="info-des">
-                                      <div className="title-content">
-                                        <p className="title" title={item.name}>
-                                          {item.name}
-                                        </p>
+                                      {!item.onSale && (
+                                        <div className="not-sale">
+                                          NOT ON SALE YET
+                                        </div>
+                                      )}
+                                      {item.stock === 0 && (
+                                        <div className="out-stock-mask">
+                                          OUT OF STOCK
+                                        </div>
+                                      )}
+                                    </Col>
+                                    <Col
+                                      xl={16}
+                                      span={14}
+                                      className="type-info"
+                                    >
+                                      <div className="line">
+                                        <img
+                                          src={Images.VerticalLineIcon.src}
+                                          alt=""
+                                        />
                                       </div>
-                                      <p className="price">
-                                        {`${item.price.toFixed(
-                                          2
-                                        )} ${PriceUnit}`}
-                                      </p>
-                                    </div>
-                                  </div>
+                                      <div className="type-info-content">
+                                        <div>
+                                          <Col
+                                            span={24}
+                                            title={item.name}
+                                            className="title"
+                                          >
+                                            {item.name}
+                                          </Col>
+                                          <Col
+                                            span={24}
+                                            className="description"
+                                          >
+                                            {item.description}
+                                          </Col>
+                                          <Col span={24} className="price">
+                                            {`${item.price.toFixed(
+                                              2
+                                            )} ${PriceUnit}`}
+                                          </Col>
+                                        </div>
+                                      </div>
+                                    </Col>
+                                  </Row>
                                 </TicketTypeItem>
                               ))}
                             </>

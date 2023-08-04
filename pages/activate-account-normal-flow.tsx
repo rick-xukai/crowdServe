@@ -18,7 +18,7 @@ import {
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -160,7 +160,7 @@ const ActivateAccountNormalFlow = ({
 
   useEffect(() => {
     const { query } = router;
-    if (query && !_.isEmpty(query)) {
+    if (query && !isEmpty(query)) {
       const parameters = base64Decrypt(Object.keys(query)[0]);
       if (parameters.source) {
         if (parameters.source === ForgotPasswordAccountNotActivate) {

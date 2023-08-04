@@ -9,7 +9,7 @@ import { isMobile } from 'react-device-detect';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { RouterKeys } from '../constants/Keys';
-import { formatTimeStrByTimeString } from '../utils/func';
+import { formatTimeStrByTimeString, formatLocation } from '../utils/func';
 import {
   FormatTimeKeys,
   DefaultPageSize,
@@ -370,16 +370,6 @@ const EventList = () => {
                               </Col>
                               <Col span={24} className="info-item">
                                 <Image
-                                  src={Images.LocationIcon}
-                                  alt=""
-                                  className="info-item-icon"
-                                />
-                                <div className="info-description">
-                                  {item.location || '-'}
-                                </div>
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
                                   src={Images.OrganiserIcon}
                                   alt=""
                                   className="info-item-icon"
@@ -387,6 +377,16 @@ const EventList = () => {
                                 <span className="info-description">
                                   {item.organizerName || '-'}
                                 </span>
+                              </Col>
+                              <Col span={24} className="info-item">
+                                <Image
+                                  src={Images.LocationIcon}
+                                  alt=""
+                                  className="info-item-icon"
+                                />
+                                <div className="info-description">
+                                  {formatLocation(item.location, item.address)}
+                                </div>
                               </Col>
                             </Row>
                           </div>
@@ -542,16 +542,6 @@ const EventList = () => {
                               </Col>
                               <Col span={24} className="info-item">
                                 <Image
-                                  src={Images.LocationIcon}
-                                  alt=""
-                                  className="info-item-icon"
-                                />
-                                <div className="info-description">
-                                  {item.location || '-'}
-                                </div>
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
                                   src={Images.OrganiserIcon}
                                   alt=""
                                   className="info-item-icon"
@@ -559,6 +549,16 @@ const EventList = () => {
                                 <span className="info-description">
                                   {item.organizerName || '-'}
                                 </span>
+                              </Col>
+                              <Col span={24} className="info-item">
+                                <Image
+                                  src={Images.LocationIcon}
+                                  alt=""
+                                  className="info-item-icon"
+                                />
+                                <div className="info-description">
+                                  {formatLocation(item.location, item.address)}
+                                </div>
                               </Col>
                             </Row>
                           </div>
@@ -649,16 +649,6 @@ const EventList = () => {
                               </Col>
                               <Col span={24} className="info-item">
                                 <Image
-                                  src={Images.LocationIcon}
-                                  alt=""
-                                  className="info-item-icon"
-                                />
-                                <div className="info-description">
-                                  {item.location || '-'}
-                                </div>
-                              </Col>
-                              <Col span={24} className="info-item">
-                                <Image
                                   src={Images.OrganiserIcon}
                                   alt=""
                                   className="info-item-icon"
@@ -666,6 +656,16 @@ const EventList = () => {
                                 <span className="info-description">
                                   {item.organizerName || '-'}
                                 </span>
+                              </Col>
+                              <Col span={24} className="info-item">
+                                <Image
+                                  src={Images.LocationIcon}
+                                  alt=""
+                                  className="info-item-icon"
+                                />
+                                <div className="info-description">
+                                  {formatLocation(item.location, item.address)}
+                                </div>
                               </Col>
                             </Row>
                           </div>

@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Row, Col, Divider, Modal, Drawer, Button, message } from 'antd';
-import { RightOutlined, LoadingOutlined } from '@ant-design/icons';
+import {
+  RightOutlined,
+  LoadingOutlined,
+  DownOutlined,
+  UpOutlined,
+} from '@ant-design/icons';
 import Image from 'next/image';
 import TextTruncate from 'react-text-truncate';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useCollapse } from 'react-collapsed';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import AuthHoc from '../../components/hoc/AuthHoc';
@@ -15,9 +22,14 @@ import {
   TicketStatus,
   PriceUnit,
   TicketSaleStatus,
+  SetRefundKey,
 } from '../../constants/General';
 import Messages from '../../constants/Messages';
-import { formatTimeStrByTimeString, bodyOverflow } from '../../utils/func';
+import {
+  formatTimeStrByTimeString,
+  bodyOverflow,
+  formatLocation,
+} from '../../utils/func';
 import PageHearderComponent from '../../components/pageHearder';
 import PageHearderResponsive from '../../components/pageHearderResponsive';
 import {
@@ -39,12 +51,18 @@ import {
   MyTicketsEventDetailContainer,
   StatusContainer,
   MyTicketItemContainer,
+  EventDetailCard,
 } from '../../styles/myTicketsEventDetail.style';
 import PageNotFound from '../404';
 import TicketQRCodeComponent from '../../components/ticketQRCode';
 import ClientModalComponent from '../../components/clientModal';
 import ShowQRCodeElementComponent from '../../components/showQRCodeElement';
 import { RouterKeys } from '../../constants/Keys';
+import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
+
+const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = [
+  'places',
+];
 
 const TicketDetailTabletAndMobile = ({
   detailData,
@@ -200,8 +218,14 @@ const TicketDetailTabletAndMobile = ({
 
 const MyTicketsEventDetail = () => {
   const router = useRouter();
+  const detailContentRef: any = useRef(null);
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOLE_MAP_API_KEY as string,
+    libraries,
+  });
 
   const loadingForEventDetail = useAppSelector(selectEventDetailLoading);
   const eventDetail = useAppSelector(selectTicketUserEventDetail);
@@ -213,7 +237,6 @@ const MyTicketsEventDetail = () => {
   const [eventCorrect, setEventCorrect] = useState<boolean>(true);
   const [requestId, setRequestId] = useState<string>('');
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
-  const [textShowMore, setTextShowMore] = useState<boolean>(false);
   const [showQrCodeModal, setShowQrCodeModal] = useState<boolean>(false);
   const [showQrCodeDrawer, setShowQrCodeDrawer] = useState<boolean>(false);
   const [currentCheckTicketId, setCurrentCheckTicketId] = useState<string>('');
@@ -249,6 +272,14 @@ const MyTicketsEventDetail = () => {
     useState<boolean>(false);
   const [showTicketItemDetailDrawer, setShowTicketItemDetailDrawer] =
     useState<boolean>(false);
+  const [showMap, setShowMap] = useState<boolean>(false);
+  const [isExpanded, setExpanded] = useState<boolean>(false);
+  const [needShowMore, setNeedShowMore] = useState<boolean>(false);
+
+  const { getCollapseProps, getToggleProps } = useCollapse({
+    isExpanded,
+    collapsedHeight: 75,
+  });
 
   const handleNoTicketList = () => {
     setNoTicketListModalShow(false);
@@ -342,6 +373,17 @@ const MyTicketsEventDetail = () => {
     return colNum;
   };
 
+  const onMapLoad = useCallback((map: any) => {
+    if (map) {
+      const { center } = map;
+      const bounds = new window.google.maps.LatLngBounds({
+        lat: center.lat(),
+        lng: center.lng(),
+      });
+      map.fitBounds(bounds);
+    }
+  }, []);
+
   useEffect(() => {
     const { eventSlug } = router.query;
     if (eventSlug) {
@@ -376,6 +418,16 @@ const MyTicketsEventDetail = () => {
       });
     }
   }, [errorForEventDetail]);
+
+  useEffect(() => {
+    if (!loadingForEventDetail) {
+      if (detailContentRef.current.clientHeight > 57) {
+        setNeedShowMore(true);
+      } else {
+        setNeedShowMore(false);
+      }
+    }
+  }, [loadingForEventDetail]);
 
   useEffect(() => {
     try {
@@ -473,6 +525,9 @@ const MyTicketsEventDetail = () => {
                         <Col span={24} className="info-title">
                           {eventDetail.name || '-'}
                         </Col>
+                        <Col span={24} className="info-description-short">
+                          {eventDetail.descriptionShort}
+                        </Col>
                         <Col span={24} className="info-item">
                           <Image
                             className="info-item-icon"
@@ -490,16 +545,6 @@ const MyTicketsEventDetail = () => {
                                 FormatTimeKeys.norm
                               )}`) ||
                               '-'}
-                          </div>
-                        </Col>
-                        <Col span={24} className="info-item">
-                          <Image
-                            src={Images.LocationIcon}
-                            alt=""
-                            className="info-item-icon"
-                          />
-                          <div className="info-description">
-                            {eventDetail.location || '-'}
                           </div>
                         </Col>
                         <Col span={24} className="info-item">
@@ -526,6 +571,69 @@ const MyTicketsEventDetail = () => {
                             {eventDetail.organizerName || '-'}
                           </span>
                         </Col>
+                        <Col
+                          span={24}
+                          className="info-item"
+                          style={{ marginTop: 2 }}
+                        >
+                          <Image
+                            src={Images.LocationIcon}
+                            alt=""
+                            className="info-item-icon"
+                          />
+                          <div className="info-description">
+                            <span>
+                              {formatLocation(
+                                eventDetail.location,
+                                eventDetail.address
+                              )}
+                            </span>
+                            {eventDetail.locationCoord && (
+                              <span
+                                className="show-map-action"
+                                onClick={() => setShowMap(!showMap)}
+                              >
+                                {(!showMap && (
+                                  <>
+                                    SHOW MAP
+                                    <DownOutlined />
+                                  </>
+                                )) || (
+                                  <>
+                                    HIDE MAP
+                                    <UpOutlined />
+                                  </>
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </Col>
+                        {showMap && isLoaded && (
+                          <Col span={24}>
+                            <div className="google-map-content">
+                              <GoogleMap
+                                mapContainerStyle={{
+                                  width: '100%',
+                                  height: '220px',
+                                  marginTop: '10px',
+                                }}
+                                options={{
+                                  disableDefaultUI: true,
+                                }}
+                                center={{
+                                  lat: Number(
+                                    eventDetail.locationCoord.split(',')[0]
+                                  ),
+                                  lng: Number(
+                                    eventDetail.locationCoord.split(',')[1]
+                                  ),
+                                }}
+                                zoom={10}
+                                onLoad={onMapLoad}
+                              />
+                            </div>
+                          </Col>
+                        )}
                         {eventDetail.crowdfundLink && (
                           <Col span={24} className="crowd-fund-link">
                             <a href={eventDetail.crowdfundLink} target="_blank">
@@ -533,30 +641,94 @@ const MyTicketsEventDetail = () => {
                             </a>
                           </Col>
                         )}
-                        <Col span={24} className="ticket-description">
-                          {(textShowMore && (
-                            <p className="whole-description">
-                              {eventDetail.description || '-'}
-                            </p>
-                          )) || (
-                            <TextTruncate
-                              line={2}
-                              element="div"
-                              truncateText="…"
-                              containerClassName="text-typography"
-                              text={eventDetail.description || '-'}
-                              textTruncateChild={
-                                <span
-                                  className="show-more"
-                                  onClick={() => setTextShowMore(true)}
+                        <EventDetailCard
+                          span={24}
+                          className="event-detail-content"
+                        >
+                          <Col
+                            span={24}
+                            className="detail-title"
+                            style={{
+                              marginBottom:
+                                (!eventDetail.description && 24) || 0,
+                            }}
+                          >
+                            Event Details
+                          </Col>
+                          <Col span={24} className="detail-show-more-box">
+                            {needShowMore && (
+                              <div
+                                className={
+                                  (!isExpanded && 'show-more-box-action') ||
+                                  'show-more-box-action no-background'
+                                }
+                              >
+                                <div
+                                  {...getToggleProps({
+                                    onClick: () =>
+                                      setExpanded(
+                                        (prevExpanded) => !prevExpanded
+                                      ),
+                                  })}
                                 >
-                                  Show More
-                                </span>
+                                  <div className="action-button">
+                                    <span>
+                                      {(!isExpanded && 'Show More') ||
+                                        'Show Less'}
+                                    </span>
+                                    <span>
+                                      {(!isExpanded && <DownOutlined />) || (
+                                        <UpOutlined />
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                            <Col
+                              span={24}
+                              className={
+                                (!needShowMore && 'show-box no-show-more') ||
+                                'show-box'
                               }
-                            />
-                          )}
-                        </Col>
-                        <Col span={24}>
+                              {...getCollapseProps()}
+                            >
+                              <div ref={detailContentRef}>
+                                {eventDetail.description && (
+                                  <p className="detail-description">
+                                    {eventDetail.description}
+                                  </p>
+                                )}
+                                <ImageSizeLayoutComponent
+                                  images={eventDetail.descriptionImages}
+                                />
+                                <p
+                                  className="refund-info"
+                                  style={{
+                                    marginTop:
+                                      (eventDetail.descriptionImages &&
+                                        eventDetail.descriptionImages.length &&
+                                        24) ||
+                                      0,
+                                  }}
+                                >
+                                  {(eventDetail.refundPolicy ===
+                                    SetRefundKey.nonRefundable &&
+                                    '* Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
+                                    '*  To request a refund, please contact the event organizer.'}
+                                </p>
+                              </div>
+                            </Col>
+                          </Col>
+                        </EventDetailCard>
+                        <Col
+                          span={24}
+                          className={
+                            (needShowMore &&
+                              'divider-content show-more-divider') ||
+                            'divider-content'
+                          }
+                        >
                           <Divider />
                         </Col>
                       </Row>

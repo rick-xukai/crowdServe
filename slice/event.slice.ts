@@ -35,6 +35,7 @@ export interface EventListResponseType {
   description: string;
   status: number;
   slug: string;
+  address: string;
 }
 
 export interface EventListBanner {
@@ -54,6 +55,7 @@ export interface EventDetailResponseType {
   description: string;
   crowdfundLink: string;
   slug: string;
+  address: string;
 }
 
 export interface EventTicketTypeResponseType {
@@ -69,6 +71,7 @@ export interface EventTicketTypeResponseType {
   thumbnailType: string;
   externalLink: string;
   blockchainUrl: string;
+  onSale: boolean;
 }
 
 export interface EventMarketResponseType {
@@ -283,6 +286,7 @@ const initialState: EventState = {
     status: 0,
     crowdfundLink: '',
     slug: '',
+    address: '',
   },
   eventMarket: [],
 };
@@ -305,6 +309,7 @@ export const eventSlice = createSlice({
         status: 0,
         crowdfundLink: '',
         slug: '',
+        address: '',
       };
     },
     resetError: (state) => {

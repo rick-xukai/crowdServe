@@ -115,22 +115,22 @@ const ConnectedEventPopupElement = ({
               </div>
               <div className="info-item">
                 <img
-                  src={Images.LocationIcon.src}
-                  alt=""
-                  className="info-item-icon"
-                />
-                <div className="info-description">
-                  {connectedEventItemDetail.event.location || '-'}
-                </div>
-              </div>
-              <div className="info-item">
-                <img
                   src={Images.OrganiserIcon.src}
                   alt=""
                   className="info-item-icon"
                 />
                 <div className="info-description">
                   {connectedEventItemDetail.organizerName || '-'}
+                </div>
+              </div>
+              <div className="info-item">
+                <img
+                  src={Images.LocationIcon.src}
+                  alt=""
+                  className="info-item-icon"
+                />
+                <div className="info-description">
+                  {connectedEventItemDetail.event.location || '-'}
                 </div>
               </div>
               <div className="event-description">

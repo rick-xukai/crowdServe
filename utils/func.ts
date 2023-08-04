@@ -319,3 +319,13 @@ export const loadChart = (
     },
   });
 };
+
+export const formatLocation = (location: string, address: string) => {
+  if (location && address) {
+    return `${location}, ${address}`;
+  }
+  if (location && !address) {
+    return location;
+  }
+  return '-';
+};
