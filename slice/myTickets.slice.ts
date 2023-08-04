@@ -21,6 +21,11 @@ const defaultMyTicketUserEventDetail = {
   crowdfundLink: '',
   slug: '',
   organizerSlug: '',
+  address: '',
+  locationCoord: '',
+  descriptionImages: [],
+  descriptionShort: '',
+  refundPolicy: 0,
 };
 
 const defaultMyEventTicketDetail = {
@@ -77,6 +82,12 @@ export interface MyTicketsUserEventsResponseType {
   endTime: string;
   status: number;
   slug: string;
+  address: string;
+}
+
+export interface EventDetailDescriptionImages {
+  image: string;
+  size: string;
 }
 
 export interface MyTicketUserEventDetailResponseType {
@@ -92,6 +103,11 @@ export interface MyTicketUserEventDetailResponseType {
   crowdfundLink: string;
   slug: string;
   organizerSlug: string;
+  address: string;
+  locationCoord: string;
+  descriptionImages: EventDetailDescriptionImages[];
+  descriptionShort: string;
+  refundPolicy: number;
 }
 
 export interface MyEventTicketListResponseType {

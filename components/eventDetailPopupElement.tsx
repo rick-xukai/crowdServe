@@ -5,11 +5,7 @@ import TextTruncate from 'react-text-truncate';
 
 import { Images } from '../theme';
 import { formatTimeStrByTimeString } from '../utils/func';
-import {
-  FormatTimeKeys,
-  PriceUnit,
-  TicketStatus,
-} from '../constants/General';
+import { FormatTimeKeys, PriceUnit, TicketStatus } from '../constants/General';
 import { CollectibleDetailResponseType } from '../slice/collectible.slice';
 import { MyEventStatusContainer } from '../styles/myTickets.style';
 import { DetailContainerElement } from '../styles/collectibleDetail.style';
@@ -38,10 +34,7 @@ const EventDetailPopupElement = ({
         <Row className="item-info-row">
           <Col span={24} className="info-item-status">
             {TicketStatus.map((status) => {
-              if (
-                status.key === collectibleDetail.status &&
-                status.text
-              ) {
+              if (status.key === collectibleDetail.status && status.text) {
                 return (
                   <MyEventStatusContainer
                     key={status.key}
@@ -75,16 +68,6 @@ const EventDetailPopupElement = ({
           </Col>
           <Col span={24} className="info-item">
             <Image
-              src={Images.LocationIcon}
-              alt=""
-              className="info-item-icon"
-            />
-            <div className="info-description">
-              {collectibleDetail.event.location || '-'}
-            </div>
-          </Col>
-          <Col span={24} className="info-item">
-            <Image
               src={Images.OrganiserIcon}
               alt=""
               className="info-item-icon"
@@ -92,6 +75,16 @@ const EventDetailPopupElement = ({
             <span className="info-description">
               {collectibleDetail.organizerName || '-'}
             </span>
+          </Col>
+          <Col span={24} className="info-item">
+            <Image
+              src={Images.LocationIcon}
+              alt=""
+              className="info-item-icon"
+            />
+            <div className="info-description">
+              {collectibleDetail.event.location || '-'}
+            </div>
           </Col>
           <Col span={24} className="event-description">
             {(textShowMore && (

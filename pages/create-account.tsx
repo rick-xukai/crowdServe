@@ -36,7 +36,6 @@ import {
   PasswordNotMatch,
   BirthdayNotVaild,
   RegisterVerifyType,
-  AccountNotActivate,
 } from '../constants/General';
 import { Images } from '../theme';
 import { RouterKeys, CookieKeys } from '../constants/Keys';

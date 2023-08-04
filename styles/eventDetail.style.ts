@@ -290,10 +290,10 @@ const TicketTypeItem = styled(Col)`
   background: ${Colors.backgorund};
   border-radius: 6px;
   .type-img {
-    height: 162px;
+    height: 140px;
     padding: 6px;
     border-radius: 6px;
-    background: ${Colors.grayScale70};
+    background: ${Colors.black10};
     position: relative;
     img {
       width: 100%;
@@ -301,64 +301,73 @@ const TicketTypeItem = styled(Col)`
       object-fit: cover;
       border-radius: 4px;
     }
-  }
-  .type-info {
-    background: ${Colors.grayScale70};
-    border-radius: 6px;
-    overflow: hidden;
-    height: calc(100% - 162px);
-    .line {
+    .not-sale {
+      position: absolute;
+      border-radius: 0px 0px 4px 4px;
+      background: rgba(78, 78, 78, 0.7);
+      backdrop-filter: blur(8px);
+      color: ${Colors.white};
       text-align: center;
-      position: relative;
-      img {
-        width: 90%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        margin: auto;
-      }
-    }
-    .info-des {
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .title,
-    .price {
-      font-weight: 500;
-      font-size: 15px;
-      margin: 0;
-    }
-    .title-content {
-      max-height: 68px;
-      min-height: 68px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 21px;
+      height: 28px;
+      width: calc(100% - 12px);
+      bottom: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+  }
+  .type-info {
+    background: ${Colors.black10};
+    border-radius: 6px;
+    overflow: hidden;
+    padding: 20px;
+    position: relative;
+    .line {
+      text-align: center;
+      img {
+        position: absolute;
+        left: 0;
+        top: 10px;
+        right: 0;
+      }
+    }
+    .type-info-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
     .title {
-      margin-top: 6px;
       color: ${Colors.white};
       margin-bottom: 6px;
-      padding-left: 10px;
-      padding-right: 10px;
+      font-size: 15px;
+      line-height: 21px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+    .description {
+      color: ${Colors.grayScale40};
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
-      text-align: center;
     }
     .price {
       color: ${Colors.branding};
-    }
-    &.out-stock {
-      .title {
-        color: ${Colors.whiteMask};
-      }
-      .price {
-        color: ${Colors.brandingMask};
-      }
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 21px;
+      margin-top: 16px;
     }
   }
   .out-stock-mask {
@@ -377,9 +386,25 @@ const TicketTypeItem = styled(Col)`
     display: flex;
     justify-content: space-around;
     align-items: center;
+    font-family: Oswald;
   }
   @media (min-width: 1200px) {
+    .type-img {
+      height: 162px;
+    }
     cursor: pointer;
+  }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    .type-img {
+      height: 140px;
+    }
+  }
+  @media (max-width: 768px) {
+    .type-info {
+      .description {
+        -webkit-line-clamp: 1;
+      }
+    }
   }
 `;
 

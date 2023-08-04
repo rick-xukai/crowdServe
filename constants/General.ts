@@ -22,7 +22,7 @@ export const GooglePlayLink =
 export const AppLandingPage = 'https://app.ticket-crowdserve.com/landing-page';
 export const AppHost = 'user.activated.cn';
 export const PrimaryMarket = 'Primary Market';
-export const PurchaseFromFan = 'Purchase From Fan';
+export const PurchaseFromFan = 'Fan Resell';
 export const MyTickets = 'My Tickets';
 export const MyEvents = 'My Events';
 export const MyCollectibles = 'My Collectibles';
@@ -44,12 +44,16 @@ export const PasswordNotMatch = 'The passwords entered do not match.';
 export const BirthdayNotVaild = 'Please enter a valid birthday.';
 export const UserNotExist = `User doesn't exist`;
 export const ActivateAccountFirst = 'Please activate your account first.';
-export const AccountNotActivate = 'Your account has not been activated yet. Please activate your account to continue.';
+export const AccountNotActivate =
+  'Your account has not been activated yet. Please activate your account to continue.';
 export const InviteVerifyType = 0;
 export const RegisterVerifyType = 1;
 export const ForgotPasswordVerifyType = 2;
 export const VerificationCodeLength = 6;
-export const ForgotPasswordAccountNotActivate = 'forgotPasswordAccountNotActivate';
+export const ForgotPasswordAccountNotActivate =
+  'forgotPasswordAccountNotActivate';
+export const GoogleMapApiKeyDev = 'AIzaSyA2suiOjWXda3giLlDaKbH3XZh5rZtIoyU';
+export const GoogleMapApiKeyProd = 'AIzaSyCqzVq-mo37n0jfbkNk7K17ELw939KC8cw';
 
 export const TicketStatus = [
   {
@@ -154,3 +158,21 @@ export const CrowdFundStatus = {
   succeeded: 2,
   failed: 3,
 };
+export const DescriptionImagesSize = [
+  {
+    key: 8,
+    text: 'small',
+  },
+  {
+    key: 12,
+    text: 'medium',
+  },
+  {
+    key: 24,
+    text: 'large',
+  },
+];
+export enum SetRefundKey {
+  refundable = 0,
+  nonRefundable = 1,
+}
