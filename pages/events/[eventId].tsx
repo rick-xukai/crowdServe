@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { Spin, Row, Col, Tabs, Tooltip, message, Modal, Button } from 'antd';
@@ -8,11 +8,14 @@ import {
   LoadingOutlined,
   QuestionCircleOutlined,
   RightOutlined,
+  DownOutlined,
+  UpOutlined,
 } from '@ant-design/icons';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
-import TextTruncate from 'react-text-truncate';
 import { getAnalytics, logEvent } from 'firebase/analytics';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useCollapse } from 'react-collapsed';
 
 import {
   formatTimeStrByTimeString,
@@ -28,6 +31,7 @@ import {
   FirebaseEventEnv,
   AppDomain,
   DefaultEventListBannerPageSize,
+  SetRefundKey,
 } from '../../constants/General';
 import { Images } from '../../theme';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -58,6 +62,12 @@ import firebaseApp from '../../firebase';
 import EventService from '../../services/API/Event/Event.service';
 import { RouterKeys } from '../../constants/Keys';
 import PageNotFound from '../404';
+import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
+import { EventDetailCard } from '@/styles/myTicketsEventDetail.style';
+
+const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = [
+  'places',
+];
 
 const EventDetail = ({
   openGraphDetail,
@@ -65,8 +75,14 @@ const EventDetail = ({
   openGraphDetail: TicketDetailResponseType;
 }) => {
   const openAppInIos = useRef<any>(null);
+  const detailContentRef: any = useRef(null);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOLE_MAP_API_KEY as string,
+    libraries,
+  });
 
   const error = useAppSelector(selectEventDetailError);
   const loading = useAppSelector(selectEventDetailLoading);
@@ -77,13 +93,20 @@ const EventDetail = ({
   const [id, setEventId] = useState<string>('');
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
     useState(false);
-  const [textShowMore, setTextShowMore] = useState<boolean>(false);
   const [menuState, setMenuState] = useState<boolean>(false);
   const [tabActiveKey, setTabActiveKey] = useState<string>(PrimaryMarket);
   const [eventCorrect, setEventCorrect] = useState<boolean>(true);
   const [eventTicketTypeFilter, setEventTicketTypeFilter] = useState<
     EventTicketTypeResponseType[]
   >([]);
+  const [showMap, setShowMap] = useState<boolean>(false);
+  const [isExpanded, setExpanded] = useState<boolean>(false);
+  const [needShowMore, setNeedShowMore] = useState<boolean>(false);
+
+  const { getCollapseProps, getToggleProps } = useCollapse({
+    isExpanded,
+    collapsedHeight: 75,
+  });
 
   const tabsItem: TabsProps['items'] = [
     {
@@ -111,6 +134,17 @@ const EventDetail = ({
       children: '',
     },
   ];
+
+  const onMapLoad = useCallback((map: any) => {
+    if (map) {
+      const { center } = map;
+      const bounds = new window.google.maps.LatLngBounds({
+        lat: center.lat(),
+        lng: center.lng(),
+      });
+      map.fitBounds(bounds);
+    }
+  }, []);
 
   const getData = async (payload: string) => {
     const response = await dispatch(getEventDetailAction(payload));
@@ -176,6 +210,16 @@ const EventDetail = ({
       }
     }
   }, [eventDetailData]);
+
+  useEffect(() => {
+    if (!loading) {
+      if (detailContentRef.current.clientHeight > 57) {
+        setNeedShowMore(true);
+      } else {
+        setNeedShowMore(false);
+      }
+    }
+  }, [loading]);
 
   useEffect(() => {
     if (error) {
@@ -273,6 +317,9 @@ const EventDetail = ({
                         <Col span={24} className="info-title">
                           {eventDetailData.name}
                         </Col>
+                        <Col span={24} className="info-description-short">
+                          {eventDetailData.descriptionShort}
+                        </Col>
                         <Col span={24} className="info-item">
                           <Image
                             className="info-item-icon"
@@ -309,12 +356,58 @@ const EventDetail = ({
                             className="info-item-icon"
                           />
                           <div className="info-description">
-                            {formatLocation(
-                              eventDetailData.location,
-                              eventDetailData.address
+                            <span>
+                              {formatLocation(
+                                eventDetailData.location,
+                                eventDetailData.address
+                              )}
+                            </span>
+                            {eventDetailData.locationCoord && (
+                              <span
+                                className="show-map-action"
+                                onClick={() => setShowMap(!showMap)}
+                              >
+                                {(!showMap && (
+                                  <>
+                                    SHOW MAP
+                                    <DownOutlined />
+                                  </>
+                                )) || (
+                                  <>
+                                    HIDE MAP
+                                    <UpOutlined />
+                                  </>
+                                )}
+                              </span>
                             )}
                           </div>
                         </Col>
+                        {showMap && isLoaded && (
+                          <Col span={24}>
+                            <div className="google-map-content">
+                              <GoogleMap
+                                mapContainerStyle={{
+                                  width: '100%',
+                                  height: '220px',
+                                  marginTop: '10px',
+                                }}
+                                options={{
+                                  disableDefaultUI: true,
+                                }}
+                                center={{
+                                  lat: Number(
+                                    eventDetailData.locationCoord.split(',')[0]
+                                  ),
+                                  lng: Number(
+                                    eventDetailData.locationCoord.split(',')[1]
+                                  ),
+                                }}
+                                zoom={10}
+                                onLoad={onMapLoad}
+                              />
+                            </div>
+                          </Col>
+                        )}
                         {eventDetailData.crowdfundLink && (
                           <Col span={24} className="crowd-fund-link">
                             <a
@@ -325,29 +418,88 @@ const EventDetail = ({
                             </a>
                           </Col>
                         )}
-                        <Col span={24} className="ticket-description">
-                          {(textShowMore && (
-                            <p className="whole-description">
-                              {eventDetailData.description}
-                            </p>
-                          )) || (
-                            <TextTruncate
-                              line={2}
-                              element="div"
-                              truncateText="…"
-                              containerClassName="text-typography"
-                              text={eventDetailData.description || '-'}
-                              textTruncateChild={
-                                <span
-                                  className="show-more"
-                                  onClick={() => setTextShowMore(true)}
+                        <EventDetailCard
+                          span={24}
+                          className="event-detail-content"
+                        >
+                          <Col
+                            span={24}
+                            className="detail-title"
+                            style={{
+                              marginBottom:
+                                (!eventDetailData.description && 24) || 0,
+                            }}
+                          >
+                            Event Details
+                          </Col>
+                          <Col span={24} className="detail-show-more-box">
+                            {needShowMore && (
+                              <div
+                                className={
+                                  (!isExpanded && 'show-more-box-action') ||
+                                  'show-more-box-action no-background'
+                                }
+                              >
+                                <div
+                                  {...getToggleProps({
+                                    onClick: () =>
+                                      setExpanded(
+                                        (prevExpanded) => !prevExpanded
+                                      ),
+                                  })}
                                 >
-                                  Show More
-                                </span>
+                                  <div className="action-button">
+                                    <span>
+                                      {(!isExpanded && 'Show More') ||
+                                        'Show Less'}
+                                    </span>
+                                    <span>
+                                      {(!isExpanded && <DownOutlined />) || (
+                                        <UpOutlined />
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                            <Col
+                              span={24}
+                              className={
+                                (!needShowMore &&
+                                  'show-box event-detail no-show-more') ||
+                                'show-box event-detail'
                               }
-                            />
-                          )}
-                        </Col>
+                              {...getCollapseProps()}
+                            >
+                              <div ref={detailContentRef}>
+                                {eventDetailData.description && (
+                                  <p className="detail-description">
+                                    {eventDetailData.description}
+                                  </p>
+                                )}
+                                <ImageSizeLayoutComponent
+                                  images={eventDetailData.descriptionImages}
+                                />
+                                <p
+                                  className="refund-info"
+                                  style={{
+                                    marginTop:
+                                      (eventDetailData.descriptionImages &&
+                                        eventDetailData.descriptionImages
+                                          .length &&
+                                        24) ||
+                                      0,
+                                  }}
+                                >
+                                  {(eventDetailData.refundPolicy ===
+                                    SetRefundKey.nonRefundable &&
+                                    '* Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
+                                    '*  To request a refund, please contact the event organizer.'}
+                                </p>
+                              </div>
+                            </Col>
+                          </Col>
+                        </EventDetailCard>
                       </Row>
                     </div>
                     <div className="item-tabs">

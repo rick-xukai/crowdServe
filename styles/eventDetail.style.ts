@@ -58,6 +58,13 @@ const EventDetailContainer = styled.div`
         margin-bottom: 10px;
         max-width: 100%;
       }
+      .info-description-short {
+        color: ${Colors.grayScale40};
+        margin-bottom: 12px;
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 24px;
+      }
       .crowd-fund-link {
         font-weight: 400;
         font-size: 13px;
@@ -82,6 +89,27 @@ const EventDetailContainer = styled.div`
           margin-top: 2px !important;
           min-width: 16px !important;
           min-height: 16px !important;
+        }
+        .show-map-action {
+          cursor: pointer;
+          margin-left: 10px;
+          color: ${Colors.branding};
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 19px;
+          .anticon {
+            margin-left: 5px;
+          }
+        }
+      }
+      .google-map-content {
+        width: 100%;
+        height: 266px;
+        border-radius: 4px;
+        background: #fff;
+        margin-top: 12px;
+        > :first-child {
+          height: 100% !important;
         }
       }
       .info-description {

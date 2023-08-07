@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { verificationApi } from '../utils/func';
 import EventService from '../services/API/Event';
+import { EventDetailDescriptionImages } from './myTickets.slice';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -56,6 +57,10 @@ export interface EventDetailResponseType {
   crowdfundLink: string;
   slug: string;
   address: string;
+  locationCoord: string;
+  descriptionImages: EventDetailDescriptionImages[];
+  refundPolicy: number;
+  descriptionShort: string;
 }
 
 export interface EventTicketTypeResponseType {
@@ -287,6 +292,10 @@ const initialState: EventState = {
     crowdfundLink: '',
     slug: '',
     address: '',
+    locationCoord: '',
+    descriptionImages: [],
+    refundPolicy: 0,
+    descriptionShort: '',
   },
   eventMarket: [],
 };
@@ -310,6 +319,10 @@ export const eventSlice = createSlice({
         crowdfundLink: '',
         slug: '',
         address: '',
+        locationCoord: '',
+        descriptionImages: [],
+        refundPolicy: 0,
+        descriptionShort: '',
       };
     },
     resetError: (state) => {

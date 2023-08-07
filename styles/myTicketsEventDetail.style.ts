@@ -58,10 +58,10 @@ const MyTicketsEventDetailContainer = styled.div`
       }
       .info-description-short {
         color: ${Colors.grayScale40};
-        font-size: 13px;
-        font-weight: 300;
-        line-height: 19px;
         margin-bottom: 12px;
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 24px;
       }
       .crowd-fund-link {
         font-weight: 400;
@@ -469,6 +469,9 @@ const EventDetailCard = styled(Col)`
     .show-box {
       &.no-show-more {
         height: auto !important;
+      }
+      &.event-detail {
+        margin-bottom: 40px;
       }
       .detail-description,
       .refund-info {
