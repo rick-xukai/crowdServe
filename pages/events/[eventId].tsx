@@ -465,8 +465,7 @@ const EventDetail = ({
                             <Col
                               span={24}
                               className={
-                                (!needShowMore &&
-                                  'show-box event-detail no-show-more') ||
+                                (!needShowMore && 'show-box no-show-more') ||
                                 'show-box event-detail'
                               }
                               {...getCollapseProps()}
