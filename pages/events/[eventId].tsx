@@ -573,7 +573,7 @@ const EventDetail = ({
                                           NOT ON SALE YET
                                         </div>
                                       )}
-                                      {item.stock === 0 && (
+                                      {item.stock === 0 && item.onSale && (
                                         <div className="out-stock-mask">
                                           OUT OF STOCK
                                         </div>
