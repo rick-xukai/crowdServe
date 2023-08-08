@@ -331,5 +331,5 @@ export const formatLocation = (location: string, address: string) => {
 };
 
 export const formatDescription = (text: string) => {
-  return text.replaceAll('\n\n', '<br />');
+  return text.replaceAll('\n', '<br />');
 };
