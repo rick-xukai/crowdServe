@@ -407,7 +407,7 @@ const TicketTypeItem = styled(Col)`
     right: 0;
     margin: auto;
     background: rgba(0, 0, 0, 0.5);
-    border-radius: 6px;
+    border-radius: 4px;
     font-weight: 700;
     font-size: 20px;
     color: ${Colors.grayScale10};
