@@ -590,7 +590,13 @@ const EventDetail = ({
                                           alt=""
                                         />
                                       </div>
-                                      <div className="type-info-content">
+                                      <div
+                                        className={
+                                          (item.stock === 0 &&
+                                            'type-info-content opacity') ||
+                                          'type-info-content'
+                                        }
+                                      >
                                         <div>
                                           <Col
                                             span={24}

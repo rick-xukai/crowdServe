@@ -370,6 +370,9 @@ const TicketTypeItem = styled(Col)`
       height: 100%;
       display: flex;
       align-items: center;
+      &.opacity {
+        opacity: 0.6;
+      }
     }
     .title {
       color: ${Colors.white};
