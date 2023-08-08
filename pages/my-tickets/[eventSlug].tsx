@@ -29,6 +29,7 @@ import {
   formatTimeStrByTimeString,
   bodyOverflow,
   formatLocation,
+  formatDescription,
 } from '../../utils/func';
 import PageHearderComponent from '../../components/pageHearder';
 import PageHearderResponsive from '../../components/pageHearderResponsive';
@@ -525,9 +526,15 @@ const MyTicketsEventDetail = () => {
                         <Col span={24} className="info-title">
                           {eventDetail.name || '-'}
                         </Col>
-                        <Col span={24} className="info-description-short">
-                          {eventDetail.descriptionShort}
-                        </Col>
+                        <Col
+                          span={24}
+                          className="info-description-short"
+                          dangerouslySetInnerHTML={{
+                            __html: formatDescription(
+                              eventDetail.descriptionShort
+                            ),
+                          }}
+                        />
                         <Col span={24} className="info-item">
                           <Image
                             className="info-item-icon"
@@ -695,9 +702,14 @@ const MyTicketsEventDetail = () => {
                             >
                               <div ref={detailContentRef}>
                                 {eventDetail.description && (
-                                  <p className="detail-description">
-                                    {eventDetail.description}
-                                  </p>
+                                  <p
+                                    className="detail-description"
+                                    dangerouslySetInnerHTML={{
+                                      __html: formatDescription(
+                                        eventDetail.description
+                                      ),
+                                    }}
+                                  />
                                 )}
                                 <ImageSizeLayoutComponent
                                   images={eventDetail.descriptionImages}

@@ -21,6 +21,7 @@ import {
   formatTimeStrByTimeString,
   openApp,
   formatLocation,
+  formatDescription,
 } from '../../utils/func';
 import {
   FormatTimeKeys,
@@ -338,9 +339,15 @@ const EventDetail = ({
                         <Col span={24} className="info-title">
                           {eventDetailData.name}
                         </Col>
-                        <Col span={24} className="info-description-short">
-                          {eventDetailData.descriptionShort}
-                        </Col>
+                        <Col
+                          span={24}
+                          className="info-description-short"
+                          dangerouslySetInnerHTML={{
+                            __html: formatDescription(
+                              eventDetailData.descriptionShort
+                            ),
+                          }}
+                        />
                         <Col span={24} className="info-item">
                           <Image
                             className="info-item-icon"
@@ -493,9 +500,14 @@ const EventDetail = ({
                             >
                               <div ref={detailContentRef}>
                                 {eventDetailData.description && (
-                                  <p className="detail-description">
-                                    {eventDetailData.description}
-                                  </p>
+                                  <p
+                                    className="detail-description"
+                                    dangerouslySetInnerHTML={{
+                                      __html: formatDescription(
+                                        eventDetailData.description
+                                      ),
+                                    }}
+                                  />
                                 )}
                                 <ImageSizeLayoutComponent
                                   images={eventDetailData.descriptionImages}
