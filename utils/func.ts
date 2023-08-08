@@ -329,3 +329,7 @@ export const formatLocation = (location: string, address: string) => {
   }
   return '-';
 };
+
+export const formatDescription = (text: string) => {
+  return text.replaceAll('\n\n', '<br />');
+};
