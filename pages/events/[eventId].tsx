@@ -32,6 +32,7 @@ import {
   AppDomain,
   DefaultEventListBannerPageSize,
   SetRefundKey,
+  EventStatus,
 } from '../../constants/General';
 import { Images } from '../../theme';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -64,6 +65,7 @@ import { RouterKeys } from '../../constants/Keys';
 import PageNotFound from '../404';
 import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
 import { EventDetailCard } from '@/styles/myTicketsEventDetail.style';
+import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
 
 const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = [
   'places',
@@ -314,6 +316,25 @@ const EventDetail = ({
                   <div className="event-detail-container">
                     <div className="item-info">
                       <Row className="item-info-row">
+                        <Col span={24} className="info-item-status">
+                          {EventStatus.map((status) => {
+                            if (
+                              status.key === eventDetailData.status &&
+                              status.text
+                            ) {
+                              return (
+                                <StatusContainer
+                                  key={status.key}
+                                  bgColor={status.bgColor}
+                                  textColor={status.color}
+                                >
+                                  {status.text}
+                                </StatusContainer>
+                              );
+                            }
+                            return null;
+                          })}
+                        </Col>
                         <Col span={24} className="info-title">
                           {eventDetailData.name}
                         </Col>

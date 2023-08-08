@@ -46,6 +46,9 @@ const EventDetailContainer = styled.div`
     position: relative;
     .item-info {
       .item-info-row {
+        .info-item-status {
+          margin-bottom: 10px;
+        }
         > :last-child {
           margin-bottom: 0;
         }
