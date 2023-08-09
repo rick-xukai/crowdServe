@@ -89,7 +89,7 @@ const EventDetailPopupElement = ({
           <Col span={24} className="event-description">
             {(textShowMore && (
               <p className="whole-description">
-                {collectibleDetail.event.description || '-'}
+                {collectibleDetail.event.descriptionShort || '-'}
               </p>
             )) || (
               <TextTruncate
@@ -97,7 +97,7 @@ const EventDetailPopupElement = ({
                 element="div"
                 truncateText="…"
                 containerClassName="text-typography"
-                text={collectibleDetail.event.description || '-'}
+                text={collectibleDetail.event.descriptionShort || '-'}
                 textTruncateChild={
                   <span
                     className="show-more"

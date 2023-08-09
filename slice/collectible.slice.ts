@@ -31,6 +31,7 @@ export const defaultCollectibleDetail = {
     slug: '',
     name: '',
     description: '',
+    descriptionShort: '',
     image: '',
     location: '',
     startTime: '',
@@ -101,6 +102,7 @@ export interface CollectibleDetailResponseType {
     slug: string;
     name: string;
     description: string;
+    descriptionShort: string;
     image: string;
     location: string;
     startTime: string;
