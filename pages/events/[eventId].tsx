@@ -556,6 +556,11 @@ const EventDetail = ({
                                   lg={12}
                                   key={item.id}
                                   onClick={() => toShopify(item)}
+                                  className={
+                                    ((!item.onSale || item.stock === 0) &&
+                                      'no-click') ||
+                                    ''
+                                  }
                                 >
                                   <Row>
                                     <Col className="type-img" xl={8} span={10}>
@@ -569,7 +574,7 @@ const EventDetail = ({
                                         }}
                                       />
                                       {!item.onSale && (
-                                        <div className="not-sale">
+                                        <div className="out-stock-mask">
                                           NOT ON SALE YET
                                         </div>
                                       )}

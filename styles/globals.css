@@ -1239,6 +1239,10 @@ iframe {
   position: fixed;
 }
 
+.ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover {
+  background-color: #fc0006;
+}
+
 @media (min-width: 1200px) {
   .text-typography .show-more {
     cursor: pointer;
