@@ -47,6 +47,11 @@ const EventDetailPopupElement = ({
         <Col span={24} className="info-title">
           {collectibleDetail.event.name || '-'}
         </Col>
+        <Col span={24} className="event-description">
+          <p className="whole-description">
+            {collectibleDetail.event.descriptionShort || '-'}
+          </p>
+        </Col>
         <Col span={24} className="info-item">
           <Image className="info-item-icon" src={Images.ClockIcon} alt="" />
           <div className="info-description">
@@ -75,11 +80,6 @@ const EventDetailPopupElement = ({
               `${collectibleDetail.event.location}, ${collectibleDetail.event.address}`) ||
               '-'}
           </div>
-        </Col>
-        <Col span={24} className="event-description">
-          <p className="whole-description">
-            {collectibleDetail.event.descriptionShort || '-'}
-          </p>
         </Col>
       </Row>
     </div>

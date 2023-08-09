@@ -821,7 +821,6 @@ const DetailContainerElement = styled.div`
       font-weight: 700;
       font-size: 24px;
       color: ${Colors.white};
-      margin-bottom: 10px;
       max-width: 100%;
     }
     .crowd-fund-link {
@@ -862,6 +861,7 @@ const DetailContainerElement = styled.div`
     }
     .event-description {
       margin-top: 8px;
+      margin-bottom: 10px;
       position: relative;
     }
     .whole-description {
