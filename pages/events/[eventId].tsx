@@ -597,7 +597,7 @@ const EventDetail = ({
                                       </div>
                                       <div
                                         className={
-                                          (item.stock === 0 &&
+                                          ((item.stock === 0 || !item.onSale) &&
                                             'type-info-content opacity') ||
                                           'type-info-content'
                                         }
