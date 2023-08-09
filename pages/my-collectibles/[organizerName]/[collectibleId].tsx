@@ -574,7 +574,9 @@ const CollectibleDetail = () => {
                                   className="info-item-icon"
                                 />
                                 <div className="info-detail-description">
-                                  {collectibleDetail.event.location || '-'}
+                                  {(collectibleDetail.event.location &&
+                                    `${collectibleDetail.event.location}, ${collectibleDetail.event.address}`) ||
+                                    '-'}
                                 </div>
                               </Col>
                             </Row>

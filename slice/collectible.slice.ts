@@ -34,6 +34,7 @@ export const defaultCollectibleDetail = {
     descriptionShort: '',
     image: '',
     location: '',
+    address: '',
     startTime: '',
     endTime: '',
     status: 0,
@@ -105,6 +106,7 @@ export interface CollectibleDetailResponseType {
     descriptionShort: string;
     image: string;
     location: string;
+    address: string;
     startTime: string;
     endTime: string;
     status: number;
