@@ -320,6 +320,9 @@ const EventDetailContainer = styled.div`
 const TicketTypeItem = styled(Col)`
   background: ${Colors.backgorund};
   border-radius: 6px;
+  &.no-click {
+    cursor: default;
+  }
   .type-img {
     height: 140px;
     padding: 6px;
