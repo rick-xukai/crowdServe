@@ -49,7 +49,7 @@ const EventDetailPopupElement = ({
         </Col>
         <Col span={24} className="event-description">
           <p className="whole-description">
-            {collectibleDetail.event.descriptionShort || '-'}
+            {collectibleDetail.event.descriptionShort}
           </p>
         </Col>
         <Col span={24} className="info-item">

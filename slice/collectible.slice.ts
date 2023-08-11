@@ -58,6 +58,8 @@ export const defaultConnectedEventItem = {
     location: '',
     startTime: '',
     endTime: '',
+    descriptionShort: '',
+    address: '',
   },
   ticketType: {
     name: '',
@@ -130,6 +132,8 @@ export interface ConnectedEventsResponseType {
     location: string;
     startTime: string;
     endTime: string;
+    address: string;
+    descriptionShort: string;
   };
   ticketType: {
     name: string;
