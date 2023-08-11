@@ -77,7 +77,11 @@ const EventDetailPopupElement = ({
           <Image src={Images.LocationIcon} alt="" className="info-item-icon" />
           <div className="info-description">
             {(collectibleDetail.event.location &&
-              `${collectibleDetail.event.location}, ${collectibleDetail.event.address}`) ||
+              `${collectibleDetail.event.location}${
+                (collectibleDetail.event.address &&
+                  `, ${collectibleDetail.event.address}`) ||
+                ''
+              }`) ||
               '-'}
           </div>
         </Col>
