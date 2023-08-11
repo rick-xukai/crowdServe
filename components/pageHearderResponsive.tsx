@@ -152,9 +152,11 @@ const PageHearderResponsive = ({
   const userLogout = () => {
     setShowLogout(false);
     cookie.removeCookie(CookieKeys.userLoginToken, {
+      path: '/',
       domain: window.location.hostname,
     });
     cookie.removeCookie(CookieKeys.userLoginEmail, {
+      path: '/',
       domain: window.location.hostname,
     });
     router.push(RouterKeys.login);
