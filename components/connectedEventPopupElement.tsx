@@ -132,7 +132,11 @@ const ConnectedEventPopupElement = ({
               />
               <div className="info-description">
                 {(connectedEventItemDetail.event.location &&
-                  `${connectedEventItemDetail.event.location}, ${connectedEventItemDetail.event.address}`) ||
+                  `${connectedEventItemDetail.event.location}${
+                    (connectedEventItemDetail.event.address &&
+                      `, ${connectedEventItemDetail.event.address}`) ||
+                    ''
+                  }`) ||
                   '-'}
               </div>
             </div>

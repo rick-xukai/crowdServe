@@ -575,7 +575,11 @@ const CollectibleDetail = () => {
                                 />
                                 <div className="info-detail-description">
                                   {(collectibleDetail.event.location &&
-                                    `${collectibleDetail.event.location}, ${collectibleDetail.event.address}`) ||
+                                    `${collectibleDetail.event.location}${
+                                      (collectibleDetail.event.address &&
+                                        `, ${collectibleDetail.event.address}`) ||
+                                      ''
+                                    }`) ||
                                     '-'}
                                 </div>
                               </Col>
