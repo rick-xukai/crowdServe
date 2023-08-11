@@ -77,6 +77,11 @@ const ConnectedEventPopupElement = ({
             <div className="info-name">
               <p>{connectedEventItemDetail.event.name || '-'}</p>
             </div>
+            <div className="event-description" style={{ marginTop: 0 }}>
+              <p className="whole-description">
+                {connectedEventItemDetail.event.descriptionShort}
+              </p>
+            </div>
             {connectedEventItemDetail.privilegeType ===
               PrivilegeType.discount.status && (
               <div className="info-item">
@@ -130,11 +135,6 @@ const ConnectedEventPopupElement = ({
                   `${connectedEventItemDetail.event.location}, ${connectedEventItemDetail.event.address}`) ||
                   '-'}
               </div>
-            </div>
-            <div className="event-description">
-              <p className="whole-description">
-                {connectedEventItemDetail.event.descriptionShort}
-              </p>
             </div>
             {(connectedEventItemDetail.privilegeType ===
               PrivilegeType.discount.status && (
