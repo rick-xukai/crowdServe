@@ -3,7 +3,7 @@ import { Row, Col, Divider } from 'antd';
 import Image from 'next/image';
 
 import { Images } from '../theme';
-import { formatTimeStrByTimeString } from '../utils/func';
+import { formatTimeStrByTimeString, formatLocation } from '../utils/func';
 import { FormatTimeKeys, PriceUnit, TicketStatus } from '../constants/General';
 import { CollectibleDetailResponseType } from '../slice/collectible.slice';
 import { MyEventStatusContainer } from '../styles/myTickets.style';
@@ -76,13 +76,10 @@ const EventDetailPopupElement = ({
         <Col span={24} className="info-item">
           <Image src={Images.LocationIcon} alt="" className="info-item-icon" />
           <div className="info-description">
-            {(collectibleDetail.event.location &&
-              `${collectibleDetail.event.location}${
-                (collectibleDetail.event.address &&
-                  `, ${collectibleDetail.event.address}`) ||
-                ''
-              }`) ||
-              '-'}
+            {formatLocation(
+              collectibleDetail.event.location,
+              collectibleDetail.event.address
+            )}
           </div>
         </Col>
       </Row>

@@ -8,7 +8,7 @@ import {
   PrivilegeType,
   TicketStatus,
 } from '../constants/General';
-import { formatTimeStrByTimeString } from '../utils/func';
+import { formatTimeStrByTimeString, formatLocation } from '../utils/func';
 import { ConnectedEventsResponseType } from '../slice/collectible.slice';
 import { MyEventStatusContainer } from '../styles/myTickets.style';
 import { ConnectedEventContainerElement } from '../styles/collectibleDetail.style';
@@ -131,13 +131,10 @@ const ConnectedEventPopupElement = ({
                 className="info-item-icon"
               />
               <div className="info-description">
-                {(connectedEventItemDetail.event.location &&
-                  `${connectedEventItemDetail.event.location}${
-                    (connectedEventItemDetail.event.address &&
-                      `, ${connectedEventItemDetail.event.address}`) ||
-                    ''
-                  }`) ||
-                  '-'}
+                {formatLocation(
+                  connectedEventItemDetail.event.location,
+                  connectedEventItemDetail.event.address
+                )}
               </div>
             </div>
             {(connectedEventItemDetail.privilegeType ===
