@@ -14,7 +14,11 @@ import {
   ListPageScrollDifference,
   DifferentEmailErrorMessafe,
 } from '../constants/General';
-import { checkStatusIcon, formatTimeStrByTimeString } from '../utils/func';
+import {
+  checkStatusIcon,
+  formatTimeStrByTimeString,
+  formatLocation,
+} from '../utils/func';
 import AuthHoc from '../components/hoc/AuthHoc';
 import PageHearderComponent from '../components/pageHearder';
 import PageHearderResponsive from '../components/pageHearderResponsive';
@@ -213,7 +217,7 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
             <Col className="page-main">
               {(myTicketsUserEventsForAll.length && (
                 <Row
-                  gutter={[{ md: 24 }, { xs: 24, md: 32 }]}
+                  gutter={[{ md: 24 }, { xs: 24, md: 24, sm: 24 }]}
                   className="list-row"
                 >
                   {myTicketsUserEventsForAll.map((item) => (
@@ -295,16 +299,6 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
                             </Col>
                             <Col span={24} className="info-item">
                               <Image
-                                src={Images.LocationIcon}
-                                alt=""
-                                className="info-item-icon"
-                              />
-                              <div className="info-description">
-                                {item.location || '-'}
-                              </div>
-                            </Col>
-                            <Col span={24} className="info-item">
-                              <Image
                                 src={Images.OrganiserIcon}
                                 alt=""
                                 className="info-item-icon"
@@ -312,6 +306,16 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
                               <span className="info-description">
                                 {item.organizerName || '-'}
                               </span>
+                            </Col>
+                            <Col span={24} className="info-item">
+                              <Image
+                                src={Images.LocationIcon}
+                                alt=""
+                                className="info-item-icon"
+                              />
+                              <div className="info-description">
+                                {formatLocation(item.location, item.address)}
+                              </div>
                             </Col>
                           </Row>
                         </div>

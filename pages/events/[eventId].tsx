@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { Spin, Row, Col, Tabs, Tooltip, message, Modal, Button } from 'antd';
@@ -8,13 +8,21 @@ import {
   LoadingOutlined,
   QuestionCircleOutlined,
   RightOutlined,
+  DownOutlined,
+  UpOutlined,
 } from '@ant-design/icons';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
-import TextTruncate from 'react-text-truncate';
 import { getAnalytics, logEvent } from 'firebase/analytics';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useCollapse } from 'react-collapsed';
 
-import { formatTimeStrByTimeString, openApp } from '../../utils/func';
+import {
+  formatTimeStrByTimeString,
+  openApp,
+  formatLocation,
+  formatDescription,
+} from '../../utils/func';
 import {
   FormatTimeKeys,
   PriceUnit,
@@ -24,6 +32,8 @@ import {
   FirebaseEventEnv,
   AppDomain,
   DefaultEventListBannerPageSize,
+  SetRefundKey,
+  EventStatus,
 } from '../../constants/General';
 import { Images } from '../../theme';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -54,6 +64,13 @@ import firebaseApp from '../../firebase';
 import EventService from '../../services/API/Event/Event.service';
 import { RouterKeys } from '../../constants/Keys';
 import PageNotFound from '../404';
+import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
+import { EventDetailCard } from '@/styles/myTicketsEventDetail.style';
+import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
+
+const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = [
+  'places',
+];
 
 const EventDetail = ({
   openGraphDetail,
@@ -61,8 +78,14 @@ const EventDetail = ({
   openGraphDetail: TicketDetailResponseType;
 }) => {
   const openAppInIos = useRef<any>(null);
+  const detailContentRef: any = useRef(null);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOLE_MAP_API_KEY as string,
+    libraries,
+  });
 
   const error = useAppSelector(selectEventDetailError);
   const loading = useAppSelector(selectEventDetailLoading);
@@ -73,13 +96,20 @@ const EventDetail = ({
   const [id, setEventId] = useState<string>('');
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
     useState(false);
-  const [textShowMore, setTextShowMore] = useState<boolean>(false);
   const [menuState, setMenuState] = useState<boolean>(false);
   const [tabActiveKey, setTabActiveKey] = useState<string>(PrimaryMarket);
   const [eventCorrect, setEventCorrect] = useState<boolean>(true);
   const [eventTicketTypeFilter, setEventTicketTypeFilter] = useState<
     EventTicketTypeResponseType[]
   >([]);
+  const [showMap, setShowMap] = useState<boolean>(false);
+  const [isExpanded, setExpanded] = useState<boolean>(false);
+  const [needShowMore, setNeedShowMore] = useState<boolean>(false);
+
+  const { getCollapseProps, getToggleProps } = useCollapse({
+    isExpanded,
+    collapsedHeight: 75,
+  });
 
   const tabsItem: TabsProps['items'] = [
     {
@@ -108,6 +138,17 @@ const EventDetail = ({
     },
   ];
 
+  const onMapLoad = useCallback((map: any) => {
+    if (map) {
+      const { center } = map;
+      const bounds = new window.google.maps.LatLngBounds({
+        lat: center.lat(),
+        lng: center.lng(),
+      });
+      map.fitBounds(bounds);
+    }
+  }, []);
+
   const getData = async (payload: string) => {
     const response = await dispatch(getEventDetailAction(payload));
     if (response.type === getEventDetailAction.fulfilled.toString()) {
@@ -133,11 +174,14 @@ const EventDetail = ({
     }
   };
 
-  const toShopify = (link: string, stock: number) => {
-    if (stock === 0 || !link) {
+  const toShopify = (data: EventTicketTypeResponseType) => {
+    if (data.stock === 0 || !data.externalLink) {
       return;
     }
-    window.open(link, '_blank');
+    if (!data.onSale) {
+      return;
+    }
+    window.open(data.externalLink, '_blank');
   };
 
   useEffect(() => {
@@ -169,6 +213,16 @@ const EventDetail = ({
       }
     }
   }, [eventDetailData]);
+
+  useEffect(() => {
+    if (!loading) {
+      if (detailContentRef.current.clientHeight > 57) {
+        setNeedShowMore(true);
+      } else {
+        setNeedShowMore(false);
+      }
+    }
+  }, [loading]);
 
   useEffect(() => {
     if (error) {
@@ -263,9 +317,37 @@ const EventDetail = ({
                   <div className="event-detail-container">
                     <div className="item-info">
                       <Row className="item-info-row">
+                        <Col span={24} className="info-item-status">
+                          {EventStatus.map((status) => {
+                            if (
+                              status.key === eventDetailData.status &&
+                              status.text
+                            ) {
+                              return (
+                                <StatusContainer
+                                  key={status.key}
+                                  bgColor={status.bgColor}
+                                  textColor={status.color}
+                                >
+                                  {status.text}
+                                </StatusContainer>
+                              );
+                            }
+                            return null;
+                          })}
+                        </Col>
                         <Col span={24} className="info-title">
                           {eventDetailData.name}
                         </Col>
+                        <Col
+                          span={24}
+                          className="info-description-short"
+                          dangerouslySetInnerHTML={{
+                            __html: formatDescription(
+                              eventDetailData.descriptionShort
+                            ),
+                          }}
+                        />
                         <Col span={24} className="info-item">
                           <Image
                             className="info-item-icon"
@@ -287,16 +369,6 @@ const EventDetail = ({
                         </Col>
                         <Col span={24} className="info-item">
                           <Image
-                            src={Images.LocationIcon}
-                            alt=""
-                            className="info-item-icon"
-                          />
-                          <div className="info-description">
-                            {eventDetailData.location || '-'}
-                          </div>
-                        </Col>
-                        <Col span={24} className="info-item">
-                          <Image
                             src={Images.OrganiserIcon}
                             alt=""
                             className="info-item-icon"
@@ -305,6 +377,65 @@ const EventDetail = ({
                             {eventDetailData.organizerName || '-'}
                           </span>
                         </Col>
+                        <Col span={24} className="info-item">
+                          <Image
+                            src={Images.LocationIcon}
+                            alt=""
+                            className="info-item-icon"
+                          />
+                          <div className="info-description">
+                            <span>
+                              {formatLocation(
+                                eventDetailData.location,
+                                eventDetailData.address
+                              )}
+                            </span>
+                            {eventDetailData.locationCoord && (
+                              <span
+                                className="show-map-action"
+                                onClick={() => setShowMap(!showMap)}
+                              >
+                                {(!showMap && (
+                                  <>
+                                    SHOW MAP
+                                    <DownOutlined />
+                                  </>
+                                )) || (
+                                  <>
+                                    HIDE MAP
+                                    <UpOutlined />
+                                  </>
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </Col>
+                        {showMap && isLoaded && (
+                          <Col span={24}>
+                            <div className="google-map-content">
+                              <GoogleMap
+                                mapContainerStyle={{
+                                  width: '100%',
+                                  height: '220px',
+                                  marginTop: '10px',
+                                }}
+                                options={{
+                                  disableDefaultUI: true,
+                                }}
+                                center={{
+                                  lat: Number(
+                                    eventDetailData.locationCoord.split(',')[0]
+                                  ),
+                                  lng: Number(
+                                    eventDetailData.locationCoord.split(',')[1]
+                                  ),
+                                }}
+                                zoom={10}
+                                onLoad={onMapLoad}
+                              />
+                            </div>
+                          </Col>
+                        )}
                         {eventDetailData.crowdfundLink && (
                           <Col span={24} className="crowd-fund-link">
                             <a
@@ -315,29 +446,92 @@ const EventDetail = ({
                             </a>
                           </Col>
                         )}
-                        <Col span={24} className="ticket-description">
-                          {(textShowMore && (
-                            <p className="whole-description">
-                              {eventDetailData.description}
-                            </p>
-                          )) || (
-                            <TextTruncate
-                              line={2}
-                              element="div"
-                              truncateText="…"
-                              containerClassName="text-typography"
-                              text={eventDetailData.description || '-'}
-                              textTruncateChild={
-                                <span
-                                  className="show-more"
-                                  onClick={() => setTextShowMore(true)}
+                        <EventDetailCard
+                          span={24}
+                          className="event-detail-content"
+                        >
+                          <Col
+                            span={24}
+                            className="detail-title"
+                            style={{
+                              marginBottom:
+                                (!eventDetailData.description && 24) || 0,
+                            }}
+                          >
+                            Event Details
+                          </Col>
+                          <Col span={24} className="detail-show-more-box">
+                            {needShowMore && (
+                              <div
+                                className={
+                                  (!isExpanded && 'show-more-box-action') ||
+                                  'show-more-box-action no-background'
+                                }
+                              >
+                                <div
+                                  {...getToggleProps({
+                                    onClick: () =>
+                                      setExpanded(
+                                        (prevExpanded) => !prevExpanded
+                                      ),
+                                  })}
                                 >
-                                  Show More
-                                </span>
+                                  <div className="action-button">
+                                    <span>
+                                      {(!isExpanded && 'Show More') ||
+                                        'Show Less'}
+                                    </span>
+                                    <span>
+                                      {(!isExpanded && <DownOutlined />) || (
+                                        <UpOutlined />
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                            <Col
+                              span={24}
+                              className={
+                                (!needShowMore && 'show-box no-show-more') ||
+                                'show-box event-detail'
                               }
-                            />
-                          )}
-                        </Col>
+                              {...getCollapseProps()}
+                            >
+                              <div ref={detailContentRef}>
+                                {eventDetailData.description && (
+                                  <p
+                                    className="detail-description"
+                                    dangerouslySetInnerHTML={{
+                                      __html: formatDescription(
+                                        eventDetailData.description
+                                      ),
+                                    }}
+                                  />
+                                )}
+                                <ImageSizeLayoutComponent
+                                  images={eventDetailData.descriptionImages}
+                                />
+                                <p
+                                  className="refund-info"
+                                  style={{
+                                    marginTop:
+                                      (eventDetailData.descriptionImages &&
+                                        eventDetailData.descriptionImages
+                                          .length &&
+                                        24) ||
+                                      0,
+                                  }}
+                                >
+                                  {(eventDetailData.refundPolicy ===
+                                    SetRefundKey.nonRefundable &&
+                                    '* Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
+                                    '*  To request a refund, please contact the event organizer.'}
+                                </p>
+                              </div>
+                            </Col>
+                          </Col>
+                        </EventDetailCard>
                       </Row>
                     </div>
                     <div className="item-tabs">
@@ -350,63 +544,87 @@ const EventDetail = ({
                         <Col span={24} className="dividing-line" />
                       </Row>
                       {(tabActiveKey === PrimaryMarket && (
-                        <Row gutter={[10, 10]}>
+                        <Row gutter={[16, 16]}>
                           {(eventTicketTypeFilter.length && (
                             <>
                               {eventTicketTypeFilter.map((item) => (
                                 <TicketTypeItem
-                                  span={12}
-                                  sm={6}
-                                  md={6}
-                                  xl={4}
-                                  lg={6}
+                                  xs={24}
+                                  sm={12}
+                                  md={12}
+                                  xl={12}
+                                  lg={12}
                                   key={item.id}
-                                  onClick={() =>
-                                    toShopify(item.externalLink, item.stock)
+                                  onClick={() => toShopify(item)}
+                                  className={
+                                    ((!item.onSale || item.stock === 0) &&
+                                      'no-click') ||
+                                    ''
                                   }
                                 >
-                                  <div className="type-img">
-                                    <img
-                                      src={item.thumbnailUrl}
-                                      alt=""
-                                      onError={(e: any) => {
-                                        e.target.onerror = null;
-                                        e.target.src =
-                                          Images.BackgroundLogo.src;
-                                      }}
-                                    />
-                                    {item.stock === 0 && (
-                                      <div className="out-stock-mask">
-                                        OUT OF STOCK
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div
-                                    className={
-                                      (item.stock === 0 &&
-                                        'type-info out-stock') ||
-                                      'type-info'
-                                    }
-                                  >
-                                    <div className="line">
+                                  <Row>
+                                    <Col className="type-img" xl={8} span={10}>
                                       <img
-                                        src={Images.EventLineIcon.src}
+                                        src={item.thumbnailUrl}
                                         alt=""
+                                        onError={(e: any) => {
+                                          e.target.onerror = null;
+                                          e.target.src =
+                                            Images.BackgroundLogo.src;
+                                        }}
                                       />
-                                    </div>
-                                    <div className="info-des">
-                                      <div className="title-content">
-                                        <p className="title" title={item.name}>
-                                          {item.name}
-                                        </p>
+                                      {!item.onSale && (
+                                        <div className="out-stock-mask">
+                                          NOT ON SALE YET
+                                        </div>
+                                      )}
+                                      {item.stock === 0 && item.onSale && (
+                                        <div className="out-stock-mask">
+                                          OUT OF STOCK
+                                        </div>
+                                      )}
+                                    </Col>
+                                    <Col
+                                      xl={16}
+                                      span={14}
+                                      className="type-info"
+                                    >
+                                      <div className="line">
+                                        <img
+                                          src={Images.VerticalLineIcon.src}
+                                          alt=""
+                                        />
                                       </div>
-                                      <p className="price">
-                                        {`${item.price.toFixed(
-                                          2
-                                        )} ${PriceUnit}`}
-                                      </p>
-                                    </div>
-                                  </div>
+                                      <div
+                                        className={
+                                          ((item.stock === 0 || !item.onSale) &&
+                                            'type-info-content opacity') ||
+                                          'type-info-content'
+                                        }
+                                      >
+                                        <div>
+                                          <Col
+                                            span={24}
+                                            title={item.name}
+                                            className="title"
+                                          >
+                                            {item.name}
+                                          </Col>
+                                          <Col
+                                            span={24}
+                                            className="description"
+                                          >
+                                            {item.description}
+                                          </Col>
+                                          <Col span={24} className="price">
+                                            {`${item.price.toFixed(
+                                              2
+                                            )} ${PriceUnit}`}
+                                          </Col>
+                                        </div>
+                                      </div>
+                                    </Col>
+                                  </Row>
                                 </TicketTypeItem>
                               ))}
                             </>

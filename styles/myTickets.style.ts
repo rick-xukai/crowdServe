@@ -139,7 +139,7 @@ const EventItemContainer = styled.div`
   .event-background {
     position: relative;
     width: 100%;
-    height: 162px;
+    aspect-ratio: 2 / 1;
     img,
     video {
       width: 100% !important;

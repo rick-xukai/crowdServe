@@ -31,8 +31,10 @@ export const defaultCollectibleDetail = {
     slug: '',
     name: '',
     description: '',
+    descriptionShort: '',
     image: '',
     location: '',
+    address: '',
     startTime: '',
     endTime: '',
     status: 0,
@@ -56,6 +58,8 @@ export const defaultConnectedEventItem = {
     location: '',
     startTime: '',
     endTime: '',
+    descriptionShort: '',
+    address: '',
   },
   ticketType: {
     name: '',
@@ -101,8 +105,10 @@ export interface CollectibleDetailResponseType {
     slug: string;
     name: string;
     description: string;
+    descriptionShort: string;
     image: string;
     location: string;
+    address: string;
     startTime: string;
     endTime: string;
     status: number;
@@ -126,6 +132,8 @@ export interface ConnectedEventsResponseType {
     location: string;
     startTime: string;
     endTime: string;
+    address: string;
+    descriptionShort: string;
   };
   ticketType: {
     name: string;

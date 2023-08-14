@@ -46,6 +46,9 @@ const EventDetailContainer = styled.div`
     position: relative;
     .item-info {
       .item-info-row {
+        .info-item-status {
+          margin-bottom: 10px;
+        }
         > :last-child {
           margin-bottom: 0;
         }
@@ -57,6 +60,13 @@ const EventDetailContainer = styled.div`
         color: ${Colors.white};
         margin-bottom: 10px;
         max-width: 100%;
+      }
+      .info-description-short {
+        color: ${Colors.grayScale40};
+        margin-bottom: 12px;
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 24px;
       }
       .crowd-fund-link {
         font-weight: 400;
@@ -82,6 +92,27 @@ const EventDetailContainer = styled.div`
           margin-top: 2px !important;
           min-width: 16px !important;
           min-height: 16px !important;
+        }
+        .show-map-action {
+          cursor: pointer;
+          margin-left: 10px;
+          color: ${Colors.branding};
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 19px;
+          .anticon {
+            margin-left: 5px;
+          }
+        }
+      }
+      .google-map-content {
+        width: 100%;
+        height: 266px;
+        border-radius: 4px;
+        background: #fff;
+        margin-top: 12px;
+        > :first-child {
+          height: 100% !important;
         }
       }
       .info-description {
@@ -289,11 +320,14 @@ const EventDetailContainer = styled.div`
 const TicketTypeItem = styled(Col)`
   background: ${Colors.backgorund};
   border-radius: 6px;
+  &.no-click {
+    cursor: default;
+  }
   .type-img {
-    height: 162px;
+    height: 140px;
     padding: 6px;
     border-radius: 6px;
-    background: ${Colors.grayScale70};
+    background: ${Colors.black10};
     position: relative;
     img {
       width: 100%;
@@ -301,64 +335,76 @@ const TicketTypeItem = styled(Col)`
       object-fit: cover;
       border-radius: 4px;
     }
-  }
-  .type-info {
-    background: ${Colors.grayScale70};
-    border-radius: 6px;
-    overflow: hidden;
-    height: calc(100% - 162px);
-    .line {
+    .not-sale {
+      position: absolute;
+      border-radius: 0px 0px 4px 4px;
+      background: rgba(78, 78, 78, 0.7);
+      backdrop-filter: blur(8px);
+      color: ${Colors.white};
       text-align: center;
-      position: relative;
-      img {
-        width: 90%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        margin: auto;
-      }
-    }
-    .info-des {
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .title,
-    .price {
-      font-weight: 500;
-      font-size: 15px;
-      margin: 0;
-    }
-    .title-content {
-      max-height: 68px;
-      min-height: 68px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 21px;
+      height: 28px;
+      width: calc(100% - 12px);
+      bottom: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+  }
+  .type-info {
+    background: ${Colors.black10};
+    border-radius: 6px;
+    overflow: hidden;
+    padding: 20px;
+    position: relative;
+    .line {
+      text-align: center;
+      img {
+        position: absolute;
+        left: 0;
+        top: 10px;
+        right: 0;
+      }
+    }
+    .type-info-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      &.opacity {
+        opacity: 0.6;
+      }
+    }
     .title {
-      margin-top: 6px;
       color: ${Colors.white};
       margin-bottom: 6px;
-      padding-left: 10px;
-      padding-right: 10px;
+      font-size: 15px;
+      line-height: 21px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+    .description {
+      color: ${Colors.grayScale40};
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
-      text-align: center;
     }
     .price {
       color: ${Colors.branding};
-    }
-    &.out-stock {
-      .title {
-        color: ${Colors.whiteMask};
-      }
-      .price {
-        color: ${Colors.brandingMask};
-      }
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 21px;
+      margin-top: 16px;
     }
   }
   .out-stock-mask {
@@ -370,16 +416,32 @@ const TicketTypeItem = styled(Col)`
     right: 0;
     margin: auto;
     background: rgba(0, 0, 0, 0.5);
-    border-radius: 6px;
+    border-radius: 4px;
     font-weight: 700;
     font-size: 20px;
     color: ${Colors.grayScale10};
     display: flex;
     justify-content: space-around;
     align-items: center;
+    font-family: Oswald;
   }
   @media (min-width: 1200px) {
+    .type-img {
+      height: 162px;
+    }
     cursor: pointer;
+  }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    .type-img {
+      height: 140px;
+    }
+  }
+  @media (max-width: 768px) {
+    .type-info {
+      .description {
+        -webkit-line-clamp: 1;
+      }
+    }
   }
 `;
 

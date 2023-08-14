@@ -2,6 +2,7 @@
 
 if [[ "$APPLICATION_NAME" == "crowdserve-dev" || "$APPLICATION_NAME" == "crowdserve-stag" ]] && [ "$DEPLOYMENT_GROUP_NAME" == "crowdserve-frontend-app" ]; then
     cd /mnt/frontend_app
+    rm -rf ./.env
     rm -rf ./.next
     rm -rf ./package.json
     rm -rf ./node_modules
