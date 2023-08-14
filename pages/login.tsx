@@ -9,7 +9,7 @@ import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { useCookie } from '../hooks';
 import Messages from '../constants/Messages';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
-import { TokenExpire, AccountNotActivate } from '../constants/General';
+import { TokenExpire } from '../constants/General';
 import {
   isEmail,
   getErrorMessage,

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Col } from 'antd';
 
 import { Colors } from '../theme';
 
@@ -22,8 +23,8 @@ const MyTicketsEventDetailContainer = styled.div`
   }
   .detail-background {
     width: 100%;
-    height: 220px;
     background: ${Colors.black};
+    aspect-ratio: 2 / 1;
     > :first-child {
       position: relative !important;
       width: 100% !important;
@@ -47,18 +48,20 @@ const MyTicketsEventDetailContainer = styled.div`
     background: ${Colors.backgorund};
     position: relative;
     .item-info {
-      .item-info-row {
-        > :last-child {
-          margin-bottom: 0;
-        }
-      }
       .info-title {
         font-family: 'Oswald';
         font-weight: 700;
         font-size: 24px;
         color: ${Colors.white};
-        margin-bottom: 10px;
+        margin-bottom: 12px;
         max-width: 100%;
+      }
+      .info-description-short {
+        color: ${Colors.grayScale40};
+        margin-bottom: 12px;
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 24px;
       }
       .crowd-fund-link {
         font-weight: 400;
@@ -77,6 +80,17 @@ const MyTicketsEventDetailContainer = styled.div`
         margin-bottom: 5px;
         display: flex;
         align-items: start;
+        .show-map-action {
+          cursor: pointer;
+          margin-left: 10px;
+          color: ${Colors.branding};
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 19px;
+          .anticon {
+            margin-left: 5px;
+          }
+        }
         span {
           height: 100% !important;
         }
@@ -85,7 +99,6 @@ const MyTicketsEventDetailContainer = styled.div`
         }
         .info-item-icon {
           margin: unset !important;
-          /* margin-top: 2px !important; */
           min-width: 16px !important;
           min-height: 16px !important;
         }
@@ -130,6 +143,16 @@ const MyTicketsEventDetailContainer = styled.div`
       }
     }
   }
+  .google-map-content {
+    width: 100%;
+    height: 266px;
+    border-radius: 4px;
+    background: #fff;
+    margin-top: 12px;
+    > :first-child {
+      height: 100% !important;
+    }
+  }
   .ticket-description {
     margin-top: 8px;
     position: relative;
@@ -166,14 +189,22 @@ const MyTicketsEventDetailContainer = styled.div`
       margin: auto;
     }
   }
+  .divider-content {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    &.show-more-divider {
+      margin-top: 80px;
+    }
+    .ant-divider {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
   @media (min-width: 1200px) {
     padding-top: 0;
     .page-main {
       margin-top: 104px;
       padding-bottom: 40px;
-      .detail-background {
-        height: 504px;
-      }
       .show-more {
         cursor: pointer;
       }
@@ -182,10 +213,6 @@ const MyTicketsEventDetailContainer = styled.div`
         padding-right: 0;
         margin-top: 0;
         border-radius: 0;
-      }
-      .ant-divider {
-        margin-top: 40px;
-        margin-bottom: 40px;
       }
       .my-ticket-items {
         .title {
@@ -202,17 +229,10 @@ const MyTicketsEventDetailContainer = styled.div`
     .page-main {
       padding-top: 84px;
       padding-bottom: 40px;
-      .detail-background {
-        height: 344px;
-      }
       .event-detail-container {
         margin-top: 24px;
         padding: 0;
         border-radius: 0;
-      }
-      .ant-divider {
-        margin-top: 40px;
-        margin-bottom: 40px;
       }
       .my-ticket-items {
         .title {
@@ -398,8 +418,81 @@ const MyTicketItemContainer = styled.div`
   }
 `;
 
+const EventDetailCard = styled(Col)`
+  margin-top: 32px;
+  .detail-title {
+    color: ${Colors.white};
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 25px;
+  }
+  .detail-show-more-box {
+    position: relative;
+    .show-more-box-action {
+      color: ${Colors.white};
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 19px;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background: linear-gradient(
+        180deg,
+        rgba(39, 39, 42, 0) 0%,
+        ${Colors.backgorund} 100%
+      );
+      &.no-background {
+        background: unset;
+      }
+      .anticon {
+        margin-left: 5px;
+      }
+      > :first-child {
+        text-align: center;
+        position: absolute;
+        width: 100%;
+        bottom: -44px;
+      }
+      .action-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        span {
+          cursor: pointer;
+        }
+        > :last-child {
+          margin-top: 3px;
+        }
+      }
+    }
+    .show-box {
+      &.no-show-more {
+        height: auto !important;
+      }
+      &.event-detail {
+        margin-bottom: 40px;
+      }
+      .detail-description,
+      .refund-info {
+        color: ${Colors.grayScale40};
+        font-size: 13px;
+        font-weight: 300;
+        line-height: 19px;
+        margin-top: 15px;
+        margin-bottom: 24px;
+      }
+      .refund-info {
+        margin-top: 24px;
+        margin-bottom: 0px;
+      }
+    }
+  }
+`;
+
 export {
   MyTicketsEventDetailContainer,
   StatusContainer,
   MyTicketItemContainer,
+  EventDetailCard,
 };

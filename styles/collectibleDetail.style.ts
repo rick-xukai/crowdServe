@@ -308,7 +308,6 @@ const CollectibleDetailContainer = styled.div`
       .ant-modal-content {
         .event-image {
           width: 335px;
-          height: 167px;
         }
       }
     }
@@ -579,7 +578,7 @@ const EventDetailCard = styled.div`
   border-radius: 8px;
   .event-background {
     width: 100%;
-    height: 174px;
+    aspect-ratio: 2 / 1;
     position: relative;
     margin-bottom: 12px;
     img {
@@ -791,7 +790,7 @@ const ConnectedEventsItem = styled.div`
 
 const DetailContainerElement = styled.div`
   .event-image {
-    height: 167px;
+    aspect-ratio: 2 / 1;
     position: relative;
     background: ${Colors.black};
     border-radius: 4px;
@@ -822,7 +821,6 @@ const DetailContainerElement = styled.div`
       font-weight: 700;
       font-size: 24px;
       color: ${Colors.white};
-      margin-bottom: 10px;
       max-width: 100%;
     }
     .crowd-fund-link {
@@ -863,6 +861,7 @@ const DetailContainerElement = styled.div`
     }
     .event-description {
       margin-top: 8px;
+      margin-bottom: 10px;
       position: relative;
     }
     .whole-description {
@@ -884,17 +883,9 @@ const DetailContainerElement = styled.div`
       }
     }
   }
-  @media (min-width: 576px) and (max-width: 768px) {
-    .event-image {
-      height: 167px;
-    }
-  }
   @media (min-width: 768px) {
     .show-more {
       cursor: pointer;
-    }
-    .event-image {
-      height: 333px;
     }
   }
 `;

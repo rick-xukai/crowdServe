@@ -495,7 +495,7 @@ const CollectibleDetail = () => {
                         </a>
                       </Col>
                       <Col className="info-description">
-                        {collectibleDetail.description || '-'}
+                        {collectibleDetail.description}
                       </Col>
                     </Col>
                     <Col xl={12} span={24} className="event-info">
@@ -574,7 +574,13 @@ const CollectibleDetail = () => {
                                   className="info-item-icon"
                                 />
                                 <div className="info-detail-description">
-                                  {collectibleDetail.event.location || '-'}
+                                  {(collectibleDetail.event.location &&
+                                    `${collectibleDetail.event.location}${
+                                      (collectibleDetail.event.address &&
+                                        `, ${collectibleDetail.event.address}`) ||
+                                      ''
+                                    }`) ||
+                                    '-'}
                                 </div>
                               </Col>
                             </Row>

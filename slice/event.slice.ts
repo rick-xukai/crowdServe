@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { verificationApi } from '../utils/func';
 import EventService from '../services/API/Event';
+import { EventDetailDescriptionImages } from './myTickets.slice';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -35,6 +36,7 @@ export interface EventListResponseType {
   description: string;
   status: number;
   slug: string;
+  address: string;
 }
 
 export interface EventListBanner {
@@ -54,6 +56,11 @@ export interface EventDetailResponseType {
   description: string;
   crowdfundLink: string;
   slug: string;
+  address: string;
+  locationCoord: string;
+  descriptionImages: EventDetailDescriptionImages[];
+  refundPolicy: number;
+  descriptionShort: string;
 }
 
 export interface EventTicketTypeResponseType {
@@ -69,6 +76,7 @@ export interface EventTicketTypeResponseType {
   thumbnailType: string;
   externalLink: string;
   blockchainUrl: string;
+  onSale: boolean;
 }
 
 export interface EventMarketResponseType {
@@ -283,6 +291,11 @@ const initialState: EventState = {
     status: 0,
     crowdfundLink: '',
     slug: '',
+    address: '',
+    locationCoord: '',
+    descriptionImages: [],
+    refundPolicy: 0,
+    descriptionShort: '',
   },
   eventMarket: [],
 };
@@ -305,6 +318,11 @@ export const eventSlice = createSlice({
         status: 0,
         crowdfundLink: '',
         slug: '',
+        address: '',
+        locationCoord: '',
+        descriptionImages: [],
+        refundPolicy: 0,
+        descriptionShort: '',
       };
     },
     resetError: (state) => {
