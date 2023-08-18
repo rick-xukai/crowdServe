@@ -141,7 +141,7 @@ const ConnectedEventPopupElement = ({
               PrivilegeType.discount.status && (
               <Button>
                 <a href={connectedEventItemDetail.externalLink} target="_blank">
-                  GET DISCOUNT AND BUY TICKETS
+                  GET TICKETS
                 </a>
               </Button>
             )) || (
