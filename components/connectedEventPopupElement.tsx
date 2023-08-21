@@ -139,11 +139,9 @@ const ConnectedEventPopupElement = ({
             </div>
             {(connectedEventItemDetail.privilegeType ===
               PrivilegeType.discount.status && (
-              <Button>
-                <a href={connectedEventItemDetail.externalLink} target="_blank">
-                  GET TICKETS
-                </a>
-              </Button>
+              <a href={connectedEventItemDetail.externalLink} target="_blank">
+                <Button>GET TICKETS</Button>
+              </a>
             )) || (
               <Row className="ticket-info" gutter={[8, 8]}>
                 <Col span={12}>
