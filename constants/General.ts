@@ -176,3 +176,5 @@ export enum SetRefundKey {
   refundable = 1,
   nonRefundable = 0,
 }
+export const DefaultPageType = 0;
+export const DefaultPlatform = 0;

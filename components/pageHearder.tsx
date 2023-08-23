@@ -6,9 +6,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import { useCookie } from '../hooks';
-import { RouterKeys, CookieKeys } from '../constants/Keys';
+import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { Images, Colors } from '../theme';
 import ClientModalComponent from './clientModal';
+import { generateRandomString } from '@/utils/func';
 
 const PageHearderContainer = styled(Row)`
   position: fixed;
@@ -188,6 +189,14 @@ const PageHearderComponent = ({
       path: '/',
       domain: window.location.hostname,
     });
+    cookie.removeCookie(CookieKeys.userLoginId, {
+      path: '/',
+      domain: window.location.hostname,
+    });
+    localStorage.setItem(
+      LocalStorageKeys.pageViewTrackKeys,
+      generateRandomString()
+    );
     router.push(RouterKeys.login);
   };
 
@@ -315,9 +324,7 @@ const PageHearderComponent = ({
               <Col span={24} className="info-name">
                 <span
                   className={`name ${
-                    (router.pathname === RouterKeys.myTickets &&
-                      'active') ||
-                    ''
+                    (router.pathname === RouterKeys.myTickets && 'active') || ''
                   }`}
                 >
                   MY TICKETS

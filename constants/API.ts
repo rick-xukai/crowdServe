@@ -94,6 +94,9 @@ const API = {
   getPriceChartData: {
     get: '/api/v1/collectible/ticket/{userTicketUuid}/price_chart',
   },
+  logPageView: {
+    post: '/api/v1/page_view',
+  },
 };
 
 export default API;

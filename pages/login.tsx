@@ -8,7 +8,7 @@ import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
 import { useCookie } from '../hooks';
 import Messages from '../constants/Messages';
-import { CookieKeys, RouterKeys } from '../constants/Keys';
+import { CookieKeys, LocalStorageKeys, RouterKeys } from '../constants/Keys';
 import { TokenExpire } from '../constants/General';
 import {
   isEmail,
@@ -16,6 +16,7 @@ import {
   isPassword,
   base64Decrypt,
   base64Encrypt,
+  generateRandomString,
 } from '../utils/func';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -127,6 +128,15 @@ const Login = ({
         path: '/',
         domain: window.location.hostname,
       });
+      cookies.setCookie(CookieKeys.userLoginId, data.user.userId, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
+      localStorage.setItem(
+        LocalStorageKeys.pageViewTrackKeys,
+        generateRandomString()
+      );
       handleResetPageCache();
       if (ticketIdFormEmailLink && !currentTicketEventSlug) {
         router.push(RouterKeys.myTickets);

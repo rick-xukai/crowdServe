@@ -712,7 +712,7 @@ const MyTicketsEventDetail = () => {
                                   />
                                 )}
                                 <ImageSizeLayoutComponent
-                                  images={eventDetail.descriptionImages}
+                                  images={eventDetail.descriptionImages || []}
                                 />
                                 <p
                                   className="refund-info"

@@ -14,6 +14,7 @@ import myCollectiblesCacheSliceReducer from '../slice/myCollectiblesCache.slice'
 import collectibleSliceReducer from '../slice/collectible.slice';
 import qrCodeDataSliceReducer from '../slice/getQRCode.slice';
 import collectionDetailCacheReducer from '../slice/collectionDetailCache.slice';
+import pageTrackReducer from '../slice/pageTrack.slice';
 
 const createRootReducer = () => combineReducers({
   user: userReducer,
@@ -30,6 +31,7 @@ const createRootReducer = () => combineReducers({
   collectible: collectibleSliceReducer,
   qrCodeData: qrCodeDataSliceReducer,
   collectionDetailCache: collectionDetailCacheReducer,
+  pageTrack: pageTrackReducer,
 });
 
 export default createRootReducer;
