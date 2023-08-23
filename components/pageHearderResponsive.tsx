@@ -6,7 +6,8 @@ import { useRouter } from 'next/router';
 
 import { Images, Colors } from '../theme';
 import { useCookie } from '../hooks';
-import { RouterKeys, CookieKeys } from '../constants/Keys';
+import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
+import { generateRandomString } from '@/utils/func';
 
 const PageHearderResponsiveContainer = styled.div`
   padding-top: 18px;
@@ -159,6 +160,14 @@ const PageHearderResponsive = ({
       path: '/',
       domain: window.location.hostname,
     });
+    cookie.removeCookie(CookieKeys.userLoginId, {
+      path: '/',
+      domain: window.location.hostname,
+    });
+    localStorage.setItem(
+      LocalStorageKeys.pageViewTrackKeys,
+      generateRandomString()
+    );
     router.push(RouterKeys.login);
   };
 

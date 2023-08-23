@@ -331,5 +331,34 @@ export const formatLocation = (location: string, address: string) => {
 };
 
 export const formatDescription = (text: string) => {
-  return text.replaceAll('\n', '<br />');
+  return (text && text.replaceAll('\n', '<br />')) || '';
+};
+
+export const checkOperatingSys = () => {
+  const userAgent = navigator.userAgent;
+  let operatingSys = '';
+  if (userAgent.indexOf('Windows NT 10.0') !== -1) {
+    operatingSys = 'Windows 10';
+  } else if (userAgent.indexOf('Windows NT 6.2') !== -1) {
+    operatingSys = 'Windows 8';
+  } else if (userAgent.indexOf('Windows NT 6.1') !== -1) {
+    operatingSys = 'Windows 7';
+  } else if (userAgent.indexOf('Windows NT 6.0') !== -1) {
+    operatingSys = 'Windows Vista';
+  } else if (userAgent.indexOf('Windows NT 5.1') !== -1) {
+    operatingSys = 'Windows XP';
+  } else if (userAgent.indexOf('Mac') !== -1) {
+    operatingSys = 'Mac OS';
+  } else if (userAgent.indexOf('X11') !== -1) {
+    operatingSys = 'Unix';
+  } else if (userAgent.indexOf('Linux') !== -1) {
+    operatingSys = 'Linux';
+  }
+  return operatingSys;
+};
+
+export const generateRandomString = () => {
+  const wordArray = CryptoJS.lib.WordArray.random(8);
+  const randomString = CryptoJS.enc.Hex.stringify(wordArray);
+  return randomString;
 };

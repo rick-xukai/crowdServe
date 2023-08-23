@@ -2,12 +2,14 @@ export const LocalStorageKeys = {
   rememberMe: 'rememberMe',
   closeInstallAppTime: 'closeInstallAppTime',
   currentPageToSetting: 'currentPageToSetting',
+  pageViewTrackKeys: 'pageViewTrackKeys',
 };
 
 export const CookieKeys = {
   authUser: 'authUser',
   userLoginToken: 'userLoginToken',
   userLoginEmail: 'userLoginEmail',
+  userLoginId: 'userLoginId',
 };
 
 export const RouterKeys = {

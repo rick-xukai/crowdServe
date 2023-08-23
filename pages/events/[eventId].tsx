@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import _ from 'lodash';
+import { last } from 'lodash';
 import { Spin, Row, Col, Tabs, Tooltip, message, Modal, Button } from 'antd';
-import { isAndroid, isIOS, isDesktop } from 'react-device-detect';
+import { isAndroid, isIOS, isDesktop, browserName } from 'react-device-detect';
 import type { TabsProps } from 'antd';
 import {
   LoadingOutlined,
@@ -22,6 +22,8 @@ import {
   openApp,
   formatLocation,
   formatDescription,
+  checkOperatingSys,
+  generateRandomString,
 } from '../../utils/func';
 import {
   FormatTimeKeys,
@@ -34,7 +36,10 @@ import {
   DefaultEventListBannerPageSize,
   SetRefundKey,
   EventStatus,
+  DefaultPageType,
+  DefaultPlatform,
 } from '../../constants/General';
+import { CookieKeys, LocalStorageKeys } from '../../constants/Keys';
 import { Images } from '../../theme';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -49,6 +54,7 @@ import {
   getEventMarketAction,
   selectEventMarket,
   resetEventDatail,
+  resetEventDetailLoading,
 } from '../../slice/event.slice';
 import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
@@ -64,9 +70,11 @@ import firebaseApp from '../../firebase';
 import EventService from '../../services/API/Event/Event.service';
 import { RouterKeys } from '../../constants/Keys';
 import PageNotFound from '../404';
+import { useCookie } from '@/hooks';
 import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
 import { EventDetailCard } from '@/styles/myTicketsEventDetail.style';
 import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
+import { logPageViewAction } from '@/slice/pageTrack.slice';
 
 const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = [
   'places',
@@ -86,6 +94,7 @@ const EventDetail = ({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOLE_MAP_API_KEY as string,
     libraries,
   });
+  const cookies = useCookie([CookieKeys.userLoginId]);
 
   const error = useAppSelector(selectEventDetailError);
   const loading = useAppSelector(selectEventDetailLoading);
@@ -184,12 +193,36 @@ const EventDetail = ({
     window.open(data.externalLink, '_blank');
   };
 
+  const logPageViewTrack = () => {
+    const pageViewTrackPayload = {
+      userId: 0,
+      session: localStorage.getItem(LocalStorageKeys.pageViewTrackKeys) || '',
+      pageType: DefaultPageType,
+      platform: DefaultPlatform,
+      operatingSys: checkOperatingSys(),
+      deviceType: (isDesktop && 'PC') || 'Phone',
+      userAgent: cookies.getCookie(CookieKeys.userLoginEmail) || '',
+      browser: browserName,
+      objectId: eventDetailData.id,
+      referer: document.referrer,
+      timestamp: new Date().getTime().toString(),
+      userTime: new Date().toString(),
+      timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone,
+    };
+    if (cookies.getCookie(CookieKeys.userLoginId)) {
+      pageViewTrackPayload.userId = Number(
+        cookies.getCookie(CookieKeys.userLoginId)
+      );
+    }
+    dispatch(logPageViewAction(pageViewTrackPayload));
+  };
+
   useEffect(() => {
     const { eventId } = router.query;
     if (eventId) {
       const parameterArr = (eventId as string).split('-');
-      if (_.last(parameterArr)) {
-        setEventId(_.last(parameterArr) || '');
+      if (last(parameterArr)) {
+        setEventId(last(parameterArr) || '');
       } else {
         setEventCorrect(false);
       }
@@ -216,6 +249,7 @@ const EventDetail = ({
 
   useEffect(() => {
     if (!loading) {
+      logPageViewTrack();
       if (detailContentRef.current.clientHeight > 57) {
         setNeedShowMore(true);
       } else {
@@ -254,11 +288,17 @@ const EventDetail = ({
     }
   }, [id]);
 
-  // eslint-disable-next-line
   useEffect(() => {
+    if (!localStorage.getItem(LocalStorageKeys.pageViewTrackKeys)) {
+      localStorage.setItem(
+        LocalStorageKeys.pageViewTrackKeys,
+        generateRandomString()
+      );
+    }
     return () => {
       dispatch(resetEventDatail());
       dispatch(resetError());
+      dispatch(resetEventDetailLoading());
     };
   }, []);
 
@@ -338,6 +378,13 @@ const EventDetail = ({
                         </Col>
                         <Col span={24} className="info-title">
                           {eventDetailData.name}
+                        </Col>
+                        <Col
+                          span={24}
+                          className="info-title"
+                          onClick={logPageViewTrack}
+                        >
+                          Get Location
                         </Col>
                         <Col
                           span={24}
@@ -510,7 +557,9 @@ const EventDetail = ({
                                   />
                                 )}
                                 <ImageSizeLayoutComponent
-                                  images={eventDetailData.descriptionImages}
+                                  images={
+                                    eventDetailData.descriptionImages || []
+                                  }
                                 />
                                 <p
                                   className="refund-info"
@@ -756,7 +805,7 @@ EventDetail.getInitialProps = async (ctx: any) => {
     if (ticket && source === 'sharing') {
       try {
         const response = await EventService.getEventDetail(
-          _.last(parameterArr) as string
+          last(parameterArr) as string
         );
         if (response.code === 200) {
           return { openGraphDetail: { ...response.data, shareUrl: req.url } };
