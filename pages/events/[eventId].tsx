@@ -381,13 +381,6 @@ const EventDetail = ({
                         </Col>
                         <Col
                           span={24}
-                          className="info-title"
-                          onClick={logPageViewTrack}
-                        >
-                          Get Location
-                        </Col>
-                        <Col
-                          span={24}
                           className="info-description-short"
                           dangerouslySetInnerHTML={{
                             __html: formatDescription(
