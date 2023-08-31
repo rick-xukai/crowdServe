@@ -41,6 +41,7 @@ import {
 import { resetMyTicketsCache } from '../slice/myTicketsCache.slice';
 import { resetMyCollectiblesCache } from '../slice/myCollectiblesCache.slice';
 import { resetCollectionDetailCache } from '../slice/collectionDetailCache.slice';
+import AuthPageHearder from '@/components/authPageHearder';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 
 const Login = ({
@@ -186,114 +187,107 @@ const Login = ({
 
   return (
     <LoginContainer>
-      <div
-        className="skip-login"
-        onClick={() => router.push(RouterKeys.eventList)}
-      >
-        <span>Skip</span>
-      </div>
+      <AuthPageHearder skipClick={() => router.push(RouterKeys.eventList)} />
       <div className="page-main">
-        <Row className="main-logo">
-          <Col span={24} className="logo">
-            <div>
-              <Image src={Images.Logo} alt="" />
-            </div>
-          </Col>
-        </Row>
-        <div>
-          <Row className="main-title">
-            <Col span={24} className="title">
-              LOGIN TO YOUR ACCOUNT
-            </Col>
-          </Row>
-          <Form onFinish={onFinish}>
-            {(loginEmailParameter && (
-              <>
-                <div className="tips">Login with</div>
-                <div className="tips signup-email">{loginEmailParameter}</div>
-              </>
-            )) || (
-              <Form.Item name="email">
-                <Input
-                  className={`${
-                    (loginFormValue.email && 'border-white') || ''
-                  }`}
-                  placeholder="Email"
-                  bordered={false}
-                  onChange={(e) =>
-                    setLoginFormValue({
-                      ...loginFormValue,
-                      email: (isEmail(e.target.value) && e.target.value) || '',
-                    })
-                  }
-                />
-              </Form.Item>
-            )}
-            <Form.Item name="password" style={{ marginBottom: 0 }}>
-              <div>
-                <Input.Password
-                  className={`${
-                    (loginFormValue.password && 'border-white') || ''
-                  }`}
-                  placeholder="Password"
-                  bordered={false}
-                  maxLength={20}
-                  iconRender={(visible) =>
-                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                  }
-                  onChange={(e) =>
-                    setLoginFormValue({
-                      ...loginFormValue,
-                      password: e.target.value,
-                    })
-                  }
-                />
-                <p
-                  className="forgot-password"
-                  onClick={() => {
-                    if (loginEmailParameter) {
-                      router.push(
-                        `${RouterKeys.forgotPassword}?${base64Encrypt({
-                          email: loginEmailParameter,
-                        })}`
-                      );
-                    } else {
-                      router.push(RouterKeys.forgotPassword);
+        <div className="main-form-content">
+          <div>
+            <Row className="main-title">
+              <Col span={24} className="title">
+                LOGIN TO YOUR ACCOUNT
+              </Col>
+            </Row>
+            <Form onFinish={onFinish}>
+              {(loginEmailParameter && (
+                <>
+                  <div className="tips">Login with</div>
+                  <div className="tips signup-email">{loginEmailParameter}</div>
+                </>
+              )) || (
+                <Form.Item name="email">
+                  <Input
+                    className={`${
+                      (loginFormValue.email && 'border-white') || ''
+                    }`}
+                    placeholder="Email"
+                    bordered={false}
+                    onChange={(e) =>
+                      setLoginFormValue({
+                        ...loginFormValue,
+                        email:
+                          (isEmail(e.target.value) && e.target.value) || '',
+                      })
                     }
-                  }}
+                  />
+                </Form.Item>
+              )}
+              <Form.Item name="password" style={{ marginBottom: 0 }}>
+                <div>
+                  <Input.Password
+                    className={`${
+                      (loginFormValue.password && 'border-white') || ''
+                    }`}
+                    placeholder="Password"
+                    bordered={false}
+                    maxLength={20}
+                    iconRender={(visible) =>
+                      visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                    }
+                    onChange={(e) =>
+                      setLoginFormValue({
+                        ...loginFormValue,
+                        password: e.target.value,
+                      })
+                    }
+                  />
+                  <p
+                    className="forgot-password"
+                    onClick={() => {
+                      if (loginEmailParameter) {
+                        router.push(
+                          `${RouterKeys.forgotPassword}?${base64Encrypt({
+                            email: loginEmailParameter,
+                          })}`
+                        );
+                      } else {
+                        router.push(RouterKeys.forgotPassword);
+                      }
+                    }}
+                  >
+                    FORGOT PASSWORD?
+                  </p>
+                </div>
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  className="signin-btn"
+                  disabled={
+                    !loginFormValue.email ||
+                    !isPassword(loginFormValue.password) ||
+                    loading
+                  }
+                  type="primary"
+                  htmlType="submit"
                 >
-                  FORGOT PASSWORD?
-                </p>
-              </div>
-            </Form.Item>
-            <Form.Item>
-              <Button
-                className="signin-btn"
-                disabled={
-                  !loginFormValue.email ||
-                  !isPassword(loginFormValue.password) ||
-                  loading
-                }
-                type="primary"
-                htmlType="submit"
-              >
-                SIGN IN
-              </Button>
-            </Form.Item>
-            {/* <Divider>OR</Divider>
+                  SIGN IN
+                </Button>
+              </Form.Item>
+              {/* <Divider>OR</Divider>
                 <GoogleLoginComponent buttonText="CONTINUE WITH GOOGLE" /> */}
-          </Form>
-        </div>
-        <div
-          className={(isOpenAppShow && 'page-bottom open-app') || 'page-bottom'}
-        >
-          <p className="registered">Don't have an account?</p>
-          <p
-            className="activate"
-            onClick={() => router.push(RouterKeys.createAccount)}
+            </Form>
+          </div>
+          <div
+            className={
+              (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
+            }
           >
-            REGISTER NOW
-          </p>
+            <p className="registered">Don't have an account?</p>
+            <p
+              className="activate"
+              onClick={() => router.push(RouterKeys.createAccount)}
+            >
+              REGISTER NOW
+            </p>
+          </div>
         </div>
       </div>
       {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}

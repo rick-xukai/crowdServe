@@ -71,6 +71,7 @@ import TicketsOnSaleIcon from '../static/images/tickets-onsale.svg';
 import CollectibleDetailBackgroundDesktop from '../static/images/collectible-detail-bg-desktop.svg';
 import LineCollectibleDetailDesktop from '../static/images/line-collectible-detail-desktop.svg';
 import VerticalLineIcon from '../static/images/vertical-line.svg';
+import AnimatedBackground from '../static/images/animated-background.gif';
 
 const Images = {
   Safety,
@@ -146,6 +147,7 @@ const Images = {
   CollectibleDetailBackgroundDesktop,
   LineCollectibleDetailDesktop,
   VerticalLineIcon,
+  AnimatedBackground,
 };
 
 export default Images;

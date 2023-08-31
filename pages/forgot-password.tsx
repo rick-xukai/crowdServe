@@ -46,6 +46,7 @@ import { resetCollectionDetailCache } from '@/slice/collectionDetailCache.slice'
 import { LoginContainer } from '@/styles/login-style';
 import { RouterKeys, CookieKeys } from '@/constants/Keys';
 import Messages from '@/constants/Messages';
+import AuthPageHearder from '@/components/authPageHearder';
 
 const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
   const cookies = useCookie([
@@ -196,150 +197,146 @@ const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
 
   return (
     <LoginContainer>
+      <AuthPageHearder showSkip={false} />
       <div className="page-main">
-        <Row className="main-logo">
-          <Col span={24} className="logo">
-            <div>
-              <Image src={Images.Logo} alt="" />
-            </div>
-          </Col>
-        </Row>
-        <div>
-          <Row className="main-title">
-            <Col span={24} className="title">
-              RESET PASSWORD
-            </Col>
-          </Row>
-          {!sendVerificationCode && (
-            <>
-              <Row>
-                {(defultEmail && (
-                  <Col className="user-email">{defultEmail}</Col>
-                )) || (
-                  <Input
-                    className={`${
-                      (forgotPasswordValue.email && 'border-white') || ''
-                    }`}
-                    placeholder="Enter your email"
+        <div className="main-form-content">
+          <div>
+            <Row className="main-title">
+              <Col span={24} className="title">
+                RESET PASSWORD
+              </Col>
+            </Row>
+            {!sendVerificationCode && (
+              <>
+                <Row>
+                  {(defultEmail && (
+                    <Col className="user-email">{defultEmail}</Col>
+                  )) || (
+                    <Input
+                      className={`${
+                        (forgotPasswordValue.email && 'border-white') || ''
+                      }`}
+                      placeholder="Enter your email"
+                      bordered={false}
+                      onChange={(e) =>
+                        setForgotPasswordValue({
+                          ...forgotPasswordValue,
+                          email:
+                            (isEmail(e.target.value) && e.target.value) || '',
+                        })
+                      }
+                    />
+                  )}
+                </Row>
+                <Button
+                  className="signin-btn"
+                  type="primary"
+                  disabled={!forgotPasswordValue.email || loading}
+                  onClick={hanldeSendCode}
+                >
+                  VERIFICATION CODE
+                </Button>
+              </>
+            )}
+            {sendVerificationCode && !verificationCodeSuccess && (
+              <>
+                <Row className="code-sent">
+                  <Col span={24} className="title">
+                    Verification code has been sent to
+                  </Col>
+                  <Col span={24} className="value">
+                    {forgotPasswordValue.email}
+                  </Col>
+                </Row>
+                <Form>
+                  <Form.Item name="code" style={{ marginBottom: 0 }}>
+                    <Input
+                      className={`${
+                        (forgotPasswordValue.code && 'border-white') || ''
+                      }`}
+                      placeholder="Enter verification code"
+                      bordered={false}
+                      onChange={(e) =>
+                        setForgotPasswordValue({
+                          ...forgotPasswordValue,
+                          code: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Item>
+                  <Form.Item style={{ marginBottom: 25 }}>
+                    <Button
+                      className="signin-btn"
+                      disabled={
+                        !forgotPasswordValue.code ||
+                        forgotPasswordValue.code.length <
+                          VerificationCodeLength ||
+                        loading
+                      }
+                      type="primary"
+                      htmlType="submit"
+                      onClick={handleVerificationCode}
+                    >
+                      NEXT
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </>
+            )}
+            {verificationCodeSuccess && sendVerificationCode && (
+              <Form onFinish={onFinish}>
+                <Form.Item style={{ marginBottom: 20 }}>
+                  <Input.Password
+                    value={passwordValue}
+                    className={`${(passwordValue && 'border-white') || ''}`}
+                    placeholder="Set your password (at least 8 characters)"
                     bordered={false}
-                    onChange={(e) =>
+                    maxLength={20}
+                    iconRender={(visible) =>
+                      visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                    }
+                    onChange={(e) => {
+                      setPasswordValue(e.target.value);
                       setForgotPasswordValue({
                         ...forgotPasswordValue,
-                        email:
-                          (isEmail(e.target.value) && e.target.value) || '',
-                      })
-                    }
-                  />
-                )}
-              </Row>
-              <Button
-                className="signin-btn"
-                type="primary"
-                disabled={!forgotPasswordValue.email || loading}
-                onClick={hanldeSendCode}
-              >
-                VERIFICATION CODE
-              </Button>
-            </>
-          )}
-          {sendVerificationCode && !verificationCodeSuccess && (
-            <>
-              <Row className="code-sent">
-                <Col span={24} className="title">
-                  Verification code has been sent to
-                </Col>
-                <Col span={24} className="value">
-                  {forgotPasswordValue.email}
-                </Col>
-              </Row>
-              <Form>
-                <Form.Item name="code" style={{ marginBottom: 0 }}>
-                  <Input
-                    className={`${
-                      (forgotPasswordValue.code && 'border-white') || ''
-                    }`}
-                    placeholder="Enter verification code"
-                    bordered={false}
-                    onChange={(e) =>
-                      setForgotPasswordValue({
-                        ...forgotPasswordValue,
-                        code: e.target.value,
-                      })
-                    }
+                        password:
+                          (isPassword(e.target.value) && e.target.value) || '',
+                      });
+                    }}
                   />
                 </Form.Item>
-                <Form.Item style={{ marginBottom: 25 }}>
+                <Form.Item style={{ marginBottom: 0 }}>
+                  <Input.Password
+                    value={confirmPasswordValue}
+                    className={`${
+                      (confirmPasswordValue && 'border-white') || ''
+                    }`}
+                    iconRender={(visible) =>
+                      visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                    }
+                    placeholder="Confirm your password"
+                    bordered={false}
+                    maxLength={20}
+                    onChange={(e) => setConfirmPasswordValue(e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item>
                   <Button
+                    style={{ marginTop: 60 }}
                     className="signin-btn"
                     disabled={
-                      !forgotPasswordValue.code ||
-                      forgotPasswordValue.code.length <
-                        VerificationCodeLength ||
-                      loading
+                      !forgotPasswordValue.password ||
+                      !isPassword(confirmPasswordValue)
                     }
                     type="primary"
                     htmlType="submit"
-                    onClick={handleVerificationCode}
                   >
-                    NEXT
+                    DONE
                   </Button>
                 </Form.Item>
               </Form>
-            </>
-          )}
-          {verificationCodeSuccess && sendVerificationCode && (
-            <Form onFinish={onFinish}>
-              <Form.Item style={{ marginBottom: 20 }}>
-                <Input.Password
-                  value={passwordValue}
-                  className={`${(passwordValue && 'border-white') || ''}`}
-                  placeholder="Set your password (at least 8 characters)"
-                  bordered={false}
-                  maxLength={20}
-                  iconRender={(visible) =>
-                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                  }
-                  onChange={(e) => {
-                    setPasswordValue(e.target.value);
-                    setForgotPasswordValue({
-                      ...forgotPasswordValue,
-                      password:
-                        (isPassword(e.target.value) && e.target.value) || '',
-                    });
-                  }}
-                />
-              </Form.Item>
-              <Form.Item style={{ marginBottom: 0 }}>
-                <Input.Password
-                  value={confirmPasswordValue}
-                  className={`${
-                    (confirmPasswordValue && 'border-white') || ''
-                  }`}
-                  iconRender={(visible) =>
-                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                  }
-                  placeholder="Confirm your password"
-                  bordered={false}
-                  maxLength={20}
-                  onChange={(e) => setConfirmPasswordValue(e.target.value)}
-                />
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  style={{ marginTop: 60 }}
-                  className="signin-btn"
-                  disabled={
-                    !forgotPasswordValue.password ||
-                    !isPassword(confirmPasswordValue)
-                  }
-                  type="primary"
-                  htmlType="submit"
-                >
-                  DONE
-                </Button>
-              </Form.Item>
-            </Form>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </LoginContainer>

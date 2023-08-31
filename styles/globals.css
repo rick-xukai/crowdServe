@@ -23,6 +23,11 @@ a {
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'Baradig';
+  src: url('/static/fonts/Baradig-Medium.otf');
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
@@ -184,6 +189,9 @@ a {
 .gender-select-dropdown
   .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
   background: #717179;
+}
+.ant-picker-dropdown .ant-picker-header-view button:hover {
+  color: #fff;
 }
 .birth-picker-dropdown .ant-picker-panel-container {
   background: #717179;
