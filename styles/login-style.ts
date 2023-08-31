@@ -322,9 +322,14 @@ const LoginContainer = styled.div`
   }
   .gender-select {
     cursor: default;
+    &.country {
+      .ant-select-selection-search-input {
+        caret-color: transparent;
+      }
+    }
     &.border-white {
       .ant-select-selector {
-        border-bottom: 1px solid ${Colors.white};
+        border-bottom: 1px solid ${Colors.white} !important;
       }
       .ant-select-arrow {
         color: ${Colors.white};

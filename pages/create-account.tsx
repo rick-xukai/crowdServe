@@ -36,6 +36,7 @@ import {
   PasswordNotMatch,
   BirthdayNotVaild,
   RegisterVerifyType,
+  DefaultSelectCountry,
 } from '../constants/General';
 import { Images } from '../theme';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
@@ -58,6 +59,7 @@ import OpenAppComponent from '../components/openAppComponent';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 import Messages from '../constants/Messages';
 import AuthPageHearder from '@/components/authPageHearder';
+import countryDataList from '@/utils/countrycode.data.json';
 
 const CreateAccount = () => {
   const cookies = useCookie([
@@ -90,6 +92,7 @@ const CreateAccount = () => {
       label: string;
     }[]
   >([]);
+  const [formatCountryData, setFormatCountryData] = useState([]);
   const [createAccountValue, setCreateAccountValue] =
     useState<RegisterAccountPayload>({
       email: '',
@@ -98,6 +101,7 @@ const CreateAccount = () => {
       password: '',
       birthday: '',
       genderId: '',
+      country: DefaultSelectCountry,
     });
 
   const onFinish = async (values: any) => {
@@ -163,6 +167,22 @@ const CreateAccount = () => {
     setgoogleDocLink(link);
   };
 
+  const getFormatCountryData = () => {
+    const countryData: any = [];
+    countryDataList.map((item) => {
+      countryData.push({
+        value: item.country,
+        label: (
+          <div className="country-items-content">
+            <span className="country-flag">{item.flag}</span>
+            <span>{item.country}</span>
+          </div>
+        ),
+      });
+    });
+    setFormatCountryData(countryData);
+  };
+
   useEffect(() => {
     if (userGender.length) {
       const genderOptions: any = [];
@@ -209,8 +229,8 @@ const CreateAccount = () => {
     }
   }, [error]);
 
-  // eslint-disable-next-line
   useEffect(() => {
+    getFormatCountryData();
     dispatch(getUserGenderAction());
     setIsFirstRender(false);
     return () => {
@@ -459,6 +479,27 @@ const CreateAccount = () => {
                               ),
                             })
                           }
+                        />
+                      </Form.Item>
+                      <Form.Item style={{ marginBottom: 0 }}>
+                        <Select
+                          showSearch
+                          popupClassName="gender-select-dropdown"
+                          className={`${
+                            (createAccountValue.country &&
+                              'gender-select country border-white') ||
+                            'gender-select country'
+                          }`}
+                          defaultValue={DefaultSelectCountry}
+                          placeholder="Select Country"
+                          onChange={(e) =>
+                            setCreateAccountValue({
+                              ...createAccountValue,
+                              country: e || '',
+                            })
+                          }
+                          options={formatCountryData}
+                          suffixIcon={<CaretDownOutlined />}
                         />
                       </Form.Item>
                       <Form.Item>

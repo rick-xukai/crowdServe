@@ -50,6 +50,7 @@ export interface RegisterAccountPayload {
   password: string;
   birthday: string;
   genderId: string;
+  country: string;
   externalChannel?: string;
   externalId?: string;
 }

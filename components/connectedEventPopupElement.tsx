@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Row, Col, Button } from 'antd';
 import Image from 'next/image';
 
