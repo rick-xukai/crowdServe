@@ -48,6 +48,7 @@ import {
   selectUserGender,
   selectGetUserGenderLoading,
 } from '../slice/user.slice';
+import AuthPageHearder from '@/components/authPageHearder';
 
 const ActivateAccountNormalFlow = ({
   accountEmail,
@@ -205,48 +206,140 @@ const ActivateAccountNormalFlow = ({
         </LoginContainer>
       )) || (
         <LoginContainer>
-          <div
-            className="skip-login"
-            onClick={() => router.push(RouterKeys.eventList)}
-          >
-            <span>Skip</span>
-          </div>
+          <AuthPageHearder
+            skipClick={() => router.push(RouterKeys.eventList)}
+          />
           <div className="page-main">
-            <Row className="main-logo">
-              <Col span={24} className="logo">
-                <div>
-                  <Image src={Images.Logo} alt="" />
-                </div>
-              </Col>
-            </Row>
-            <div>
-              <Row className="main-title">
-                <Col span={24} className="title">
-                  ACTIVATE YOUR ACCOUNT
-                </Col>
-              </Row>
-              {!verificationCodeSuccess && (
-                <>
-                  <Row className="code-sent">
-                    <Col span={24} className="title">
-                      Verification code has been sent to
-                    </Col>
-                    <Col span={24} className="value">
-                      {activateAccountValue.email}
-                    </Col>
-                  </Row>
+            <div className="main-form-content">
+              <div>
+                <Row className="main-title">
+                  <Col span={24} className="title">
+                    ACTIVATE YOUR ACCOUNT
+                  </Col>
+                </Row>
+                {!verificationCodeSuccess && (
+                  <>
+                    <Row className="code-sent">
+                      <Col span={24} className="title">
+                        Verification code has been sent to
+                      </Col>
+                      <Col span={24} className="value">
+                        {activateAccountValue.email}
+                      </Col>
+                    </Row>
+                    <Form onFinish={onFinish}>
+                      <Form.Item name="code">
+                        <Input
+                          className={`${
+                            (activateAccountValue.code && 'border-white') || ''
+                          }`}
+                          placeholder="Enter verification code"
+                          bordered={false}
+                          onChange={(e) =>
+                            setActivateAccountValue({
+                              ...activateAccountValue,
+                              code: e.target.value,
+                            })
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item>
+                        <Button
+                          className="signin-btn"
+                          disabled={
+                            !activateAccountValue.code ||
+                            activateAccountValue.code.length <
+                              VerificationCodeLength ||
+                            loading
+                          }
+                          type="primary"
+                          htmlType="submit"
+                        >
+                          NEXT
+                        </Button>
+                      </Form.Item>
+                    </Form>
+                  </>
+                )}
+                {verificationCodeSuccess && (
                   <Form onFinish={onFinish}>
-                    <Form.Item name="code" style={{ marginBottom: 0 }}>
-                      <Input
-                        className={`${
-                          (activateAccountValue.code && 'border-white') || ''
-                        }`}
-                        placeholder="Enter verification code"
+                    <Form.Item style={{ marginBottom: 0 }}>
+                      <Input.Password
+                        value={passwordValue}
+                        className={`${(passwordValue && 'border-white') || ''}`}
+                        placeholder="Set your password (at least 8 characters)"
                         bordered={false}
+                        maxLength={20}
+                        iconRender={(visible) =>
+                          visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                        }
+                        onChange={(e) => {
+                          setPasswordValue(e.target.value);
+                          setActivateAccountValue({
+                            ...activateAccountValue,
+                            password:
+                              (isPassword(e.target.value) && e.target.value) ||
+                              '',
+                          });
+                        }}
+                      />
+                    </Form.Item>
+                    <Form.Item style={{ marginBottom: 0 }}>
+                      <Input.Password
+                        value={confirmPasswordValue}
+                        className={`${
+                          (confirmPasswordValue && 'border-white') || ''
+                        }`}
+                        iconRender={(visible) =>
+                          visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                        }
+                        placeholder="Confirm your password"
+                        bordered={false}
+                        maxLength={20}
+                        onChange={(e) =>
+                          setConfirmPasswordValue(e.target.value)
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item name="genderId" style={{ marginBottom: 0 }}>
+                      <Select
+                        popupClassName="gender-select-dropdown"
+                        className={`${
+                          (activateAccountValue.genderId &&
+                            'gender-select border-white') ||
+                          'gender-select'
+                        }`}
+                        defaultValue={undefined}
+                        placeholder="Gender"
                         onChange={(e) =>
                           setActivateAccountValue({
                             ...activateAccountValue,
-                            code: e.target.value,
+                            genderId: e || '',
+                          })
+                        }
+                        options={formatGenderData}
+                        suffixIcon={<CaretDownOutlined />}
+                      />
+                    </Form.Item>
+                    <Form.Item name="birthday" style={{ marginBottom: 0 }}>
+                      <DatePicker
+                        inputReadOnly
+                        className={`${
+                          (activateAccountValue.birthday && 'border-white') ||
+                          ''
+                        }`}
+                        format="MMM DD, YYYY"
+                        showToday={false}
+                        popupClassName="birth-picker-dropdown"
+                        allowClear={false}
+                        placeholder="Date of Birth"
+                        onChange={(_, dateString) =>
+                          setActivateAccountValue({
+                            ...activateAccountValue,
+                            birthday: format(
+                              new Date(dateString),
+                              'yyyy-MM-dd'
+                            ),
                           })
                         }
                       />
@@ -255,128 +348,34 @@ const ActivateAccountNormalFlow = ({
                       <Button
                         className="signin-btn"
                         disabled={
-                          !activateAccountValue.code ||
-                          activateAccountValue.code.length <
-                            VerificationCodeLength ||
+                          !activateAccountValue.password ||
+                          !isPassword(confirmPasswordValue) ||
+                          !activateAccountValue.birthday ||
+                          !activateAccountValue.genderId ||
                           loading
                         }
                         type="primary"
                         htmlType="submit"
                       >
-                        NEXT
+                        DONE
                       </Button>
                     </Form.Item>
                   </Form>
-                </>
-              )}
-              {verificationCodeSuccess && (
-                <Form onFinish={onFinish}>
-                  <Form.Item style={{ marginBottom: 0 }}>
-                    <Input.Password
-                      value={passwordValue}
-                      className={`${(passwordValue && 'border-white') || ''}`}
-                      placeholder="Set your password (at least 8 characters)"
-                      bordered={false}
-                      maxLength={20}
-                      iconRender={(visible) =>
-                        visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                      }
-                      onChange={(e) => {
-                        setPasswordValue(e.target.value);
-                        setActivateAccountValue({
-                          ...activateAccountValue,
-                          password:
-                            (isPassword(e.target.value) && e.target.value) ||
-                            '',
-                        });
-                      }}
-                    />
-                  </Form.Item>
-                  <Form.Item style={{ marginBottom: 0 }}>
-                    <Input.Password
-                      value={confirmPasswordValue}
-                      className={`${
-                        (confirmPasswordValue && 'border-white') || ''
-                      }`}
-                      iconRender={(visible) =>
-                        visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                      }
-                      placeholder="Confirm your password"
-                      bordered={false}
-                      maxLength={20}
-                      onChange={(e) => setConfirmPasswordValue(e.target.value)}
-                    />
-                  </Form.Item>
-                  <Form.Item name="genderId" style={{ marginBottom: 0 }}>
-                    <Select
-                      popupClassName="gender-select-dropdown"
-                      className={`${
-                        (activateAccountValue.genderId &&
-                          'gender-select border-white') ||
-                        'gender-select'
-                      }`}
-                      defaultValue={undefined}
-                      placeholder="Gender"
-                      onChange={(e) =>
-                        setActivateAccountValue({
-                          ...activateAccountValue,
-                          genderId: e || '',
-                        })
-                      }
-                      options={formatGenderData}
-                      suffixIcon={<CaretDownOutlined />}
-                    />
-                  </Form.Item>
-                  <Form.Item name="birthday" style={{ marginBottom: 0 }}>
-                    <DatePicker
-                      inputReadOnly
-                      className={`${
-                        (activateAccountValue.birthday && 'border-white') || ''
-                      }`}
-                      format="MMM DD, YYYY"
-                      showToday={false}
-                      popupClassName="birth-picker-dropdown"
-                      allowClear={false}
-                      placeholder="Date of Birth"
-                      onChange={(_, dateString) =>
-                        setActivateAccountValue({
-                          ...activateAccountValue,
-                          birthday: format(new Date(dateString), 'yyyy-MM-dd'),
-                        })
-                      }
-                    />
-                  </Form.Item>
-                  <Form.Item style={{ marginBottom: 25 }}>
-                    <Button
-                      className="signin-btn"
-                      disabled={
-                        !activateAccountValue.password ||
-                        !isPassword(confirmPasswordValue) ||
-                        !activateAccountValue.birthday ||
-                        !activateAccountValue.genderId ||
-                        loading
-                      }
-                      type="primary"
-                      htmlType="submit"
-                    >
-                      DONE
-                    </Button>
-                  </Form.Item>
-                </Form>
-              )}
-            </div>
-            <div
-              className={
-                (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
-              }
-            >
-              <p className="registered">Already have an account?</p>
-              <p
-                className="activate"
-                onClick={() => router.push(RouterKeys.login)}
+                )}
+              </div>
+              <div
+                className={
+                  (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
+                }
               >
-                LOGIN
-              </p>
+                <p className="registered">Already have an account?</p>
+                <p
+                  className="activate"
+                  onClick={() => router.push(RouterKeys.login)}
+                >
+                  LOGIN
+                </p>
+              </div>
             </div>
           </div>
           <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />

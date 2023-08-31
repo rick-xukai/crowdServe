@@ -57,6 +57,7 @@ import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 import Messages from '../constants/Messages';
+import AuthPageHearder from '@/components/authPageHearder';
 
 const CreateAccount = () => {
   const cookies = useCookie([
@@ -227,274 +228,271 @@ const CreateAccount = () => {
         </LoginContainer>
       )) || (
         <LoginContainer>
-          <div
-            className="skip-login"
-            onClick={() => router.push(RouterKeys.eventList)}
-          >
-            <span>Skip</span>
-          </div>
+          <AuthPageHearder
+            skipClick={() => router.push(RouterKeys.eventList)}
+          />
           {(!checkGoogleDoc && (
             <div className="page-main">
-              <Row className="main-logo">
-                <Col span={24} className="logo">
-                  <div>
-                    <Image src={Images.Logo} alt="" />
-                  </div>
-                </Col>
-              </Row>
-              <div>
-                <Row className="main-title">
-                  <Col span={24} className="title">
-                    CREATE AN ACCOUNT
-                  </Col>
-                </Row>
-                {!isVerificationEmail && (
-                  <Form onFinish={onFinish}>
-                    <Form.Item name="email" style={{ marginBottom: 0 }}>
-                      <Input
-                        className={`${
-                          (createAccountValue.email && 'border-white') || ''
-                        }`}
-                        placeholder="Email"
-                        bordered={false}
-                        onChange={(e) =>
-                          setCreateAccountValue({
-                            ...createAccountValue,
-                            email:
-                              (isEmail(e.target.value) && e.target.value) || '',
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item style={{ marginBottom: 0, marginTop: 24 }}>
-                      <Input
-                        className={`${
-                          (createAccountValue.username && 'border-white') || ''
-                        }`}
-                        placeholder="User name (at least 3 chars)"
-                        value={createAccountValue.username}
-                        maxLength={20}
-                        bordered={false}
-                        onChange={(e) =>
-                          setCreateAccountValue({
-                            ...createAccountValue,
-                            username: e.target.value.replace(
-                              /[^a-zA-Z0-9\s]/g,
-                              ''
-                            ),
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      style={{ marginBottom: 0, marginTop: 30 }}
-                      className={(isTextShak && 'text-shak') || ''}
-                    >
-                      <div className="agreement-wrapper">
-                        <Checkbox
-                          className={`${
-                            (!checked && 'checkbox-show-error') || ''
-                          }`}
-                          checked={checked}
-                          onChange={(e) => setChecked(e.target.checked)}
-                        />
-                        <div style={{ marginLeft: 8 }}>
-                          <span className="agreement-label">
-                            I agree to CrowdServe{' '}
-                            <span
-                              className="agreement-label-action"
-                              onClick={() =>
-                                checkGoogleDocAction(TermsConditionsLink)
-                              }
-                            >
-                              Terms&Conditions
-                            </span>
-                            and{' '}
-                            <span
-                              className="agreement-label-action"
-                              onClick={() =>
-                                checkGoogleDocAction(PrivacyPolicyLink)
-                              }
-                            >
-                              Privacy Policy.
-                            </span>
-                          </span>
-                        </div>
-                      </div>
-                    </Form.Item>
-                    <Form.Item>
-                      <Button
-                        style={{ marginTop: 24 }}
-                        className="signin-btn"
-                        disabled={
-                          !createAccountValue.email ||
-                          loading ||
-                          !isUserName(createAccountValue.username) ||
-                          createAccountValue.username.length < 3
-                        }
-                        type="primary"
-                        htmlType="submit"
-                        onClick={() => setTextShak(false)}
-                      >
-                        CONTINUE
-                      </Button>
-                    </Form.Item>
-                    {/* <Divider>OR</Divider>
-                <GoogleLoginComponent buttonText="CONTINUE WITH GOOGLE" /> */}
-                  </Form>
-                )}
-                {!isVerificationCode && isVerificationEmail && (
-                  <>
-                    <Row className="code-sent">
-                      <Col span={24} className="title">
-                        Verification code has been sent to
-                      </Col>
-                      <Col span={24} className="value">
-                        {createAccountValue.email}
-                      </Col>
-                    </Row>
+              <div className="main-form-content">
+                <div>
+                  <Row className="main-title">
+                    <Col span={24} className="title">
+                      CREATE AN ACCOUNT
+                    </Col>
+                  </Row>
+                  {!isVerificationEmail && (
                     <Form onFinish={onFinish}>
-                      <Form.Item name="code" style={{ marginBottom: 0 }}>
+                      <Form.Item name="email">
                         <Input
                           className={`${
-                            (createAccountValue.code && 'border-white') || ''
+                            (createAccountValue.email && 'border-white') || ''
                           }`}
-                          placeholder="Enter verification code"
+                          placeholder="Email"
                           bordered={false}
                           onChange={(e) =>
                             setCreateAccountValue({
                               ...createAccountValue,
-                              code: e.target.value,
+                              email:
+                                (isEmail(e.target.value) && e.target.value) ||
+                                '',
                             })
                           }
                         />
                       </Form.Item>
-                      <Form.Item style={{ marginBottom: 25 }}>
+                      <Form.Item>
+                        <Input
+                          className={`${
+                            (createAccountValue.username && 'border-white') ||
+                            ''
+                          }`}
+                          placeholder="User name (at least 3 chars)"
+                          value={createAccountValue.username}
+                          maxLength={20}
+                          bordered={false}
+                          onChange={(e) =>
+                            setCreateAccountValue({
+                              ...createAccountValue,
+                              username: e.target.value.replace(
+                                /[^a-zA-Z0-9\s]/g,
+                                ''
+                              ),
+                            })
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        style={{ marginBottom: 0 }}
+                        className={(isTextShak && 'text-shak') || ''}
+                      >
+                        <div className="agreement-wrapper">
+                          <Checkbox
+                            className={`${
+                              (!checked && 'checkbox-show-error') || ''
+                            }`}
+                            checked={checked}
+                            onChange={(e) => setChecked(e.target.checked)}
+                          />
+                          <div style={{ marginLeft: 8 }}>
+                            <span className="agreement-label">
+                              I agree to CrowdServe{' '}
+                              <span
+                                className="agreement-label-action"
+                                onClick={() =>
+                                  checkGoogleDocAction(TermsConditionsLink)
+                                }
+                              >
+                                Terms&Conditions
+                              </span>
+                              and{' '}
+                              <span
+                                className="agreement-label-action"
+                                onClick={() =>
+                                  checkGoogleDocAction(PrivacyPolicyLink)
+                                }
+                              >
+                                Privacy Policy.
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </Form.Item>
+                      <Form.Item>
                         <Button
                           className="signin-btn"
-                          disabled={!createAccountValue.code || loading}
+                          disabled={
+                            !createAccountValue.email ||
+                            loading ||
+                            !isUserName(createAccountValue.username) ||
+                            createAccountValue.username.length < 3
+                          }
+                          type="primary"
+                          htmlType="submit"
+                          onClick={() => setTextShak(false)}
+                        >
+                          CONTINUE
+                        </Button>
+                      </Form.Item>
+                      {/* <Divider>OR</Divider>
+                <GoogleLoginComponent buttonText="CONTINUE WITH GOOGLE" /> */}
+                    </Form>
+                  )}
+                  {!isVerificationCode && isVerificationEmail && (
+                    <>
+                      <Row className="code-sent">
+                        <Col span={24} className="title">
+                          Verification code has been sent to
+                        </Col>
+                        <Col span={24} className="value">
+                          {createAccountValue.email}
+                        </Col>
+                      </Row>
+                      <Form onFinish={onFinish}>
+                        <Form.Item name="code">
+                          <Input
+                            className={`${
+                              (createAccountValue.code && 'border-white') || ''
+                            }`}
+                            placeholder="Enter verification code"
+                            bordered={false}
+                            onChange={(e) =>
+                              setCreateAccountValue({
+                                ...createAccountValue,
+                                code: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Item>
+                        <Form.Item>
+                          <Button
+                            className="signin-btn"
+                            disabled={!createAccountValue.code || loading}
+                            type="primary"
+                            htmlType="submit"
+                          >
+                            NEXT
+                          </Button>
+                        </Form.Item>
+                      </Form>
+                    </>
+                  )}
+                  {isVerificationCode && isVerificationEmail && (
+                    <Form onFinish={onFinish}>
+                      <Form.Item>
+                        <Input.Password
+                          value={passwordValue}
+                          className={`${
+                            (passwordValue && 'border-white') || ''
+                          }`}
+                          placeholder="Set your password (at least 8 characters)"
+                          bordered={false}
+                          maxLength={20}
+                          iconRender={(visible) =>
+                            visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                          }
+                          onChange={(e) => {
+                            setPasswordValue(e.target.value);
+                            setCreateAccountValue({
+                              ...createAccountValue,
+                              password:
+                                (isPassword(e.target.value) &&
+                                  e.target.value) ||
+                                '',
+                            });
+                          }}
+                        />
+                      </Form.Item>
+                      <Form.Item>
+                        <Input.Password
+                          value={confirmPasswordValue}
+                          className={`${
+                            (confirmPasswordValue && 'border-white') || ''
+                          }`}
+                          iconRender={(visible) =>
+                            visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                          }
+                          placeholder="Confirm your password"
+                          bordered={false}
+                          maxLength={20}
+                          onChange={(e) =>
+                            setConfirmPasswordValue(e.target.value)
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item name="genderId">
+                        <Select
+                          popupClassName="gender-select-dropdown"
+                          className={`${
+                            (createAccountValue.genderId &&
+                              'gender-select border-white') ||
+                            'gender-select'
+                          }`}
+                          defaultValue={undefined}
+                          placeholder="Gender"
+                          onChange={(e) =>
+                            setCreateAccountValue({
+                              ...createAccountValue,
+                              genderId: e || '',
+                            })
+                          }
+                          options={formatGenderData}
+                          suffixIcon={<CaretDownOutlined />}
+                        />
+                      </Form.Item>
+                      <Form.Item name="birthday">
+                        <DatePicker
+                          inputReadOnly
+                          className={`${
+                            (createAccountValue.birthday && 'border-white') ||
+                            ''
+                          }`}
+                          format="MMM DD, YYYY"
+                          showToday={false}
+                          popupClassName="birth-picker-dropdown"
+                          allowClear={false}
+                          placeholder="Date of Birth"
+                          onChange={(_, dateString) =>
+                            setCreateAccountValue({
+                              ...createAccountValue,
+                              birthday: format(
+                                new Date(dateString),
+                                'yyyy-MM-dd'
+                              ),
+                            })
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item>
+                        <Button
+                          className="signin-btn"
+                          disabled={
+                            !isPassword(confirmPasswordValue) ||
+                            !createAccountValue.password ||
+                            !createAccountValue.birthday ||
+                            !createAccountValue.genderId ||
+                            loading
+                          }
                           type="primary"
                           htmlType="submit"
                         >
-                          NEXT
+                          DONE
                         </Button>
                       </Form.Item>
                     </Form>
-                  </>
-                )}
-                {isVerificationCode && isVerificationEmail && (
-                  <Form onFinish={onFinish}>
-                    <Form.Item style={{ marginBottom: 0 }}>
-                      <Input.Password
-                        value={passwordValue}
-                        className={`${(passwordValue && 'border-white') || ''}`}
-                        placeholder="Set your password (at least 8 characters)"
-                        bordered={false}
-                        maxLength={20}
-                        iconRender={(visible) =>
-                          visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                        }
-                        onChange={(e) => {
-                          setPasswordValue(e.target.value);
-                          setCreateAccountValue({
-                            ...createAccountValue,
-                            password:
-                              (isPassword(e.target.value) && e.target.value) ||
-                              '',
-                          });
-                        }}
-                      />
-                    </Form.Item>
-                    <Form.Item style={{ marginBottom: 0 }}>
-                      <Input.Password
-                        value={confirmPasswordValue}
-                        className={`${
-                          (confirmPasswordValue && 'border-white') || ''
-                        }`}
-                        iconRender={(visible) =>
-                          visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                        }
-                        placeholder="Confirm your password"
-                        bordered={false}
-                        maxLength={20}
-                        onChange={(e) =>
-                          setConfirmPasswordValue(e.target.value)
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item name="genderId" style={{ marginBottom: 0 }}>
-                      <Select
-                        popupClassName="gender-select-dropdown"
-                        className={`${
-                          (createAccountValue.genderId &&
-                            'gender-select border-white') ||
-                          'gender-select'
-                        }`}
-                        defaultValue={undefined}
-                        placeholder="Gender"
-                        onChange={(e) =>
-                          setCreateAccountValue({
-                            ...createAccountValue,
-                            genderId: e || '',
-                          })
-                        }
-                        options={formatGenderData}
-                        suffixIcon={<CaretDownOutlined />}
-                      />
-                    </Form.Item>
-                    <Form.Item name="birthday" style={{ marginBottom: 0 }}>
-                      <DatePicker
-                        inputReadOnly
-                        className={`${
-                          (createAccountValue.birthday && 'border-white') || ''
-                        }`}
-                        format="MMM DD, YYYY"
-                        showToday={false}
-                        popupClassName="birth-picker-dropdown"
-                        allowClear={false}
-                        placeholder="Date of Birth"
-                        onChange={(_, dateString) =>
-                          setCreateAccountValue({
-                            ...createAccountValue,
-                            birthday: format(
-                              new Date(dateString),
-                              'yyyy-MM-dd'
-                            ),
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item style={{ marginBottom: 25 }}>
-                      <Button
-                        className="signin-btn"
-                        disabled={
-                          !isPassword(confirmPasswordValue) ||
-                          !createAccountValue.password ||
-                          !createAccountValue.birthday ||
-                          !createAccountValue.genderId ||
-                          loading
-                        }
-                        type="primary"
-                        htmlType="submit"
-                      >
-                        DONE
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                )}
-              </div>
-              <div
-                className={
-                  (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
-                }
-              >
-                <p className="registered">Already have an account?</p>
-                <p
-                  className="activate"
-                  onClick={() => router.push(RouterKeys.login)}
+                  )}
+                </div>
+                <div
+                  className={
+                    (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
+                  }
                 >
-                  LOGIN
-                </p>
+                  <p className="registered">Already have an account?</p>
+                  <p
+                    className="activate"
+                    onClick={() => router.push(RouterKeys.login)}
+                  >
+                    LOGIN
+                  </p>
+                </div>
               </div>
             </div>
           )) || (

@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 
-import { Colors } from '../theme';
+import { Colors, Images } from '../theme';
 
 const LoginContainer = styled.div`
   padding: 20px;
   height: 100%;
-  display: flex;
-  align-items: center;
   position: relative;
-  max-width: 400px;
-  margin: auto;
+  background-image: url(${Images.AnimatedBackground.src});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   .page-loading {
     width: 100%;
     height: 100%;
@@ -24,24 +24,24 @@ const LoginContainer = styled.div`
       margin: auto;
     }
   }
-  .skip-login {
-    position: absolute;
-    color: ${Colors.white};
-    top: 20px;
-    right: 20px;
-    font-weight: 400;
-    font-size: 15px;
-    z-index: 1;
-    cursor: pointer;
-  }
   .page-main {
     width: 100%;
+    height: calc(100% - 86px);
     position: relative;
-    max-width: 375px;
-    margin: auto;
+    display: flex;
+    align-items: center;
     .ant-select-selection-item,
     .ant-select-selection-placeholder {
       padding-top: 8px;
+    }
+    .main-form-content {
+      width: 680px;
+      margin: auto;
+      border-radius: 4px;
+      border: 1px solid ${Colors.backgorund};
+      background: rgba(39, 39, 42, 0.3);
+      backdrop-filter: blur(10px);
+      padding: 80px 100px;
     }
     .main-logo {
       .logo {
@@ -54,69 +54,62 @@ const LoginContainer = styled.div`
       }
     }
     .main-title {
-      margin-bottom: 38px;
+      margin-bottom: 40px;
       .title {
-        margin-top: 30px;
-        font-weight: 700;
-        font-size: 28px;
-        font-family: 'Oswald';
         color: ${Colors.white};
         text-align: center;
+        font-family: Baradig;
+        font-size: 28px;
+        font-weight: 700;
+        text-transform: uppercase;
       }
     }
     .ant-input-affix-wrapper {
       width: 100%;
       display: inline-flex;
-      border-bottom: 0.7px solid ${Colors.grayScale50};
       border-radius: 0;
       padding: 0;
       .ant-input-suffix {
         display: flex;
         align-items: center;
-        padding-top: 15px;
-      }
-      &.border-white {
-        border-bottom: 1px solid ${Colors.white};
-        .anticon {
-          color: ${Colors.white};
-        }
-      }
-      .ant-input {
-        border: none;
-        color: ${Colors.white};
+        background: ${Colors.white};
+        border-top: 1px solid ${Colors.grayScale70};
+        border-bottom: 1px solid ${Colors.grayScale70};
+        width: 1;
+        margin-left: -1px;
+        padding-right: 12px;
       }
       .anticon {
         font-size: 18px;
-        color: ${Colors.grayScale50};
+        color: ${Colors.grayScale40};
       }
     }
     input:-internal-autofill-previewed,
     input:-internal-autofill-selected {
-      -webkit-text-fill-color: ${Colors.white} !important;
+      -webkit-text-fill-color: ${Colors.backgorund} !important;
       transition: background-color 5000s ease-in-out 0s !important;
+    }
+    .ant-form {
+      padding: 0 60px;
+      .ant-form-item {
+        margin-bottom: 16px;
+      }
     }
     .ant-input {
       width: 100%;
-      height: 50px;
-      border: none;
-      border-bottom: 0.7px solid ${Colors.grayScale50};
-      border-radius: unset;
-      background: transparent;
-      color: ${Colors.white};
-      padding: 0;
-      padding-top: 15px;
-      &.ant-input-status-success {
-        color: ${Colors.white};
-      }
+      height: 44px;
+      border: 1px solid ${Colors.grayScale70};
+      border-right: none;
+      background: ${Colors.white};
+      color: ${Colors.backgorund};
+      padding: 8px 12px;
+      border-radius: 2px;
       &::placeholder {
-        color: ${Colors.grayScale50};
-      }
-      &.border-white {
-        border-bottom: 1px solid ${Colors.white};
+        color: ${Colors.grayScale40};
       }
     }
     .signin-btn {
-      margin-top: 45px;
+      margin-top: 36px;
       width: 100%;
       color: ${Colors.grayScale10};
       background: ${Colors.branding};
@@ -250,6 +243,7 @@ const LoginContainer = styled.div`
   }
   .code-sent {
     margin-bottom: 30px;
+    padding: 0 60px;
     .title {
       font-weight: 300;
       font-size: 17px;
@@ -259,6 +253,7 @@ const LoginContainer = styled.div`
       font-weight: 500;
       font-size: 17px;
       color: ${Colors.grayScale20};
+      margin-top: 10px;
     }
   }
   .ant-divider-horizontal.ant-divider-with-text {
@@ -293,8 +288,10 @@ const LoginContainer = styled.div`
     border-color: ${Colors.grayScale50};
   }
   .ant-select-single .ant-select-selector .ant-select-selection-item {
-    line-height: 50px;
-    color: ${Colors.white};
+    line-height: 44px;
+    color: ${Colors.backgorund};
+    padding-left: 12px;
+    padding-top: 0;
   }
   .ant-picker-focused {
     box-shadow: none;
@@ -303,31 +300,24 @@ const LoginContainer = styled.div`
     border-color: ${Colors.grayScale50};
   }
   .ant-picker {
-    height: 50px;
+    height: 44px;
     width: 100%;
-    background: ${Colors.backgorund};
+    background: ${Colors.white};
     border: none;
-    border-bottom: 0.7px solid ${Colors.grayScale50};
+    border: 1px solid ${Colors.grayScale70};
     border-radius: 0;
-    padding: 0;
-    padding-top: 15px;
-    &.border-white {
-      border-bottom: 1px solid ${Colors.white};
-      .ant-picker-suffix {
-        color: ${Colors.white};
-      }
-    }
+    padding-top: 8px 12px;
     .ant-picker-input {
       input {
-        color: ${Colors.white};
-        background: ${Colors.backgorund};
+        color: ${Colors.backgorund};
+        background: ${Colors.white};
         &::placeholder {
-          color: ${Colors.grayScale50};
+          color: ${Colors.grayScale40};
         }
       }
     }
     .ant-picker-suffix {
-      color: ${Colors.grayScale50};
+      color: ${Colors.grayScale40};
     }
   }
   .gender-select {
@@ -341,32 +331,75 @@ const LoginContainer = styled.div`
       }
     }
     .ant-select-selector {
-      height: 50px;
-      background: transparent;
-      border: none;
-      border-bottom: 0.7px solid ${Colors.grayScale50};
-      padding: 0;
+      height: 44px;
+      background: ${Colors.white};
+      border: 1px solid ${Colors.grayScale70};
+      border-right: none;
       border-radius: 0;
+      padding: 0;
       .ant-select-selection-search {
         width: 100%;
         inset-inline-start: unset;
         inset-inline-end: unset;
       }
       .ant-select-selection-search-input {
-        height: 50px;
+        height: 44px;
+        padding: 8px 12px;
       }
     }
     .ant-select-arrow {
       font-size: 20px;
       inset-inline-end: -2px;
-      color: ${Colors.grayScale50};
-      padding-top: 15px;
+      color: ${Colors.grayScale40};
+      padding-right: 12px;
+      .anticon {
+        color: ${Colors.grayScale40};
+      }
     }
     .ant-select-selection-placeholder {
-      line-height: 50px;
-      color: ${Colors.grayScale50};
+      line-height: 44px;
+      color: ${Colors.grayScale40};
       font-weight: 300;
       font-size: 14px;
+      padding: 0px 12px;
+    }
+  }
+  @media (max-width: 768px) {
+    .page-main {
+      .main-form-content {
+        width: 580px;
+        padding: 60px 60px;
+        .ant-form {
+          padding: 0 40px;
+        }
+      }
+    }
+  }
+  @media (max-width: 576px) {
+    .page-main {
+      .main-form-content {
+        width: 480px;
+        padding: 40px 40px;
+        .ant-form {
+          padding: 0 20px;
+        }
+      }
+    }
+  }
+  @media (max-width: 375px) {
+    .page-main {
+      .main-title {
+        .title {
+          font-size: 20px;
+        }
+      }
+      .main-form-content {
+        width: 330px;
+        padding: 20px 20px;
+        .ant-form {
+          padding: 0 0;
+        }
+      }
     }
   }
   @media (min-width: 1024px) {
