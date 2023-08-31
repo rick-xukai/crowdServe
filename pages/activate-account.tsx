@@ -41,11 +41,13 @@ import {
   TermsConditionsLink,
   PasswordNotMatch,
   BirthdayNotVaild,
+  DefaultSelectCountry,
 } from '../constants/General';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
 import AuthPageHearder from '@/components/authPageHearder';
 import { ActivateAccountContainer } from '@/styles/activateAccount.style';
+import countryDataList from '@/utils/countrycode.data.json';
 
 const ActivateAccount = ({
   defultEmail,
@@ -76,6 +78,7 @@ const ActivateAccount = ({
   const [passwordValue, setPasswordValue] = useState<string>('');
   const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
+  const [formatCountryData, setFormatCountryData] = useState([]);
   const [formatGenderData, setFormatGenderData] = useState<
     {
       value: number;
@@ -89,6 +92,7 @@ const ActivateAccount = ({
       password: '',
       birthday: '',
       genderId: '',
+      country: DefaultSelectCountry,
     }
   );
 
@@ -121,6 +125,22 @@ const ActivateAccount = ({
     } else {
       setTextShak(true);
     }
+  };
+
+  const getFormatCountryData = () => {
+    const countryData: any = [];
+    countryDataList.map((item) => {
+      countryData.push({
+        value: item.country,
+        label: (
+          <div className="country-items-content">
+            <span className="country-flag">{item.flag}</span>
+            <span>{item.country}</span>
+          </div>
+        ),
+      });
+    });
+    setFormatCountryData(countryData);
   };
 
   useEffect(() => {
@@ -189,6 +209,7 @@ const ActivateAccount = ({
   }, [error]);
 
   useEffect(() => {
+    getFormatCountryData();
     dispatch(getUserGenderAction());
     setIsFirstRender(false);
     return () => {
@@ -288,7 +309,7 @@ const ActivateAccount = ({
                         suffixIcon={<CaretDownOutlined />}
                       />
                     </Form.Item>
-                    <Form.Item name="birthday" style={{ marginBottom: 0 }}>
+                    <Form.Item name="birthday">
                       <DatePicker
                         inputReadOnly
                         className={`${
@@ -310,6 +331,27 @@ const ActivateAccount = ({
                             ),
                           })
                         }
+                      />
+                    </Form.Item>
+                    <Form.Item style={{ marginBottom: 0 }}>
+                      <Select
+                        showSearch
+                        popupClassName="gender-select-dropdown"
+                        className={`${
+                          (activateAccountFormValue.country &&
+                            'gender-select country border-white') ||
+                          'gender-select country'
+                        }`}
+                        defaultValue={DefaultSelectCountry}
+                        placeholder="Select Country"
+                        onChange={(e) =>
+                          setActivateAccountFormValue({
+                            ...activateAccountFormValue,
+                            country: e || '',
+                          })
+                        }
+                        options={formatCountryData}
+                        suffixIcon={<CaretDownOutlined />}
                       />
                     </Form.Item>
                     <Form.Item>

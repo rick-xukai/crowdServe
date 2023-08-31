@@ -182,6 +182,23 @@ a {
 .gender-select-dropdown {
   background: #717179;
 }
+.gender-select-dropdown .ant-empty-description {
+  color: #fff;
+}
+.country-items-content {
+  display: flex;
+  align-items: center;
+}
+.country-items-content span {
+  margin-left: 10px;
+}
+.country-items-content .country-flag {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  line-height: 20px;
+  margin-left: 0;
+}
 .gender-select-dropdown .ant-select-item {
   color: #fff;
   cursor: default;
