@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
 import { isMobile } from 'react-device-detect';
@@ -28,7 +27,6 @@ import {
   selectData,
   reset,
 } from '../slice/user.slice';
-import { Images } from '../theme';
 import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
 import { resetTicketsCache } from '../slice/ticketsCache.slice';

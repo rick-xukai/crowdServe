@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Form, Input, message } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { Images } from '@/theme';
 import {
   PasswordNotMatch,
   UserNotExist,

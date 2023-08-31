@@ -17,7 +17,6 @@ import {
   LoadingOutlined,
   CaretDownOutlined,
 } from '@ant-design/icons';
-import Image from 'next/image';
 import { format } from 'date-fns';
 
 import { useCookie } from '../hooks';
@@ -38,7 +37,6 @@ import {
   RegisterVerifyType,
   DefaultSelectCountry,
 } from '../constants/General';
-import { Images } from '../theme';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { LoginContainer } from '../styles/login-style';
 import {

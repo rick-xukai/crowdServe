@@ -16,7 +16,6 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import { format } from 'date-fns';
 import { isEmpty } from 'lodash';
 
@@ -35,7 +34,6 @@ import {
   DefaultSelectCountry,
 } from '../constants/General';
 import { RouterKeys, CookieKeys } from '../constants/Keys';
-import { Images } from '../theme';
 import { LoginContainer } from '../styles/login-style';
 import OpenAppComponent from '../components/openAppComponent';
 import {
