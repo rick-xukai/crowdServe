@@ -179,3 +179,9 @@ export enum SetRefundKey {
 export const DefaultPageType = 0;
 export const DefaultPlatform = 0;
 export const DefaultSelectCountry = 'Singapore';
+export interface CountryItemProps {
+  code: string;
+  flag: string;
+  shortCode: string;
+  country: string;
+}

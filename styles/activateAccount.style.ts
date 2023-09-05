@@ -49,14 +49,9 @@ const ActivateAccountContainer = styled.div`
   }
   .page-bottom {
     color: #fff;
-    position: absolute;
     display: flex;
     justify-content: center;
     width: 100%;
-    left: 0;
-    &.open-app {
-      padding-bottom: 120px;
-    }
   }
   .page-main {
     width: 100%;
@@ -77,6 +72,82 @@ const ActivateAccountContainer = styled.div`
     .ant-select-selection-item,
     .ant-select-selection-placeholder {
       padding-top: 8px;
+    }
+    .search-select-country {
+      height: 44px;
+      background: ${Colors.white};
+      border: 1px solid ${Colors.grayScale70};
+      padding: 0 12px;
+      padding-right: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      border-radius: 2px;
+      .anticon {
+        font-size: 20px;
+        color: ${Colors.grayScale40};
+      }
+    }
+    .content {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      &.no-data {
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .country-flag {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+        line-height: 20px;
+      }
+      .country-name {
+        margin-left: 10px;
+        color: ${Colors.backgorund};
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    .country-items {
+      color: ${Colors.white};
+      position: absolute;
+      bottom: -180px;
+      z-index: 1;
+      width: 100%;
+      left: 0;
+      height: 170px;
+      background: ${Colors.grayScale50};
+      border-radius: 6px;
+      overflow: auto;
+      padding: 0 12px;
+      .search-input-content {
+        border-bottom: 1px solid ${Colors.white};
+        margin-bottom: 8px;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .content {
+        height: auto;
+        padding: 8px 0;
+        cursor: pointer;
+        .country-name {
+          color: ${Colors.white};
+        }
+      }
+      .ant-input {
+        background: transparent;
+        border: none;
+        color: ${Colors.white};
+        padding: 8px 0;
+      }
+      .ant-input:focus {
+        box-shadow: unset;
+      }
     }
     .main-form-content {
       width: 680px;
@@ -141,6 +212,8 @@ const ActivateAccountContainer = styled.div`
       color: ${Colors.backgorund};
       padding: 8px 12px;
       border-radius: 2px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
       &::placeholder {
         color: ${Colors.grayScale40};
       }
@@ -285,7 +358,9 @@ const ActivateAccountContainer = styled.div`
     background: ${Colors.white};
     border: none;
     border: 1px solid ${Colors.grayScale70};
-    border-radius: 0;
+    border-radius: 2px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
     padding-top: 8px 12px;
     .ant-picker-input {
       input {
@@ -315,7 +390,9 @@ const ActivateAccountContainer = styled.div`
       background: ${Colors.white};
       border: 1px solid ${Colors.grayScale70};
       border-right: none;
-      border-radius: 0;
+      border-radius: 2px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
       padding: 0;
       .ant-select-selection-search {
         width: 100%;
@@ -356,17 +433,7 @@ const ActivateAccountContainer = styled.div`
     }
   }
   @media (max-width: 576px) {
-    .page-main {
-      .main-form-content {
-        width: 480px;
-        padding: 40px 40px;
-        .ant-form {
-          padding: 0 20px;
-        }
-      }
-    }
-  }
-  @media (max-width: 375px) {
+    padding: 10px;
     .page-main {
       .main-title {
         .title {
@@ -374,11 +441,44 @@ const ActivateAccountContainer = styled.div`
         }
       }
       .main-form-content {
-        width: 330px;
+        width: auto;
+        min-width: 330px;
         padding: 20px 20px;
+        .main-title {
+          margin-bottom: 20px;
+        }
         .ant-form {
           padding: 0 0;
         }
+      }
+      .ant-input,
+      .search-select-country {
+        height: 35px;
+      }
+      .signin-btn {
+        height: 40px;
+      }
+    }
+    .gender-select {
+      .ant-select-selector {
+        height: 35px;
+        .ant-select-selection-search-input {
+          height: 35px;
+        }
+        .ant-select-selection-placeholder,
+        .ant-select-selection-item {
+          line-height: 35px;
+        }
+      }
+    }
+    .ant-picker {
+      height: 35px;
+    }
+  }
+  @media (max-width: 375px) {
+    .main-form-content {
+      &.country-items-show {
+        padding-bottom: 20px;
       }
     }
   }

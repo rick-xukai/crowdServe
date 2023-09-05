@@ -237,21 +237,22 @@ const Login = ({
                       })
                     }
                   />
-                  <p
-                    className="forgot-password"
-                    onClick={() => {
-                      if (loginEmailParameter) {
-                        router.push(
-                          `${RouterKeys.forgotPassword}?${base64Encrypt({
-                            email: loginEmailParameter,
-                          })}`
-                        );
-                      } else {
-                        router.push(RouterKeys.forgotPassword);
-                      }
-                    }}
-                  >
-                    FORGOT PASSWORD?
+                  <p className="forgot-password">
+                    <span
+                      onClick={() => {
+                        if (loginEmailParameter) {
+                          router.push(
+                            `${RouterKeys.forgotPassword}?${base64Encrypt({
+                              email: loginEmailParameter,
+                            })}`
+                          );
+                        } else {
+                          router.push(RouterKeys.forgotPassword);
+                        }
+                      }}
+                    >
+                      FORGOT PASSWORD?
+                    </span>
                   </p>
                 </div>
               </Form.Item>

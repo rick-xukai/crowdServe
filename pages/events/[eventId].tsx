@@ -114,6 +114,7 @@ const EventDetail = ({
   const [showMap, setShowMap] = useState<boolean>(false);
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const [needShowMore, setNeedShowMore] = useState<boolean>(false);
+  const [previousPage, setPreviousPage] = useState<string>('');
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
@@ -204,7 +205,10 @@ const EventDetail = ({
       userAgent: cookies.getCookie(CookieKeys.userLoginEmail) || '',
       browser: browserName,
       objectId: eventDetailData.id,
-      referer: document.referrer,
+      referer:
+        document.referrer ||
+        (previousPage && previousPage) ||
+        window.location.hostname + window.location.pathname,
       timestamp: new Date().getTime().toString(),
       userTime: new Date().toString(),
       timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -221,6 +225,17 @@ const EventDetail = ({
     const { eventId } = router.query;
     if (eventId) {
       const parameterArr = (eventId as string).split('-');
+      if (last(parameterArr)?.includes('previous=')) {
+        if (parameterArr[parameterArr.length - 2]) {
+          setEventId(parameterArr[parameterArr.length - 2] || '');
+        } else {
+          setEventCorrect(false);
+        }
+        setPreviousPage(
+          `${window.location.hostname}/${last(parameterArr)?.split('=')[1]}`
+        );
+        return;
+      }
       if (last(parameterArr)) {
         setEventId(last(parameterArr) || '');
       } else {

@@ -197,7 +197,7 @@ const PageHearderResponsive = ({
     >
       <div className="header-main">
         <Row>
-          <Col span={22}>
+          <Col span={21}>
             <Row>
               <Col className="header-logo">
                 <Image
@@ -291,7 +291,7 @@ const PageHearderResponsive = ({
               </Col>
             </Row>
           </Col>
-          <Col span={2} className="right-button">
+          <Col span={3} className="right-button">
             {isUserToken !== null && (
               <>
                 {(!isUserToken && (
