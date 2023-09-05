@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import {
   Row,
@@ -18,6 +18,7 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { format } from 'date-fns';
+import { cloneDeep } from 'lodash';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -40,6 +41,7 @@ import {
   PasswordNotMatch,
   BirthdayNotVaild,
   DefaultSelectCountry,
+  CountryItemProps,
 } from '../constants/General';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
@@ -61,6 +63,8 @@ const ActivateAccount = ({
   const cookies = useCookie([CookieKeys.userLoginToken]);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const countryListSelect = useRef<any>(null);
+  const searchInputSelect = useRef<any>(null);
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
@@ -76,7 +80,10 @@ const ActivateAccount = ({
   const [passwordValue, setPasswordValue] = useState<string>('');
   const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
-  const [formatCountryData, setFormatCountryData] = useState([]);
+  const [sortCountryList, setSortCountryList] = useState<CountryItemProps[]>(
+    []
+  );
+  const [showCountryItems, setShowCountryItems] = useState<boolean>(false);
   const [formatGenderData, setFormatGenderData] = useState<
     {
       value: number;
@@ -125,20 +132,32 @@ const ActivateAccount = ({
     }
   };
 
-  const getFormatCountryData = () => {
-    const countryData: any = [];
-    countryDataList.map((item) => {
-      countryData.push({
-        value: item.country,
-        label: (
-          <div className="country-items-content">
-            <span className="country-flag">{item.flag}</span>
-            <span>{item.country}</span>
-          </div>
-        ),
-      });
+  const sortData = (data: CountryItemProps[]) => {
+    const listSort: CountryItemProps[] = cloneDeep(data).sort(
+      (x: CountryItemProps, y: CountryItemProps) =>
+        x.country.localeCompare(y.country)
+    );
+    return listSort;
+  };
+
+  const searchCountryOnChange = (e: string) => {
+    const searchItems: CountryItemProps[] = [];
+    countryDataList.map((item: CountryItemProps) => {
+      if (item.country.toLowerCase().includes(e)) {
+        searchItems.push(item);
+      }
     });
-    setFormatCountryData(countryData);
+    setSortCountryList(sortData(searchItems));
+  };
+
+  const clickCallback = (e: any) => {
+    if (
+      countryListSelect.current.contains(e.target) ||
+      searchInputSelect.current.contains(e.target)
+    ) {
+      return;
+    }
+    setShowCountryItems(false);
   };
 
   useEffect(() => {
@@ -207,7 +226,17 @@ const ActivateAccount = ({
   }, [error]);
 
   useEffect(() => {
-    getFormatCountryData();
+    if (!showCountryItems) {
+      setSortCountryList(sortData(countryDataList));
+    } else {
+      document.addEventListener('click', clickCallback, false);
+    }
+    return () => {
+      document.removeEventListener('click', clickCallback, false);
+    };
+  }, [showCountryItems]);
+
+  useEffect(() => {
     dispatch(getUserGenderAction());
     setIsFirstRender(false);
     return () => {
@@ -232,7 +261,13 @@ const ActivateAccount = ({
           />
           {(!checkGoogleDoc && (
             <div className="page-main">
-              <div className="main-form-content">
+              <div
+                className={
+                  (showCountryItems &&
+                    'main-form-content country-items-show') ||
+                  'main-form-content'
+                }
+              >
                 <div>
                   <Row className="main-title">
                     <Col span={24} className="title">
@@ -331,26 +366,81 @@ const ActivateAccount = ({
                         }
                       />
                     </Form.Item>
-                    <Form.Item style={{ marginBottom: 0 }}>
-                      <Select
-                        showSearch
-                        popupClassName="gender-select-dropdown"
-                        className={`${
-                          (activateAccountFormValue.country &&
-                            'gender-select country border-white') ||
-                          'gender-select country'
-                        }`}
-                        defaultValue={DefaultSelectCountry}
-                        placeholder="Select Country"
-                        onChange={(e) =>
-                          setActivateAccountFormValue({
-                            ...activateAccountFormValue,
-                            country: e || '',
-                          })
-                        }
-                        options={formatCountryData}
-                        suffixIcon={<CaretDownOutlined />}
-                      />
+                    <Form.Item
+                      className="form-country"
+                      style={{ marginBottom: 0 }}
+                    >
+                      <>
+                        <div
+                          ref={countryListSelect}
+                          className="search-select-country"
+                          onClick={() => setShowCountryItems(!showCountryItems)}
+                        >
+                          <div className="content">
+                            <span className="country-flag">
+                              {countryDataList.find(
+                                (item) =>
+                                  item.country ===
+                                  activateAccountFormValue.country
+                              )?.flag || ''}
+                            </span>
+                            <span className="country-name">
+                              {
+                                countryDataList.find(
+                                  (item) =>
+                                    item.country ===
+                                    activateAccountFormValue.country
+                                )?.country
+                              }
+                            </span>
+                          </div>
+                          <CaretDownOutlined />
+                        </div>
+                        {showCountryItems && (
+                          <div className="country-items">
+                            <div
+                              ref={searchInputSelect}
+                              className="search-input-content"
+                            >
+                              <Input
+                                placeholder="Search country"
+                                onChange={(e) => {
+                                  searchCountryOnChange(
+                                    e.target.value.toLowerCase()
+                                  );
+                                }}
+                              />
+                            </div>
+                            {(sortCountryList.length &&
+                              sortCountryList.map((item: CountryItemProps) => (
+                                <div
+                                  key={`${item.code}-${item.country}`}
+                                  className="content"
+                                  onClick={() => {
+                                    setShowCountryItems(false);
+                                    setActivateAccountFormValue({
+                                      ...activateAccountFormValue,
+                                      country: item.country,
+                                    });
+                                  }}
+                                >
+                                  <span className="country-flag">
+                                    {item.flag}
+                                  </span>
+                                  <span className="country-name">
+                                    {item.country}
+                                  </span>
+                                </div>
+                              ))) || (
+                              <div className="content no-data">
+                                <span className="country-name">
+                                  No data found
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </>
                     </Form.Item>
                     <Form.Item>
                       <Button

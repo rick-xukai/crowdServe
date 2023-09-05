@@ -10,7 +10,7 @@ import { LocalStorageKeys } from '../constants/Keys';
 import { AppLandingPage } from '../constants/General';
 import { Colors, Images } from '../theme';
 
-const OpenAppContainer = styled.div`
+const OpenAppContainer = styled(Col)`
   position: fixed;
   bottom: 20px;
   height: 62px;
@@ -52,6 +52,9 @@ const OpenAppContainer = styled.div`
       color: ${Colors.grayScale40};
       font-size: 16px;
     }
+  }
+  @media(min-width: 1024px) {
+    display: none;
   }
 `;
 

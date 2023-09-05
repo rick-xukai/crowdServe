@@ -25,7 +25,7 @@ a {
 
 @font-face {
   font-family: 'Baradig';
-  src: url('/static/fonts/Baradig-Medium.otf');
+  src: url('/fonts/BaradigMedium.otf');
 }
 
 @media (prefers-color-scheme: dark) {
@@ -181,6 +181,12 @@ a {
 }
 .gender-select-dropdown {
   background: #717179;
+}
+.gender-select-dropdown .search-tips {
+  display: flex;
+  justify-content: space-between;
+  height: 30px;
+  align-items: center;
 }
 .gender-select-dropdown .ant-empty-description {
   color: #fff;
