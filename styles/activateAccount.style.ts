@@ -320,6 +320,8 @@ const ActivateAccountContainer = styled.div`
     }
     &.password {
       color: ${Colors.branding};
+      margin-top: -10px;
+      margin-bottom: 10px;
     }
   }
   .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
