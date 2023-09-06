@@ -137,8 +137,8 @@ const ActivateAccountNormalFlow = ({
     }
   };
 
-  const sortData = (data: CountryItemProps[]) => {
-    const listSort: CountryItemProps[] = cloneDeep(data).sort(
+  const sortData = (list: CountryItemProps[]) => {
+    const listSort: CountryItemProps[] = cloneDeep(list).sort(
       (x: CountryItemProps, y: CountryItemProps) =>
         x.country.localeCompare(y.country)
     );
