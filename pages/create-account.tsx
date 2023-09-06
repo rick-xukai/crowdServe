@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 import {
   Row,
   Col,
@@ -10,25 +10,25 @@ import {
   Checkbox,
   Select,
   DatePicker,
-} from 'antd';
+} from "antd";
 import {
   EyeOutlined,
   EyeInvisibleOutlined,
   LoadingOutlined,
   CaretDownOutlined,
-} from '@ant-design/icons';
-import { format } from 'date-fns';
-import { cloneDeep } from 'lodash';
+} from "@ant-design/icons";
+import { format } from "date-fns";
+import { cloneDeep } from "lodash";
 
-import { useCookie } from '../hooks';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useCookie } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   isEmail,
   isPassword,
   getErrorMessage,
   base64Encrypt,
   isUserName,
-} from '../utils/func';
+} from "../utils/func";
 import {
   TermsConditionsLink,
   PrivacyPolicyLink,
@@ -38,9 +38,9 @@ import {
   RegisterVerifyType,
   DefaultSelectCountry,
   CountryItemProps,
-} from '../constants/General';
-import { RouterKeys, CookieKeys } from '../constants/Keys';
-import { LoginContainer } from '../styles/login-style';
+} from "../constants/General";
+import { RouterKeys, CookieKeys } from "../constants/Keys";
+import { LoginContainer } from "../styles/login-style";
 import {
   reset,
   selectData,
@@ -53,13 +53,13 @@ import {
   getUserGenderAction,
   selectUserGender,
   selectGetUserGenderLoading,
-} from '../slice/user.slice';
-import GoogleDocComponent from '../components/googleDocComponent';
-import OpenAppComponent from '../components/openAppComponent';
+} from "../slice/user.slice";
+import GoogleDocComponent from "../components/googleDocComponent";
+import OpenAppComponent from "../components/openAppComponent";
 // import GoogleLoginComponent from '../components/googleLoginComponent';
-import Messages from '../constants/Messages';
-import AuthPageHearder from '@/components/authPageHearder';
-import countryDataList from '@/utils/countrycode.data.json';
+import Messages from "../constants/Messages";
+import AuthPageHearder from "@/components/authPageHearder";
+import countryDataList from "@/utils/countrycode.data.json";
 
 const CreateAccount = () => {
   const cookies = useCookie([
@@ -82,12 +82,11 @@ const CreateAccount = () => {
   const [checked, setChecked] = useState<boolean>(false);
   const [isTextShak, setTextShak] = useState<boolean>(false);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
-  const [googleDocLink, setgoogleDocLink] = useState<string>('');
-  const [isVerificationEmail, setIsVerificationEmail] =
-    useState<boolean>(false);
-  const [isVerificationCode, setIsVerificationCode] = useState<boolean>(false);
-  const [passwordValue, setPasswordValue] = useState<string>('');
-  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
+  const [googleDocLink, setgoogleDocLink] = useState<string>("");
+  const [isVerificationEmail, setIsVerificationEmail] = useState<boolean>(true);
+  const [isVerificationCode, setIsVerificationCode] = useState<boolean>(true);
+  const [passwordValue, setPasswordValue] = useState<string>("");
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>("");
   const [formatGenderData, setFormatGenderData] = useState<
     {
       value: number;
@@ -96,12 +95,12 @@ const CreateAccount = () => {
   >([]);
   const [createAccountValue, setCreateAccountValue] =
     useState<RegisterAccountPayload>({
-      email: '',
-      username: '',
-      code: '',
-      password: '',
-      birthday: '',
-      genderId: '',
+      email: "",
+      username: "",
+      code: "",
+      password: "",
+      birthday: "",
+      genderId: "",
       country: DefaultSelectCountry,
     });
   const [sortCountryList, setSortCountryList] = useState<CountryItemProps[]>(
@@ -142,15 +141,15 @@ const CreateAccount = () => {
     }
     if (isVerificationEmail && isVerificationCode) {
       if (createAccountValue.password !== confirmPasswordValue) {
-        setPasswordValue('');
-        setConfirmPasswordValue('');
+        setPasswordValue("");
+        setConfirmPasswordValue("");
         setCreateAccountValue({
           ...createAccountValue,
-          password: '',
+          password: "",
         });
         message.open({
           content: PasswordNotMatch,
-          className: 'error-message-event',
+          className: "error-message-event",
         });
         return;
       }
@@ -159,7 +158,7 @@ const CreateAccount = () => {
       ) {
         message.open({
           content: BirthdayNotVaild,
-          className: 'error-message-event',
+          className: "error-message-event",
         });
         return;
       }
@@ -172,8 +171,8 @@ const CreateAccount = () => {
     setgoogleDocLink(link);
   };
 
-  const sortData = (data: CountryItemProps[]) => {
-    const listSort: CountryItemProps[] = cloneDeep(data).sort(
+  const sortData = (list: CountryItemProps[]) => {
+    const listSort: CountryItemProps[] = cloneDeep(list).sort(
       (x: CountryItemProps, y: CountryItemProps) =>
         x.country.localeCompare(y.country)
     );
@@ -218,12 +217,12 @@ const CreateAccount = () => {
       const currentDate = new Date();
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
+        path: "/",
         domain: window.location.hostname,
       });
       cookies.setCookie(CookieKeys.userLoginEmail, createAccountValue.email, {
         expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
+        path: "/",
         domain: window.location.hostname,
       });
       router.push(RouterKeys.myTickets);
@@ -238,9 +237,9 @@ const CreateAccount = () => {
         message.open({
           content:
             (error.code === Messages.activateAccountUserAlreadyExist.code &&
-              'This email address is already registered. Please log in or use a different email address.') ||
+              "This email address is already registered. Please log in or use a different email address.") ||
             getErrorMessage(error.code),
-          className: 'error-message-login',
+          className: "error-message-login",
         });
       }
     }
@@ -250,10 +249,10 @@ const CreateAccount = () => {
     if (!showCountryItems) {
       setSortCountryList(sortData(countryDataList));
     } else {
-      document.addEventListener('click', clickCallback, false);
+      document.addEventListener("click", clickCallback, false);
     }
     return () => {
-      document.removeEventListener('click', clickCallback, false);
+      document.removeEventListener("click", clickCallback, false);
     };
   }, [showCountryItems]);
 
@@ -274,7 +273,7 @@ const CreateAccount = () => {
           </div>
         </LoginContainer>
       )) || (
-        <LoginContainer>
+        <LoginContainer style={{ paddingBottom: showCountryItems ? "100vh" : "" }}>
           <AuthPageHearder
             skipClick={() => router.push(RouterKeys.eventList)}
           />
@@ -283,8 +282,8 @@ const CreateAccount = () => {
               <div
                 className={
                   (showCountryItems &&
-                    'main-form-content country-items-show') ||
-                  'main-form-content'
+                    "main-form-content country-items-show") ||
+                  "main-form-content"
                 }
               >
                 <div>
@@ -298,7 +297,7 @@ const CreateAccount = () => {
                       <Form.Item name="email">
                         <Input
                           className={`${
-                            (createAccountValue.email && 'border-white') || ''
+                            (createAccountValue.email && "border-white") || ""
                           }`}
                           placeholder="Email"
                           bordered={false}
@@ -307,7 +306,7 @@ const CreateAccount = () => {
                               ...createAccountValue,
                               email:
                                 (isEmail(e.target.value) && e.target.value) ||
-                                '',
+                                "",
                             })
                           }
                         />
@@ -315,8 +314,8 @@ const CreateAccount = () => {
                       <Form.Item>
                         <Input
                           className={`${
-                            (createAccountValue.username && 'border-white') ||
-                            ''
+                            (createAccountValue.username && "border-white") ||
+                            ""
                           }`}
                           placeholder="User name (at least 3 chars)"
                           value={createAccountValue.username}
@@ -327,7 +326,7 @@ const CreateAccount = () => {
                               ...createAccountValue,
                               username: e.target.value.replace(
                                 /[^a-zA-Z0-9\s]/g,
-                                ''
+                                ""
                               ),
                             })
                           }
@@ -335,19 +334,19 @@ const CreateAccount = () => {
                       </Form.Item>
                       <Form.Item
                         style={{ marginBottom: 0 }}
-                        className={(isTextShak && 'text-shak') || ''}
+                        className={(isTextShak && "text-shak") || ""}
                       >
                         <div className="agreement-wrapper">
                           <Checkbox
                             className={`${
-                              (!checked && 'checkbox-show-error') || ''
+                              (!checked && "checkbox-show-error") || ""
                             }`}
                             checked={checked}
                             onChange={(e) => setChecked(e.target.checked)}
                           />
                           <div style={{ marginLeft: 8 }}>
                             <span className="agreement-label">
-                              I agree to CrowdServe{' '}
+                              I agree to CrowdServe{" "}
                               <span
                                 className="agreement-label-action"
                                 onClick={() =>
@@ -356,7 +355,7 @@ const CreateAccount = () => {
                               >
                                 Terms&Conditions
                               </span>
-                              and{' '}
+                              and{" "}
                               <span
                                 className="agreement-label-action"
                                 onClick={() =>
@@ -403,7 +402,7 @@ const CreateAccount = () => {
                         <Form.Item name="code">
                           <Input
                             className={`${
-                              (createAccountValue.code && 'border-white') || ''
+                              (createAccountValue.code && "border-white") || ""
                             }`}
                             placeholder="Enter verification code"
                             bordered={false}
@@ -434,7 +433,7 @@ const CreateAccount = () => {
                         <Input.Password
                           value={passwordValue}
                           className={`${
-                            (passwordValue && 'border-white') || ''
+                            (passwordValue && "border-white") || ""
                           }`}
                           placeholder="Set your password (at least 8 characters)"
                           bordered={false}
@@ -449,7 +448,7 @@ const CreateAccount = () => {
                               password:
                                 (isPassword(e.target.value) &&
                                   e.target.value) ||
-                                '',
+                                "",
                             });
                           }}
                         />
@@ -458,7 +457,7 @@ const CreateAccount = () => {
                         <Input.Password
                           value={confirmPasswordValue}
                           className={`${
-                            (confirmPasswordValue && 'border-white') || ''
+                            (confirmPasswordValue && "border-white") || ""
                           }`}
                           iconRender={(visible) =>
                             visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
@@ -476,15 +475,15 @@ const CreateAccount = () => {
                           popupClassName="gender-select-dropdown"
                           className={`${
                             (createAccountValue.genderId &&
-                              'gender-select border-white') ||
-                            'gender-select'
+                              "gender-select border-white") ||
+                            "gender-select"
                           }`}
                           defaultValue={undefined}
                           placeholder="Gender"
                           onChange={(e) =>
                             setCreateAccountValue({
                               ...createAccountValue,
-                              genderId: e || '',
+                              genderId: e || "",
                             })
                           }
                           options={formatGenderData}
@@ -495,8 +494,8 @@ const CreateAccount = () => {
                         <DatePicker
                           inputReadOnly
                           className={`${
-                            (createAccountValue.birthday && 'border-white') ||
-                            ''
+                            (createAccountValue.birthday && "border-white") ||
+                            ""
                           }`}
                           format="MMM DD, YYYY"
                           showToday={false}
@@ -508,7 +507,7 @@ const CreateAccount = () => {
                               ...createAccountValue,
                               birthday: format(
                                 new Date(dateString),
-                                'yyyy-MM-dd'
+                                "yyyy-MM-dd"
                               ),
                             })
                           }
@@ -531,7 +530,7 @@ const CreateAccount = () => {
                                 {countryDataList.find(
                                   (item) =>
                                     item.country === createAccountValue.country
-                                )?.flag || ''}
+                                )?.flag || ""}
                               </span>
                               <span className="country-name">
                                 {
@@ -614,7 +613,7 @@ const CreateAccount = () => {
                 </div>
                 <div
                   className={
-                    (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
+                    (isOpenAppShow && "page-bottom open-app") || "page-bottom"
                   }
                 >
                   <p className="registered">Already have an account?</p>
