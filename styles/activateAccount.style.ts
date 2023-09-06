@@ -20,7 +20,7 @@ const ActivateAccountContainer = styled.div`
       overflow-y: scroll;
       .page-main {
         padding-top: 62px;
-        padding-bottom: 62px;
+        padding-bottom: 100vh;
       }
     }
   }
