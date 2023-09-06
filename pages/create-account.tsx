@@ -83,8 +83,8 @@ const CreateAccount = () => {
   const [isTextShak, setTextShak] = useState<boolean>(false);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
   const [googleDocLink, setgoogleDocLink] = useState<string>("");
-  const [isVerificationEmail, setIsVerificationEmail] = useState<boolean>(true);
-  const [isVerificationCode, setIsVerificationCode] = useState<boolean>(true);
+  const [isVerificationEmail, setIsVerificationEmail] = useState<boolean>(false);
+  const [isVerificationCode, setIsVerificationCode] = useState<boolean>(false);
   const [passwordValue, setPasswordValue] = useState<string>("");
   const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>("");
   const [formatGenderData, setFormatGenderData] = useState<
