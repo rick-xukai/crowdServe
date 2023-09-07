@@ -38,6 +38,7 @@ import {
   RegisterVerifyType,
   DefaultSelectCountry,
   CountryItemProps,
+  VerificationCodeLength,
 } from "../constants/General";
 import { RouterKeys, CookieKeys } from "../constants/Keys";
 import { LoginContainer } from "../styles/login-style";
@@ -83,7 +84,8 @@ const CreateAccount = () => {
   const [isTextShak, setTextShak] = useState<boolean>(false);
   const [checkGoogleDoc, setCheckGoogleDoc] = useState<boolean>(false);
   const [googleDocLink, setgoogleDocLink] = useState<string>("");
-  const [isVerificationEmail, setIsVerificationEmail] = useState<boolean>(false);
+  const [isVerificationEmail, setIsVerificationEmail] =
+    useState<boolean>(false);
   const [isVerificationCode, setIsVerificationCode] = useState<boolean>(false);
   const [passwordValue, setPasswordValue] = useState<string>("");
   const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>("");
@@ -273,7 +275,9 @@ const CreateAccount = () => {
           </div>
         </LoginContainer>
       )) || (
-        <LoginContainer style={{ paddingBottom: showCountryItems ? "100vh" : "" }}>
+        <LoginContainer
+          style={{ paddingBottom: showCountryItems ? "100vh" : "" }}
+        >
           <AuthPageHearder
             skipClick={() => router.push(RouterKeys.eventList)}
           />
@@ -417,7 +421,10 @@ const CreateAccount = () => {
                         <Form.Item>
                           <Button
                             className="signin-btn"
-                            disabled={!createAccountValue.code || loading}
+                            disabled={
+                              createAccountValue.code.length <
+                                VerificationCodeLength || loading
+                            }
                             type="primary"
                             htmlType="submit"
                           >

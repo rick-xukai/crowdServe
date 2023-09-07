@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from "react";
 import {
   Row,
   Col,
@@ -8,20 +8,20 @@ import {
   message,
   Select,
   DatePicker,
-} from 'antd';
+} from "antd";
 import {
   EyeOutlined,
   EyeInvisibleOutlined,
   CaretDownOutlined,
   LoadingOutlined,
-} from '@ant-design/icons';
-import { useRouter } from 'next/router';
-import { format } from 'date-fns';
-import { isEmpty, cloneDeep } from 'lodash';
+} from "@ant-design/icons";
+import { useRouter } from "next/router";
+import { format } from "date-fns";
+import { isEmpty, cloneDeep } from "lodash";
 
-import { useCookie } from '../hooks';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { isPassword, getErrorMessage, base64Decrypt } from '../utils/func';
+import { useCookie } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { isPassword, getErrorMessage, base64Decrypt } from "../utils/func";
 import {
   TokenExpire,
   PasswordNotMatch,
@@ -33,10 +33,10 @@ import {
   AccountNotActivate,
   DefaultSelectCountry,
   CountryItemProps,
-} from '../constants/General';
-import { RouterKeys, CookieKeys } from '../constants/Keys';
-import { LoginContainer } from '../styles/login-style';
-import OpenAppComponent from '../components/openAppComponent';
+} from "../constants/General";
+import { RouterKeys, CookieKeys } from "../constants/Keys";
+import { LoginContainer } from "../styles/login-style";
+import OpenAppComponent from "../components/openAppComponent";
 import {
   selectData,
   loginAction,
@@ -47,9 +47,9 @@ import {
   getUserGenderAction,
   selectUserGender,
   selectGetUserGenderLoading,
-} from '../slice/user.slice';
-import AuthPageHearder from '@/components/authPageHearder';
-import countryDataList from '@/utils/countrycode.data.json';
+} from "../slice/user.slice";
+import AuthPageHearder from "@/components/authPageHearder";
+import countryDataList from "@/utils/countrycode.data.json";
 
 const ActivateAccountNormalFlow = ({
   accountEmail,
@@ -73,8 +73,8 @@ const ActivateAccountNormalFlow = ({
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
-  const [passwordValue, setPasswordValue] = useState<string>('');
-  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
+  const [passwordValue, setPasswordValue] = useState<string>("");
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>("");
   const [verificationCodeSuccess, setVerificationCodeSuccess] =
     useState<boolean>(false);
   const [formatGenderData, setFormatGenderData] = useState<
@@ -85,10 +85,10 @@ const ActivateAccountNormalFlow = ({
   >([]);
   const [activateAccountValue, setActivateAccountValue] = useState({
     email: accountEmail,
-    code: '',
-    password: '',
-    birthday: '',
-    genderId: '',
+    code: "",
+    password: "",
+    birthday: "",
+    genderId: "",
     country: DefaultSelectCountry,
   });
   const [sortCountryList, setSortCountryList] = useState<CountryItemProps[]>(
@@ -112,15 +112,15 @@ const ActivateAccountNormalFlow = ({
     }
     if (verificationCodeSuccess) {
       if (activateAccountValue.password !== confirmPasswordValue) {
-        setPasswordValue('');
-        setConfirmPasswordValue('');
+        setPasswordValue("");
+        setConfirmPasswordValue("");
         setActivateAccountValue({
           ...activateAccountValue,
-          password: '',
+          password: "",
         });
         message.open({
           content: PasswordNotMatch,
-          className: 'error-message-event',
+          className: "error-message-event",
         });
         return;
       }
@@ -129,7 +129,7 @@ const ActivateAccountNormalFlow = ({
       ) {
         message.open({
           content: BirthdayNotVaild,
-          className: 'error-message-event',
+          className: "error-message-event",
         });
         return;
       }
@@ -183,12 +183,12 @@ const ActivateAccountNormalFlow = ({
       const currentDate = new Date();
       cookies.setCookie(CookieKeys.userLoginToken, data.token, {
         expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
+        path: "/",
         domain: window.location.hostname,
       });
       cookies.setCookie(CookieKeys.userLoginEmail, activateAccountValue.email, {
         expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
+        path: "/",
         domain: window.location.hostname,
       });
       router.push(RouterKeys.myTickets);
@@ -203,13 +203,13 @@ const ActivateAccountNormalFlow = ({
         if (parameters.source === ForgotPasswordAccountNotActivate) {
           message.open({
             content: ActivateAccountFirst,
-            className: 'error-message-login',
+            className: "error-message-login",
           });
         }
       } else {
         message.open({
           content: AccountNotActivate,
-          className: 'error-message-login',
+          className: "error-message-login",
         });
       }
     }
@@ -219,7 +219,7 @@ const ActivateAccountNormalFlow = ({
     if (error && !isFirstRender) {
       message.open({
         content: getErrorMessage(error.code),
-        className: 'error-message-login',
+        className: "error-message-login",
       });
     }
   }, [error]);
@@ -228,10 +228,10 @@ const ActivateAccountNormalFlow = ({
     if (!showCountryItems) {
       setSortCountryList(sortData(countryDataList));
     } else {
-      document.addEventListener('click', clickCallback, false);
+      document.addEventListener("click", clickCallback, false);
     }
     return () => {
-      document.removeEventListener('click', clickCallback, false);
+      document.removeEventListener("click", clickCallback, false);
     };
   }, [showCountryItems]);
 
@@ -259,8 +259,8 @@ const ActivateAccountNormalFlow = ({
           <div className="page-main">
             <div
               className={
-                (showCountryItems && 'main-form-content country-items-show') ||
-                'main-form-content'
+                (showCountryItems && "main-form-content country-items-show") ||
+                "main-form-content"
               }
             >
               <div>
@@ -283,7 +283,7 @@ const ActivateAccountNormalFlow = ({
                       <Form.Item name="code">
                         <Input
                           className={`${
-                            (activateAccountValue.code && 'border-white') || ''
+                            (activateAccountValue.code && "border-white") || ""
                           }`}
                           placeholder="Enter verification code"
                           bordered={false}
@@ -299,10 +299,8 @@ const ActivateAccountNormalFlow = ({
                         <Button
                           className="signin-btn"
                           disabled={
-                            !activateAccountValue.code ||
                             activateAccountValue.code.length <
-                              VerificationCodeLength ||
-                            loading
+                              VerificationCodeLength || loading
                           }
                           type="primary"
                           htmlType="submit"
@@ -318,7 +316,7 @@ const ActivateAccountNormalFlow = ({
                     <Form.Item>
                       <Input.Password
                         value={passwordValue}
-                        className={`${(passwordValue && 'border-white') || ''}`}
+                        className={`${(passwordValue && "border-white") || ""}`}
                         placeholder="Set your password (at least 8 characters)"
                         bordered={false}
                         maxLength={20}
@@ -331,7 +329,7 @@ const ActivateAccountNormalFlow = ({
                             ...activateAccountValue,
                             password:
                               (isPassword(e.target.value) && e.target.value) ||
-                              '',
+                              "",
                           });
                         }}
                       />
@@ -340,7 +338,7 @@ const ActivateAccountNormalFlow = ({
                       <Input.Password
                         value={confirmPasswordValue}
                         className={`${
-                          (confirmPasswordValue && 'border-white') || ''
+                          (confirmPasswordValue && "border-white") || ""
                         }`}
                         iconRender={(visible) =>
                           visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
@@ -358,15 +356,15 @@ const ActivateAccountNormalFlow = ({
                         popupClassName="gender-select-dropdown"
                         className={`${
                           (activateAccountValue.genderId &&
-                            'gender-select border-white') ||
-                          'gender-select'
+                            "gender-select border-white") ||
+                          "gender-select"
                         }`}
                         defaultValue={undefined}
                         placeholder="Gender"
                         onChange={(e) =>
                           setActivateAccountValue({
                             ...activateAccountValue,
-                            genderId: e || '',
+                            genderId: e || "",
                           })
                         }
                         options={formatGenderData}
@@ -377,8 +375,8 @@ const ActivateAccountNormalFlow = ({
                       <DatePicker
                         inputReadOnly
                         className={`${
-                          (activateAccountValue.birthday && 'border-white') ||
-                          ''
+                          (activateAccountValue.birthday && "border-white") ||
+                          ""
                         }`}
                         format="MMM DD, YYYY"
                         showToday={false}
@@ -390,7 +388,7 @@ const ActivateAccountNormalFlow = ({
                             ...activateAccountValue,
                             birthday: format(
                               new Date(dateString),
-                              'yyyy-MM-dd'
+                              "yyyy-MM-dd"
                             ),
                           })
                         }
@@ -411,7 +409,7 @@ const ActivateAccountNormalFlow = ({
                               {countryDataList.find(
                                 (item) =>
                                   item.country === activateAccountValue.country
-                              )?.flag || ''}
+                              )?.flag || ""}
                             </span>
                             <span className="country-name">
                               {
@@ -492,7 +490,7 @@ const ActivateAccountNormalFlow = ({
               </div>
               <div
                 className={
-                  (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
+                  (isOpenAppShow && "page-bottom open-app") || "page-bottom"
                 }
               >
                 <p className="registered">Already have an account?</p>
@@ -514,7 +512,7 @@ const ActivateAccountNormalFlow = ({
 
 ActivateAccountNormalFlow.getInitialProps = async (ctx: any) => {
   const { query } = ctx;
-  let accountEmail = '';
+  let accountEmail = "";
   try {
     const parameters = base64Decrypt(Object.keys(query)[0]);
     accountEmail = parameters.email;
