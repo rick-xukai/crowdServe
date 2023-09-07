@@ -15,6 +15,11 @@ const LoginContainer = styled.div`
       padding-bottom: 0 !important;
       z-index: 100;
     }
+    .main-form-content {
+      &.country-items-show {
+        padding-bottom: 0;
+      }
+    }
   }
   .page-loading {
     width: 100%;
