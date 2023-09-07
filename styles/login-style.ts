@@ -10,6 +10,17 @@ const LoginContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  &.country-items-index {
+    .page-main {
+      padding-bottom: 0 !important;
+      z-index: 100;
+    }
+    .main-form-content {
+      &.country-items-show {
+        padding-bottom: 0;
+      }
+    }
+  }
   .page-loading {
     width: 100%;
     height: 100%;

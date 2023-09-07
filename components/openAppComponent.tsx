@@ -12,7 +12,7 @@ import { Colors, Images } from '../theme';
 
 const OpenAppContainer = styled(Col)`
   position: fixed;
-  bottom: 20px;
+  bottom: 10px;
   height: 62px;
   width: calc(100% - 40px);
   background: ${Colors.grayScale10};

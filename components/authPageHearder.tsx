@@ -6,6 +6,9 @@ import { Images, Colors } from '@/theme';
 
 const AuthPageHearderContainer = styled.div`
   padding: 0 40px;
+  position: relative;
+  z-index: 101;
+  background: ${Colors.black};
   .hearder-logo {
     height: 46px;
     width: 117px;
