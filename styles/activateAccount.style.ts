@@ -14,13 +14,21 @@ const ActivateAccountContainer = styled.div`
   ::-webkit-scrollbar {
     display: none;
   }
+  &.country-items-index {
+    .page-main {
+      padding-bottom: 0 !important;
+      z-index: 100;
+      .country-items-show {
+        padding-bottom: 70px;
+      }
+    }
+  }
   &.open-app-show {
     @media (max-width: 576px) {
       display: block;
       overflow-x: hidden;
       overflow-y: scroll;
       .page-main {
-        padding-top: 62px;
         padding-bottom: 100vh;
       }
     }
