@@ -54,6 +54,8 @@ const LoginContainer = styled.div`
       height: 100%;
       display: flex;
       align-items: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
       &.no-data {
         justify-content: center;
         margin-top: 20px;

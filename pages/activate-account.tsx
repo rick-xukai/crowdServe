@@ -497,7 +497,6 @@ const ActivateAccount = ({
               checkGoogleDoc={setCheckGoogleDoc}
             />
           ) : null}
-
           <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
         </ActivateAccountContainer>
       )}
