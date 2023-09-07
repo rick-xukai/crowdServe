@@ -10,6 +10,7 @@ const ActivateAccountContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  overflow: auto;
   ::-webkit-scrollbar {
     display: none;
   }
@@ -156,7 +157,7 @@ const ActivateAccountContainer = styled.div`
       border: 1px solid ${Colors.backgorund};
       background: rgba(39, 39, 42, 0.3);
       backdrop-filter: blur(10px);
-      padding: 80px 100px;
+      padding: 70px 100px 50px;
     }
     .main-title {
       margin-bottom: 40px;
