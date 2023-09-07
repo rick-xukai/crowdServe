@@ -400,6 +400,48 @@ const CreateAccount = () => {
                 <GoogleLoginComponent buttonText="CONTINUE WITH GOOGLE" /> */}
                     </Form>
                   )}
+                  {!isVerificationCode && isVerificationEmail && (
+                    <>
+                      <Row className="code-sent">
+                        <Col span={24} className="title">
+                          Verification code has been sent to
+                        </Col>
+                        <Col span={24} className="value">
+                          {createAccountValue.email}
+                        </Col>
+                      </Row>
+                      <Form onFinish={onFinish}>
+                        <Form.Item name="code">
+                          <Input
+                            className={`${
+                              (createAccountValue.code && "border-white") || ""
+                            }`}
+                            placeholder="Enter verification code"
+                            bordered={false}
+                            onChange={(e) =>
+                              setCreateAccountValue({
+                                ...createAccountValue,
+                                code: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Item>
+                        <Form.Item>
+                          <Button
+                            className="signin-btn"
+                            disabled={
+                              createAccountValue.code.length <
+                                VerificationCodeLength || loading
+                            }
+                            type="primary"
+                            htmlType="submit"
+                          >
+                            NEXT
+                          </Button>
+                        </Form.Item>
+                      </Form>
+                    </>
+                  )}
                   {isVerificationCode && isVerificationEmail && (
                     <Form onFinish={onFinish}>
                       <Form.Item>
