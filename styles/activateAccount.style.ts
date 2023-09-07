@@ -18,9 +18,6 @@ const ActivateAccountContainer = styled.div`
     .page-main {
       padding-bottom: 0 !important;
       z-index: 100;
-      .country-items-show {
-        padding-bottom: 70px;
-      }
     }
   }
   &.open-app-show {
