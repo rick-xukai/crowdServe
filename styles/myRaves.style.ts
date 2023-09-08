@@ -70,7 +70,6 @@ export const RaveItem = styled.div<{ status: "ongoing" | "end" }>`
   background: ${Colors.grayScale70};
   padding: 20px;
   border-radius: 4px;
-  height: 152px;
   cursor: pointer;
   .head {
     display: flex;
@@ -109,8 +108,11 @@ export const RaveItem = styled.div<{ status: "ongoing" | "end" }>`
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    @media (min-width: 768px) {
+      -webkit-line-clamp: 2;
+    }
   }
   .flame {
     display: inline-flex;

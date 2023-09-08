@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Col, Carousel, Row } from "antd";
+import { Col, Carousel, Row , Grid } from "antd";
 
 import AuthHoc from "../components/hoc/AuthHoc";
 
@@ -50,10 +50,13 @@ const data: {
     num: 1,
     id: 2,
   },
-];
+  ];
+
+const { useBreakpoint } = Grid;
 const MyCollectibles = () => {
   const [menuState, setMenuState] = useState<boolean>(false);
   const loading = false;
+  const { lg } = useBreakpoint();
   return (
     <>
       {(loading && (
@@ -81,7 +84,7 @@ const MyCollectibles = () => {
                   </CarouselItem>
                 ))}
               </Carousel>
-              <BlankBlock size={32} />
+              <BlankBlock size={lg ? 32 : 20} />
               <PageTitle>My Raves</PageTitle>
               <Row gutter={[16, 16]}>
                 {data.map((item) => (
