@@ -193,7 +193,7 @@ const PageHearderResponsive = ({
 
   return (
     <PageHearderResponsiveContainer
-      className={(backgroundTransparent && 'backgroundTransparent') || ''}
+      className={(backgroundTransparent && "backgroundTransparent") || ""}
     >
       <div className="header-main">
         <Row>
@@ -213,8 +213,8 @@ const PageHearderResponsive = ({
                 >
                   <span
                     className={
-                      (router.pathname === RouterKeys.eventList && 'active') ||
-                      ''
+                      (router.pathname === RouterKeys.eventList && "active") ||
+                      ""
                     }
                   >
                     EVENTS
@@ -240,8 +240,8 @@ const PageHearderResponsive = ({
                 >
                   <span
                     className={
-                      (router.pathname === RouterKeys.myTickets && 'active') ||
-                      ''
+                      (router.pathname === RouterKeys.myTickets && "active") ||
+                      ""
                     }
                   >
                     MY TICKETS
@@ -254,11 +254,25 @@ const PageHearderResponsive = ({
                   <span
                     className={
                       (router.pathname === RouterKeys.myCollectibles &&
-                        'active') ||
-                      ''
+                        "active") ||
+                      ""
                     }
                   >
                     MY COLLECTIBLES
+                  </span>
+                </div>
+                <div
+                  className="menu-item"
+                  onClick={() => hanldeMenuClick(RouterKeys.myRaves)}
+                >
+                  <span
+                    className={
+                      (router.pathname === RouterKeys.myRaves &&
+                        "active") ||
+                      ""
+                    }
+                  >
+                    MY RAVES
                   </span>
                 </div>
                 {/* <div
@@ -281,8 +295,8 @@ const PageHearderResponsive = ({
                 >
                   <span
                     className={
-                      (router.pathname === RouterKeys.myWallet && 'active') ||
-                      ''
+                      (router.pathname === RouterKeys.myWallet && "active") ||
+                      ""
                     }
                   >
                     MY WALLET
