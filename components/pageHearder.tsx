@@ -233,9 +233,9 @@ const PageHearderComponent = ({
 
   return (
     <PageHearderContainer
-      className={`${(showTabs && !showMenu && 'show-tabs') || ''} ${
-        (showMenu && 'show-menu') || ''
-      } ${(backgroundTransparent && 'backgroundTransparent') || ''}`}
+      className={`${(showTabs && !showMenu && "show-tabs") || ""} ${
+        (showMenu && "show-menu") || ""
+      } ${(backgroundTransparent && "backgroundTransparent") || ""}`}
     >
       <Col span={12} className="left-container">
         <div className="hearder-logo">
@@ -294,7 +294,7 @@ const PageHearderComponent = ({
               <Col span={24} className="info-name">
                 <span
                   className={`name ${
-                    (router.pathname === RouterKeys.eventList && 'active') || ''
+                    (router.pathname === RouterKeys.eventList && "active") || ""
                   }`}
                 >
                   EVENTS
@@ -324,7 +324,7 @@ const PageHearderComponent = ({
               <Col span={24} className="info-name">
                 <span
                   className={`name ${
-                    (router.pathname === RouterKeys.myTickets && 'active') || ''
+                    (router.pathname === RouterKeys.myTickets && "active") || ""
                   }`}
                 >
                   MY TICKETS
@@ -339,11 +339,25 @@ const PageHearderComponent = ({
                 <span
                   className={`name ${
                     (router.pathname === RouterKeys.myCollectibles &&
-                      'active') ||
-                    ''
+                      "active") ||
+                    ""
                   }`}
                 >
                   MY COLLECTIBLES
+                </span>
+              </Col>
+            </Row>
+            <Row
+              className="menu-item-row"
+              onClick={() => hanldeMenuClick(RouterKeys.myRaves)}
+            >
+              <Col span={24} className="info-name">
+                <span
+                  className={`name ${
+                    (router.pathname === RouterKeys.myRaves && "active") || ""
+                  }`}
+                >
+                  MY RAVES
                 </span>
               </Col>
             </Row>
@@ -369,7 +383,7 @@ const PageHearderComponent = ({
               <Col span={24} className="info-name">
                 <span
                   className={`name ${
-                    (router.pathname === RouterKeys.myWallet && 'active') || ''
+                    (router.pathname === RouterKeys.myWallet && "active") || ""
                   }`}
                 >
                   MY WALLET

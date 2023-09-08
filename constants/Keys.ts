@@ -35,4 +35,5 @@ export const RouterKeys = {
   myCollectibles: '/my-collectibles',
   collectionDetail: '/my-collectibles/:slug',
   collectibleDetail: '/my-collectibles/:orgname-slug/:slug',
+  myRaves: '/my-raves',
 };

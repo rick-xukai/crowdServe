@@ -67,7 +67,7 @@ const Messages = {
     code: 1017,
     text: 'Ticket already sold',
   },
-  eventMismatch : {
+  eventMismatch: {
     code: 1042,
     text: 'Invalid QR code, this ticket is not accessible for this event.'
   },
