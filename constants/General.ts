@@ -23,6 +23,7 @@ export const AppLandingPage = 'https://app.ticket-crowdserve.com/landing-page';
 export const AppHost = 'user.activated.cn';
 export const PrimaryMarket = 'Primary Market';
 export const PurchaseFromFan = 'Fan Resell';
+export const Rave = "Rave";
 export const MyTickets = 'My Tickets';
 export const MyEvents = 'My Events';
 export const MyCollectibles = 'My Collectibles';
