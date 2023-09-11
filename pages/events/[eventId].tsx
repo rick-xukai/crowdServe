@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/router';
-import { last } from 'lodash';
-import { Spin, Row, Col, Tabs, Tooltip, message, Modal, Button } from 'antd';
-import { isAndroid, isIOS, isDesktop, browserName } from 'react-device-detect';
-import type { TabsProps } from 'antd';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/router";
+import { last } from "lodash";
+import { Spin, Row, Col, Tabs, Tooltip, message, Modal, Button } from "antd";
+import { isAndroid, isIOS, isDesktop, browserName } from "react-device-detect";
+import type { TabsProps } from "antd";
 import {
   LoadingOutlined,
   QuestionCircleOutlined,
   RightOutlined,
   DownOutlined,
   UpOutlined,
-} from '@ant-design/icons';
-import Image from 'next/image';
-import { NextSeo } from 'next-seo';
-import { getAnalytics, logEvent } from 'firebase/analytics';
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { useCollapse } from 'react-collapsed';
+} from "@ant-design/icons";
+import Image from "next/image";
+import { NextSeo } from "next-seo";
+import { getAnalytics, logEvent } from "firebase/analytics";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import { useCollapse } from "react-collapsed";
 
 import {
   formatTimeStrByTimeString,
@@ -24,12 +24,13 @@ import {
   formatDescription,
   checkOperatingSys,
   generateRandomString,
-} from '../../utils/func';
+} from "../../utils/func";
 import {
   FormatTimeKeys,
   PriceUnit,
   PrimaryMarket,
   PurchaseFromFan,
+  Rave,
   AppLandingPage,
   FirebaseEventEnv,
   AppDomain,
@@ -38,10 +39,10 @@ import {
   EventStatus,
   DefaultPageType,
   DefaultPlatform,
-} from '../../constants/General';
-import { CookieKeys, LocalStorageKeys } from '../../constants/Keys';
-import { Images } from '../../theme';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+} from "../../constants/General";
+import { CookieKeys, LocalStorageKeys } from "../../constants/Keys";
+import { Images } from "../../theme";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   getEventTicketTypeAction,
   selectEventTicketTypeData,
@@ -55,29 +56,30 @@ import {
   selectEventMarket,
   resetEventDatail,
   resetEventDetailLoading,
-} from '../../slice/event.slice';
-import { TicketDetailResponseType } from '../../slice/tickets.slice';
+} from "../../slice/event.slice";
+import { TicketDetailResponseType } from "../../slice/tickets.slice";
 import {
   EventDetailContainer,
   TicketTypeItem,
   SecondaryMarketItem,
-} from '../../styles/eventDetail.style';
-import Messages from '../../constants/Messages';
-import PageHearderComponent from '../../components/pageHearder';
-import PageHearderResponsive from '../../components/pageHearderResponsive';
-import PageBottomComponent from '../../components/pageBottomComponent';
-import firebaseApp from '../../firebase';
-import EventService from '../../services/API/Event/Event.service';
-import { RouterKeys } from '../../constants/Keys';
-import PageNotFound from '../404';
-import { useCookie } from '@/hooks';
-import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
-import { EventDetailCard } from '@/styles/myTicketsEventDetail.style';
-import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
-import { logPageViewAction } from '@/slice/pageTrack.slice';
+} from "../../styles/eventDetail.style";
+import Messages from "../../constants/Messages";
+import PageHearderComponent from "../../components/pageHearder";
+import PageHearderResponsive from "../../components/pageHearderResponsive";
+import PageBottomComponent from "../../components/pageBottomComponent";
+import firebaseApp from "../../firebase";
+import EventService from "../../services/API/Event/Event.service";
+import { RouterKeys } from "../../constants/Keys";
+import PageNotFound from "../404";
+import { useCookie } from "@/hooks";
+import ImageSizeLayoutComponent from "@/components/imageSizeLayoutComponent";
+import { EventDetailCard } from "@/styles/myTicketsEventDetail.style";
+import { StatusContainer } from "@/styles/myTicketsEventDetail.style";
+import { logPageViewAction } from "@/slice/pageTrack.slice";
+import Raves from "@/components/raves";
 
-const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = [
-  'places',
+const libraries: ("places" | "drawing" | "geometry" | "visualization")[] = [
+  "places",
 ];
 
 const EventDetail = ({
@@ -90,7 +92,7 @@ const EventDetail = ({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
+    id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOLE_MAP_API_KEY as string,
     libraries,
   });
@@ -102,11 +104,11 @@ const EventDetail = ({
   const eventDetailData = useAppSelector(selectEventDetailData);
   const eventMarket = useAppSelector(selectEventMarket);
 
-  const [id, setEventId] = useState<string>('');
+  const [id, setEventId] = useState<string>("");
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
     useState(false);
   const [menuState, setMenuState] = useState<boolean>(false);
-  const [tabActiveKey, setTabActiveKey] = useState<string>(PrimaryMarket);
+  const [tabActiveKey, setTabActiveKey] = useState<string>(Rave);
   const [eventCorrect, setEventCorrect] = useState<boolean>(true);
   const [eventTicketTypeFilter, setEventTicketTypeFilter] = useState<
     EventTicketTypeResponseType[]
@@ -114,14 +116,14 @@ const EventDetail = ({
   const [showMap, setShowMap] = useState<boolean>(false);
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const [needShowMore, setNeedShowMore] = useState<boolean>(false);
-  const [previousPage, setPreviousPage] = useState<string>('');
+  const [previousPage, setPreviousPage] = useState<string>("");
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
     collapsedHeight: 75,
   });
 
-  const tabsItem: TabsProps['items'] = [
+  const tabsItem: TabsProps["items"] = [
     {
       key: PrimaryMarket,
       label: (
@@ -132,7 +134,7 @@ const EventDetail = ({
           </Tooltip>
         </div>
       ),
-      children: '',
+      children: "",
     },
     {
       key: PurchaseFromFan,
@@ -144,7 +146,19 @@ const EventDetail = ({
           </Tooltip>
         </div>
       ),
-      children: '',
+      children: "",
+    },
+    {
+      key: Rave,
+      label: (
+        <div>
+          <span>{Rave}</span>
+          <Tooltip title="Authenticity Guaranteed">
+            <QuestionCircleOutlined />
+          </Tooltip>
+        </div>
+      ),
+      children: "",
     },
   ];
 
@@ -191,18 +205,18 @@ const EventDetail = ({
     if (!data.onSale) {
       return;
     }
-    window.open(data.externalLink, '_blank');
+    window.open(data.externalLink, "_blank");
   };
 
   const logPageViewTrack = () => {
     const pageViewTrackPayload = {
       userId: 0,
-      session: localStorage.getItem(LocalStorageKeys.pageViewTrackKeys) || '',
+      session: localStorage.getItem(LocalStorageKeys.pageViewTrackKeys) || "",
       pageType: DefaultPageType,
       platform: DefaultPlatform,
       operatingSys: checkOperatingSys(),
-      deviceType: (isDesktop && 'PC') || 'Phone',
-      userAgent: cookies.getCookie(CookieKeys.userLoginEmail) || '',
+      deviceType: (isDesktop && "PC") || "Phone",
+      userAgent: cookies.getCookie(CookieKeys.userLoginEmail) || "",
       browser: browserName,
       objectId: eventDetailData.id,
       referer:
@@ -224,20 +238,20 @@ const EventDetail = ({
   useEffect(() => {
     const { eventId } = router.query;
     if (eventId) {
-      const parameterArr = (eventId as string).split('-');
-      if (last(parameterArr)?.includes('previous=')) {
+      const parameterArr = (eventId as string).split("-");
+      if (last(parameterArr)?.includes("previous=")) {
         if (parameterArr[parameterArr.length - 2]) {
-          setEventId(parameterArr[parameterArr.length - 2] || '');
+          setEventId(parameterArr[parameterArr.length - 2] || "");
         } else {
           setEventCorrect(false);
         }
         setPreviousPage(
-          `${window.location.hostname}/${last(parameterArr)?.split('=')[1]}`
+          `${window.location.hostname}/${last(parameterArr)?.split("=")[1]}`
         );
         return;
       }
       if (last(parameterArr)) {
-        setEventId(last(parameterArr) || '');
+        setEventId(last(parameterArr) || "");
       } else {
         setEventCorrect(false);
       }
@@ -249,10 +263,10 @@ const EventDetail = ({
     if (eventDetailData.slug) {
       if (eventDetailData.slug !== eventId) {
         router.push(
-          RouterKeys.eventDetail.replace(':slug', eventDetailData.slug)
+          RouterKeys.eventDetail.replace(":slug", eventDetailData.slug)
         );
       } else {
-        if (eventDetailData.name && source === 'sharing' && ticket) {
+        if (eventDetailData.name && source === "sharing" && ticket) {
           const analytics = getAnalytics(firebaseApp);
           logEvent(analytics, `web_event_page_view${FirebaseEventEnv}`, {
             ticketMark: `<${ticket}>: ${eventDetailData.name}`,
@@ -284,7 +298,7 @@ const EventDetail = ({
       }
       message.open({
         content: error.message,
-        className: 'error-message-event',
+        className: "error-message-event",
       });
     }
   }, [error]);
@@ -323,26 +337,26 @@ const EventDetail = ({
         <>
           <NextSeo
             openGraph={{
-              type: 'website',
-              title: (openGraphDetail && openGraphDetail.name) || '',
+              type: "website",
+              title: (openGraphDetail && openGraphDetail.name) || "",
               url: `${AppDomain}${
-                (openGraphDetail && openGraphDetail.shareUrl) || ''
+                (openGraphDetail && openGraphDetail.shareUrl) || ""
               }`,
               description:
                 (openGraphDetail &&
                   openGraphDetail.description.slice(0, 300)) ||
-                '',
+                "",
               images: [
                 {
-                  url: (openGraphDetail && openGraphDetail.image) || '',
-                  alt: '',
+                  url: (openGraphDetail && openGraphDetail.image) || "",
+                  alt: "",
                 },
               ],
             }}
             twitter={{
-              cardType: 'summary_large_image',
-              site: '@CrowdServe',
-              handle: '@CrowdServe',
+              cardType: "summary_large_image",
+              site: "@CrowdServe",
+              handle: "@CrowdServe",
             }}
           />
           {(!loading && (
@@ -364,7 +378,7 @@ const EventDetail = ({
                         onError={(e: any) => {
                           e.target.onerror = null;
                           e.target.src = Images.BackgroundLogo.src;
-                          e.target.className = 'error-full-image';
+                          e.target.className = "error-full-image";
                         }}
                       />
                     </Col>
@@ -419,7 +433,7 @@ const EventDetail = ({
                                 eventDetailData.endTime,
                                 FormatTimeKeys.norm
                               )}`) ||
-                              '-'}
+                              "-"}
                           </div>
                         </Col>
                         <Col span={24} className="info-item">
@@ -429,7 +443,7 @@ const EventDetail = ({
                             className="info-item-icon"
                           />
                           <span className="info-description">
-                            {eventDetailData.organizerName || '-'}
+                            {eventDetailData.organizerName || "-"}
                           </span>
                         </Col>
                         <Col span={24} className="info-item">
@@ -470,19 +484,19 @@ const EventDetail = ({
                             <div className="google-map-content">
                               <GoogleMap
                                 mapContainerStyle={{
-                                  width: '100%',
-                                  height: '220px',
-                                  marginTop: '10px',
+                                  width: "100%",
+                                  height: "220px",
+                                  marginTop: "10px",
                                 }}
                                 options={{
                                   disableDefaultUI: true,
                                 }}
                                 center={{
                                   lat: Number(
-                                    eventDetailData.locationCoord.split(',')[0]
+                                    eventDetailData.locationCoord.split(",")[0]
                                   ),
                                   lng: Number(
-                                    eventDetailData.locationCoord.split(',')[1]
+                                    eventDetailData.locationCoord.split(",")[1]
                                   ),
                                 }}
                                 zoom={10}
@@ -519,8 +533,8 @@ const EventDetail = ({
                             {needShowMore && (
                               <div
                                 className={
-                                  (!isExpanded && 'show-more-box-action') ||
-                                  'show-more-box-action no-background'
+                                  (!isExpanded && "show-more-box-action") ||
+                                  "show-more-box-action no-background"
                                 }
                               >
                                 <div
@@ -533,8 +547,8 @@ const EventDetail = ({
                                 >
                                   <div className="action-button">
                                     <span>
-                                      {(!isExpanded && 'Show More') ||
-                                        'Show Less'}
+                                      {(!isExpanded && "Show More") ||
+                                        "Show Less"}
                                     </span>
                                     <span>
                                       {(!isExpanded && <DownOutlined />) || (
@@ -548,8 +562,8 @@ const EventDetail = ({
                             <Col
                               span={24}
                               className={
-                                (!needShowMore && 'show-box no-show-more') ||
-                                'show-box event-detail'
+                                (!needShowMore && "show-box no-show-more") ||
+                                "show-box event-detail"
                               }
                               {...getCollapseProps()}
                             >
@@ -582,8 +596,8 @@ const EventDetail = ({
                                 >
                                   {(eventDetailData.refundPolicy ===
                                     SetRefundKey.nonRefundable &&
-                                    '* Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
-                                    '*  To request a refund, please contact the event organizer.'}
+                                    "* Tickets are non-refundable. Please ensure your availability before making a purchase.") ||
+                                    "*  To request a refund, please contact the event organizer."}
                                 </p>
                               </div>
                             </Col>
@@ -600,7 +614,7 @@ const EventDetail = ({
                       <Row>
                         <Col span={24} className="dividing-line" />
                       </Row>
-                      {(tabActiveKey === PrimaryMarket && (
+                      {tabActiveKey === PrimaryMarket && (
                         <Row gutter={[16, 16]}>
                           {(eventTicketTypeFilter.length && (
                             <>
@@ -615,8 +629,8 @@ const EventDetail = ({
                                   onClick={() => toShopify(item)}
                                   className={
                                     ((!item.onSale || item.stock === 0) &&
-                                      'no-click') ||
-                                    ''
+                                      "no-click") ||
+                                    ""
                                   }
                                 >
                                   <Row>
@@ -655,8 +669,8 @@ const EventDetail = ({
                                       <div
                                         className={
                                           ((item.stock === 0 || !item.onSale) &&
-                                            'type-info-content opacity') ||
-                                          'type-info-content'
+                                            "type-info-content opacity") ||
+                                          "type-info-content"
                                         }
                                       >
                                         <div>
@@ -688,7 +702,7 @@ const EventDetail = ({
                           )) || (
                             <Col span={24} className="all-ticket-sold">
                               <div
-                                style={{ textAlign: 'center', marginTop: 20 }}
+                                style={{ textAlign: "center", marginTop: 20 }}
                               >
                                 <Image src={Images.AllTicketSold} alt="" />
                                 <p>All tickets are sold.</p>
@@ -696,7 +710,8 @@ const EventDetail = ({
                             </Col>
                           )}
                         </Row>
-                      )) || (
+                      )}
+                      {tabActiveKey === PurchaseFromFan && (
                         <>
                           {(eventMarket.length && (
                             <Row gutter={[20, 20]}>
@@ -730,7 +745,7 @@ const EventDetail = ({
                                     </div>
                                     <div className="item-price">
                                       <span>
-                                        {item.sellPrice.toFixed(2)}{' '}
+                                        {item.sellPrice.toFixed(2)}{" "}
                                         {item.currency}
                                       </span>
                                     </div>
@@ -742,7 +757,7 @@ const EventDetail = ({
                           )) || (
                             <Col span={24} className="all-ticket-sold">
                               <div
-                                style={{ textAlign: 'center', marginTop: 20 }}
+                                style={{ textAlign: "center", marginTop: 20 }}
                               >
                                 <Image src={Images.AllTicketSold} alt="" />
                                 <p>All tickets are sold.</p>
@@ -751,6 +766,7 @@ const EventDetail = ({
                           )}
                         </>
                       )}
+                      {tabActiveKey === Rave && <Raves />}
                     </div>
                   </div>
                 </div>
@@ -789,7 +805,7 @@ const EventDetail = ({
                   <a
                     ref={openAppInIos}
                     href={AppLandingPage}
-                    style={{ display: 'none' }}
+                    style={{ display: "none" }}
                   />
                 </Modal>
               </div>
@@ -809,8 +825,8 @@ EventDetail.getInitialProps = async (ctx: any) => {
   const { query, req } = ctx;
   const { ticket, source, eventId } = query;
   if (eventId) {
-    const parameterArr = eventId.split('-');
-    if (ticket && source === 'sharing') {
+    const parameterArr = eventId.split("-");
+    if (ticket && source === "sharing") {
       try {
         const response = await EventService.getEventDetail(
           last(parameterArr) as string

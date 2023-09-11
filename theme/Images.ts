@@ -80,6 +80,17 @@ import InviteGifIcon from "../static/images/invite.gif";
 import ThankyouGifIcon from "../static/images/thankyou.gif";
 import TicketsGifIcon from "../static/images/tickets.gif";
 import WowGifIcon from "../static/images/wow.gif";
+import SmileIcon from "../static/images/smile.svg";
+import StarIcon from "../static/images/star.png";
+import BorderImg from "../static/images/border.png";
+import CornerBorderImg from "../static/images/corner-border.png";
+import GiftDisabledImg from "../static/images/gift-disabled.png";
+import GiftCheersImg from "../static/images/gift-cheers.png";
+import RavePlaceholder1Img from "../static/images/rave-placeholder1.png";
+import RavePlaceholder2Img from "../static/images/rave-placeholder2.png";
+import RavePlaceholder1ImgMobile from "../static/images/rave-placeholder1-mobile.png";
+import RavePlaceholder2ImgMobile from "../static/images/rave-placeholder2-mobile.png";
+import LockIcon from "../static/images/lock.png";
 
 const Images = {
   Safety,
@@ -164,6 +175,17 @@ const Images = {
   ThankyouGifIcon,
   TicketsGifIcon,
   WowGifIcon,
+  SmileIcon,
+  StarIcon,
+  BorderImg,
+  CornerBorderImg,
+  GiftDisabledImg,
+  GiftCheersImg,
+  RavePlaceholder1Img,
+  RavePlaceholder2Img,
+  RavePlaceholder1ImgMobile,
+  RavePlaceholder2ImgMobile,
+  LockIcon,
 };
 
 export default Images;
