@@ -607,7 +607,7 @@ const EventDetail = ({
                     </div>
                     <div className="item-tabs">
                       <Tabs
-                        defaultActiveKey={PrimaryMarket}
+                        defaultActiveKey={tabActiveKey}
                         items={tabsItem}
                         onChange={(activeKey) => setTabActiveKey(activeKey)}
                       />
