@@ -1,4 +1,9 @@
 import { Col, Row, Grid } from "antd";
+import copy from "copy-to-clipboard";
+
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import RavesPopUp from "./ravesPopup";
 import {
   Border,
   CorderBorderLeft,
@@ -12,18 +17,25 @@ import {
   LockImg,
   PlaceHolderImg,
   PlaceHolderItem,
+  PostContent,
+  PostImage,
   ProgressBarWrapper,
   ProgressWrapper,
   RaveDescription,
   RaveItem,
   SectionTitle,
+  ShareLinkContent,
+  ShareLinkImg,
   StarIcon,
   TipBarIcon,
   TipBarWrapper,
+  YouMayNeed,
 } from "@/styles/raves.style";
 import { Images } from "@/theme";
+import { blobToBase64 } from "@/utils/func";
 
 const { useBreakpoint } = Grid;
+
 const TipBar = () => (
   <TipBarWrapper>
     <TipBarIcon src={Images.SmileIcon.src} alt="" />
@@ -72,7 +84,7 @@ const ProgressBar = ({
                   width: gotGifts ? 42 : "",
                 }}
               />
-              <p>{item.quantity} Flames</p>
+              {gotGifts ? null : <p>{item.quantity} Flames</p>}
             </GiftItem>
           );
         })}
@@ -102,7 +114,7 @@ const ProgressContainer = () => (
         <StarIcon src={Images.StarIcon.src} />
         <div className="total">
           <FireIcon src={Images.FireGifIcon.src} />
-          <p>2</p>
+          <p>{data.current}</p>
         </div>
         <StarIcon src={Images.StarIcon.src} />
       </div>
@@ -194,32 +206,178 @@ const MoreRaves = () => {
     <Row gutter={[16, 16]}>
       <Col span={24} lg={12}>
         <PlaceHolderItem>
-          <PlaceHolderImg src={lg ? Images.RavePlaceholder1Img.src : Images.RavePlaceholder1ImgMobile.src} />
+          <PlaceHolderImg
+            src={
+              lg
+                ? Images.RavePlaceholder1Img.src
+                : Images.RavePlaceholder1ImgMobile.src
+            }
+          />
           <LockImg src={Images.LockIcon.src} />
         </PlaceHolderItem>
       </Col>
       <Col span={24} lg={12}>
         <PlaceHolderItem>
-          <PlaceHolderImg src={lg ? Images.RavePlaceholder2Img.src : Images.RavePlaceholder2ImgMobile.src} />
+          <PlaceHolderImg
+            src={
+              lg
+                ? Images.RavePlaceholder2Img.src
+                : Images.RavePlaceholder2ImgMobile.src
+            }
+          />
           <LockImg src={Images.LockIcon.src} />
         </PlaceHolderItem>
       </Col>
     </Row>
   );
 };
-const Raves = () => (
-  <div>
-    <TipBar />
-    <ProgressContainer />
-    <SectionTitle>Rave Description</SectionTitle>
-    <RaveDescription>
-      Embark on your rave journey to redeem your free drink and free ticket!
-    </RaveDescription>
-    <SectionTitle>Quests</SectionTitle>
-    <RaveList />
-    <JoinButton type="primary">Join the Rave</JoinButton>
-    <SectionTitle>More Raves Coming Soon</SectionTitle>
-    <MoreRaves />
-  </div>
-);
+
+const PopUpContent = () => {
+  const postContent = "Join me in this rave and win rewards together!";
+  const link = "app.tickets.crowdserve.com/events/sopdw39f";
+  const image =
+    "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1693277132950-YxY5.png";
+  const [copySuccess, setCopySuccess] = useState(false);
+  const saveImageElement: any = useRef(null);
+
+  let timer: any = null;
+  const handleCopy = () => {
+    clearTimeout(timer);
+    copy(link);
+    setCopySuccess(true);
+    timer = setTimeout(() => {
+      setCopySuccess(false);
+    }, 3000);
+  };
+  const handleCopyPostContent = () => {
+    copy(`${postContent} \n ${link}`);
+  };
+
+  const saveImage = () => {
+    const x = new XMLHttpRequest();
+    x.open("GET", `/api/requestImage?image=${image}`, true);
+    x.responseType = "blob";
+    x.onload = function () {
+      console.log(x.response);
+
+      // blobToBase64(x.response.data).then((response: any) => {
+        const elA = document.createElement("a");
+        elA.download = image;
+        elA.href = x.response.data;
+        elA.click();
+        elA.remove();
+      // });
+    };
+    x.send();
+  };
+  useEffect(
+    () => () => {
+      clearTimeout(timer);
+    },
+    []
+  );
+
+  return (
+    <div>
+      <ShareLinkImg src={Images.ShareLinkIcon.src} />
+      <ShareLinkContent>
+        <h4 className="title">Share your link!</h4>
+        <p className="sub-title">
+          {`The more friends that use your link, the more lit you'll get!!`}
+        </p>
+        <div className="share-link-area">
+          <div className="link-content">
+            <span className="link">{link}</span>
+            {copySuccess ? (
+              <Image
+                src={Images.CopySuccessIcon}
+                alt="copy"
+                width={18}
+                height={18}
+                layout="fixed"
+              />
+            ) : null}
+          </div>
+          <Image
+            src={Images.CopyBigIcon}
+            alt="copy"
+            width={32}
+            height={32}
+            layout="fixed"
+            onClick={handleCopy}
+            className="copy-icon"
+          />
+        </div>
+      </ShareLinkContent>
+      <YouMayNeed>
+        <span>You May Need</span>
+      </YouMayNeed>
+      <PostImage>
+        <div className="title">Post Image</div>
+        <div className="post-image-content">
+          <div ref={saveImageElement}>
+            <Image
+              src={image}
+              alt="post-image"
+              width={112}
+              height={56}
+              layout="fixed"
+            />
+          </div>
+          <Image
+            src={Images.DownloadIcon}
+            alt="download"
+            width={19}
+            height={19}
+            layout="fixed"
+            className="download"
+            onClick={saveImage}
+          />
+        </div>
+      </PostImage>
+      <PostContent>
+        <div className="title">Attractive Post Content</div>
+        <div className="post-content-main">
+          <p>
+            {postContent}
+            <br />
+            {link}
+          </p>
+          <Image
+            src={Images.CopyIcon}
+            alt="copy"
+            width={19}
+            height={19}
+            layout="fixed"
+            className="icon"
+            onClick={handleCopyPostContent}
+          />
+        </div>
+      </PostContent>
+    </div>
+  );
+};
+const Raves = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div>
+      <TipBar />
+      <ProgressContainer />
+      <SectionTitle>Rave Description</SectionTitle>
+      <RaveDescription>
+        Embark on your rave journey to redeem your free drink and free ticket!
+      </RaveDescription>
+      <SectionTitle>Quests</SectionTitle>
+      <RaveList />
+      <JoinButton type="primary" onClick={() => setOpen(true)}>
+        Join the Rave
+      </JoinButton>
+      <SectionTitle>More Raves Coming Soon</SectionTitle>
+      <MoreRaves />
+      <RavesPopUp open={open} onClose={() => setOpen(false)}>
+        <PopUpContent />
+      </RavesPopUp>
+    </div>
+  );
+};
 export default Raves;

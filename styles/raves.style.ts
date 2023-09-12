@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button } from "antd";
+import { Button , Modal } from "antd";
 import { Colors } from "@/theme";
 
 export const TipBarWrapper = styled.div`
@@ -218,7 +218,7 @@ export const RaveItem = styled.div`
     gap: 2px;
     border-radius: 39px;
     background: ${Colors.grayScale70};
-    img{
+    img {
       position: relative;
       top: -3px;
       width: 14px;
@@ -260,4 +260,160 @@ export const LockImg = styled.img`
   top: 50%;
   transform: translate(-50%, -50%);
   width: 30px;
+`;
+
+export const PopUpContainer = styled(Modal)`
+  &.ant-modal {
+    max-width: calc(100vw - 48px);
+  }
+  .ant-modal-content {
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0px 2px 14px 0px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(5px);
+    max-height: calc(100% - 108px);
+    .container {
+      width: 100%;
+      overflow: hidden;
+    }
+  }
+`;
+
+export const PopUpClose = styled.img`
+  position: absolute;
+  bottom: -44px;
+  left: 50%;
+  width: 24px;
+  transform: translateX(-50%);
+  cursor: pointer;
+`;
+
+export const ShareLinkImg = styled.img`
+  width: 100px;
+  margin: auto;
+  margin-bottom: 10px;
+  display: block;
+`;
+
+export const ShareLinkContent = styled.div`
+  .title {
+    color: ${Colors.grayScale70};
+    margin: 0;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+  }
+  .sub-title {
+    color: ${Colors.grayScale50};
+    text-align: center;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 24px;
+    margin-top: 4px;
+    margin-bottom: 20px;
+  }
+  .share-link-area {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    align-items: center;
+    .link-content {
+      background: ${Colors.grayScale30};
+      border: 1px solid ${Colors.grayScale30};
+      color: ${Colors.grayScale50};
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      word-break: break-all;
+      border-radius: 5px;
+      width: calc(100% - 40px);
+      align-items: center;
+      font-size: 13px;
+
+      .link {
+        width: calc(100% - 28px);
+      }
+    }
+    .copy-icon {
+      cursor: pointer;
+    }
+  }
+`;
+
+export const YouMayNeed = styled.div`
+  height: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: ${Colors.grayScale50};
+  text-align: center;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 19px;
+  margin: 20px 0;
+  gap: 20px;
+  span {
+    flex-shrink: 0;
+  }
+  ::after,
+  ::before {
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background: ${Colors.grayScale40};
+  }
+`;
+
+export const PostImage = styled.div`
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.3);
+  margin-bottom: 12px;
+  .download{
+    cursor: pointer;
+  } 
+  .title {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 21px;
+    color: ${Colors.black};
+    margin-bottom: 12px;
+  }
+  .post-image-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+  }
+`;
+
+export const PostContent = styled.div`
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.3);
+  .title {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 21px;
+    color: ${Colors.black};
+    margin-bottom: 12px;
+  }
+  .post-content-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    p {
+      margin: 0;
+      color: ${Colors.grayScale50};
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
+      width: calc(100% - 31px);
+      word-break: break-all;
+    }
+    .icon {
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+  }
 `;

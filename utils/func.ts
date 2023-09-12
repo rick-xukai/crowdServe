@@ -1,5 +1,5 @@
-import CryptoJS from 'crypto-js';
-import { format } from 'date-fns';
+import CryptoJS from "crypto-js";
+import { format } from "date-fns";
 import {
   LineController,
   LinearScale,
@@ -11,18 +11,18 @@ import {
   ChartTypeRegistry,
   Tooltip,
   Legend,
-} from 'chart.js';
-import _ from 'lodash';
+} from "chart.js";
+import _ from "lodash";
 
-import Messages from '../constants/Messages';
-import { Colors } from '../theme';
+import Messages from "../constants/Messages";
+import { Colors } from "../theme";
 import {
   Encrypt,
   TicketStatus,
   GooglePlayLink,
   AppHost,
   PriceUnit,
-} from '../constants/General';
+} from "../constants/General";
 
 Chart.register(
   LineController,
@@ -38,18 +38,18 @@ Chart.register(
 const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY as string;
 
 export const verificationApi = (response: any) =>
-  response.code === 200 && response.message === 'OK';
+  response.code === 200 && response.message === "OK";
 
 export const qs = <T extends { [k: string]: string | boolean }>(
   search: string = globalThis.location
     ? globalThis.location.search.slice(1)
-    : ''
+    : ""
 ): Partial<T> =>
   search
-    .split('&')
+    .split("&")
     .filter(Boolean)
     .reduce<any>((o, keyValue) => {
-      const [key, value] = keyValue.split('=');
+      const [key, value] = keyValue.split("=");
 
       if (value === undefined) o[key] = true;
       else o[key] = value;
@@ -58,7 +58,7 @@ export const qs = <T extends { [k: string]: string | boolean }>(
     }, {});
 
 export const dataEncryption = (data: any, type: string) => {
-  let formatData = '{}';
+  let formatData = "{}";
   try {
     if (type === Encrypt) {
       formatData = CryptoJS.AES.encrypt(data, encryptionKey).toString();
@@ -77,15 +77,14 @@ export const formatTimeStrByTimeString = (
 ) => {
   try {
     if (timeString) {
-      return format(new Date(timeString.replace(/-/g, '/')), formatType);
+      return format(new Date(timeString.replace(/-/g, "/")), formatType);
     }
   } catch (_) {}
-  return '-';
+  return "-";
 };
 
-export const checkStatusIcon = (key: number) => {
-  return TicketStatus.find((item) => item.key === key)?.icon;
-};
+export const checkStatusIcon = (key: number) =>
+  TicketStatus.find((item) => item.key === key)?.icon;
 
 export const isEmail = (value: string) =>
   /* eslint-disable max-len */
@@ -117,7 +116,7 @@ export const getErrorMessage = (errorCode: number | undefined | string) => {
 };
 
 export const openApp = () => {
-  const CallApp = require('callapp-lib');
+  const CallApp = require("callapp-lib");
   const options: any = {
     scheme: {
       protocol: process.env.NEXT_PUBLIC_APP_DEEP_LINK_PROTOCOL,
@@ -130,7 +129,7 @@ export const openApp = () => {
     fallback: GooglePlayLink,
   };
   const callLib = new CallApp(options);
-  callLib.open({ path: '' });
+  callLib.open({ path: "" });
 };
 
 export const base64Decrypt = (code: string) => {
@@ -144,9 +143,8 @@ export const base64Encrypt = (parameters: {}) => {
   return CryptoJS.enc.Base64.stringify(wordArray);
 };
 
-export const toPercent = (num: number, total: number) => {
-  return Math.round((num / total) * 10000) / 100;
-};
+export const toPercent = (num: number, total: number) =>
+  Math.round((num / total) * 10000) / 100;
 
 export const getTimeDifference = (dateString: string) => {
   const currentTimeStamp = new Date().getTime();
@@ -164,9 +162,8 @@ export const getTimeDifference = (dateString: string) => {
   };
 };
 
-export const formatChartLabelDate = (value: string) => {
-  return value.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
-};
+export const formatChartLabelDate = (value: string) =>
+  value.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
 
 export const bodyOverflow = (status: string) => {
   try {
@@ -181,9 +178,9 @@ export const loadChart = (
   type: keyof ChartTypeRegistry
 ) => {
   const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, 'rgba(11, 255, 255, 0.3)');
-  gradient.addColorStop(0.5, 'rgba(11, 255, 255, 0.1)');
-  gradient.addColorStop(1, 'rgba(11, 255, 255, 0)');
+  gradient.addColorStop(0, "rgba(11, 255, 255, 0.3)");
+  gradient.addColorStop(0.5, "rgba(11, 255, 255, 0.1)");
+  gradient.addColorStop(1, "rgba(11, 255, 255, 0)");
   let pointSize = 3;
   let hoverPointSize = 5;
   let maxValue: number | undefined = undefined;
@@ -221,7 +218,7 @@ export const loadChart = (
             color: Colors.grayScale40,
             font: {
               size: 12,
-              weight: '300',
+              weight: "300",
             },
           },
           grid: {
@@ -236,7 +233,7 @@ export const loadChart = (
             color: Colors.grayScale40,
             font: {
               size: 12,
-              weight: '300',
+              weight: "300",
             },
             autoSkip: false,
           },
@@ -253,23 +250,23 @@ export const loadChart = (
           enabled: false,
           intersect: false,
           external: function (context) {
-            let tooltipEl = document.getElementById('chartjs-tooltip');
+            let tooltipEl = document.getElementById("chartjs-tooltip");
             if (!tooltipEl) {
-              tooltipEl = document.createElement('div');
-              tooltipEl.id = 'chartjs-tooltip';
-              tooltipEl.innerHTML = '<table></table>';
+              tooltipEl = document.createElement("div");
+              tooltipEl.id = "chartjs-tooltip";
+              tooltipEl.innerHTML = "<table></table>";
               document.body.appendChild(tooltipEl);
             }
             const tooltipModel: any = context.tooltip;
             if (tooltipModel.opacity === 0) {
-              tooltipEl.style.opacity = '0';
+              tooltipEl.style.opacity = "0";
               return;
             }
-            tooltipEl.classList.remove('above', 'below', 'no-transform');
+            tooltipEl.classList.remove("above", "below", "no-transform");
             if (tooltipModel.yAlign) {
               tooltipEl.classList.add(tooltipModel.yAlign);
             } else {
-              tooltipEl.classList.add('no-transform');
+              tooltipEl.classList.add("no-transform");
             }
             function getBody(bodyItem: any) {
               return bodyItem.lines;
@@ -277,41 +274,34 @@ export const loadChart = (
             if (tooltipModel.body) {
               const titleLines = tooltipModel.title || [];
               const bodyLines = tooltipModel.body.map(getBody);
-              let innerHtml = '<thead>';
+              let innerHtml = "<thead>";
               titleLines.forEach(function (title: string) {
-                innerHtml += '<tr><th>' + title + '</th></tr>';
+                innerHtml += `<tr><th>${title}</th></tr>`;
               });
-              innerHtml += '</thead><tbody>';
+              innerHtml += "</thead><tbody>";
               bodyLines.forEach(function (body: string[]) {
-                let value = '';
+                let value = "";
                 if (body.length) {
                   value = `${body[0]} ${PriceUnit}`;
                 }
-                const span = '<span>' + value + '</span>';
-                innerHtml += '<tr><td>' + span + '</td></tr>';
+                const span = `<span>${value}</span>`;
+                innerHtml += `<tr><td>${span}</td></tr>`;
               });
-              innerHtml += '</tbody>';
-              let tableRoot: any = tooltipEl.querySelector('table');
+              innerHtml += "</tbody>";
+              let tableRoot: any = tooltipEl.querySelector("table");
               tableRoot.innerHTML = innerHtml;
             }
             const position = context.chart.canvas.getBoundingClientRect();
-            tooltipEl.style.opacity = '1';
-            tooltipEl.style.position = 'absolute';
-            tooltipEl.style.left =
-              position.left +
-              window.pageXOffset +
-              tooltipModel.caretX -
-              40 +
-              'px';
-            tooltipEl.style.top =
-              position.top +
-              window.pageYOffset +
-              tooltipModel.caretY -
-              10 +
-              'px';
-            tooltipEl.style.padding =
-              tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
-            tooltipEl.style.pointerEvents = 'none';
+            tooltipEl.style.opacity = "1";
+            tooltipEl.style.position = "absolute";
+            tooltipEl.style.left = `${
+              position.left + window.pageXOffset + tooltipModel.caretX - 40
+            }px`;
+            tooltipEl.style.top = `${
+              position.top + window.pageYOffset + tooltipModel.caretY - 10
+            }px`;
+            tooltipEl.style.padding = `${tooltipModel.padding}px ${tooltipModel.padding}px`;
+            tooltipEl.style.pointerEvents = "none";
           },
         },
       },
@@ -327,32 +317,31 @@ export const formatLocation = (location: string, address: string) => {
   if (location && !address) {
     return location;
   }
-  return '-';
+  return "-";
 };
 
-export const formatDescription = (text: string) => {
-  return (text && text.replaceAll('\n', '<br />')) || '';
-};
+export const formatDescription = (text: string) =>
+  (text && text.replaceAll("\n", "<br />")) || "";
 
 export const checkOperatingSys = () => {
   const userAgent = navigator.userAgent;
-  let operatingSys = '';
-  if (userAgent.indexOf('Windows NT 10.0') !== -1) {
-    operatingSys = 'Windows 10';
-  } else if (userAgent.indexOf('Windows NT 6.2') !== -1) {
-    operatingSys = 'Windows 8';
-  } else if (userAgent.indexOf('Windows NT 6.1') !== -1) {
-    operatingSys = 'Windows 7';
-  } else if (userAgent.indexOf('Windows NT 6.0') !== -1) {
-    operatingSys = 'Windows Vista';
-  } else if (userAgent.indexOf('Windows NT 5.1') !== -1) {
-    operatingSys = 'Windows XP';
-  } else if (userAgent.indexOf('Mac') !== -1) {
-    operatingSys = 'Mac OS';
-  } else if (userAgent.indexOf('X11') !== -1) {
-    operatingSys = 'Unix';
-  } else if (userAgent.indexOf('Linux') !== -1) {
-    operatingSys = 'Linux';
+  let operatingSys = "";
+  if (userAgent.indexOf("Windows NT 10.0") !== -1) {
+    operatingSys = "Windows 10";
+  } else if (userAgent.indexOf("Windows NT 6.2") !== -1) {
+    operatingSys = "Windows 8";
+  } else if (userAgent.indexOf("Windows NT 6.1") !== -1) {
+    operatingSys = "Windows 7";
+  } else if (userAgent.indexOf("Windows NT 6.0") !== -1) {
+    operatingSys = "Windows Vista";
+  } else if (userAgent.indexOf("Windows NT 5.1") !== -1) {
+    operatingSys = "Windows XP";
+  } else if (userAgent.indexOf("Mac") !== -1) {
+    operatingSys = "Mac OS";
+  } else if (userAgent.indexOf("X11") !== -1) {
+    operatingSys = "Unix";
+  } else if (userAgent.indexOf("Linux") !== -1) {
+    operatingSys = "Linux";
   }
   return operatingSys;
 };
@@ -362,3 +351,11 @@ export const generateRandomString = () => {
   const randomString = CryptoJS.enc.Hex.stringify(wordArray);
   return randomString;
 };
+
+export const blobToBase64 = (blob: any) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });

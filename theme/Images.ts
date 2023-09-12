@@ -91,6 +91,12 @@ import RavePlaceholder2Img from "../static/images/rave-placeholder2.png";
 import RavePlaceholder1ImgMobile from "../static/images/rave-placeholder1-mobile.png";
 import RavePlaceholder2ImgMobile from "../static/images/rave-placeholder2-mobile.png";
 import LockIcon from "../static/images/lock.png";
+import PopupCloseIcon from "../static/images/popup-close.png";
+import ShareLinkIcon from "../static/images/share-link.png";
+import DownloadIcon from "../static/images/download.png";
+import CopyBigIcon from "../static/images/copy-big.png";
+import CopyIcon from "../static/images/copy.png";
+import CopySuccessIcon from "../static/images/copy-success.png";
 
 const Images = {
   Safety,
@@ -186,6 +192,12 @@ const Images = {
   RavePlaceholder1ImgMobile,
   RavePlaceholder2ImgMobile,
   LockIcon,
+  PopupCloseIcon,
+  ShareLinkIcon,
+  DownloadIcon,
+  CopyBigIcon,
+  CopyIcon,
+  CopySuccessIcon,
 };
 
 export default Images;
