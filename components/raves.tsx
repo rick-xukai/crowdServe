@@ -1,8 +1,8 @@
-import { Col, Row, Grid } from "antd";
+import { Col, Row, Grid, message } from "antd";
 import copy from "copy-to-clipboard";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import RavesPopUp from "./ravesPopup";
 import {
   Border,
@@ -32,7 +32,6 @@ import {
   YouMayNeed,
 } from "@/styles/raves.style";
 import { Images } from "@/theme";
-import { blobToBase64 } from "@/utils/func";
 
 const { useBreakpoint } = Grid;
 
@@ -163,7 +162,7 @@ const raveData = [
     current: 10,
     total: 20,
     description: "Earn a star each time your friends open your referral link.",
-    id: 1,
+    id: 3,
     condition: 3,
     isFriend: true,
   },
@@ -173,7 +172,7 @@ const raveData = [
     total: 25,
     description:
       "Earn 5 flames when a ticket is purchased through your referral link!",
-    id: 1,
+    id: 4,
     condition: 5,
     isFriend: true,
   },
@@ -238,7 +237,8 @@ const PopUpContent = () => {
   const image =
     "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1693277132950-YxY5.png";
   const [copySuccess, setCopySuccess] = useState(false);
-  const saveImageElement: any = useRef(null);
+  const [saveImageUrl, setSaveImageUrl] = useState<any>("");
+  const [messageApi, contextHolder] = message.useMessage();
 
   let timer: any = null;
   const handleCopy = () => {
@@ -254,22 +254,55 @@ const PopUpContent = () => {
   };
 
   const saveImage = () => {
-    const x = new XMLHttpRequest();
-    x.open("GET", `/api/requestImage?image=${image}`, true);
-    x.responseType = "blob";
-    x.onload = function () {
-      console.log(x.response);
-
-      // blobToBase64(x.response.data).then((response: any) => {
-        const elA = document.createElement("a");
-        elA.download = image;
-        elA.href = x.response.data;
-        elA.click();
-        elA.remove();
-      // });
+    setSaveImageUrl("");
+    let request = new XMLHttpRequest();
+    request.open("get", image, true);
+    request.responseType = "blob";
+    request.setRequestHeader("Cache-Control", "no-cache");
+    messageApi.open({
+      content: (
+        <div className="message-content">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="image-ani-hourglass"
+            src={Images.HourglassWhite.src}
+            alt=""
+          />
+          <div>
+            Downloading
+            <span className="dot-ani" />
+          </div>
+        </div>
+      ),
+      className: "default-message default-message-download",
+      duration: 0,
+    });
+    request.onload = function () {
+      if (this.status === 200) {
+        let blob = this.response;
+        let oFileReader = new FileReader();
+        oFileReader.onloadend = function (e: any) {
+          const base64 = e.target.result;
+          setSaveImageUrl(base64);
+        };
+        oFileReader.readAsDataURL(blob);
+        messageApi.destroy();
+      }
     };
-    x.send();
+    request.send();
   };
+
+  useEffect(() => {
+    if (saveImageUrl) {
+      const elA = document.createElement("a");
+      elA.download = `post-${Date.now()}.png`;
+      elA.href = saveImageUrl;
+      elA.click();
+      elA.remove();
+      messageApi.destroy();
+    }
+  }, [saveImageUrl]);
+
   useEffect(
     () => () => {
       clearTimeout(timer);
@@ -315,7 +348,7 @@ const PopUpContent = () => {
       <PostImage>
         <div className="title">Post Image</div>
         <div className="post-image-content">
-          <div ref={saveImageElement}>
+          <div>
             <Image
               src={image}
               alt="post-image"
@@ -354,6 +387,7 @@ const PopUpContent = () => {
           />
         </div>
       </PostContent>
+      {contextHolder}
     </div>
   );
 };
