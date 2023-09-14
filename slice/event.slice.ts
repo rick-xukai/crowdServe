@@ -4,6 +4,7 @@ import { RootState } from '../app/store';
 import { verificationApi } from '../utils/func';
 import EventService from '../services/API/Event';
 import { EventDetailDescriptionImages } from './myTickets.slice';
+import { Rave } from '@/constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -269,6 +270,7 @@ interface EventState {
       }
     | undefined
     | null;
+  tabActiveKey: string;
 }
 
 const initialState: EventState = {
@@ -280,49 +282,50 @@ const initialState: EventState = {
   error: null,
   eventDetailError: null,
   eventDetailData: {
-    id: '',
-    name: '',
-    organizerName: '',
-    image: '',
-    location: '',
-    startTime: '',
-    endTime: '',
-    description: '',
+    id: "",
+    name: "",
+    organizerName: "",
+    image: "",
+    location: "",
+    startTime: "",
+    endTime: "",
+    description: "",
     status: 0,
-    crowdfundLink: '',
-    slug: '',
-    address: '',
-    locationCoord: '',
+    crowdfundLink: "",
+    slug: "",
+    address: "",
+    locationCoord: "",
     descriptionImages: [],
     refundPolicy: 0,
-    descriptionShort: '',
+    descriptionShort: "",
   },
   eventMarket: [],
+  tabActiveKey: Rave
 };
 
 export const eventSlice = createSlice({
-  name: 'event',
+  name: "event",
   initialState,
   reducers: {
     reset: () => initialState,
     resetEventDatail: (state) => {
       state.eventDetailData = {
-        id: '',
-        name: '',
-        organizerName: '',
-        image: '',
-        location: '',
-        startTime: '',
-        endTime: '',
-        description: '',
+        id: "",
+        name: "",
+        organizerName: "",
+        image: "",
+        location: "",
+        startTime: "",
+        endTime: "",
+        description: "",
         status: 0,
-        crowdfundLink: '',
-        slug: '',
-        address: '',
-        locationCoord: '',
+        crowdfundLink: "",
+        slug: "",
+        address: "",
+        locationCoord: "",
         descriptionImages: [],
         refundPolicy: 0,
-        descriptionShort: '',
+        descriptionShort: "",
       };
     },
     resetError: (state) => {
@@ -334,6 +337,9 @@ export const eventSlice = createSlice({
     },
     resetEventDetailLoading: (state) => {
       state.eventDetailLoading = true;
+    },
+    setTabActiveKey: (state, action) => {
+      state.tabActiveKey = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -420,6 +426,7 @@ export const {
   resetError,
   resetEventListData,
   resetEventDetailLoading,
+  setTabActiveKey,
 } = eventSlice.actions;
 
 export const selectLoading = (state: RootState) => state.event.loading;
@@ -437,5 +444,6 @@ export const selectEventDetailError = (state: RootState) =>
 export const selectEventListBanner = (state: RootState) =>
   state.event.eventListBanner;
 export const selectEventMarket = (state: RootState) => state.event.eventMarket;
+export const selectTabActiveKey = (state: RootState) => state.event.tabActiveKey;
 
 export default eventSlice.reducer;
