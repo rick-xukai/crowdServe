@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Col, Carousel, Row , Grid } from "antd";
+import { Col, Carousel, Row, Grid } from "antd";
 
+import { useRouter } from "next/router";
 import AuthHoc from "../components/hoc/AuthHoc";
 
 import {
@@ -17,6 +18,9 @@ import PageHearderResponsive from "@/components/pageHearderResponsive";
 import PageHearderComponent from "@/components/pageHearder";
 import PageBottomComponent from "@/components/pageBottomComponent";
 import { Images } from "@/theme";
+import { useAppDispatch } from "@/app/hooks";
+import { setTabActiveKey } from "@/slice/event.slice";
+import { Rave } from "@/constants/General";
 
 const imgList = [
   "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687145233259-r06z.jpeg",
@@ -50,13 +54,20 @@ const data: {
     num: 1,
     id: 2,
   },
-  ];
+];
 
 const { useBreakpoint } = Grid;
 const MyCollectibles = () => {
   const [menuState, setMenuState] = useState<boolean>(false);
   const loading = false;
   const { lg } = useBreakpoint();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const goToRaveDetail = () => {
+    dispatch(setTabActiveKey(Rave));
+    router.push("/events/test-shopify-shipping-cllyn2nel0012qf2l9d2hrw9b");
+  };
   return (
     <>
       {(loading && (
@@ -89,7 +100,7 @@ const MyCollectibles = () => {
               <Row gutter={[16, 16]}>
                 {data.map((item) => (
                   <Col span={24} md={12} key={item.id}>
-                    <RaveItem status={item.status}>
+                    <RaveItem status={item.status} onClick={goToRaveDetail}>
                       <div className="head">
                         <span className="title">{item.title}</span>
                         <span className="badge">{item.status}</span>

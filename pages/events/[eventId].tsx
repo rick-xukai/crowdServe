@@ -56,6 +56,8 @@ import {
   selectEventMarket,
   resetEventDatail,
   resetEventDetailLoading,
+  setTabActiveKey,
+  selectTabActiveKey,
 } from "../../slice/event.slice";
 import { TicketDetailResponseType } from "../../slice/tickets.slice";
 import {
@@ -108,7 +110,6 @@ const EventDetail = ({
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
     useState(false);
   const [menuState, setMenuState] = useState<boolean>(false);
-  const [tabActiveKey, setTabActiveKey] = useState<string>(Rave);
   const [eventCorrect, setEventCorrect] = useState<boolean>(true);
   const [eventTicketTypeFilter, setEventTicketTypeFilter] = useState<
     EventTicketTypeResponseType[]
@@ -117,6 +118,7 @@ const EventDetail = ({
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const [needShowMore, setNeedShowMore] = useState<boolean>(false);
   const [previousPage, setPreviousPage] = useState<string>("");
+  const tabActiveKey = useAppSelector(selectTabActiveKey);
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
@@ -328,6 +330,7 @@ const EventDetail = ({
       dispatch(resetEventDatail());
       dispatch(resetError());
       dispatch(resetEventDetailLoading());
+      dispatch(setTabActiveKey(PrimaryMarket));
     };
   }, []);
 
@@ -609,7 +612,9 @@ const EventDetail = ({
                       <Tabs
                         defaultActiveKey={tabActiveKey}
                         items={tabsItem}
-                        onChange={(activeKey) => setTabActiveKey(activeKey)}
+                        onChange={(activeKey) =>
+                          dispatch(setTabActiveKey(activeKey))
+                        }
                       />
                       <Row>
                         <Col span={24} className="dividing-line" />
