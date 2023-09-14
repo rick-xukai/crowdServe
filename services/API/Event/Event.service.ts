@@ -1,6 +1,9 @@
 import { RequestClientClass } from '../../../utils/requestClient';
 import API from '../../../constants/API';
-import { GetEventListPayloadType, GetEventMarketPayload } from '../../../slice/event.slice';
+import {
+  GetEventListPayloadType,
+  GetEventMarketPayload,
+} from '../../../slice/event.slice';
 
 const requestClient = () =>
   new RequestClientClass(process.env.NEXT_PUBLIC_API_SERVER);
@@ -54,10 +57,20 @@ const getEventMarket = async (payload: GetEventMarketPayload) => {
   return response;
 };
 
+const eventDetailGetJoinRave = async (payload: string) => {
+  const uri = API.eventDetailGetJoinRave.get.replace('{eventId}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   getEventList,
   getEventTicketType,
   getEventDetail,
   getEventListBanner,
   getEventMarket,
+  eventDetailGetJoinRave,
 };

@@ -500,4 +500,254 @@ const SecondaryMarketItem = styled.div`
   }
 `;
 
-export { EventDetailContainer, TicketTypeItem, SecondaryMarketItem };
+const JoinRaveModalContent = styled.div`
+  padding: 25px 22px;
+  .content-title {
+    color: ${Colors.grayScale70};
+    text-align: center;
+    font-family: Oswald;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    text-transform: uppercase;
+  }
+  .content-banner {
+    margin-top: 32px;
+    padding: 20px 22px;
+    &.scroll {
+      overflow: auto;
+      .banner-items {
+        justify-content: initial;
+      }
+    }
+    .banner-items {
+      display: flex;
+      justify-content: space-around;
+    }
+  }
+  .content-users {
+    margin-top: 32px;
+    text-align: center;
+    .ant-avatar-group {
+      > :nth-child(1) {
+        background-color: ${Colors.darkRed};
+      }
+      > :nth-child(2) {
+        background-color: ${Colors.navyBlue};
+      }
+      > :nth-child(3) {
+        background-color: ${Colors.purple};
+      }
+      > :nth-child(4) {
+        background-color: ${Colors.grayishYellow};
+      }
+      > :nth-child(5) {
+        background-color: ${Colors.lightBlue};
+      }
+      > :nth-child(6) {
+        background-color: ${Colors.greener};
+      }
+    }
+    .ant-avatar {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      color: ${Colors.white};
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .users-count {
+      color: ${Colors.grayScale90};
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 23px;
+      margin-top: 8px;
+    }
+  }
+  .content-button {
+    text-align: center;
+    margin-top: 24px;
+    .ant-btn {
+      width: 60%;
+      height: 45px;
+      border-radius: 2px;
+      background: ${Colors.branding};
+      color: ${Colors.grayScale10};
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 21px;
+      text-transform: uppercase;
+    }
+  }
+  .content-checkbox {
+    text-align: center;
+    margin-top: 16px;
+    span {
+      color: ${Colors.grayScale70};
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 19px;
+    }
+    .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+      .ant-checkbox-checked:not(.ant-checkbox-disabled)
+      .ant-checkbox-inner {
+      background: ${Colors.branding};
+    }
+    .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+      .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
+      border-color: ${Colors.branding} !important;
+    }
+    .ant-checkbox-checked:after {
+      border: 1px solid ${Colors.branding};
+    }
+    .ant-checkbox-checked:not(.ant-checkbox-disabled):hover
+      .ant-checkbox-inner {
+      background-color: transparent;
+      border-color: ${Colors.branding};
+    }
+    .ant-checkbox:not(.ant-checkbox-disabled):hover .ant-checkbox-inner {
+      border-color: ${Colors.branding};
+    }
+    .ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+      .ant-checkbox-inner {
+      border-color: ${Colors.branding};
+    }
+    .content-checkbox .ant-checkbox-checked .ant-checkbox-inner:after {
+      border-color: ${Colors.white};
+    }
+    .content-checkbox .ant-checkbox-checked:after {
+      border-color: ${Colors.white};
+    }
+    .ant-checkbox-checked {
+      color: ${Colors.white};
+      .ant-checkbox-inner {
+        background: ${Colors.branding};
+        border-color: ${Colors.branding};
+      }
+    }
+    .ant-checkbox-inner {
+      width: 17px;
+      height: 17px;
+      background: transparent;
+      border: 1px solid ${Colors.grayScale50};
+    }
+  }
+  @media (max-width: 576px) {
+    padding: 0;
+    .content-title {
+      font-size: 20px;
+    }
+    .content-banner {
+      padding: 0;
+      margin-top: 20px;
+      .banner-items {
+        justify-content: space-between;
+      }
+    }
+    .content-users {
+      .users-count {
+        font-size: 14px;
+      }
+    }
+    .content-button {
+      .ant-btn {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+const JoinRaveModalBannerItem = styled.div`
+  position: relative;
+  min-width: 164px;
+  border-radius: 8px;
+  background: ${Colors.linearGradient3};
+  padding: 4px;
+  &.scroll-item {
+    margin-right: 20px;
+  }
+  .gradient-box {
+    padding: 4px;
+    background: ${Colors.black};
+    border-radius: 5px;
+  }
+  .items-img {
+    height: 140px;
+    border-radius: 4px;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+    }
+  }
+  .item-name {
+    margin-top: 10px;
+    color: ${Colors.white};
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+  }
+  .free-icon {
+    position: absolute;
+    left: -20px;
+    top: -25px;
+  }
+  @media (max-width: 576px) {
+    min-width: 132px;
+    max-width: 132px;
+    .items-img {
+      height: 120px;
+    }
+  }
+`;
+
+const HaveJoinedRaveModalContent = styled.div`
+  padding: 40px;
+  .content-mascotsIcon {
+    text-align: center;
+  }
+  .content-title {
+    margin-top: 16px;
+    color: ${Colors.grayScale70};
+    text-align: center;
+    font-family: Oswald;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    text-transform: uppercase;
+  }
+  .content-count {
+    margin-top: 16px;
+    text-align: center;
+    > :first-child {
+      span {
+        margin-right: 5px;
+        font-size: 17px;
+        font-weight: 400;
+      }
+    }
+    span {
+      color: ${Colors.grayScale70};
+      text-align: right;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 25px;
+      img {
+        width: 20px;
+        height: 20px;
+        margin-left: 8px;
+        margin-bottom: -1px;
+      }
+    }
+  }
+`;
+
+export {
+  EventDetailContainer,
+  TicketTypeItem,
+  SecondaryMarketItem,
+  JoinRaveModalContent,
+  JoinRaveModalBannerItem,
+  HaveJoinedRaveModalContent,
+};

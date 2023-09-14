@@ -100,6 +100,9 @@ const API = {
   myRaves: {
     get: "/api/v1/rave",
   },
+  eventDetailGetJoinRave: {
+    get: '/api/v1/rave/{eventId}',
+  },
 };
 
 export default API;

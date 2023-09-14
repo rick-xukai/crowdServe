@@ -3,6 +3,7 @@ export const LocalStorageKeys = {
   closeInstallAppTime: 'closeInstallAppTime',
   currentPageToSetting: 'currentPageToSetting',
   pageViewTrackKeys: 'pageViewTrackKeys',
+  joinRavePopupKey: 'joinRavePopupKey',
 };
 
 export const CookieKeys = {
