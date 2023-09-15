@@ -104,6 +104,41 @@ export interface EventMarketResponseType {
   sellPrice: number;
 }
 
+export interface GetRaveResponseUserProps {
+  flamePoint: number;
+  inviteCode: number;
+  joined: boolean;
+}
+
+export interface GetRaveResponseRewardListProps {
+  name: string;
+  image: string;
+  milestone: number;
+  stock: number;
+  redeemed: boolean;
+}
+
+export interface GetRaveResponseQuestProps {
+  name: string;
+  description: string;
+  flamePoint: number;
+  limitUser: number;
+  getTimes: number;
+}
+export interface GetRaveResponseProps {
+  name: string;
+  description: string;
+  status: number;
+  joinedUsers: number;
+  redeemedUsers: number;
+  user: GetRaveResponseUserProps;
+  reward: {
+    ravers: number;
+    list: GetRaveResponseRewardListProps[];
+  };
+  quest: GetRaveResponseQuestProps[];
+}
+
 /**
  * Get event list
  */
@@ -257,6 +292,65 @@ export const getEventListBannerAction = createAsyncThunk<
   }
 );
 
+/**
+ * Event detail get join rave
+ */
+export const eventDetailGetJoinRaveAction = createAsyncThunk<
+  GetRaveResponseProps,
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'eventDetailGetJoinRave/eventDetailGetJoinRaveAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventService.eventDetailGetJoinRave(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  }
+);
+
+/**
+ * Join rave
+ */
+export const joinRaveAction = createAsyncThunk<
+  { code: number; message: string },
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>('joinRave/joinRaveAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await EventService.joinRave(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
 interface EventState {
   loading: boolean;
   eventDetailLoading: boolean;
@@ -265,6 +359,8 @@ interface EventState {
   eventTicketTypeData: EventTicketTypeResponseType[];
   eventListBanner: EventListBanner[];
   eventMarket: EventMarketResponseType[];
+  getJoinRaveData: GetRaveResponseProps;
+  joinRaveLoading: boolean;
   eventDetailError:
     | {
         code: number | undefined;
@@ -289,51 +385,69 @@ const initialState: EventState = {
   eventListBanner: [],
   error: null,
   eventDetailError: null,
+  joinRaveLoading: false,
   eventDetailData: {
-    id: "",
-    name: "",
-    organizerName: "",
-    image: "",
-    location: "",
-    startTime: "",
-    endTime: "",
-    description: "",
+    id: '',
+    name: '',
+    organizerName: '',
+    image: '',
+    location: '',
+    startTime: '',
+    endTime: '',
+    description: '',
     status: 0,
-    crowdfundLink: "",
-    slug: "",
-    address: "",
-    locationCoord: "",
+    crowdfundLink: '',
+    slug: '',
+    address: '',
+    locationCoord: '',
     descriptionImages: [],
     refundPolicy: 0,
-    descriptionShort: "",
+    descriptionShort: '',
+  },
+  getJoinRaveData: {
+    name: '',
+    description: '',
+    status: 0,
+    joinedUsers: 0,
+    redeemedUsers: 0,
+    user: {
+      flamePoint: 0,
+      inviteCode: 0,
+      joined: true,
+    },
+    reward: {
+      ravers: 0,
+      list: [],
+    },
+    quest: [],
   },
   eventMarket: [],
   tabActiveKey: Rave,
 };
 
 export const eventSlice = createSlice({
-  name: "event",
+  name: 'event',
   initialState,
   reducers: {
     reset: () => initialState,
     resetEventDatail: (state) => {
       state.eventDetailData = {
-        id: "",
-        name: "",
-        organizerName: "",
-        image: "",
-        location: "",
-        startTime: "",
-        endTime: "",
-        description: "",
+        id: '',
+        name: '',
+        organizerName: '',
+        image: '',
+        location: '',
+        startTime: '',
+        endTime: '',
+        description: '',
         status: 0,
-        crowdfundLink: "",
-        slug: "",
-        address: "",
-        locationCoord: "",
+        crowdfundLink: '',
+        slug: '',
+        address: '',
+        locationCoord: '',
         descriptionImages: [],
         refundPolicy: 0,
-        descriptionShort: "",
+        descriptionShort: '',
       };
     },
     resetError: (state) => {
@@ -412,6 +526,21 @@ export const eventSlice = createSlice({
           state.error = action.error as ErrorType;
         }
       })
+      .addCase(eventDetailGetJoinRaveAction.pending, (state) => {
+        state.eventDetailLoading = true;
+      })
+      .addCase(eventDetailGetJoinRaveAction.fulfilled, (state, action: any) => {
+        state.eventDetailLoading = false;
+        state.getJoinRaveData = action.payload;
+      })
+      .addCase(eventDetailGetJoinRaveAction.rejected, (state, action) => {
+        state.eventDetailLoading = false;
+        if (action.payload) {
+          state.eventDetailError = action.payload as ErrorType;
+        } else {
+          state.eventDetailError = action.error as ErrorType;
+        }
+      })
       .addCase(getEventMarketAction.pending, (state) => {
         state.eventMarket = [];
       })
@@ -419,6 +548,20 @@ export const eventSlice = createSlice({
         state.eventMarket = action.payload;
       })
       .addCase(getEventMarketAction.rejected, (state, action) => {
+        if (action.payload) {
+          state.eventDetailError = action.payload as ErrorType;
+        } else {
+          state.eventDetailError = action.error as ErrorType;
+        }
+      })
+      .addCase(joinRaveAction.pending, (state) => {
+        state.joinRaveLoading = true;
+      })
+      .addCase(joinRaveAction.fulfilled, (state) => {
+        state.joinRaveLoading = false;
+      })
+      .addCase(joinRaveAction.rejected, (state, action) => {
+        state.joinRaveLoading = false;
         if (action.payload) {
           state.eventDetailError = action.payload as ErrorType;
         } else {
@@ -454,5 +597,9 @@ export const selectEventListBanner = (state: RootState) =>
 export const selectEventMarket = (state: RootState) => state.event.eventMarket;
 export const selectTabActiveKey = (state: RootState) =>
   state.event.tabActiveKey;
+export const selectGetJoinRaveData = (state: RootState) =>
+  state.event.getJoinRaveData;
+export const selectJoinRaveLoading = (state: RootState) =>
+  state.event.joinRaveLoading;
 
 export default eventSlice.reducer;

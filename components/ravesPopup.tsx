@@ -18,6 +18,9 @@ const RavesPopUp = ({
     closable={false}
     centered
     width={540}
+    getContainer={false}
+    keyboard={false}
+    maskClosable={false}
   >
     <div className="content">
       <div className="container">{children}</div>
