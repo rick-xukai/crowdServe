@@ -103,6 +103,9 @@ const API = {
   eventDetailGetJoinRave: {
     get: '/api/v1/rave/{eventId}',
   },
+  joinRave: {
+    post: '/api/v1/rave/{eventId}',
+  },
 };
 
 export default API;

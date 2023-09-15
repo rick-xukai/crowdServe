@@ -323,6 +323,34 @@ export const eventDetailGetJoinRaveAction = createAsyncThunk<
   }
 );
 
+/**
+ * Join rave
+ */
+export const joinRaveAction = createAsyncThunk<
+  { code: number; message: string },
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>('joinRave/joinRaveAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await EventService.joinRave(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
 interface EventState {
   loading: boolean;
   eventDetailLoading: boolean;
@@ -332,6 +360,7 @@ interface EventState {
   eventListBanner: EventListBanner[];
   eventMarket: EventMarketResponseType[];
   getJoinRaveData: GetRaveResponseProps;
+  joinRaveLoading: boolean;
   eventDetailError:
     | {
         code: number | undefined;
@@ -356,23 +385,24 @@ const initialState: EventState = {
   eventListBanner: [],
   error: null,
   eventDetailError: null,
+  joinRaveLoading: false,
   eventDetailData: {
-    id: "",
-    name: "",
-    organizerName: "",
-    image: "",
-    location: "",
-    startTime: "",
-    endTime: "",
-    description: "",
+    id: '',
+    name: '',
+    organizerName: '',
+    image: '',
+    location: '',
+    startTime: '',
+    endTime: '',
+    description: '',
     status: 0,
-    crowdfundLink: "",
-    slug: "",
-    address: "",
-    locationCoord: "",
+    crowdfundLink: '',
+    slug: '',
+    address: '',
+    locationCoord: '',
     descriptionImages: [],
     refundPolicy: 0,
-    descriptionShort: "",
+    descriptionShort: '',
   },
   getJoinRaveData: {
     name: '',
@@ -396,28 +426,28 @@ const initialState: EventState = {
 };
 
 export const eventSlice = createSlice({
-  name: "event",
+  name: 'event',
   initialState,
   reducers: {
     reset: () => initialState,
     resetEventDatail: (state) => {
       state.eventDetailData = {
-        id: "",
-        name: "",
-        organizerName: "",
-        image: "",
-        location: "",
-        startTime: "",
-        endTime: "",
-        description: "",
+        id: '',
+        name: '',
+        organizerName: '',
+        image: '',
+        location: '',
+        startTime: '',
+        endTime: '',
+        description: '',
         status: 0,
-        crowdfundLink: "",
-        slug: "",
-        address: "",
-        locationCoord: "",
+        crowdfundLink: '',
+        slug: '',
+        address: '',
+        locationCoord: '',
         descriptionImages: [],
         refundPolicy: 0,
-        descriptionShort: "",
+        descriptionShort: '',
       };
     },
     resetError: (state) => {
@@ -523,6 +553,20 @@ export const eventSlice = createSlice({
         } else {
           state.eventDetailError = action.error as ErrorType;
         }
+      })
+      .addCase(joinRaveAction.pending, (state) => {
+        state.joinRaveLoading = true;
+      })
+      .addCase(joinRaveAction.fulfilled, (state) => {
+        state.joinRaveLoading = false;
+      })
+      .addCase(joinRaveAction.rejected, (state, action) => {
+        state.joinRaveLoading = false;
+        if (action.payload) {
+          state.eventDetailError = action.payload as ErrorType;
+        } else {
+          state.eventDetailError = action.error as ErrorType;
+        }
       });
   },
 });
@@ -551,8 +595,11 @@ export const selectEventDetailError = (state: RootState) =>
 export const selectEventListBanner = (state: RootState) =>
   state.event.eventListBanner;
 export const selectEventMarket = (state: RootState) => state.event.eventMarket;
-export const selectTabActiveKey = (state: RootState) => state.event.tabActiveKey;
+export const selectTabActiveKey = (state: RootState) =>
+  state.event.tabActiveKey;
 export const selectGetJoinRaveData = (state: RootState) =>
   state.event.getJoinRaveData;
+export const selectJoinRaveLoading = (state: RootState) =>
+  state.event.joinRaveLoading;
 
 export default eventSlice.reducer;

@@ -72,6 +72,8 @@ import {
   selectGetJoinRaveData,
   setTabActiveKey,
   selectTabActiveKey,
+  joinRaveAction,
+  selectJoinRaveLoading,
 } from '../../slice/event.slice';
 import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
@@ -135,6 +137,7 @@ const EventDetail = ({
   const eventDetailData = useAppSelector(selectEventDetailData);
   const eventMarket = useAppSelector(selectEventMarket);
   const joinRaveData = useAppSelector(selectGetJoinRaveData);
+  const joinRaveLoading = useAppSelector(selectJoinRaveLoading);
 
   const [id, setEventId] = useState<string>('');
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
@@ -155,6 +158,7 @@ const EventDetail = ({
   const [showHaveJoinedRaveModal, setShowHaveJoinedRaveModal] =
     useState<boolean>(false);
   const [joinRaveNotLogin, setJoinRaveNotLogin] = useState<boolean>(false);
+  const [raveRandomUsers, setRaveRandomUsers] = useState<string[]>([]);
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
@@ -249,7 +253,7 @@ const EventDetail = ({
 
   const logPageViewTrack = () => {
     const pageViewTrackPayload = {
-      userId: 0,
+      userId: cookies.getCookie(CookieKeys.userLoginId) || 0,
       session: localStorage.getItem(LocalStorageKeys.pageViewTrackKeys) || '',
       pageType: DefaultPageType,
       platform: DefaultPlatform,
@@ -280,11 +284,26 @@ const EventDetail = ({
       joinRavePopupItems = JSON.parse(
         localStorage.getItem(LocalStorageKeys.joinRavePopupKey) as string
       );
-      joinRavePopupItems.push({
-        event: id,
-        time: new Date().getTime(),
-        joined: false,
-      });
+      if (
+        !joinRavePopupItems.find(
+          (item: CloseRavesPopUpProps) => item.event === id
+        )
+      ) {
+        joinRavePopupItems.push({
+          event: id,
+          time: new Date().getTime(),
+          joined: false,
+        });
+      } else {
+        joinRavePopupItems = joinRavePopupItems.map(
+          (item: CloseRavesPopUpProps) => {
+            if (item.event == id) {
+              return { ...item, joined: joined };
+            }
+            return item;
+          }
+        );
+      }
       localStorage.setItem(
         LocalStorageKeys.joinRavePopupKey,
         JSON.stringify(joinRavePopupItems)
@@ -299,23 +318,24 @@ const EventDetail = ({
     }
   };
 
-  const handleJoinRave = (needLocalStorage: boolean) => {
+  const handleJoinRave = async (needLocalStorage: boolean) => {
     if (needLocalStorage) {
       localStorageJoinRavePopup(true);
     }
     if (cookies.getCookie(CookieKeys.userLoginToken)) {
-      if (itemTabs.current) {
-        eventDetailContainer.current.scrollTop =
-          itemTabs.current.offsetTop + 500 || 0;
+      const response = await dispatch(joinRaveAction(id));
+      if (response.type !== joinRaveAction.fulfilled.toString()) {
         setShowJoinRaveModal(false);
-        setTimeout(() => {
-          setShowHaveJoinedRaveModal(true);
-        }, 300);
+        if (itemTabs.current) {
+          eventDetailContainer.current.scrollTop =
+            itemTabs.current.offsetTop + 500 || 0;
+        }
+        setShowHaveJoinedRaveModal(true);
       }
     } else {
       router.push({
         pathname: RouterKeys.login,
-        query: `redirect=${window.location.pathname}-previous=rave`,
+        query: `redirect=${router.asPath}-previous=rave`,
       });
     }
   };
@@ -436,6 +456,7 @@ const EventDetail = ({
   }, [id]);
 
   useEffect(() => {
+    setRaveRandomUsers(generateRandomLetters(6));
     if (!localStorage.getItem(LocalStorageKeys.pageViewTrackKeys)) {
       localStorage.setItem(
         LocalStorageKeys.pageViewTrackKeys,
@@ -981,7 +1002,7 @@ const EventDetail = ({
                   </Col>
                   <Col className="content-users">
                     <Avatar.Group>
-                      {generateRandomLetters(6).map((item) => (
+                      {raveRandomUsers.map((item: string) => (
                         <Avatar key={item}>{item}</Avatar>
                       ))}
                     </Avatar.Group>
@@ -990,7 +1011,11 @@ const EventDetail = ({
                     </div>
                   </Col>
                   <Col className="content-button">
-                    <Button onClick={() => handleJoinRave(true)}>
+                    <Button
+                      disabled={joinRaveLoading}
+                      onClick={() => handleJoinRave(true)}
+                    >
+                      {joinRaveLoading && <LoadingOutlined />}
                       Join Rave
                     </Button>
                   </Col>

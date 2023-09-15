@@ -577,6 +577,10 @@ const JoinRaveModalContent = styled.div`
       font-weight: 700;
       line-height: 21px;
       text-transform: uppercase;
+      .anticon {
+        font-size: 18px;
+        margin-right: 10px;
+      }
     }
   }
   .content-checkbox {

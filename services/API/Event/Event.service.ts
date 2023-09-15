@@ -66,6 +66,15 @@ const eventDetailGetJoinRave = async (payload: string) => {
   return response;
 };
 
+const joinRave = async (payload: string) => {
+  const uri = API.joinRave.post.replace('{eventId}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
+
 export default {
   getEventList,
   getEventTicketType,
@@ -73,4 +82,5 @@ export default {
   getEventListBanner,
   getEventMarket,
   eventDetailGetJoinRave,
+  joinRave,
 };
