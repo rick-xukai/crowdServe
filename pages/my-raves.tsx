@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Col, Carousel, Row, Grid } from "antd";
+import { Col, Carousel, Row, Grid, message } from "antd";
 
 import { useRouter } from "next/router";
+import _ from "lodash";
 import AuthHoc from "../components/hoc/AuthHoc";
 
 import {
@@ -18,9 +19,31 @@ import PageHearderResponsive from "@/components/pageHearderResponsive";
 import PageHearderComponent from "@/components/pageHearder";
 import PageBottomComponent from "@/components/pageBottomComponent";
 import { Images } from "@/theme";
-import { useAppDispatch } from "@/app/hooks";
-import { setTabActiveKey } from "@/slice/event.slice";
-import { Rave } from "@/constants/General";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { RaveStatus, setTabActiveKey } from "@/slice/event.slice";
+import {
+  DefaultPageSize,
+  ListPageScrollDifference,
+  Rave,
+} from "@/constants/General";
+import {
+  getMyRavesAction,
+  setDataForAll,
+  setCurrentPage,
+  setIsDisableRequest,
+  setIsGetAllData,
+  setScrollValue,
+  selectDataForAll,
+  selectCurrentPage,
+  selectIsDisableRequest,
+  selectIsGetAllData,
+  selectScrollValue,
+  resetError,
+  resetListData,
+  selectError,
+  selectmyRavesLoading,
+  selectmyRavesData,
+} from "@/slice/myRaves.slice";
 
 const imgList = [
   "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687145233259-r06z.jpeg",
@@ -29,60 +52,136 @@ const imgList = [
   "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690860909864-gWxk.jpg",
 ];
 
-const data: {
-  title: string;
-  status: "ongoing" | "end";
-  desc: string;
-  num: number;
-  id: number;
-}[] = [
-  {
-    title: "Rave1",
-    status: "ongoing",
-    desc: `Earn 50 flames and enjoy a complimentary drink at Time to
-                      enjoy - 2023 event, courtesy of CrowdServe! (Who wouldn't
-                      love a free drink?!)`,
-    num: 2,
-    id: 1,
-  },
-  {
-    title: "Rave2",
-    status: "end",
-    desc: `Earn 50 flames and enjoy a complimentary drink at Time to
-                      enjoy - 2023 event, courtesy of CrowdServe! (Who wouldn't
-                      love a free drink?!)`,
-    num: 1,
-    id: 2,
-  },
-];
-
 const { useBreakpoint } = Grid;
-const MyCollectibles = () => {
+
+const matchStatus: any = {
+  [RaveStatus.inProgress]: "ongoing",
+  [RaveStatus.end]: "end",
+};
+
+const MyRaves = () => {
   const [menuState, setMenuState] = useState<boolean>(false);
-  const loading = false;
+  const loading = useAppSelector(selectmyRavesLoading);
   const { lg } = useBreakpoint();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const currentPage = useAppSelector(selectCurrentPage);
+  const isDisableRequest = useAppSelector(selectIsDisableRequest);
+  const isGetAllData = useAppSelector(selectIsGetAllData);
+  const listScrollValue = useAppSelector(selectScrollValue);
+  const dataForAll = useAppSelector(selectDataForAll);
+  const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
+  const listRef = useRef<any>(null);
+  const error = useAppSelector(selectError);
+  const [messageApi, contextHolder] = message.useMessage();
+  const data = useAppSelector(selectmyRavesData);
 
+  const handleScroll = (event: any) => {
+    const { clientHeight, scrollHeight, scrollTop } = event.target;
+    dispatch(setScrollValue(scrollTop));
+    if (scrollTop + clientHeight + ListPageScrollDifference > scrollHeight) {
+      dispatch(setIsDisableRequest(false));
+    }
+    setIsPageBottom(
+      scrollTop + clientHeight + ListPageScrollDifference > scrollHeight
+    );
+  };
+  const scrollListener = useCallback((e: any) => {
+    handleScroll(e);
+  }, []);
+  useEffect(() => {
+    if (isDisableRequest || isGetAllData) {
+      return;
+    }
+    dispatch(getMyRavesAction({ page: currentPage })).then((response: any) => {
+      if (response.type === getMyRavesAction.fulfilled.toString()) {
+        if (
+          !response.payload.length ||
+          response.payload.length < DefaultPageSize
+        ) {
+          dispatch(setIsGetAllData(true));
+          dispatch(setIsDisableRequest(true));
+          if (listRef && listRef.current) {
+            listRef.current.removeEventListener("scroll", scrollListener, true);
+          }
+        }
+      }
+    });
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (listRef && listRef.current) {
+      setTimeout(() => {
+        listRef.current.scrollTop = listScrollValue;
+      });
+    }
+  }, [dataForAll]);
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setDataForAll(_.uniqWith([...dataForAll, ...data], _.isEqual)));
+    }
+  }, [data]);
+  useEffect(() => {
+    if (isPageBottom && !loading) {
+      dispatch(setCurrentPage(currentPage + 1));
+    }
+  }, [isPageBottom]);
   const goToRaveDetail = () => {
     dispatch(setTabActiveKey(Rave));
     router.push("/events/test-shopify-shipping-cllyn2nel0012qf2l9d2hrw9b");
   };
+
+  const saveScrollValue = () => {
+    dispatch(setScrollValue(listRef.current.scrollTop));
+  };
+
+  useEffect(() => {
+    if (listRef && listRef.current) {
+      setTimeout(() => {
+        listRef.current.scrollTop = listScrollValue;
+      });
+    }
+  }, [dataForAll]);
+
+  useEffect(() => {
+    setIsFirstRender(false);
+    if (!isGetAllData && listRef && listRef.current) {
+      listRef.current.addEventListener("scroll", scrollListener, true);
+    }
+    return () => {
+      dispatch(resetListData());
+      dispatch(resetError());
+      if (listRef && listRef.current) {
+        listRef.current.removeEventListener("scroll", scrollListener, true);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isFirstRender && error) {
+      messageApi.open({
+        content: error.message,
+        className: "error-message-event",
+      });
+    }
+  }, [error]);
   return (
     <>
       {(loading && (
-        <div className="page-loading">
+        <div className="page-loading" ref={listRef}>
           <LoadingOutlined />
         </div>
       )) || (
         <PageContainer>
           <div className="container-wrap">
             <Col md={24} xs={0}>
-              <PageHearderResponsive />
+              <PageHearderResponsive saveScrollValue={saveScrollValue} />
             </Col>
             <Col md={0} xs={24}>
               <PageHearderComponent
-                // saveScrollValue={saveScrollValue}
+                saveScrollValue={saveScrollValue}
                 setMenuState={setMenuState}
               />
             </Col>
@@ -97,18 +196,27 @@ const MyCollectibles = () => {
               </Carousel>
               <BlankBlock size={lg ? 32 : 20} />
               <PageTitle>My Raves</PageTitle>
-              <Row gutter={[16, 16]}>
+              <Row gutter={[16, 16]} ref={listRef}>
                 {data.map((item) => (
-                  <Col span={24} md={12} key={item.id}>
-                    <RaveItem status={item.status} onClick={goToRaveDetail}>
+                  <Col span={24} md={12} key={item.name}>
+                    <RaveItem
+                      status={matchStatus[item.status]}
+                      onClick={goToRaveDetail}
+                    >
                       <div className="head">
-                        <span className="title">{item.title}</span>
-                        <span className="badge">{item.status}</span>
+                        <span className="title">{item.name}</span>
+                        <span className="badge">
+                          {matchStatus[item.status]}
+                        </span>
                       </div>
-                      <p className="description">{item.desc}</p>
+                      <p className="description">{item.description}</p>
                       <div className="flame">
-                        <FireIcon src={Images.FireGifIcon.src} />
-                        {item.num}
+                        {item.status === RaveStatus.inProgress ? (
+                          <FireIcon src={Images.FireGifIcon.src} />
+                        ) : (
+                          <FireIcon src={Images.FireDisabledIcon.src} />
+                        )}
+                        {/* {item.num} */}1
                       </div>
                     </RaveItem>
                   </Col>
@@ -117,10 +225,11 @@ const MyCollectibles = () => {
             </Col>
             {!menuState && <PageBottomComponent />}
           </div>
+          {contextHolder}
         </PageContainer>
       )}
     </>
   );
 };
 
-export default AuthHoc(MyCollectibles);
+export default AuthHoc(MyRaves);

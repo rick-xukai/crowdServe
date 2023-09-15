@@ -45,6 +45,7 @@ import { LoginContainer } from '@/styles/login-style';
 import { RouterKeys, CookieKeys } from '@/constants/Keys';
 import Messages from '@/constants/Messages';
 import AuthPageHearder from '@/components/authPageHearder';
+import { resetMyRavesCache } from '@/slice/myRaves.slice';
 
 const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
   const cookies = useCookie([
@@ -134,6 +135,7 @@ const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
     dispatch(resetCollectionDetailCache());
     dispatch(resetCrowdFundCache());
     dispatch(setEventDataForSearch([]));
+    dispatch(resetMyRavesCache());
   };
 
   useEffect(() => {
