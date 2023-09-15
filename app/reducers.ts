@@ -15,23 +15,26 @@ import collectibleSliceReducer from '../slice/collectible.slice';
 import qrCodeDataSliceReducer from '../slice/getQRCode.slice';
 import collectionDetailCacheReducer from '../slice/collectionDetailCache.slice';
 import pageTrackReducer from '../slice/pageTrack.slice';
+import myRavesReducer from "../slice/myRaves.slice";
 
-const createRootReducer = () => combineReducers({
-  user: userReducer,
-  tickets: ticketsReducer,
-  ticketsCache: ticketsCacheSliceReducer,
-  event: eventSliceReducer,
-  eventCache: eventCacheSliceReducer,
-  crowdFund: crowdFundSliceReducer,
-  crowdFundCache: crowdFundCacheSliceReducer,
-  myTickets: myTicketsSliceReducer,
-  myTicketsCache: myTicketsCacheSliceReducer,
-  myCollectibles: myCollectiblesSliceReducer,
-  myCollectiblesCache: myCollectiblesCacheSliceReducer,
-  collectible: collectibleSliceReducer,
-  qrCodeData: qrCodeDataSliceReducer,
-  collectionDetailCache: collectionDetailCacheReducer,
-  pageTrack: pageTrackReducer,
-});
+const createRootReducer = () =>
+  combineReducers({
+    user: userReducer,
+    tickets: ticketsReducer,
+    ticketsCache: ticketsCacheSliceReducer,
+    event: eventSliceReducer,
+    eventCache: eventCacheSliceReducer,
+    crowdFund: crowdFundSliceReducer,
+    crowdFundCache: crowdFundCacheSliceReducer,
+    myTickets: myTicketsSliceReducer,
+    myTicketsCache: myTicketsCacheSliceReducer,
+    myCollectibles: myCollectiblesSliceReducer,
+    myCollectiblesCache: myCollectiblesCacheSliceReducer,
+    collectible: collectibleSliceReducer,
+    qrCodeData: qrCodeDataSliceReducer,
+    collectionDetailCache: collectionDetailCacheReducer,
+    pageTrack: pageTrackReducer,
+    myRaves: myRavesReducer,
+  });
 
 export default createRootReducer;

@@ -97,6 +97,7 @@ import DownloadIcon from "../static/images/download.png";
 import CopyBigIcon from "../static/images/copy-big.png";
 import CopyIcon from "../static/images/copy.png";
 import CopySuccessIcon from "../static/images/copy-success.png";
+import FireDisabledIcon from "../static/images/fire-disabled.png";
 
 const Images = {
   Safety,
@@ -198,6 +199,7 @@ const Images = {
   CopyBigIcon,
   CopyIcon,
   CopySuccessIcon,
+  FireDisabledIcon,
 };
 
 export default Images;

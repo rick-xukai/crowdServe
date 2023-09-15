@@ -40,6 +40,7 @@ import { resetMyTicketsCache } from '../slice/myTicketsCache.slice';
 import { resetMyCollectiblesCache } from '../slice/myCollectiblesCache.slice';
 import { resetCollectionDetailCache } from '../slice/collectionDetailCache.slice';
 import AuthPageHearder from '@/components/authPageHearder';
+import { resetMyRavesCache } from '@/slice/myRaves.slice';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 
 const Login = ({
@@ -112,6 +113,7 @@ const Login = ({
     dispatch(resetCollectionDetailCache());
     dispatch(resetCrowdFundCache());
     dispatch(setEventDataForSearch([]));
+    dispatch(resetMyRavesCache());
   };
 
   useEffect(() => {
@@ -204,7 +206,7 @@ const Login = ({
                 <Form.Item name="email">
                   <Input
                     className={`${
-                      (loginFormValue.email && 'border-white') || ''
+                      (loginFormValue.email && "border-white") || ""
                     }`}
                     placeholder="Email"
                     bordered={false}
@@ -212,7 +214,7 @@ const Login = ({
                       setLoginFormValue({
                         ...loginFormValue,
                         email:
-                          (isEmail(e.target.value) && e.target.value) || '',
+                          (isEmail(e.target.value) && e.target.value) || "",
                       })
                     }
                   />
@@ -222,7 +224,7 @@ const Login = ({
                 <div>
                   <Input.Password
                     className={`${
-                      (loginFormValue.password && 'border-white') || ''
+                      (loginFormValue.password && "border-white") || ""
                     }`}
                     placeholder="Password"
                     bordered={false}
@@ -276,10 +278,10 @@ const Login = ({
           </div>
           <div
             className={
-              (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
+              (isOpenAppShow && "page-bottom open-app") || "page-bottom"
             }
           >
-            <p className="registered">Don't have an account?</p>
+            <p className="registered">{`Don't have an account?`}</p>
             <p
               className="activate"
               onClick={() => router.push(RouterKeys.createAccount)}
