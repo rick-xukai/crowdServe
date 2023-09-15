@@ -92,12 +92,12 @@ import firebaseApp from '../../firebase';
 import EventService from '../../services/API/Event/Event.service';
 import { RouterKeys } from '../../constants/Keys';
 import PageNotFound from '../404';
+import RavesDetail from '../raves-detail';
 import { useCookie } from '@/hooks';
 import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
 import { EventDetailCard } from '@/styles/myTicketsEventDetail.style';
 import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
 import { logPageViewAction } from '@/slice/pageTrack.slice';
-import Raves from '@/components/raves';
 import RavesPopUp from '@/components/ravesPopup';
 
 interface CloseRavesPopUpProps {
@@ -921,7 +921,7 @@ const EventDetail = ({
                           )}
                         </>
                       )}
-                      {tabActiveKey === Rave && <Raves />}
+                      {tabActiveKey === Rave && <RavesDetail />}
                     </div>
                   </div>
                 </div>
