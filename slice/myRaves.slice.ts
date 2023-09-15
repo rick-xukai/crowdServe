@@ -22,7 +22,7 @@ export interface MyRavesItemType {
  */
 export const getMyRavesAction = createAsyncThunk<
   MyRavesItemType[],
-  {page: number},
+  { page: number },
   {
     rejectValue: ErrorType;
   }
@@ -135,22 +135,6 @@ export const myRavesSlice = createSlice({
       })
       .addCase(getMyRavesAction.rejected, (state, action) => {
         state.myRavesLoading = false;
-        state.myRaves = [
-          {
-            name: "Rave1",
-            status: RaveStatus.inProgress,
-            description: `Earn 50 flames and enjoy a complimentary drink at Time to enjoy - 2023 event, courtesy of CrowdServe! (Who wouldn't love a free drink?!)`,
-            // num: 2,
-            // id: 1,
-          },
-          {
-            name: "Rave2",
-            status: RaveStatus.end,
-            description: `Earn 50 flames and enjoy a complimentary drink at Time to enjoy - 2023 event, courtesy of CrowdServe! (Who wouldn't love a free drink?!)`,
-            // num: 1,
-            // id: 2,
-          },
-        ];
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {

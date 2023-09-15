@@ -100,6 +100,7 @@ import CopySuccessIcon from '../static/images/copy-success.png';
 import FreeIcon from '../static/images/free-icon.svg';
 import MascotsIcon from '../static/images/mascots-icon.svg';
 import FireDisabledIcon from "../static/images/fire-disabled.png";
+import MyRavesEmptyIcon from "../static/images/my-raves-empty.png";
 
 const Images = {
   Safety,
@@ -204,6 +205,7 @@ const Images = {
   FireDisabledIcon,
   FreeIcon,
   MascotsIcon,
+  MyRavesEmptyIcon,
 };
 
 export default Images;

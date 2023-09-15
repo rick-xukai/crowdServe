@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import { Colors } from "@/theme";
+import { Colors } from '@/theme';
 
 export const PageContainer = styled.div`
   height: 100%;
@@ -45,7 +45,7 @@ export const PageTitle = styled.h4`
   font-weight: 700;
   font-size: 28px;
   color: ${Colors.white};
-  font-family: "Oswald";
+  font-family: 'Oswald';
   text-transform: uppercase;
   margin-top: 0;
   margin-bottom: 16px;
@@ -66,7 +66,7 @@ export const BlankBlock = styled.div<{ size: number }>`
   height: ${(props) => props.size}px;
 `;
 
-export const RaveItem = styled.div<{ status: "ongoing" | "end" }>`
+export const RaveItem = styled.div<{ status: 'ongoing' | 'end' }>`
   background: ${Colors.grayScale70};
   padding: 20px;
   border-radius: 4px;
@@ -93,9 +93,9 @@ export const RaveItem = styled.div<{ status: "ongoing" | "end" }>`
       padding: 2px 6px;
       border-radius: 4px;
       color: ${(props) =>
-        props.status === "ongoing" ? Colors.white : Colors.grayScale50};
+        props.status === 'ongoing' ? Colors.white : Colors.grayScale50};
       background: ${(props) =>
-        props.status === "ongoing" ? Colors.branding : Colors.grayScale40};
+        props.status === 'ongoing' ? Colors.branding : Colors.grayScale40};
       text-transform: uppercase;
     }
   }
@@ -136,4 +136,27 @@ export const FireIcon = styled.img`
   position: relative;
   top: -2px;
   left: -2px;
+`;
+
+export const Empty = styled.div`
+  margin: auto;
+  img {
+    width: 120px;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+  }
+  p {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 21px;
+    margin-top: 15px;
+    text-align: center;
+    a {
+      color: ${Colors.branding};
+      :hover {
+        text-decoration: underline;
+      }
+    }
+  }
 `;
