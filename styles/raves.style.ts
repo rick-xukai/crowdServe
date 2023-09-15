@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Button , Modal } from "antd";
-import { Colors } from "@/theme";
+import styled from 'styled-components';
+import { Button, Modal } from 'antd';
+import { Colors } from '@/theme';
 
 export const TipBarWrapper = styled.div`
   padding: 8px;
@@ -184,13 +184,22 @@ export const RaveItem = styled.div`
   padding: 16px;
   background: ${Colors.black};
   border-radius: 6px;
-
+  @media (min-width: 768px) {
+    min-height: 157px;
+  }
   .head {
     display: flex;
     justify-content: space-between;
     font-size: 18px;
     font-weight: 700;
     line-height: 25px;
+    img {
+      width: 15px;
+      margin-left: 7px;
+      position: relative;
+      top: 2px;
+      cursor: pointer;
+    }
     .badge {
       font-size: 18px;
       font-weight: 700;
@@ -205,13 +214,12 @@ export const RaveItem = styled.div`
     font-size: 15px;
     font-weight: 400;
     line-height: 21px;
-    @media (min-width: 768px) {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
   }
   .flame {
+    @media (min-width: 768px) {
+      position: absolute;
+      bottom: 16px;
+    }
     display: inline-flex;
     padding: 4px 10px;
     align-items: center;
@@ -359,7 +367,7 @@ export const YouMayNeed = styled.div`
   }
   ::after,
   ::before {
-    content: " ";
+    content: ' ';
     width: 100%;
     height: 1px;
     background: ${Colors.grayScale40};
@@ -370,9 +378,9 @@ export const PostImage = styled.div`
   padding: 16px 20px;
   background: rgba(255, 255, 255, 0.3);
   margin-bottom: 12px;
-  .download{
+  .download {
     cursor: pointer;
-  } 
+  }
   .title {
     font-size: 15px;
     font-weight: 500;
@@ -414,6 +422,41 @@ export const PostContent = styled.div`
     .icon {
       flex-shrink: 0;
       cursor: pointer;
+    }
+  }
+`;
+
+export const Ended = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.36) 100%
+  );
+  backdrop-filter: blur(4px);
+  z-index: 2;
+  border-radius: 4px;
+  .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    img {
+      width: 100px;
+      display: block;
+      margin: auto;
+      margin-bottom: 16px;
+    }
+    p {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 25px;
     }
   }
 `;

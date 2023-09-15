@@ -1,31 +1,32 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Col, Carousel, Row, Grid, message } from "antd";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Col, Carousel, Row, Grid, message } from 'antd';
 
-import { useRouter } from "next/router";
-import _ from "lodash";
-import AuthHoc from "../components/hoc/AuthHoc";
+import { useRouter } from 'next/router';
+import _, { isEmpty } from 'lodash';
+import AuthHoc from '../components/hoc/AuthHoc';
 
 import {
   BlankBlock,
   CarouselItem,
   CarouselItemImg,
+  Empty,
   FireIcon,
   PageContainer,
   PageTitle,
   RaveItem,
-} from "@/styles/myRaves.style";
-import PageHearderResponsive from "@/components/pageHearderResponsive";
-import PageHearderComponent from "@/components/pageHearder";
-import PageBottomComponent from "@/components/pageBottomComponent";
-import { Images } from "@/theme";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { RaveStatus, setTabActiveKey } from "@/slice/event.slice";
+} from '@/styles/myRaves.style';
+import PageHearderResponsive from '@/components/pageHearderResponsive';
+import PageHearderComponent from '@/components/pageHearder';
+import PageBottomComponent from '@/components/pageBottomComponent';
+import { Images } from '@/theme';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { RaveStatus, setTabActiveKey } from '@/slice/event.slice';
 import {
   DefaultPageSize,
   ListPageScrollDifference,
   Rave,
-} from "@/constants/General";
+} from '@/constants/General';
 import {
   getMyRavesAction,
   setDataForAll,
@@ -43,20 +44,21 @@ import {
   selectError,
   selectmyRavesLoading,
   selectmyRavesData,
-} from "@/slice/myRaves.slice";
+} from '@/slice/myRaves.slice';
+import { RouterKeys } from '@/constants/Keys';
 
 const imgList = [
-  "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687145233259-r06z.jpeg",
-  "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1693277132950-YxY5.png",
-  "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687167250641-TNUA.jpeg",
-  "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690860909864-gWxk.jpg",
+  'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687145233259-r06z.jpeg',
+  'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1693277132950-YxY5.png',
+  'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687167250641-TNUA.jpeg',
+  'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690860909864-gWxk.jpg',
 ];
 
 const { useBreakpoint } = Grid;
 
 const matchStatus: any = {
-  [RaveStatus.inProgress]: "ongoing",
-  [RaveStatus.end]: "end",
+  [RaveStatus.inProgress]: 'ongoing',
+  [RaveStatus.end]: 'end',
 };
 
 const MyRaves = () => {
@@ -103,7 +105,7 @@ const MyRaves = () => {
           dispatch(setIsGetAllData(true));
           dispatch(setIsDisableRequest(true));
           if (listRef && listRef.current) {
-            listRef.current.removeEventListener("scroll", scrollListener, true);
+            listRef.current.removeEventListener('scroll', scrollListener, true);
           }
         }
       }
@@ -130,7 +132,7 @@ const MyRaves = () => {
   }, [isPageBottom]);
   const goToRaveDetail = () => {
     dispatch(setTabActiveKey(Rave));
-    router.push("/events/test-shopify-shipping-cllyn2nel0012qf2l9d2hrw9b");
+    router.push('/events/test-shopify-shipping-cllyn2nel0012qf2l9d2hrw9b');
   };
 
   const saveScrollValue = () => {
@@ -148,13 +150,13 @@ const MyRaves = () => {
   useEffect(() => {
     setIsFirstRender(false);
     if (!isGetAllData && listRef && listRef.current) {
-      listRef.current.addEventListener("scroll", scrollListener, true);
+      listRef.current.addEventListener('scroll', scrollListener, true);
     }
     return () => {
       dispatch(resetListData());
       dispatch(resetError());
       if (listRef && listRef.current) {
-        listRef.current.removeEventListener("scroll", scrollListener, true);
+        listRef.current.removeEventListener('scroll', scrollListener, true);
       }
     };
   }, []);
@@ -163,19 +165,19 @@ const MyRaves = () => {
     if (!isFirstRender && error) {
       messageApi.open({
         content: error.message,
-        className: "error-message-event",
+        className: 'error-message-event',
       });
     }
   }, [error]);
   return (
     <>
       {(loading && (
-        <div className="page-loading" ref={listRef}>
+        <div className='page-loading' ref={listRef}>
           <LoadingOutlined />
         </div>
       )) || (
         <PageContainer>
-          <div className="container-wrap">
+          <div className='container-wrap'>
             <Col md={24} xs={0}>
               <PageHearderResponsive saveScrollValue={saveScrollValue} />
             </Col>
@@ -185,42 +187,53 @@ const MyRaves = () => {
                 setMenuState={setMenuState}
               />
             </Col>
-            <Col className="page-main">
+            <Col className='page-main'>
               <PageTitle>Upcoming Raves</PageTitle>
               <Carousel autoplay>
                 {imgList.map((item) => (
                   <CarouselItem key={item}>
-                    <CarouselItemImg src={item} alt="" />
+                    <CarouselItemImg src={item} alt='' />
                   </CarouselItem>
                 ))}
               </Carousel>
               <BlankBlock size={lg ? 32 : 20} />
               <PageTitle>My Raves</PageTitle>
               <Row gutter={[16, 16]} ref={listRef}>
-                {data.map((item) => (
-                  <Col span={24} md={12} key={item.name}>
-                    <RaveItem
-                      status={matchStatus[item.status]}
-                      onClick={goToRaveDetail}
-                    >
-                      <div className="head">
-                        <span className="title">{item.name}</span>
-                        <span className="badge">
-                          {matchStatus[item.status]}
-                        </span>
-                      </div>
-                      <p className="description">{item.description}</p>
-                      <div className="flame">
-                        {item.status === RaveStatus.inProgress ? (
-                          <FireIcon src={Images.FireGifIcon.src} />
-                        ) : (
-                          <FireIcon src={Images.FireDisabledIcon.src} />
-                        )}
-                        {/* {item.num} */}1
-                      </div>
-                    </RaveItem>
-                  </Col>
-                ))}
+                {isEmpty(data) ? (
+                  <Empty>
+                    <img src={Images.MyRavesEmptyIcon.src} alt='empty' />
+                    <p>
+                      {`You haven't joined any raves yet. Click `}
+                      <a onClick={() => router.push(RouterKeys.eventList)}>here</a>
+                      {` to discover more and join the fun!`}
+                    </p>
+                  </Empty>
+                ) : (
+                  data.map((item) => (
+                    <Col span={24} md={12} key={item.name}>
+                      <RaveItem
+                        status={matchStatus[item.status]}
+                        onClick={goToRaveDetail}
+                      >
+                        <div className='head'>
+                          <span className='title'>{item.name}</span>
+                          <span className='badge'>
+                            {matchStatus[item.status]}
+                          </span>
+                        </div>
+                        <p className='description'>{item.description}</p>
+                        <div className='flame'>
+                          {item.status === RaveStatus.inProgress ? (
+                            <FireIcon src={Images.FireGifIcon.src} />
+                          ) : (
+                            <FireIcon src={Images.FireDisabledIcon.src} />
+                          )}
+                          {/* {item.num} */}1
+                        </div>
+                      </RaveItem>
+                    </Col>
+                  ))
+                )}
               </Row>
             </Col>
             {!menuState && <PageBottomComponent />}

@@ -1279,3 +1279,10 @@ iframe {
     cursor: pointer;
   }
 }
+
+.custom-tooltip{
+  width: 260px;
+  .ant-tooltip-inner{
+    white-space: break-spaces;
+  }
+}
