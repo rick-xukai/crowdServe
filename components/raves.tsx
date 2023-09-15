@@ -1,9 +1,9 @@
-import { Col, Row, Grid, message } from "antd";
-import copy from "copy-to-clipboard";
+import { Col, Row, Grid, message } from 'antd';
+import copy from 'copy-to-clipboard';
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import RavesPopUp from "./ravesPopup";
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import RavesPopUp from './ravesPopup';
 import {
   Border,
   CorderBorderLeft,
@@ -30,8 +30,8 @@ import {
   TipBarIcon,
   TipBarWrapper,
   YouMayNeed,
-} from "@/styles/raves.style";
-import { Images } from "@/theme";
+} from '@/styles/raves.style';
+import { Images } from '@/theme';
 
 const { useBreakpoint } = Grid;
 
@@ -39,7 +39,7 @@ const TipBar = () => (
   <TipBarWrapper>
     <TipBarIcon src={Images.SmileIcon.src} alt="" />
     <p>
-      30 ravers have claimed the reward! Only <b>20</b> free drinks and{" "}
+      30 ravers have claimed the reward! Only <b>20</b> free drinks and{' '}
       <b>12</b> free tickets left!
     </p>
   </TipBarWrapper>
@@ -73,14 +73,14 @@ const ProgressBar = ({
             <GiftItem
               style={{
                 left: `${(item.quantity / total) * 100 - (md ? 5 : 10)}%`,
-                top: gotGifts ? -12 : "",
+                top: gotGifts ? -12 : '',
               }}
               key={item.quantity}
             >
               <GiftImg
                 src={item.img}
                 style={{
-                  width: gotGifts ? 42 : "",
+                  width: gotGifts ? 42 : '',
                 }}
               />
               {gotGifts ? null : <p>{item.quantity} Flames</p>}
@@ -139,39 +139,39 @@ const ProgressContainer = () => (
 );
 const raveData = [
   {
-    title: "Join the rave",
+    title: 'Join the rave',
     current: 2,
     total: 2,
-    description: "Collect 2 flames just by joining the rave!",
+    description: 'Collect 2 flames just by joining the rave!',
     id: 1,
     condition: 2,
     isFriend: false,
   },
   {
-    title: "Invite a friend",
+    title: 'Invite a friend',
     current: 6,
     total: 10,
     description:
-      "Earn flames when your friends join rave through your referral link.",
+      'Earn flames when your friends join rave through your referral link.',
     id: 2,
     condition: 2,
     isFriend: true,
   },
   {
-    title: "Share your link",
+    title: 'Share your link',
     current: 10,
     total: 20,
-    description: "Earn a star each time your friends open your referral link.",
+    description: 'Earn a star each time your friends open your referral link.',
     id: 3,
     condition: 3,
     isFriend: true,
   },
   {
-    title: "Buy tickets",
+    title: 'Buy tickets',
     current: 0,
     total: 25,
     description:
-      "Earn 5 flames when a ticket is purchased through your referral link!",
+      'Earn 5 flames when a ticket is purchased through your referral link!',
     id: 4,
     condition: 5,
     isFriend: true,
@@ -190,8 +190,8 @@ const RaveList = () => (
           </div>
           <p className="description">{item.description}</p>
           <div className="flame">
-            + {item.condition} <FireIcon src={Images.FireGifIcon.src} />{" "}
-            {item.isFriend ? "/ friend" : ""}
+            + {item.condition} <FireIcon src={Images.FireGifIcon.src} />{' '}
+            {item.isFriend ? '/ friend' : ''}
           </div>
         </RaveItem>
       </Col>
@@ -232,12 +232,12 @@ const MoreRaves = () => {
 };
 
 const PopUpContent = () => {
-  const postContent = "Join me in this rave and win rewards together!";
-  const link = "app.tickets.crowdserve.com/events/sopdw39f";
+  const postContent = 'Join me in this rave and win rewards together!';
+  const link = 'app.tickets.crowdserve.com/events/sopdw39f';
   const image =
-    "https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1693277132950-YxY5.png";
+    'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1693277132950-YxY5.png';
   const [copySuccess, setCopySuccess] = useState(false);
-  const [saveImageUrl, setSaveImageUrl] = useState<any>("");
+  const [saveImageUrl, setSaveImageUrl] = useState<any>('');
   const [messageApi, contextHolder] = message.useMessage();
 
   let timer: any = null;
@@ -254,11 +254,11 @@ const PopUpContent = () => {
   };
 
   const saveImage = () => {
-    setSaveImageUrl("");
+    setSaveImageUrl('');
     let request = new XMLHttpRequest();
-    request.open("get", image, true);
-    request.responseType = "blob";
-    request.setRequestHeader("Cache-Control", "no-cache");
+    request.open('get', image, true);
+    request.responseType = 'blob';
+    request.setRequestHeader('Cache-Control', 'no-cache');
     messageApi.open({
       content: (
         <div className="message-content">
@@ -274,7 +274,7 @@ const PopUpContent = () => {
           </div>
         </div>
       ),
-      className: "default-message default-message-download",
+      className: 'default-message default-message-download',
       duration: 0,
     });
     request.onload = function () {
@@ -294,7 +294,7 @@ const PopUpContent = () => {
 
   useEffect(() => {
     if (saveImageUrl) {
-      const elA = document.createElement("a");
+      const elA = document.createElement('a');
       elA.download = `post-${Date.now()}.png`;
       elA.href = saveImageUrl;
       elA.click();
@@ -393,6 +393,17 @@ const PopUpContent = () => {
 };
 const Raves = () => {
   const [open, setOpen] = useState(false);
+  const [flutterCallJsTextValue, setFlutterCallJsTextValue] =
+    useState<string>('');
+
+  const testFlutterCallJs = (value: string) => {
+    setFlutterCallJsTextValue(value);
+  };
+
+  useEffect(() => {
+    (window as any).testFlutterCallJs = testFlutterCallJs;
+  }, []);
+
   return (
     <div>
       <TipBar />
@@ -404,7 +415,7 @@ const Raves = () => {
       <SectionTitle>Quests</SectionTitle>
       <RaveList />
       <JoinButton type="primary" onClick={() => setOpen(true)}>
-        Join the Rave
+        Join the Rave{flutterCallJsTextValue}
       </JoinButton>
       <SectionTitle>More Raves Coming Soon</SectionTitle>
       <MoreRaves />
