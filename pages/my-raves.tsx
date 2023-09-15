@@ -45,6 +45,7 @@ import {
   selectmyRavesLoading,
   selectmyRavesData,
 } from '@/slice/myRaves.slice';
+import { RouterKeys } from '@/constants/Keys';
 
 const imgList = [
   'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687145233259-r06z.jpeg',
@@ -203,7 +204,7 @@ const MyRaves = () => {
                     <img src={Images.MyRavesEmptyIcon.src} alt='empty' />
                     <p>
                       {`You haven't joined any raves yet. Click `}
-                      <a>here</a>
+                      <a onClick={() => router.push(RouterKeys.eventList)}>here</a>
                       {` to discover more and join the fun!`}
                     </p>
                   </Empty>
