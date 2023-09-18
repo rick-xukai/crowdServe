@@ -68,12 +68,8 @@ import {
   selectEventMarket,
   resetEventDatail,
   resetEventDetailLoading,
-  eventDetailGetJoinRaveAction,
-  selectGetJoinRaveData,
   setTabActiveKey,
   selectTabActiveKey,
-  joinRaveAction,
-  selectJoinRaveLoading,
 } from '../../slice/event.slice';
 import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
@@ -82,7 +78,6 @@ import {
   SecondaryMarketItem,
   JoinRaveModalContent,
   JoinRaveModalBannerItem,
-  HaveJoinedRaveModalContent,
 } from '../../styles/eventDetail.style';
 import Messages from '../../constants/Messages';
 import PageHearderComponent from '../../components/pageHearder';
@@ -92,13 +87,13 @@ import firebaseApp from '../../firebase';
 import EventService from '../../services/API/Event/Event.service';
 import { RouterKeys } from '../../constants/Keys';
 import PageNotFound from '../404';
-import RavesDetail from '../raves-detail';
 import { useCookie } from '@/hooks';
 import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
 import { EventDetailCard } from '@/styles/myTicketsEventDetail.style';
 import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
 import { logPageViewAction } from '@/slice/pageTrack.slice';
 import RavesPopUp from '@/components/ravesPopup';
+import RavesDetail from '@/pages/raves-detail';
 
 interface CloseRavesPopUpProps {
   event: string;
@@ -136,8 +131,6 @@ const EventDetail = ({
   const eventTicketTypeData = useAppSelector(selectEventTicketTypeData);
   const eventDetailData = useAppSelector(selectEventDetailData);
   const eventMarket = useAppSelector(selectEventMarket);
-  const joinRaveData = useAppSelector(selectGetJoinRaveData);
-  const joinRaveLoading = useAppSelector(selectJoinRaveLoading);
 
   const [id, setEventId] = useState<string>('');
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
@@ -155,10 +148,11 @@ const EventDetail = ({
   const [showJoinRaveModal, setShowJoinRaveModal] = useState<boolean>(false);
   const [clickNotShowAnymore, setClickNotShowAnymore] =
     useState<boolean>(false);
-  const [showHaveJoinedRaveModal, setShowHaveJoinedRaveModal] =
-    useState<boolean>(false);
-  const [joinRaveNotLogin, setJoinRaveNotLogin] = useState<boolean>(false);
   const [raveRandomUsers, setRaveRandomUsers] = useState<string[]>([]);
+  const [clickJoinRave, setClickJoinRave] = useState<boolean>(false);
+  const [joinRaveSuccess, setJoinRaveSuccess] = useState<boolean>(false);
+  const [joinRaveButtonLoading, setJoinRaveButtonLoading] =
+    useState<boolean>(false);
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
@@ -323,15 +317,7 @@ const EventDetail = ({
       localStorageJoinRavePopup(true);
     }
     if (cookies.getCookie(CookieKeys.userLoginToken)) {
-      const response = await dispatch(joinRaveAction(id));
-      if (response.type !== joinRaveAction.fulfilled.toString()) {
-        setShowJoinRaveModal(false);
-        if (itemTabs.current) {
-          eventDetailContainer.current.scrollTop =
-            itemTabs.current.offsetTop + 500 || 0;
-        }
-        setShowHaveJoinedRaveModal(true);
-      }
+      setClickJoinRave(true);
     } else {
       router.push({
         pathname: RouterKeys.login,
@@ -339,6 +325,16 @@ const EventDetail = ({
       });
     }
   };
+
+  useEffect(() => {
+    if (joinRaveSuccess) {
+      setShowJoinRaveModal(false);
+      if (itemTabs.current) {
+        eventDetailContainer.current.scrollTop =
+          itemTabs.current.offsetTop + 500 || 0;
+      }
+    }
+  }, [joinRaveSuccess]);
 
   const ravesPopUpClose = () => {
     setShowJoinRaveModal(false);
@@ -353,8 +349,9 @@ const EventDetail = ({
       const parameterArr = (eventId as string).split('-');
       if (last(parameterArr)?.includes('previous=')) {
         if (parameterArr[parameterArr.length - 1] === 'previous=rave') {
+          dispatch(setTabActiveKey(Rave));
           setShowJoinRaveModal(false);
-          setJoinRaveNotLogin(true);
+          setClickJoinRave(true);
         }
         if (parameterArr[parameterArr.length - 2]) {
           setEventId(parameterArr[parameterArr.length - 2] || '');
@@ -395,9 +392,6 @@ const EventDetail = ({
   useEffect(() => {
     if (!loading) {
       logPageViewTrack();
-      if (joinRaveNotLogin) {
-        handleJoinRave(false);
-      }
       if (detailContentRef.current.clientHeight > 57) {
         setNeedShowMore(true);
       } else {
@@ -921,7 +915,14 @@ const EventDetail = ({
                           )}
                         </>
                       )}
-                      {tabActiveKey === Rave && <RavesDetail />}
+                      {tabActiveKey === Rave && (
+                        <RavesDetail
+                          clickJoinRave={clickJoinRave}
+                          setJoinRaveSuccess={setJoinRaveSuccess}
+                          setJoinRaveButtonLoading={setJoinRaveButtonLoading}
+                          eventId={id}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1012,10 +1013,10 @@ const EventDetail = ({
                   </Col>
                   <Col className="content-button">
                     <Button
-                      disabled={joinRaveLoading}
+                      disabled={joinRaveButtonLoading}
                       onClick={() => handleJoinRave(true)}
                     >
-                      {joinRaveLoading && <LoadingOutlined />}
+                      {joinRaveButtonLoading && <LoadingOutlined />}
                       Join Rave
                     </Button>
                   </Col>
@@ -1027,25 +1028,6 @@ const EventDetail = ({
                     </Checkbox>
                   </Col>
                 </JoinRaveModalContent>
-              </RavesPopUp>
-              <RavesPopUp
-                open={showHaveJoinedRaveModal}
-                onClose={() => setShowHaveJoinedRaveModal(false)}
-              >
-                <HaveJoinedRaveModalContent>
-                  <Col className="content-mascotsIcon">
-                    <img src={Images.MascotsIcon.src} alt="" />
-                  </Col>
-                  <Col className="content-title">You have joined the rave!</Col>
-                  <Col className="content-count">
-                    <span>
-                      <span>+ </span>2
-                    </span>
-                    <span>
-                      <img src={Images.FireGifIcon.src} alt="" />
-                    </span>
-                  </Col>
-                </HaveJoinedRaveModalContent>
               </RavesPopUp>
             </EventDetailContainer>
           )) || (

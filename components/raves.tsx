@@ -31,14 +31,16 @@ import {
   TipBarIcon,
   TipBarWrapper,
   YouMayNeed,
+  HaveJoinedRaveModalContent,
 } from '@/styles/raves.style';
+import { GetRaveResponseProps } from '@/slice/rave.slice';
 import { Images } from '@/theme';
 
 const { useBreakpoint } = Grid;
 
 const TipBar = () => (
   <TipBarWrapper>
-    <TipBarIcon src={Images.SmileIcon.src} alt='' />
+    <TipBarIcon src={Images.SmileIcon.src} alt="" />
     <p>
       30 ravers have claimed the reward! Only <b>20</b> free drinks and{' '}
       <b>12</b> free tickets left!
@@ -61,9 +63,9 @@ const ProgressBar = ({
   const { md } = useBreakpoint();
   return (
     <ProgressBarWrapper>
-      <div className='progress-content'>
+      <div className="progress-content">
         <div
-          className='progress'
+          className="progress"
           style={{ width: `${(current / total) * 100}%` }}
         >
           <FireIcon src={Images.FireGifIcon.src} />
@@ -109,10 +111,10 @@ const data = {
 const ProgressContainer = () => (
   <ProgressWrapper>
     <FlameTotal>
-      <div className='container'>
+      <div className="container">
         <Border src={Images.BorderImg.src} />
         <StarIcon src={Images.StarIcon.src} />
-        <div className='total'>
+        <div className="total">
           <FireIcon src={Images.FireGifIcon.src} />
           <p>{data.current}</p>
         </div>
@@ -120,7 +122,7 @@ const ProgressContainer = () => (
       </div>
     </FlameTotal>
     <FlameProgress>
-      <div className='content'>
+      <div className="content">
         <CorderBorderLeft src={Images.CornerBorderImg.src} />
         <CorderBorderRight src={Images.CornerBorderImg.src} />
         <ProgressBar
@@ -193,21 +195,21 @@ const RaveList = () => (
     {raveData.map((item) => (
       <Col span={24} key={item.id} lg={12}>
         <RaveItem>
-          <div className='head'>
-            <span className='title'>
+          <div className="head">
+            <span className="title">
               {item.title}
               {item.tooltip ? (
-                <Tooltip title={item.tooltip} overlayClassName='custom-tooltip'>
-                  <img src={Images.TooltipIcon.src} alt='' />
+                <Tooltip title={item.tooltip} overlayClassName="custom-tooltip">
+                  <img src={Images.TooltipIcon.src} alt="" />
                 </Tooltip>
               ) : null}
             </span>
-            <span className='badge'>
+            <span className="badge">
               {item.current} <span>/ {item.total}</span>
             </span>
           </div>
-          <p className='description'>{item.description}</p>
-          <div className='flame'>
+          <p className="description">{item.description}</p>
+          <div className="flame">
             + {item.condition} <FireIcon src={Images.FireGifIcon.src} />{' '}
             {item.isFriend ? '/ friend' : ''}
           </div>
@@ -279,16 +281,16 @@ const PopUpContent = () => {
     request.setRequestHeader('Cache-Control', 'no-cache');
     messageApi.open({
       content: (
-        <div className='message-content'>
+        <div className="message-content">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            className='image-ani-hourglass'
+            className="image-ani-hourglass"
             src={Images.HourglassWhite.src}
-            alt=''
+            alt=""
           />
           <div>
             Downloading
-            <span className='dot-ani' />
+            <span className="dot-ani" />
           </div>
         </div>
       ),
@@ -332,31 +334,31 @@ const PopUpContent = () => {
     <div>
       <ShareLinkImg src={Images.ShareLinkIcon.src} />
       <ShareLinkContent>
-        <h4 className='title'>Share your link!</h4>
-        <p className='sub-title'>
+        <h4 className="title">Share your link!</h4>
+        <p className="sub-title">
           {`The more friends that use your link, the more lit you'll get!!`}
         </p>
-        <div className='share-link-area'>
-          <div className='link-content'>
-            <span className='link'>{link}</span>
+        <div className="share-link-area">
+          <div className="link-content">
+            <span className="link">{link}</span>
             {copySuccess ? (
               <Image
                 src={Images.CopySuccessIcon}
-                alt='copy'
+                alt="copy"
                 width={18}
                 height={18}
-                layout='fixed'
+                layout="fixed"
               />
             ) : null}
           </div>
           <Image
             src={Images.CopyBigIcon}
-            alt='copy'
+            alt="copy"
             width={32}
             height={32}
-            layout='fixed'
+            layout="fixed"
             onClick={handleCopy}
-            className='copy-icon'
+            className="copy-icon"
           />
         </div>
       </ShareLinkContent>
@@ -364,31 +366,31 @@ const PopUpContent = () => {
         <span>You May Need</span>
       </YouMayNeed>
       <PostImage>
-        <div className='title'>Post Image</div>
-        <div className='post-image-content'>
+        <div className="title">Post Image</div>
+        <div className="post-image-content">
           <div>
             <Image
               src={image}
-              alt='post-image'
+              alt="post-image"
               width={112}
               height={56}
-              layout='fixed'
+              layout="fixed"
             />
           </div>
           <Image
             src={Images.DownloadIcon}
-            alt='download'
+            alt="download"
             width={19}
             height={19}
-            layout='fixed'
-            className='download'
+            layout="fixed"
+            className="download"
             onClick={saveImage}
           />
         </div>
       </PostImage>
       <PostContent>
-        <div className='title'>Attractive Post Content</div>
-        <div className='post-content-main'>
+        <div className="title">Attractive Post Content</div>
+        <div className="post-content-main">
           <p>
             {postContent}
             <br />
@@ -396,11 +398,11 @@ const PopUpContent = () => {
           </p>
           <Image
             src={Images.CopyIcon}
-            alt='copy'
+            alt="copy"
             width={19}
             height={19}
-            layout='fixed'
-            className='icon'
+            layout="fixed"
+            className="icon"
             onClick={handleCopyPostContent}
           />
         </div>
@@ -409,18 +411,16 @@ const PopUpContent = () => {
     </div>
   );
 };
-const Raves = () => {
+const Raves = ({
+  raveData,
+  showHaveJoinedRaveModal,
+  setShowHaveJoinedRaveModal,
+}: {
+  raveData: GetRaveResponseProps;
+  showHaveJoinedRaveModal: boolean;
+  setShowHaveJoinedRaveModal: (status: boolean) => void;
+}) => {
   const [open, setOpen] = useState(false);
-  const [flutterCallJsTextValue, setFlutterCallJsTextValue] =
-    useState<string>('');
-
-  const testFlutterCallJs = (value: string) => {
-    setFlutterCallJsTextValue(value);
-  };
-
-  useEffect(() => {
-    (window as any).testFlutterCallJs = testFlutterCallJs;
-  }, []);
 
   return (
     <div>
@@ -432,13 +432,32 @@ const Raves = () => {
       </RaveDescription>
       <SectionTitle>Quests</SectionTitle>
       <RaveList />
-      <JoinButton type='primary' onClick={() => setOpen(true)}>
-        Join the Rave{flutterCallJsTextValue}
+      <JoinButton type="primary" onClick={() => setOpen(true)}>
+        Join the Rave
       </JoinButton>
       <SectionTitle>More Raves Coming Soon</SectionTitle>
       <MoreRaves />
       <RavesPopUp open={open} onClose={() => setOpen(false)}>
         <PopUpContent />
+      </RavesPopUp>
+      <RavesPopUp
+        open={showHaveJoinedRaveModal}
+        onClose={() => setShowHaveJoinedRaveModal(false)}
+      >
+        <HaveJoinedRaveModalContent>
+          <Col className="content-mascotsIcon">
+            <img src={Images.MascotsIcon.src} alt="" />
+          </Col>
+          <Col className="content-title">You have joined the rave!</Col>
+          <Col className="content-count">
+            <span>
+              <span>+ </span>2
+            </span>
+            <span>
+              <img src={Images.FireGifIcon.src} alt="" />
+            </span>
+          </Col>
+        </HaveJoinedRaveModalContent>
       </RavesPopUp>
     </div>
   );

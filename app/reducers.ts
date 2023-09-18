@@ -15,7 +15,8 @@ import collectibleSliceReducer from '../slice/collectible.slice';
 import qrCodeDataSliceReducer from '../slice/getQRCode.slice';
 import collectionDetailCacheReducer from '../slice/collectionDetailCache.slice';
 import pageTrackReducer from '../slice/pageTrack.slice';
-import myRavesReducer from "../slice/myRaves.slice";
+import myRavesReducer from '../slice/myRaves.slice';
+import raveReducer from '../slice/rave.slice';
 
 const createRootReducer = () =>
   combineReducers({
@@ -35,6 +36,7 @@ const createRootReducer = () =>
     collectionDetailCache: collectionDetailCacheReducer,
     pageTrack: pageTrackReducer,
     myRaves: myRavesReducer,
+    rave: raveReducer,
   });
 
 export default createRootReducer;

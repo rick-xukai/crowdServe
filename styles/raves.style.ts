@@ -460,3 +460,44 @@ export const Ended = styled.div`
     }
   }
 `;
+
+export const HaveJoinedRaveModalContent = styled.div`
+  padding: 40px;
+  .content-mascotsIcon {
+    text-align: center;
+  }
+  .content-title {
+    margin-top: 16px;
+    color: ${Colors.grayScale70};
+    text-align: center;
+    font-family: Oswald;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    text-transform: uppercase;
+  }
+  .content-count {
+    margin-top: 16px;
+    text-align: center;
+    > :first-child {
+      span {
+        margin-right: 5px;
+        font-size: 17px;
+        font-weight: 400;
+      }
+    }
+    span {
+      color: ${Colors.grayScale70};
+      text-align: right;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 25px;
+      img {
+        width: 20px;
+        height: 20px;
+        margin-left: 8px;
+        margin-bottom: -1px;
+      }
+    }
+  }
+`;
