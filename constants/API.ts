@@ -100,7 +100,7 @@ const API = {
   myRaves: {
     get: "/api/v1/rave",
   },
-  eventDetailGetJoinRave: {
+  getRave: {
     get: '/api/v1/rave/{eventId}',
   },
   joinRave: {
