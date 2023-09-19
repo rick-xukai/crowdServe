@@ -27,11 +27,13 @@ const RavesDetail = ({
   setJoinRaveSuccess,
   setJoinRaveButtonLoading,
   eventId,
+  setShowJoinRaveModal,
 }: {
   clickJoinRave: boolean;
   setJoinRaveSuccess: (status: boolean) => void;
   setJoinRaveButtonLoading: (status: boolean) => void;
   eventId: string;
+  setShowJoinRaveModal: (status: boolean) => void;
 }) => {
   const cookies = useCookie([CookieKeys.userLoginToken]);
   const dispatch = useAppDispatch();
@@ -111,9 +113,10 @@ const RavesDetail = ({
           raveData={raveData}
           showHaveJoinedRaveModal={showHaveJoinedRaveModal}
           setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
+          setShowJoinRaveModal={setShowJoinRaveModal}
         />
       )) || (
-        <Spin spinning indicator={<LoadingOutlined spin />} size="large">
+        <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
           <div />
         </Spin>
       )}
