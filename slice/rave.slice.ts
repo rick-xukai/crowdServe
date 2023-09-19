@@ -12,6 +12,13 @@ export interface ErrorType {
   message: string;
 }
 
+export enum RaveQuestType {
+  JOIN = 0,
+  SHARE = 1,
+  INVITE = 2,
+  BUYTICKET = 3,
+}
+
 export interface GetRaveResponseUserProps {
   flamePoint: number;
   inviteCode: number;
@@ -24,6 +31,7 @@ export interface GetRaveResponseRewardListProps {
   milestone: number;
   stock: number;
   redeemed: boolean;
+  img?: string;
 }
 
 export interface GetRaveResponseQuestProps {
@@ -32,6 +40,7 @@ export interface GetRaveResponseQuestProps {
   flamePoint: number;
   limitUser: number;
   getTimes: number;
+  type: number;
 }
 
 export interface GetRaveResponseProps {
@@ -41,10 +50,7 @@ export interface GetRaveResponseProps {
   joinedUsers: number;
   redeemedUsers: number;
   user: GetRaveResponseUserProps;
-  reward: {
-    ravers: number;
-    list: GetRaveResponseRewardListProps[];
-  };
+  reward: GetRaveResponseRewardListProps[];
   quest: GetRaveResponseQuestProps[];
 }
 
@@ -107,6 +113,7 @@ export const joinRaveAction = createAsyncThunk<
 interface RaveState {
   raveData: GetRaveResponseProps;
   loading: boolean;
+  actionButtonLoading: boolean;
   error:
     | {
         message: string | undefined;
@@ -117,6 +124,7 @@ interface RaveState {
 
 const initialState: RaveState = {
   loading: false,
+  actionButtonLoading: false,
   error: null,
   raveData: {
     name: '',
@@ -129,10 +137,7 @@ const initialState: RaveState = {
       inviteCode: 0,
       joined: true,
     },
-    reward: {
-      ravers: 0,
-      list: [],
-    },
+    reward: [],
     quest: [],
   },
 };
@@ -146,13 +151,13 @@ export const raveSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(joinRaveAction.pending, (state) => {
-        state.loading = true;
+        state.actionButtonLoading = true;
       })
       .addCase(joinRaveAction.fulfilled, (state) => {
-        state.loading = false;
+        state.actionButtonLoading = false;
       })
       .addCase(joinRaveAction.rejected, (state, action) => {
-        state.loading = false;
+        state.actionButtonLoading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
@@ -180,6 +185,8 @@ export const raveSlice = createSlice({
 export const { reset } = raveSlice.actions;
 
 export const selectLoading = (state: RootState) => state.rave.loading;
+export const selectActionButtonLoading = (state: RootState) =>
+  state.rave.actionButtonLoading;
 export const selectError = (state: RootState) => state.rave.error;
 export const selectRaveData = (state: RootState) => state.rave.raveData;
 

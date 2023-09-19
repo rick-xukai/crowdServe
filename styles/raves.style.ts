@@ -57,6 +57,7 @@ export const FlameTotal = styled.div`
     align-items: center;
 
     p {
+      color: ${Colors.white};
       margin: 0;
       font-family: Oswald;
       font-size: 28px;
@@ -145,6 +146,7 @@ export const ProgressBarWrapper = styled.div`
 export const GiftItem = styled.div`
   position: absolute;
   top: -6px;
+  cursor: pointer;
   p {
     margin: 0;
     color: ${Colors.white};
@@ -169,6 +171,7 @@ export const SectionTitle = styled.h4`
   line-height: 25px;
   margin-bottom: 15px;
   margin-top: 35px;
+  color: ${Colors.white};
 `;
 
 export const RaveDescription = styled.p`
@@ -184,6 +187,12 @@ export const RaveItem = styled.div`
   padding: 16px;
   background: ${Colors.black};
   border-radius: 6px;
+  .title {
+    color: ${Colors.white};
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 25px;
+  }
   @media (min-width: 768px) {
     min-height: 157px;
   }
@@ -204,6 +213,12 @@ export const RaveItem = styled.div`
       font-size: 18px;
       font-weight: 700;
       line-height: 25px;
+      > :first-child {
+        color: ${Colors.white};
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 25px;
+      }
       span {
         color: ${Colors.grayScale40};
       }
@@ -216,6 +231,10 @@ export const RaveItem = styled.div`
     line-height: 21px;
   }
   .flame {
+    color: ${Colors.white};
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 21px;
     @media (min-width: 768px) {
       position: absolute;
       bottom: 16px;
@@ -497,6 +516,88 @@ export const HaveJoinedRaveModalContent = styled.div`
         height: 20px;
         margin-left: 8px;
         margin-bottom: -1px;
+      }
+    }
+  }
+`;
+
+export const RedeemRewardModalContent = styled.div`
+  padding: 25px 22px;
+  .redeem-title {
+    color: ${Colors.grayScale70};
+    text-align: center;
+    font-family: Oswald;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    text-transform: uppercase;
+  }
+  .redeem-info {
+    position: relative;
+    height: 290px;
+    display: flex;
+    .background {
+      width: 270px;
+      position: absolute;
+      top: 0;
+      left: -20px;
+      right: 0;
+      margin: auto;
+      z-index: -1;
+    }
+    .info {
+      width: 148px;
+      margin: auto;
+      border-radius: 8px;
+      border: 4px solid ${Colors.branding};
+      background: ${Colors.backgorund};
+      padding: 6px;
+      position: relative;
+      .info-img {
+        width: 100%;
+        border-radius: 8px;
+      }
+      .info-name {
+        color: ${Colors.white};
+        text-align: center;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 20px;
+        margin-top: 10px;
+      }
+      .left-icon {
+        width: 80px;
+        position: absolute;
+        top: -26px;
+        left: -26px;
+      }
+    }
+  }
+  .redeem-button {
+    text-align: center;
+    .ant-btn {
+      width: 60%;
+      height: 45px;
+      border-radius: 2px;
+      background: ${Colors.branding};
+      color: ${Colors.grayScale10};
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 21px;
+      text-transform: uppercase;
+      .anticon {
+        font-size: 18px;
+        margin-right: 10px;
+      }
+    }
+  }
+  @media (max-width: 576px) {
+    padding: 15px 12px;
+  }
+  @media (max-width: 375px) {
+    .redeem-button {
+      .ant-btn {
+        width: 100%;
       }
     }
   }
