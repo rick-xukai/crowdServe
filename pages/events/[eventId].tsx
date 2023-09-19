@@ -508,20 +508,20 @@ const EventDetail = ({
           />
           {(!loading && (
             <EventDetailContainer ref={eventDetailContainer}>
-              <div className="container-wrap">
+              <div className='container-wrap'>
                 <Col md={24} xs={0}>
                   <PageHearderResponsive />
                 </Col>
                 <Col md={0} xs={24}>
                   <PageHearderComponent setMenuState={setMenuState} />
                 </Col>
-                <div className="page-main">
+                <div className='page-main'>
                   <Row>
-                    <Col span={24} className="detail-background">
+                    <Col span={24} className='detail-background'>
                       <Image
                         src={eventDetailData.image}
-                        alt=""
-                        layout="fill"
+                        alt=''
+                        layout='fill'
                         onError={(e: any) => {
                           e.target.onerror = null;
                           e.target.src = Images.BackgroundLogo.src;
@@ -530,10 +530,10 @@ const EventDetail = ({
                       />
                     </Col>
                   </Row>
-                  <div className="event-detail-container">
-                    <div className="item-info">
-                      <Row className="item-info-row">
-                        <Col span={24} className="info-item-status">
+                  <div className='event-detail-container'>
+                    <div className='item-info'>
+                      <Row className='item-info-row'>
+                        <Col span={24} className='info-item-status'>
                           {EventStatus.map((status) => {
                             if (
                               status.key === eventDetailData.status &&
@@ -552,25 +552,25 @@ const EventDetail = ({
                             return null;
                           })}
                         </Col>
-                        <Col span={24} className="info-title">
+                        <Col span={24} className='info-title'>
                           {eventDetailData.name}
                         </Col>
                         <Col
                           span={24}
-                          className="info-description-short"
+                          className='info-description-short'
                           dangerouslySetInnerHTML={{
                             __html: formatDescription(
                               eventDetailData.descriptionShort
                             ),
                           }}
                         />
-                        <Col span={24} className="info-item">
+                        <Col span={24} className='info-item'>
                           <Image
-                            className="info-item-icon"
+                            className='info-item-icon'
                             src={Images.ClockIcon}
-                            alt=""
+                            alt=''
                           />
-                          <div className="info-description">
+                          <div className='info-description'>
                             {(eventDetailData.startTime &&
                               eventDetailData.endTime &&
                               `${formatTimeStrByTimeString(
@@ -583,23 +583,23 @@ const EventDetail = ({
                               '-'}
                           </div>
                         </Col>
-                        <Col span={24} className="info-item">
+                        <Col span={24} className='info-item'>
                           <Image
                             src={Images.OrganiserIcon}
-                            alt=""
-                            className="info-item-icon"
+                            alt=''
+                            className='info-item-icon'
                           />
-                          <span className="info-description">
+                          <span className='info-description'>
                             {eventDetailData.organizerName || '-'}
                           </span>
                         </Col>
-                        <Col span={24} className="info-item">
+                        <Col span={24} className='info-item'>
                           <Image
                             src={Images.LocationIcon}
-                            alt=""
-                            className="info-item-icon"
+                            alt=''
+                            className='info-item-icon'
                           />
-                          <div className="info-description">
+                          <div className='info-description'>
                             <span>
                               {formatLocation(
                                 eventDetailData.location,
@@ -608,7 +608,7 @@ const EventDetail = ({
                             </span>
                             {eventDetailData.locationCoord && (
                               <span
-                                className="show-map-action"
+                                className='show-map-action'
                                 onClick={() => setShowMap(!showMap)}
                               >
                                 {(!showMap && (
@@ -628,7 +628,7 @@ const EventDetail = ({
                         </Col>
                         {showMap && isLoaded && (
                           <Col span={24}>
-                            <div className="google-map-content">
+                            <div className='google-map-content'>
                               <GoogleMap
                                 mapContainerStyle={{
                                   width: '100%',
@@ -653,10 +653,10 @@ const EventDetail = ({
                           </Col>
                         )}
                         {eventDetailData.crowdfundLink && (
-                          <Col span={24} className="crowd-fund-link">
+                          <Col span={24} className='crowd-fund-link'>
                             <a
                               href={eventDetailData.crowdfundLink}
-                              target="_blank"
+                              target='_blank'
                             >
                               View CrowdFund Progress <RightOutlined />
                             </a>
@@ -664,11 +664,11 @@ const EventDetail = ({
                         )}
                         <EventDetailCard
                           span={24}
-                          className="event-detail-content"
+                          className='event-detail-content'
                         >
                           <Col
                             span={24}
-                            className="detail-title"
+                            className='detail-title'
                             style={{
                               marginBottom:
                                 (!eventDetailData.description && 24) || 0,
@@ -676,7 +676,7 @@ const EventDetail = ({
                           >
                             Event Details
                           </Col>
-                          <Col span={24} className="detail-show-more-box">
+                          <Col span={24} className='detail-show-more-box'>
                             {needShowMore && (
                               <div
                                 className={
@@ -692,7 +692,7 @@ const EventDetail = ({
                                       ),
                                   })}
                                 >
-                                  <div className="action-button">
+                                  <div className='action-button'>
                                     <span>
                                       {(!isExpanded && 'Show More') ||
                                         'Show Less'}
@@ -717,7 +717,7 @@ const EventDetail = ({
                               <div ref={detailContentRef}>
                                 {eventDetailData.description && (
                                   <p
-                                    className="detail-description"
+                                    className='detail-description'
                                     dangerouslySetInnerHTML={{
                                       __html: formatDescription(
                                         eventDetailData.description
@@ -731,7 +731,7 @@ const EventDetail = ({
                                   }
                                 />
                                 <p
-                                  className="refund-info"
+                                  className='refund-info'
                                   style={{
                                     marginTop:
                                       (eventDetailData.descriptionImages &&
@@ -752,7 +752,7 @@ const EventDetail = ({
                         </EventDetailCard>
                       </Row>
                     </div>
-                    <div ref={itemTabs} className="item-tabs">
+                    <div ref={itemTabs} className='item-tabs'>
                       <Tabs
                         defaultActiveKey={tabActiveKey}
                         items={tabsItem}
@@ -761,7 +761,7 @@ const EventDetail = ({
                         }
                       />
                       <Row>
-                        <Col span={24} className="dividing-line" />
+                        <Col span={24} className='dividing-line' />
                       </Row>
                       {tabActiveKey === PrimaryMarket && (
                         <Row gutter={[16, 16]}>
@@ -783,10 +783,10 @@ const EventDetail = ({
                                   }
                                 >
                                   <Row>
-                                    <Col className="type-img" xl={8} span={10}>
+                                    <Col className='type-img' xl={8} span={10}>
                                       <img
                                         src={item.thumbnailUrl}
-                                        alt=""
+                                        alt=''
                                         onError={(e: any) => {
                                           e.target.onerror = null;
                                           e.target.src =
@@ -794,12 +794,12 @@ const EventDetail = ({
                                         }}
                                       />
                                       {!item.onSale && (
-                                        <div className="out-stock-mask">
+                                        <div className='out-stock-mask'>
                                           NOT ON SALE YET
                                         </div>
                                       )}
                                       {item.stock === 0 && item.onSale && (
-                                        <div className="out-stock-mask">
+                                        <div className='out-stock-mask'>
                                           OUT OF STOCK
                                         </div>
                                       )}
@@ -807,12 +807,12 @@ const EventDetail = ({
                                     <Col
                                       xl={16}
                                       span={14}
-                                      className="type-info"
+                                      className='type-info'
                                     >
-                                      <div className="line">
+                                      <div className='line'>
                                         <img
                                           src={Images.VerticalLineIcon.src}
-                                          alt=""
+                                          alt=''
                                         />
                                       </div>
                                       <div
@@ -826,17 +826,17 @@ const EventDetail = ({
                                           <Col
                                             span={24}
                                             title={item.name}
-                                            className="title"
+                                            className='title'
                                           >
                                             {item.name}
                                           </Col>
                                           <Col
                                             span={24}
-                                            className="description"
+                                            className='description'
                                           >
                                             {item.description}
                                           </Col>
-                                          <Col span={24} className="price">
+                                          <Col span={24} className='price'>
                                             {`${item.price.toFixed(
                                               2
                                             )} ${PriceUnit}`}
@@ -849,11 +849,11 @@ const EventDetail = ({
                               ))}
                             </>
                           )) || (
-                            <Col span={24} className="all-ticket-sold">
+                            <Col span={24} className='all-ticket-sold'>
                               <div
                                 style={{ textAlign: 'center', marginTop: 20 }}
                               >
-                                <Image src={Images.AllTicketSold} alt="" />
+                                <Image src={Images.AllTicketSold} alt='' />
                                 <p>All tickets are sold.</p>
                               </div>
                             </Col>
@@ -877,14 +877,14 @@ const EventDetail = ({
                                       setClickEventMarketModalOpen(true)
                                     }
                                   >
-                                    <div className="item-background">
+                                    <div className='item-background'>
                                       <Image
                                         src={
                                           item.thumbnailUrl ||
                                           Images.BackgroundLogo.src
                                         }
-                                        layout="fill"
-                                        alt=""
+                                        layout='fill'
+                                        alt=''
                                         onError={(e: any) => {
                                           e.target.onerror = null;
                                           e.target.src =
@@ -892,23 +892,23 @@ const EventDetail = ({
                                         }}
                                       />
                                     </div>
-                                    <div className="item-price">
+                                    <div className='item-price'>
                                       <span>
                                         {item.sellPrice.toFixed(2)}{' '}
                                         {item.currency}
                                       </span>
                                     </div>
-                                    <div className="item-type">{item.type}</div>
+                                    <div className='item-type'>{item.type}</div>
                                   </SecondaryMarketItem>
                                 </Col>
                               ))}
                             </Row>
                           )) || (
-                            <Col span={24} className="all-ticket-sold">
+                            <Col span={24} className='all-ticket-sold'>
                               <div
                                 style={{ textAlign: 'center', marginTop: 20 }}
                               >
-                                <Image src={Images.AllTicketSold} alt="" />
+                                <Image src={Images.AllTicketSold} alt='' />
                                 <p>All tickets are sold.</p>
                               </div>
                             </Col>
@@ -921,6 +921,7 @@ const EventDetail = ({
                           setJoinRaveSuccess={setJoinRaveSuccess}
                           setJoinRaveButtonLoading={setJoinRaveButtonLoading}
                           eventId={id}
+                          setShowJoinRaveModal={setShowJoinRaveModal}
                         />
                       )}
                     </div>
@@ -928,33 +929,33 @@ const EventDetail = ({
                 </div>
                 {!menuState && <PageBottomComponent />}
                 <Modal
-                  title=""
+                  title=''
                   centered
                   closable={false}
                   footer={null}
                   open={clickEventMarketModalOpen}
-                  className="eventMarketModal"
+                  className='eventMarketModal'
                   onCancel={() => setClickEventMarketModalOpen(false)}
                 >
-                  <div className="container">
-                    <div className="market-modal-main">
-                      <Image src={Images.MyWalletIcon} alt="" />
-                      <p className="title">
+                  <div className='container'>
+                    <div className='market-modal-main'>
+                      <Image src={Images.MyWalletIcon} alt='' />
+                      <p className='title'>
                         Open the app to access the full functionality.
                       </p>
-                      <p className="info">
+                      <p className='info'>
                         With our app, you can view your account balance, track
                         your transaction history.
                       </p>
-                      <div className="market-modal-bottom">
+                      <div className='market-modal-bottom'>
                         <Button onClick={handleOpenApp}>OPEN NOW</Button>
                       </div>
                     </div>
                   </div>
-                  <div className="close-modal">
+                  <div className='close-modal'>
                     <Image
                       src={Images.CloseIcon}
-                      alt=""
+                      alt=''
                       onClick={() => setClickEventMarketModalOpen(false)}
                     />
                   </div>
@@ -967,7 +968,7 @@ const EventDetail = ({
               </div>
               <RavesPopUp open={showJoinRaveModal} onClose={ravesPopUpClose}>
                 <JoinRaveModalContent>
-                  <Col className="content-title">
+                  <Col className='content-title'>
                     Join the rave, complete <br /> missions and earn rewards!
                   </Col>
                   <Col
@@ -977,7 +978,7 @@ const EventDetail = ({
                       'content-banner'
                     }
                   >
-                    <div className="banner-items">
+                    <div className='banner-items'>
                       {testJoinRaveItems.map((item) => (
                         <JoinRaveModalBannerItem
                           key={item.id}
@@ -986,32 +987,32 @@ const EventDetail = ({
                             ''
                           }
                         >
-                          <div className="gradient-box">
-                            <div className="items-img">
-                              <img src={item.img} alt="" />
+                          <div className='gradient-box'>
+                            <div className='items-img'>
+                              <img src={item.img} alt='' />
                             </div>
-                            <div className="item-name">{item.name}</div>
+                            <div className='item-name'>{item.name}</div>
                             <img
-                              className="free-icon"
+                              className='free-icon'
                               src={Images.FreeIcon.src}
-                              alt=""
+                              alt=''
                             />
                           </div>
                         </JoinRaveModalBannerItem>
                       ))}
                     </div>
                   </Col>
-                  <Col className="content-users">
+                  <Col className='content-users'>
                     <Avatar.Group>
                       {raveRandomUsers.map((item: string) => (
                         <Avatar key={item}>{item}</Avatar>
                       ))}
                     </Avatar.Group>
-                    <div className="users-count">
+                    <div className='users-count'>
                       20+ users have joined the Rave
                     </div>
                   </Col>
-                  <Col className="content-button">
+                  <Col className='content-button'>
                     <Button
                       disabled={joinRaveButtonLoading}
                       onClick={() => handleJoinRave(true)}
@@ -1020,18 +1021,18 @@ const EventDetail = ({
                       Join Rave
                     </Button>
                   </Col>
-                  <Col className="content-checkbox">
+                  <Col className='content-checkbox'>
                     <Checkbox
                       onChange={(e) => setClickNotShowAnymore(e.target.checked)}
                     >
-                      Don't show me anymore
+                      {`Don't show me anymore`}
                     </Checkbox>
                   </Col>
                 </JoinRaveModalContent>
               </RavesPopUp>
             </EventDetailContainer>
           )) || (
-            <Spin spinning indicator={<LoadingOutlined spin />} size="large">
+            <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
               <div />
             </Spin>
           )}

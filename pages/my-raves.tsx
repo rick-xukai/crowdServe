@@ -96,7 +96,7 @@ const MyRaves = () => {
     if (isDisableRequest || isGetAllData) {
       return;
     }
-    dispatch(getMyRavesAction({ page: currentPage })).then((response: any) => {
+    dispatch(getMyRavesAction({ page: currentPage, size: 10 })).then((response: any) => {
       if (response.type === getMyRavesAction.fulfilled.toString()) {
         if (
           !response.payload.length ||
@@ -204,7 +204,9 @@ const MyRaves = () => {
                     <img src={Images.MyRavesEmptyIcon.src} alt='empty' />
                     <p>
                       {`You haven't joined any raves yet. Click `}
-                      <a onClick={() => router.push(RouterKeys.eventList)}>here</a>
+                      <a onClick={() => router.push(RouterKeys.eventList)}>
+                        here
+                      </a>
                       {` to discover more and join the fun!`}
                     </p>
                   </Empty>
@@ -228,7 +230,7 @@ const MyRaves = () => {
                           ) : (
                             <FireIcon src={Images.FireDisabledIcon.src} />
                           )}
-                          {/* {item.num} */}1
+                          {item.flamePoint}
                         </div>
                       </RaveItem>
                     </Col>

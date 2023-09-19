@@ -436,12 +436,14 @@ const Raves = ({
   raveData,
   showHaveJoinedRaveModal,
   setShowHaveJoinedRaveModal,
+  setShowJoinRaveModal,
 }: {
   raveData: GetRaveResponseProps;
   showHaveJoinedRaveModal: boolean;
   setShowHaveJoinedRaveModal: (status: boolean) => void;
+  setShowJoinRaveModal: (status: boolean) => void;
 }) => {
-  const [open, setOpen] = useState(false);
+  const [sharePopupOpen, setSharePopupOpen] = useState(false);
   const [redeemRewardModalOpen, setRedeemRewardModalOpen] =
     useState<boolean>(false);
   const [currentShowReward, setCurrentShowReward] =
@@ -469,12 +471,15 @@ const Raves = ({
       <RaveDescription>{raveData.description || '-'}</RaveDescription>
       <SectionTitle>Quests</SectionTitle>
       <RaveList list={raveData.quest} />
-      <JoinButton type="primary" onClick={() => setOpen(true)}>
+      <JoinButton type='primary' onClick={() => setShowJoinRaveModal(true)}>
         Join the Rave
       </JoinButton>
       <SectionTitle>More Raves Coming Soon</SectionTitle>
       <MoreRaves />
-      <RavesPopUp open={open} onClose={() => setOpen(false)}>
+      <RavesPopUp
+        open={sharePopupOpen}
+        onClose={() => setSharePopupOpen(false)}
+      >
         <PopUpContent />
       </RavesPopUp>
       <RavesPopUp
@@ -482,16 +487,16 @@ const Raves = ({
         onClose={() => setShowHaveJoinedRaveModal(false)}
       >
         <HaveJoinedRaveModalContent>
-          <Col className="content-mascotsIcon">
-            <img src={Images.MascotsIcon.src} alt="" />
+          <Col className='content-mascotsIcon'>
+            <img src={Images.MascotsIcon.src} alt='' />
           </Col>
-          <Col className="content-title">You have joined the rave!</Col>
-          <Col className="content-count">
+          <Col className='content-title'>You have joined the rave!</Col>
+          <Col className='content-count'>
             <span>
               <span>+ </span>2
             </span>
             <span>
-              <img src={Images.FireGifIcon.src} alt="" />
+              <img src={Images.FireGifIcon.src} alt='' />
             </span>
           </Col>
         </HaveJoinedRaveModalContent>
@@ -501,26 +506,26 @@ const Raves = ({
         onClose={() => setRedeemRewardModalOpen(false)}
       >
         <RedeemRewardModalContent>
-          <Col className="redeem-title">Redeem Reward</Col>
-          <Col className="redeem-img-box">
-            <div className="redeem-info">
+          <Col className='redeem-title'>Redeem Reward</Col>
+          <Col className='redeem-img-box'>
+            <div className='redeem-info'>
               <img
-                className="background"
+                className='background'
                 src={Images.FireworksGifIcon.src}
-                alt=""
+                alt=''
               />
-              <div className="info">
+              <div className='info'>
                 <img
-                  className="info-img"
+                  className='info-img'
                   src={currentShowReward.image}
-                  alt=""
+                  alt=''
                 />
-                <div className="info-name">{currentShowReward.name}</div>
-                <img className="left-icon" src={Images.WowGifIcon.src} alt="" />
+                <div className='info-name'>{currentShowReward.name}</div>
+                <img className='left-icon' src={Images.WowGifIcon.src} alt='' />
               </div>
             </div>
           </Col>
-          <Col className="redeem-button">
+          <Col className='redeem-button'>
             <Button>Redeem</Button>
           </Col>
         </RedeemRewardModalContent>

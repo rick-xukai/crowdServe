@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { RootState } from "../app/store";
-import { verificationApi } from "../utils/func";
-import MyRavesService from "../services/API/MyRaves";
-import { RaveStatus } from "./event.slice";
-import { DefaultPage } from "@/constants/General";
+import { RootState } from '../app/store';
+import { verificationApi } from '../utils/func';
+import MyRavesService from '../services/API/MyRaves';
+import { RaveStatus } from './event.slice';
+import { DefaultPage } from '@/constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -13,20 +13,23 @@ export interface ErrorType {
   message: string;
 }
 export interface MyRavesItemType {
+  eventId: string;
+  eventSlug: string;
   name: string;
   description: string;
   status: RaveStatus;
+  flamePoint: number;
 }
 /**
  * Get my raves
  */
 export const getMyRavesAction = createAsyncThunk<
   MyRavesItemType[],
-  { page: number },
+  { page: number; size: number },
   {
     rejectValue: ErrorType;
   }
->("myRaves/getMyRavesAction", async (payload, { rejectWithValue }) => {
+>('myRaves/getMyRavesAction', async (payload, { rejectWithValue }) => {
   try {
     const response = await MyRavesService.getMyRaves(payload);
     if (verificationApi(response)) {
@@ -81,7 +84,7 @@ const initialState: MyRavesState = {
 };
 
 export const myRavesSlice = createSlice({
-  name: "myRaves",
+  name: 'myRaves',
   initialState,
   reducers: {
     reset: () => initialState,
