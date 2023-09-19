@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { verificationApi } from '../utils/func';
 import RaveService from '@/services/API/Rave/Rave.service';
-import { Rave } from '@/constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
