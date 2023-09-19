@@ -1,5 +1,6 @@
-import { Col, Row, Grid, message, Tooltip } from 'antd';
+import { Col, Row, Grid, message, Tooltip, Button } from 'antd';
 import copy from 'copy-to-clipboard';
+import _ from 'lodash';
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -32,18 +33,38 @@ import {
   TipBarWrapper,
   YouMayNeed,
   HaveJoinedRaveModalContent,
+  RedeemRewardModalContent,
 } from '@/styles/raves.style';
-import { GetRaveResponseProps } from '@/slice/rave.slice';
+import {
+  GetRaveResponseProps,
+  GetRaveResponseQuestProps,
+  GetRaveResponseRewardListProps,
+  RaveQuestType,
+} from '@/slice/rave.slice';
 import { Images } from '@/theme';
+import {
+  RaveQuestShare,
+  RaveQuestBuyTickets,
+  RaveQuestInviteFriend,
+} from '@/constants/General';
 
 const { useBreakpoint } = Grid;
 
-const TipBar = () => (
+const TipBar = ({
+  rewardData,
+  redeemedUser,
+}: {
+  rewardData: GetRaveResponseRewardListProps[];
+  redeemedUser: number;
+}) => (
   <TipBarWrapper>
     <TipBarIcon src={Images.SmileIcon.src} alt="" />
     <p>
-      30 ravers have claimed the reward! Only <b>20</b> free drinks and{' '}
-      <b>12</b> free tickets left!
+      {redeemedUser} ravers have claimed the reward! Only{' '}
+      <b>{(rewardData.length && rewardData[0].stock) || 0}</b>{' '}
+      {(rewardData.length && rewardData[0].name) || '-'} and{' '}
+      <b>{(rewardData.length && rewardData[1].stock) || 0}</b>{' '}
+      {(rewardData.length && rewardData[1].name) || '-'} left!
     </p>
   </TipBarWrapper>
 );
@@ -52,13 +73,14 @@ const ProgressBar = ({
   current,
   total,
   gifts,
+  setRedeemRewardModalOpen,
+  setCurrentShowReward,
 }: {
   current: number;
   total: number;
-  gifts: {
-    quantity: number;
-    img: string;
-  }[];
+  gifts: GetRaveResponseRewardListProps[];
+  setRedeemRewardModalOpen: (status: boolean) => void;
+  setCurrentShowReward: (data: GetRaveResponseRewardListProps) => void;
 }) => {
   const { md } = useBreakpoint();
   return (
@@ -74,11 +96,15 @@ const ProgressBar = ({
           const gotGifts = item.img === Images.GiftCheersImg.src;
           return (
             <GiftItem
+              onClick={() => {
+                setRedeemRewardModalOpen(true);
+                setCurrentShowReward(item);
+              }}
               style={{
-                left: `${(item.quantity / total) * 100 - (md ? 5 : 10)}%`,
+                left: `${(item.milestone / total) * 100 - (md ? 5 : 10)}%`,
                 top: gotGifts ? -12 : '',
               }}
-              key={item.quantity}
+              key={item.milestone}
             >
               <GiftImg
                 src={item.img}
@@ -86,7 +112,7 @@ const ProgressBar = ({
                   width: gotGifts ? 42 : '',
                 }}
               />
-              {gotGifts ? null : <p>{item.quantity} Flames</p>}
+              {gotGifts ? null : <p>{item.milestone} Flames</p>}
             </GiftItem>
           );
         })}
@@ -95,20 +121,17 @@ const ProgressBar = ({
   );
 };
 
-const data = {
-  current: 15,
-  total: 80,
-  gifts: [
-    {
-      quantity: 15,
-    },
-    {
-      quantity: 30,
-    },
-  ],
-};
-
-const ProgressContainer = () => (
+const ProgressContainer = ({
+  giftList,
+  currentFlamePoint,
+  setRedeemRewardModalOpen,
+  setCurrentShowReward,
+}: {
+  giftList: GetRaveResponseRewardListProps[];
+  currentFlamePoint: number;
+  setRedeemRewardModalOpen: (status: boolean) => void;
+  setCurrentShowReward: (data: GetRaveResponseRewardListProps) => void;
+}) => (
   <ProgressWrapper>
     <FlameTotal>
       <div className="container">
@@ -116,7 +139,7 @@ const ProgressContainer = () => (
         <StarIcon src={Images.StarIcon.src} />
         <div className="total">
           <FireIcon src={Images.FireGifIcon.src} />
-          <p>{data.current}</p>
+          <p>{currentFlamePoint}</p>
         </div>
         <StarIcon src={Images.StarIcon.src} />
       </div>
@@ -126,98 +149,96 @@ const ProgressContainer = () => (
         <CorderBorderLeft src={Images.CornerBorderImg.src} />
         <CorderBorderRight src={Images.CornerBorderImg.src} />
         <ProgressBar
-          current={data.current}
-          total={data.total}
-          gifts={data.gifts.map((item) => ({
+          current={currentFlamePoint}
+          total={_.sumBy(giftList, 'milestone')}
+          gifts={giftList.map((item) => ({
             ...item,
             img:
-              item.quantity <= data.current
+              item.milestone <= currentFlamePoint
                 ? Images.GiftCheersImg.src
                 : Images.GiftDisabledImg.src,
           }))}
+          setRedeemRewardModalOpen={setRedeemRewardModalOpen}
+          setCurrentShowReward={setCurrentShowReward}
         />
       </div>
     </FlameProgress>
   </ProgressWrapper>
 );
-const raveData = [
-  {
-    title: 'Join the rave',
-    current: 2,
-    total: 2,
-    description: 'Earn 2 flames just from joining the rave!',
-    id: 1,
-    condition: 2,
-    isFriend: false,
-  },
-  {
-    title: 'Invite a friend',
-    current: 6,
-    total: 10,
-    description:
-      'Earn 2 flames for every friend that joins the rave through your referral link. (cap at 5 friends) ',
-    id: 2,
-    condition: 2,
-    isFriend: true,
-    tooltip: `Use the "Share the rave" button below. A referral link will be generated for you. You'll get rewarded for every friend that joins the rave through your link.`,
-  },
-  {
-    title: 'Share your link',
-    current: 10,
-    total: 20,
-    description: 'Earn a star each time your friends open your referral link.',
-    id: 3,
-    condition: 3,
-    isFriend: true,
-    tooltip: `Use the "Share the rave" button below. A referral link will be generated for you. You'll get rewarded everytime someone opens your link! `,
-  },
-  {
-    title: 'Buy tickets',
-    current: 0,
-    total: 25,
-    description:
-      'Earn 5 flames when a ticket is purchased through your referral link!',
-    id: 4,
-    condition: 5,
-    isFriend: true,
-    tooltip: `After a friend has joined the rave through your referral link, you get rewarded when they purchase a ticket for this event. `,
-  },
-];
-const RaveList = () => (
-  <Row gutter={[15, 15]} style={{ position: 'relative' }}>
-    {/* <Ended>
+
+const RaveList = ({ list }: { list: GetRaveResponseQuestProps[] }) => {
+  const renderItemTooltip = (type: number) => {
+    if (type === RaveQuestType.SHARE) {
+      return (
+        <Tooltip title={RaveQuestShare} overlayClassName="custom-tooltip">
+          <img src={Images.TooltipIcon.src} alt="" />
+        </Tooltip>
+      );
+    }
+    if (type === RaveQuestType.BUYTICKET) {
+      return (
+        <Tooltip title={RaveQuestBuyTickets} overlayClassName="custom-tooltip">
+          <img src={Images.TooltipIcon.src} alt="" />
+        </Tooltip>
+      );
+    }
+    if (type === RaveQuestType.INVITE) {
+      return (
+        <Tooltip
+          title={RaveQuestInviteFriend}
+          overlayClassName="custom-tooltip"
+        >
+          <img src={Images.TooltipIcon.src} alt="" />
+        </Tooltip>
+      );
+    }
+    return null;
+  };
+
+  const renderFriendText = (type: number) => {
+    if (
+      type === RaveQuestType.SHARE ||
+      type === RaveQuestType.BUYTICKET ||
+      type === RaveQuestType.INVITE
+    ) {
+      return '/ friend';
+    }
+    return '';
+  };
+
+  return (
+    <Row gutter={[15, 15]} style={{ position: 'relative' }}>
+      {/* <Ended>
       <div className='content'>
         <img src={Images.ThankyouGifIcon.src} alt='thank-you' />
         <p>This rave has ended. </p>
         <p>Browse our other amazing events!</p>
       </div>
     </Ended> */}
-    {raveData.map((item) => (
-      <Col span={24} key={item.id} lg={12}>
-        <RaveItem>
-          <div className="head">
-            <span className="title">
-              {item.title}
-              {item.tooltip ? (
-                <Tooltip title={item.tooltip} overlayClassName="custom-tooltip">
-                  <img src={Images.TooltipIcon.src} alt="" />
-                </Tooltip>
-              ) : null}
-            </span>
-            <span className="badge">
-              {item.current} <span>/ {item.total}</span>
-            </span>
-          </div>
-          <p className="description">{item.description}</p>
-          <div className="flame">
-            + {item.condition} <FireIcon src={Images.FireGifIcon.src} />{' '}
-            {item.isFriend ? '/ friend' : ''}
-          </div>
-        </RaveItem>
-      </Col>
-    ))}
-  </Row>
-);
+      {list.map((item, index) => (
+        <Col span={24} key={`${item.name}-${index}`} lg={12}>
+          <RaveItem>
+            <div className="head">
+              <span className="title">
+                {item.name}
+                {renderItemTooltip(item.type)}
+              </span>
+              <span className="badge">
+                <span>{item.getTimes}</span>
+                <span>/ {item.limitUser}</span>
+              </span>
+            </div>
+            <p className="description">{item.description}</p>
+            <div className="flame">
+              + {item.flamePoint} <FireIcon src={Images.FireGifIcon.src} />{' '}
+              {renderFriendText(item.type)}
+            </div>
+          </RaveItem>
+        </Col>
+      ))}
+    </Row>
+  );
+};
 
 const MoreRaves = () => {
   const { lg } = useBreakpoint();
@@ -421,17 +442,33 @@ const Raves = ({
   setShowHaveJoinedRaveModal: (status: boolean) => void;
 }) => {
   const [open, setOpen] = useState(false);
+  const [redeemRewardModalOpen, setRedeemRewardModalOpen] =
+    useState<boolean>(false);
+  const [currentShowReward, setCurrentShowReward] =
+    useState<GetRaveResponseRewardListProps>({
+      name: '',
+      image: '',
+      milestone: 0,
+      stock: 0,
+      redeemed: false,
+    });
 
   return (
     <div>
-      <TipBar />
-      <ProgressContainer />
+      <TipBar
+        rewardData={raveData.reward || []}
+        redeemedUser={raveData.redeemedUsers}
+      />
+      <ProgressContainer
+        setCurrentShowReward={setCurrentShowReward}
+        setRedeemRewardModalOpen={setRedeemRewardModalOpen}
+        giftList={raveData.reward}
+        currentFlamePoint={raveData.user.flamePoint}
+      />
       <SectionTitle>Rave Description</SectionTitle>
-      <RaveDescription>
-        Embark on your rave journey to redeem your free drink and free ticket!
-      </RaveDescription>
+      <RaveDescription>{raveData.description || '-'}</RaveDescription>
       <SectionTitle>Quests</SectionTitle>
-      <RaveList />
+      <RaveList list={raveData.quest} />
       <JoinButton type="primary" onClick={() => setOpen(true)}>
         Join the Rave
       </JoinButton>
@@ -458,6 +495,35 @@ const Raves = ({
             </span>
           </Col>
         </HaveJoinedRaveModalContent>
+      </RavesPopUp>
+      <RavesPopUp
+        open={redeemRewardModalOpen}
+        onClose={() => setRedeemRewardModalOpen(false)}
+      >
+        <RedeemRewardModalContent>
+          <Col className="redeem-title">Redeem Reward</Col>
+          <Col className="redeem-img-box">
+            <div className="redeem-info">
+              <img
+                className="background"
+                src={Images.FireworksGifIcon.src}
+                alt=""
+              />
+              <div className="info">
+                <img
+                  className="info-img"
+                  src={currentShowReward.image}
+                  alt=""
+                />
+                <div className="info-name">{currentShowReward.name}</div>
+                <img className="left-icon" src={Images.WowGifIcon.src} alt="" />
+              </div>
+            </div>
+          </Col>
+          <Col className="redeem-button">
+            <Button>Redeem</Button>
+          </Col>
+        </RedeemRewardModalContent>
       </RavesPopUp>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { message } from 'antd';
+import { message, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
@@ -11,6 +12,7 @@ import {
   selectError,
   getRaveAction,
   selectRaveData,
+  selectActionButtonLoading,
 } from '@/slice/rave.slice';
 import Raves from '@/components/raves';
 
@@ -36,6 +38,7 @@ const RavesDetail = ({
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
+  const actionButtonLoading = useAppSelector(selectActionButtonLoading);
   const raveData = useAppSelector(selectRaveData);
 
   const [appCallJoinRaveParameters, setAppCallJoinRaveParameters] =
@@ -56,8 +59,10 @@ const RavesDetail = ({
   };
 
   useEffect(() => {
-    setJoinRaveButtonLoading(loading);
-  }, [loading]);
+    if (setJoinRaveButtonLoading) {
+      setJoinRaveButtonLoading(actionButtonLoading);
+    }
+  }, [actionButtonLoading]);
 
   useEffect(() => {
     if (error) {
@@ -86,24 +91,33 @@ const RavesDetail = ({
         } else {
           dispatch(getRaveAction(jsonResponse.eventId));
         }
+      } else {
+        dispatch(getRaveAction(eventId));
       }
     } catch (_) {}
   }, [appCallJoinRaveParameters]);
 
   useEffect(() => {
     (window as any).callJoinRave = callJoinRave;
-    dispatch(getRaveAction(eventId));
     return () => {
       dispatch(reset());
     };
   }, []);
 
   return (
-    <Raves
-      raveData={raveData}
-      showHaveJoinedRaveModal={showHaveJoinedRaveModal}
-      setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
-    />
+    <>
+      {(!loading && (
+        <Raves
+          raveData={raveData}
+          showHaveJoinedRaveModal={showHaveJoinedRaveModal}
+          setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
+        />
+      )) || (
+        <Spin spinning indicator={<LoadingOutlined spin />} size="large">
+          <div />
+        </Spin>
+      )}
+    </>
   );
 };
 
