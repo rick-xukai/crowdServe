@@ -94,6 +94,12 @@ import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
 import { logPageViewAction } from '@/slice/pageTrack.slice';
 import RavesPopUp from '@/components/ravesPopup';
 import RavesDetail from '@/pages/raves-detail';
+import {
+  getRaveAction,
+  joinRaveAction,
+  selectRaveData,
+  GetRaveResponseRewardListProps,
+} from '@/slice/rave.slice';
 
 interface CloseRavesPopUpProps {
   event: string;
@@ -131,6 +137,7 @@ const EventDetail = ({
   const eventTicketTypeData = useAppSelector(selectEventTicketTypeData);
   const eventDetailData = useAppSelector(selectEventDetailData);
   const eventMarket = useAppSelector(selectEventMarket);
+  const raveData = useAppSelector(selectRaveData);
 
   const [id, setEventId] = useState<string>('');
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
@@ -153,6 +160,9 @@ const EventDetail = ({
   const [joinRaveSuccess, setJoinRaveSuccess] = useState<boolean>(false);
   const [joinRaveButtonLoading, setJoinRaveButtonLoading] =
     useState<boolean>(false);
+  const [raveRewardList, setRaveRewardList] = useState<
+    GetRaveResponseRewardListProps[]
+  >([]);
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
