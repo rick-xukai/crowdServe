@@ -189,7 +189,7 @@ const EventDetail = ({
       label: (
         <div>
           <span>{Rave}</span>
-          <Tooltip title="Authenticity Guaranteed">
+          <Tooltip title="Rave">
             <QuestionCircleOutlined />
           </Tooltip>
         </div>

@@ -40,7 +40,7 @@ import {
   selectIsGetAllData,
   selectScrollValue,
   resetError,
-  resetListData,
+  // resetListData,
   selectError,
   selectmyRavesLoading,
   selectmyRavesData,
@@ -130,9 +130,9 @@ const MyRaves = () => {
       dispatch(setCurrentPage(currentPage + 1));
     }
   }, [isPageBottom]);
-  const goToRaveDetail = () => {
+  const goToRaveDetail = (slug: string) => () => {
     dispatch(setTabActiveKey(Rave));
-    router.push('/events/test-shopify-shipping-cllyn2nel0012qf2l9d2hrw9b');
+    router.push(RouterKeys.eventDetail.replace(':slug', slug));
   };
 
   const saveScrollValue = () => {
@@ -153,7 +153,7 @@ const MyRaves = () => {
       listRef.current.addEventListener('scroll', scrollListener, true);
     }
     return () => {
-      dispatch(resetListData());
+      // dispatch(resetListData());
       dispatch(resetError());
       if (listRef && listRef.current) {
         listRef.current.removeEventListener('scroll', scrollListener, true);
@@ -215,7 +215,7 @@ const MyRaves = () => {
                     <Col span={24} md={12} key={item.name}>
                       <RaveItem
                         status={matchStatus[item.status]}
-                        onClick={goToRaveDetail}
+                        onClick={goToRaveDetail(item.eventSlug)}
                       >
                         <div className='head'>
                           <span className='title'>{item.name}</span>
