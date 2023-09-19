@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { RootState } from "../app/store";
-import { verificationApi } from "../utils/func";
-import EventService from "../services/API/Event";
-import { EventDetailDescriptionImages } from "./myTickets.slice";
-import { Rave } from "@/constants/General";
+import { RootState } from '../app/store';
+import { verificationApi } from '../utils/func';
+import EventService from '../services/API/Event';
+import { EventDetailDescriptionImages } from './myTickets.slice';
+import { Rave, PrimaryMarket } from '@/constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -70,6 +70,8 @@ export interface EventDetailResponseType {
   descriptionImages: EventDetailDescriptionImages[];
   refundPolicy: number;
   descriptionShort: string;
+  raveSet: boolean;
+  raveStatus: number;
 }
 
 export interface EventTicketTypeResponseType {
@@ -113,7 +115,7 @@ export const getEventListAction = createAsyncThunk<
   {
     rejectValue: ErrorType;
   }
->("getEventList/getEventListAction", async (payload, { rejectWithValue }) => {
+>('getEventList/getEventListAction', async (payload, { rejectWithValue }) => {
   try {
     const response = await EventService.getEventList(payload);
     if (verificationApi(response)) {
@@ -142,7 +144,7 @@ export const getEventDetailAction = createAsyncThunk<
     rejectValue: ErrorType;
   }
 >(
-  "getEventDetail/getEventDetailAction",
+  'getEventDetail/getEventDetailAction',
   async (payload, { rejectWithValue }) => {
     try {
       const response = await EventService.getEventDetail(payload);
@@ -174,7 +176,7 @@ export const getEventTicketTypeAction = createAsyncThunk<
     rejectValue: ErrorType;
   }
 >(
-  "getEventTicketType/getEventTicketTypeAction",
+  'getEventTicketType/getEventTicketTypeAction',
   async (payload, { rejectWithValue }) => {
     try {
       const response = await EventService.getEventTicketType(payload);
@@ -205,7 +207,7 @@ export const getEventMarketAction = createAsyncThunk<
     rejectValue: ErrorType;
   }
 >(
-  "getEventMarket/getEventMarketAction",
+  'getEventMarket/getEventMarketAction',
   async (payload, { rejectWithValue }) => {
     try {
       const response = await EventService.getEventMarket(payload);
@@ -236,7 +238,7 @@ export const getEventListBannerAction = createAsyncThunk<
     rejectValue: ErrorType;
   }
 >(
-  "getEventListBanner/getEventListBannerAction",
+  'getEventListBanner/getEventListBannerAction',
   async (payload, { rejectWithValue }) => {
     try {
       const response = await EventService.getEventListBanner(payload);
@@ -308,9 +310,11 @@ const initialState: EventState = {
     descriptionImages: [],
     refundPolicy: 0,
     descriptionShort: '',
+    raveSet: false,
+    raveStatus: 0,
   },
   eventMarket: [],
-  tabActiveKey: Rave,
+  tabActiveKey: PrimaryMarket,
 };
 
 export const eventSlice = createSlice({
@@ -336,6 +340,8 @@ export const eventSlice = createSlice({
         descriptionImages: [],
         refundPolicy: 0,
         descriptionShort: '',
+        raveSet: false,
+        raveStatus: 0,
       };
     },
     resetError: (state) => {

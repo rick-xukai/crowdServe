@@ -644,9 +644,6 @@ const JoinRaveModalContent = styled.div`
     .content-banner {
       padding: 0;
       margin-top: 20px;
-      .banner-items {
-        justify-content: space-between;
-      }
     }
     .content-users {
       .users-count {
@@ -659,11 +656,17 @@ const JoinRaveModalContent = styled.div`
       }
     }
   }
+  @media (max-width: 375px) {
+    .free-icon {
+      left: -15px !important;
+      top: -20px !important;
+    }
+  }
 `;
 
 const JoinRaveModalBannerItem = styled.div`
   position: relative;
-  min-width: 164px;
+  width: 164px;
   border-radius: 8px;
   background: ${Colors.linearGradient3};
   padding: 4px;
@@ -681,7 +684,8 @@ const JoinRaveModalBannerItem = styled.div`
     img {
       width: 100%;
       height: 100%;
-      border-radius: 5px;
+      border-radius: 10px;
+      object-fit: contain;
     }
   }
   .item-name {
@@ -691,6 +695,11 @@ const JoinRaveModalBannerItem = styled.div`
     font-size: 14px;
     font-weight: 700;
     line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
   .free-icon {
     position: absolute;
