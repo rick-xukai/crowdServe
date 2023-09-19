@@ -328,7 +328,7 @@ const EventDetail = ({
   };
 
   useEffect(() => {
-    if (raveData.user.joined) {
+    if (!raveData.user.joined) {
       if (localStorage.getItem(LocalStorageKeys.joinRavePopupKey)) {
         const currentTime = new Date().getTime();
         const response: CloseRavesPopUpProps[] = JSON.parse(
