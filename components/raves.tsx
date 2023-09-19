@@ -1,6 +1,7 @@
 import { Col, Row, Grid, message, Tooltip, Button } from 'antd';
 import copy from 'copy-to-clipboard';
 import _ from 'lodash';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -34,12 +35,15 @@ import {
   YouMayNeed,
   HaveJoinedRaveModalContent,
   RedeemRewardModalContent,
+  RedeemRewardPopupContainer,
+  RedeemSuccessModalContent,
 } from '@/styles/raves.style';
 import {
   GetRaveResponseProps,
   GetRaveResponseQuestProps,
   GetRaveResponseRewardListProps,
   RaveQuestType,
+  selectActionButtonLoading,
 } from '@/slice/rave.slice';
 import { Images } from '@/theme';
 import {
@@ -287,7 +291,7 @@ const PopUpContent = ({
   inviteCode,
   image,
 }: {
-  inviteCode: number;
+  inviteCode: string;
   image: string;
 }) => {
   const postContent = 'Join me in this rave and win rewards together!';
@@ -451,14 +455,18 @@ const Raves = ({
   raveData,
   showHaveJoinedRaveModal,
   setShowHaveJoinedRaveModal,
-  setShowJoinRaveModal,
+  joinRaveRequest,
 }: {
   raveData: GetRaveResponseProps;
   showHaveJoinedRaveModal: boolean;
   setShowHaveJoinedRaveModal: (status: boolean) => void;
-  setShowJoinRaveModal: (status: boolean) => void;
+  joinRaveRequest: () => void;
 }) => {
-  const [sharePopupOpen, setSharePopupOpen] = useState(false);
+  const actionButtonLoading = useAppSelector(selectActionButtonLoading);
+
+  const [sharePopupOpen, setSharePopupOpen] = useState<boolean>(false);
+  const [redeemRewardSuccessOpen, setRedeemRewardSuccessOpen] =
+    useState<boolean>(false);
   const [redeemRewardModalOpen, setRedeemRewardModalOpen] =
     useState<boolean>(false);
   const [currentShowReward, setCurrentShowReward] =
@@ -470,6 +478,25 @@ const Raves = ({
       redeemed: false,
     });
   const eventDetailData = useAppSelector(selectEventDetailData);
+
+  const renderRedeemButton = () => {
+    const { user } = raveData;
+    if (currentShowReward.stock === 0) {
+      return (
+        <Button disabled className="fully-redeemed">
+          Fully redeemed
+        </Button>
+      );
+    }
+    if (user.flamePoint < currentShowReward.milestone) {
+      return (
+        <Button disabled className="need-more">
+          {currentShowReward.milestone - user.flamePoint} More Flames to redeem
+        </Button>
+      );
+    }
+    return <Button>Redeem</Button>;
+  };
 
   return (
     <div>
@@ -495,7 +522,12 @@ const Raves = ({
           Share the Rave
         </JoinButton>
       ) : (
-        <JoinButton type='primary' onClick={() => setShowJoinRaveModal(true)}>
+        <JoinButton
+          disabled={actionButtonLoading}
+          type="primary"
+          onClick={() => joinRaveRequest()}
+        >
+          {actionButtonLoading && <LoadingOutlined />}
           Join the Rave
         </JoinButton>
       )}
@@ -515,48 +547,69 @@ const Raves = ({
         onClose={() => setShowHaveJoinedRaveModal(false)}
       >
         <HaveJoinedRaveModalContent>
-          <Col className='content-mascotsIcon'>
-            <img src={Images.MascotsIcon.src} alt='' />
+          <Col className="content-mascotsIcon">
+            <img src={Images.MascotsIcon.src} alt="" />
           </Col>
-          <Col className='content-title'>You have joined the rave!</Col>
-          <Col className='content-count'>
+          <Col className="content-title">You have joined the rave!</Col>
+          <Col className="content-count">
             <span>
               <span>+ </span>2
             </span>
             <span>
-              <img src={Images.FireGifIcon.src} alt='' />
+              <img src={Images.FireGifIcon.src} alt="" />
             </span>
           </Col>
         </HaveJoinedRaveModalContent>
       </RavesPopUp>
-      <RavesPopUp
-        open={redeemRewardModalOpen}
-        onClose={() => setRedeemRewardModalOpen(false)}
-      >
-        <RedeemRewardModalContent>
-          <Col className='redeem-title'>Redeem Reward</Col>
-          <Col className='redeem-img-box'>
-            <div className='redeem-info'>
-              <img
-                className='background'
-                src={Images.FireworksGifIcon.src}
-                alt=''
-              />
-              <div className='info'>
+      <RedeemRewardPopupContainer>
+        <RavesPopUp
+          open={redeemRewardModalOpen}
+          onClose={() => setRedeemRewardModalOpen(false)}
+        >
+          <RedeemRewardModalContent>
+            <Col className="redeem-title">Redeem Reward</Col>
+            <Col className="redeem-name">{currentShowReward.name}</Col>
+            <Col className="redeem-img-box">
+              <div className="redeem-info">
                 <img
-                  className='info-img'
-                  src={currentShowReward.image}
-                  alt=''
+                  className="background"
+                  src={Images.FireworksGifIcon.src}
+                  alt=""
                 />
-                <div className='info-name'>{currentShowReward.name}</div>
-                <img className='left-icon' src={Images.WowGifIcon.src} alt='' />
+                <div className="info">
+                  <img
+                    className="info-img"
+                    src={currentShowReward.image}
+                    alt=""
+                  />
+                  <img
+                    className="left-icon"
+                    src={Images.WowGifIcon.src}
+                    alt=""
+                  />
+                </div>
               </div>
-            </div>
+            </Col>
+            <Col className="redeem-button">{renderRedeemButton()}</Col>
+          </RedeemRewardModalContent>
+        </RavesPopUp>
+      </RedeemRewardPopupContainer>
+      <RavesPopUp
+        open={redeemRewardSuccessOpen}
+        onClose={() => setRedeemRewardSuccessOpen(false)}
+      >
+        <RedeemSuccessModalContent>
+          <Col className="title-img">
+            <img src={Images.CheersGifIcon.src} alt="" />
           </Col>
-          <Col className='redeem-button'>
-            <Button>Redeem</Button>
+          <Col className="title">
+            Congratulations, you have redeemed a free drink!
           </Col>
-        </RedeemRewardModalContent>
+          <Col className="info">
+            The reward will be sent to your CrowdServe wallet in several
+            minutes.
+          </Col>
+        </RedeemSuccessModalContent>
       </RavesPopUp>
     </div>
   );

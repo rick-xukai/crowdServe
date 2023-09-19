@@ -13,6 +13,8 @@ import {
   getRaveAction,
   selectRaveData,
   selectActionButtonLoading,
+  GetRaveResponseProps,
+  redeemRaveRewardAction,
 } from '@/slice/rave.slice';
 import Raves from '@/components/raves';
 
@@ -48,9 +50,15 @@ const RavesDetail = ({
   const [showHaveJoinedRaveModal, setShowHaveJoinedRaveModal] =
     useState<boolean>(false);
 
-  const joinRaveRequest = async (id: string) => {
-    const response = await dispatch(joinRaveAction(id));
-    if (response.type !== joinRaveAction.fulfilled.toString()) {
+  const joinRaveRequest = async (id?: string) => {
+    const response = await dispatch(
+      joinRaveAction({
+        id: id || eventId,
+        data: { inviteCode: raveData.user.inviteCode },
+      })
+    );
+    if (response.type === joinRaveAction.fulfilled.toString()) {
+      dispatch(getRaveAction(id || eventId));
       setJoinRaveSuccess(true);
       setShowHaveJoinedRaveModal(true);
     }
@@ -68,6 +76,7 @@ const RavesDetail = ({
 
   useEffect(() => {
     if (error) {
+      setShowJoinRaveModal(false);
       message.open({
         content: error.message,
         className: 'error-message-event',
@@ -77,7 +86,7 @@ const RavesDetail = ({
 
   useEffect(() => {
     if (clickJoinRave) {
-      joinRaveRequest(eventId);
+      joinRaveRequest();
     }
   }, [clickJoinRave]);
 
@@ -93,8 +102,6 @@ const RavesDetail = ({
         } else {
           dispatch(getRaveAction(jsonResponse.eventId));
         }
-      } else {
-        dispatch(getRaveAction(eventId));
       }
     } catch (_) {}
   }, [appCallJoinRaveParameters]);
@@ -113,10 +120,10 @@ const RavesDetail = ({
           raveData={raveData}
           showHaveJoinedRaveModal={showHaveJoinedRaveModal}
           setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
-          setShowJoinRaveModal={setShowJoinRaveModal}
+          joinRaveRequest={joinRaveRequest}
         />
       )) || (
-        <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
+        <Spin spinning indicator={<LoadingOutlined spin />} size="large">
           <div />
         </Spin>
       )}

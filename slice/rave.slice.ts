@@ -20,7 +20,7 @@ export enum RaveQuestType {
 
 export interface GetRaveResponseUserProps {
   flamePoint: number;
-  inviteCode: number;
+  inviteCode: string;
   joined: boolean;
 }
 
@@ -86,7 +86,7 @@ export const getRaveAction = createAsyncThunk<
  */
 export const joinRaveAction = createAsyncThunk<
   { code: number; message: string },
-  string,
+  { id: string; data: { inviteCode: string } },
   {
     rejectValue: ErrorType;
   }
@@ -108,6 +108,40 @@ export const joinRaveAction = createAsyncThunk<
     } as ErrorType);
   }
 });
+
+/**
+ * Redeem Rave Reward
+ */
+export const redeemRaveRewardAction = createAsyncThunk<
+  { code: number; message: string },
+  { eventId: string; rewardId: string },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'redeemRaveReward/redeemRaveRewardAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await RaveService.redeemRaveReward(
+        payload.eventId,
+        payload.rewardId
+      );
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  }
+);
 
 interface RaveState {
   raveData: GetRaveResponseProps;
@@ -133,7 +167,7 @@ const initialState: RaveState = {
     redeemedUsers: 0,
     user: {
       flamePoint: 0,
-      inviteCode: 0,
+      inviteCode: '',
       joined: true,
     },
     reward: [],

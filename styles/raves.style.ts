@@ -532,6 +532,14 @@ export const RedeemRewardModalContent = styled.div`
     line-height: 32px;
     text-transform: uppercase;
   }
+  .redeem-name {
+    color: ${Colors.backgorund};
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 23px;
+    margin-top: 20px;
+  }
   .redeem-info {
     position: relative;
     height: 290px;
@@ -552,6 +560,7 @@ export const RedeemRewardModalContent = styled.div`
       border: 4px solid ${Colors.branding};
       background: ${Colors.backgorund};
       padding: 6px;
+      padding-bottom: 0;
       position: relative;
       .info-img {
         width: 100%;
@@ -576,7 +585,7 @@ export const RedeemRewardModalContent = styled.div`
   .redeem-button {
     text-align: center;
     .ant-btn {
-      width: 60%;
+      width: 80%;
       height: 45px;
       border-radius: 2px;
       background: ${Colors.branding};
@@ -589,6 +598,14 @@ export const RedeemRewardModalContent = styled.div`
         font-size: 18px;
         margin-right: 10px;
       }
+      &.fully-redeemed {
+        background: ${Colors.grayScale30};
+        color: ${Colors.grayScale40};
+      }
+      &.need-more {
+        background: ${Colors.brandingGray};
+        color: ${Colors.grayScale30};
+      }
     }
   }
   @media (max-width: 576px) {
@@ -600,5 +617,42 @@ export const RedeemRewardModalContent = styled.div`
         width: 100%;
       }
     }
+  }
+`;
+
+export const RedeemRewardPopupContainer = styled.div`
+  @media (min-width: 576px) {
+    .ant-modal {
+      max-width: 445px;
+    }
+  }
+`;
+
+export const RedeemSuccessModalContent = styled.div`
+  padding: 25px 22px;
+  .title-img {
+    text-align: center;
+    img {
+      width: 100px;
+      height: 100px;
+    }
+  }
+  .title {
+    margin-top: 16px;
+    color: ${Colors.grayScale70};
+    text-align: center;
+    font-family: Oswald;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    text-transform: uppercase;
+  }
+  .info {
+    color: ${Colors.grayScale50};
+    text-align: center;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 24px;
+    margin-top: 12px;
   }
 `;
