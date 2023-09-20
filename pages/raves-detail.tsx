@@ -58,6 +58,7 @@ const RavesDetail = ({
   const [appCallJsSendEventId, setAppCallJsSendEventId] = useState<string>('');
   const [redeemRewardSuccess, setRedeemRewardSuccess] =
     useState<boolean>(false);
+  const [appTestJs, setAppTestJs] = useState<string>('');
 
   const joinRaveRequest = async (id?: string) => {
     const response = await dispatch(
@@ -127,6 +128,7 @@ const RavesDetail = ({
           appCallJoinRaveParameters
         );
         setAppCallJsSendEventId(jsonResponse.eventId);
+        setAppTestJs(`${jsonResponse.platform}--${jsonResponse.version}`);
         cookies.setCookie(CookieKeys.userLoginToken, jsonResponse.userToken);
         cookies.setCookie(CookieKeys.appCallPlatform, jsonResponse.platform);
         cookies.setCookie(CookieKeys.appCallVersion, jsonResponse.version);
@@ -158,6 +160,9 @@ const RavesDetail = ({
             joinRaveRequest={joinRaveRequest}
             handleRedeemReward={handleRedeemReward}
           />
+          <Modal open={appTestJs !== ''}>
+            <div>{appTestJs}</div>
+          </Modal>
         </div>
       )) || (
         <Spin spinning indicator={<LoadingOutlined spin />} size="large">
