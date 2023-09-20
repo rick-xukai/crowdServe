@@ -70,6 +70,7 @@ import {
   resetEventDetailLoading,
   setTabActiveKey,
   selectTabActiveKey,
+  visitSharedLinkAction,
 } from '../../slice/event.slice';
 import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
@@ -364,7 +365,8 @@ const EventDetail = ({
   };
 
   useEffect(() => {
-    const { eventId } = router.query;
+    const { eventId, inviteCode }: any = router.query;
+
     if (eventId) {
       const parameterArr = (eventId as string).split('-');
       if (last(parameterArr)?.includes('previous=')) {
@@ -386,6 +388,19 @@ const EventDetail = ({
         setEventId(last(parameterArr) || '');
       } else {
         setEventCorrect(false);
+      }
+      if (inviteCode) {
+        dispatch(
+          visitSharedLinkAction({
+            eventId: last(parameterArr) || '',
+            payload: {
+              inviteCode,
+              userId: cookies.getCookie(CookieKeys.userLoginId) || 0,
+              sessionId:
+                localStorage.getItem(LocalStorageKeys.pageViewTrackKeys) || '',
+            },
+          })
+        );
       }
     }
   }, [router.isReady]);
