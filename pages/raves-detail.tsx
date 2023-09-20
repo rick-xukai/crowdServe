@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { message, Spin, Modal } from 'antd';
+import { message, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
+import { useRouter } from 'next/router';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
 import { CookieKeys } from '@/constants/Keys';
@@ -58,14 +59,15 @@ const RavesDetail = ({
   const [appCallJsSendEventId, setAppCallJsSendEventId] = useState<string>('');
   const [redeemRewardSuccess, setRedeemRewardSuccess] =
     useState<boolean>(false);
+  const router = useRouter();
+  const { inviteCode }: any = router.query;
 
   const joinRaveRequest = async (id?: string) => {
     const response = await dispatch(
       joinRaveAction({
         id: id || eventId,
         data: {
-          inviteCode:
-            (raveData && raveData.user && raveData.user.inviteCode) || '',
+          inviteCode: inviteCode || '',
         },
       })
     );
