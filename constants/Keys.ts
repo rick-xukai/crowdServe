@@ -11,6 +11,8 @@ export const CookieKeys = {
   userLoginToken: 'userLoginToken',
   userLoginEmail: 'userLoginEmail',
   userLoginId: 'userLoginId',
+  appCallPlatform: 'appCallPlatform',
+  appCallVersion: 'appCallVersion',
 };
 
 export const RouterKeys = {

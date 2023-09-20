@@ -134,15 +134,25 @@ export class RequestClientClass {
       if (userToken) {
         this.setHeaders({
           authorization: `${AuthorizationType.bearer} ${userToken}`,
-        })
+        });
       }
     }
+
+    const platform =
+      this.cookies.get(CookieKeys.appCallPlatform) ||
+      this.headers['x-app-platform'];
+    const version =
+      this.cookies.get(CookieKeys.appCallVersion) ||
+      this.headers['x-app-version'];
+
     const options: any = {
       baseURL: this.baseUrl,
       url: this.uri,
       ...defaultOptions,
       headers: {
         ...this.headers,
+        'x-app-platform': platform,
+        'x-app-version': version,
       },
       responseType: this.responseType,
       method,
@@ -203,5 +213,4 @@ export class RequestClientClass {
   doPatch() {
     return this.doMethod('PATCH');
   }
-
 }

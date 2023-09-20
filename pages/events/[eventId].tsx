@@ -114,7 +114,6 @@ const EventDetail = ({
   const openAppInIos = useRef<any>(null);
   const itemTabs = useRef<any>(null);
   const detailContentRef = useRef<any>(null);
-  const eventDetailContainer = useRef<any>(null);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { isLoaded } = useJsApiLoader({
@@ -354,10 +353,6 @@ const EventDetail = ({
   useEffect(() => {
     if (joinRaveSuccess) {
       setShowJoinRaveModal(false);
-      if (itemTabs.current) {
-        eventDetailContainer.current.scrollTop =
-          itemTabs.current.offsetTop + 500 || 0;
-      }
     }
   }, [joinRaveSuccess]);
 
@@ -504,7 +499,7 @@ const EventDetail = ({
             }}
           />
           {(!loading && (
-            <EventDetailContainer ref={eventDetailContainer}>
+            <EventDetailContainer>
               <div className="container-wrap">
                 <Col md={24} xs={0}>
                   <PageHearderResponsive />
@@ -989,7 +984,14 @@ const EventDetail = ({
                         >
                           <div className="gradient-box">
                             <div className="items-img">
-                              <img src={item.image} alt="" />
+                              <img
+                                src={item.image || Images.BackgroundLogo.src}
+                                alt=""
+                                onError={(e: any) => {
+                                  e.target.onerror = null;
+                                  e.target.src = Images.BackgroundLogo.src;
+                                }}
+                              />
                             </div>
                             <div className="item-name">{item.name}</div>
                             <img
