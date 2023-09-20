@@ -57,6 +57,25 @@ const getEventMarket = async (payload: GetEventMarketPayload) => {
   return response;
 };
 
+const visitSharedLink = async ({
+  eventId,
+  payload,
+}: {
+  eventId: string;
+  payload: {
+    inviteCode: string;
+    userId: number;
+    sessionId: string;
+  };
+}) => {
+  const uri = API.visitSharedLink.post.replace('{eventId}', eventId);
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .setAuthorizationStatus()
+    .doPost();
+  return response;
+};
 
 export default {
   getEventList,
@@ -64,4 +83,5 @@ export default {
   getEventDetail,
   getEventListBanner,
   getEventMarket,
+  visitSharedLink,
 };

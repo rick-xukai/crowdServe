@@ -4,7 +4,7 @@ import { RootState } from '../app/store';
 import { verificationApi } from '../utils/func';
 import EventService from '../services/API/Event';
 import { EventDetailDescriptionImages } from './myTickets.slice';
-import { Rave, PrimaryMarket } from '@/constants/General';
+import { PrimaryMarket } from '@/constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 
@@ -196,6 +196,43 @@ export const getEventTicketTypeAction = createAsyncThunk<
     }
   }
 );
+
+export const visitSharedLinkAction = createAsyncThunk<
+  {},
+  {
+    eventId: string;
+    payload: {
+      inviteCode: string;
+      userId: number;
+      sessionId: string;
+    };
+  },
+  {
+    rejectValue: ErrorType;
+  }
+>(
+  'getEventTicketType/visitSharedLinkAction',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await EventService.visitSharedLink(payload);
+      if (verificationApi(response)) {
+        return response.data;
+      }
+      return rejectWithValue({
+        message: response.message,
+      } as ErrorType);
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue({
+        message: err.response,
+      } as ErrorType);
+    }
+  }
+);
+
+;
 
 /**
  * Get event market

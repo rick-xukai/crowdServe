@@ -109,6 +109,9 @@ const API = {
   redeemRaveReward: {
     post: '/api/v1/rave/{eventId}/reward/{rewardId}',
   },
+  visitSharedLink: {
+    post: '/api/v1/rave/{eventId}/shared',
+  },
 };
 
 export default API;
