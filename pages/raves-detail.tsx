@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { message, Spin } from 'antd';
+import { message, Spin, Modal } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
@@ -13,8 +13,8 @@ import {
   getRaveAction,
   selectRaveData,
   selectActionButtonLoading,
-  GetRaveResponseProps,
   redeemRaveRewardAction,
+  GetRaveResponseRewardListProps,
 } from '@/slice/rave.slice';
 import Raves from '@/components/raves';
 
@@ -22,6 +22,8 @@ interface AppCallJoinRaveParameters {
   userToken: string;
   eventId: string;
   clickJoin: boolean;
+  platform: string;
+  version: string;
 }
 
 const RavesDetail = ({
@@ -37,7 +39,11 @@ const RavesDetail = ({
   eventId: string;
   setShowJoinRaveModal: (status: boolean) => void;
 }) => {
-  const cookies = useCookie([CookieKeys.userLoginToken]);
+  const cookies = useCookie([
+    CookieKeys.userLoginToken,
+    CookieKeys.appCallPlatform,
+    CookieKeys.appCallVersion,
+  ]);
   const dispatch = useAppDispatch();
 
   const error = useAppSelector(selectError);
@@ -49,18 +55,40 @@ const RavesDetail = ({
     useState<string>('');
   const [showHaveJoinedRaveModal, setShowHaveJoinedRaveModal] =
     useState<boolean>(false);
+  const [appCallJsSendEventId, setAppCallJsSendEventId] = useState<string>('');
+  const [redeemRewardSuccess, setRedeemRewardSuccess] =
+    useState<boolean>(false);
 
   const joinRaveRequest = async (id?: string) => {
     const response = await dispatch(
       joinRaveAction({
         id: id || eventId,
-        data: { inviteCode: raveData.user.inviteCode },
+        data: {
+          inviteCode:
+            (raveData && raveData.user && raveData.user.inviteCode) || '',
+        },
       })
     );
     if (response.type === joinRaveAction.fulfilled.toString()) {
       dispatch(getRaveAction(id || eventId));
-      setJoinRaveSuccess(true);
+      if (setJoinRaveSuccess) {
+        setJoinRaveSuccess(true);
+      }
       setShowHaveJoinedRaveModal(true);
+    }
+  };
+
+  const handleRedeemReward = async (
+    currentReward: GetRaveResponseRewardListProps
+  ) => {
+    const response = await dispatch(
+      redeemRaveRewardAction({
+        eventId: appCallJsSendEventId || eventId,
+        rewardId: currentReward.id,
+      })
+    );
+    if (response.type === redeemRaveRewardAction.fulfilled.toString()) {
+      setRedeemRewardSuccess(true);
     }
   };
 
@@ -76,7 +104,9 @@ const RavesDetail = ({
 
   useEffect(() => {
     if (error) {
-      setShowJoinRaveModal(false);
+      if (setShowJoinRaveModal) {
+        setShowJoinRaveModal(false);
+      }
       message.open({
         content: error.message,
         className: 'error-message-event',
@@ -96,11 +126,13 @@ const RavesDetail = ({
         const jsonResponse: AppCallJoinRaveParameters = JSON.parse(
           appCallJoinRaveParameters
         );
+        setAppCallJsSendEventId(jsonResponse.eventId);
         cookies.setCookie(CookieKeys.userLoginToken, jsonResponse.userToken);
+        cookies.setCookie(CookieKeys.appCallPlatform, jsonResponse.platform);
+        cookies.setCookie(CookieKeys.appCallVersion, jsonResponse.version);
+        dispatch(getRaveAction(jsonResponse.eventId));
         if (jsonResponse.clickJoin) {
           joinRaveRequest(jsonResponse.eventId);
-        } else {
-          dispatch(getRaveAction(jsonResponse.eventId));
         }
       }
     } catch (_) {}
@@ -116,12 +148,17 @@ const RavesDetail = ({
   return (
     <>
       {(!loading && (
-        <Raves
-          raveData={raveData}
-          showHaveJoinedRaveModal={showHaveJoinedRaveModal}
-          setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
-          joinRaveRequest={joinRaveRequest}
-        />
+        <div style={{ padding: (appCallJoinRaveParameters && 15) || 0 }}>
+          <Raves
+            raveData={raveData}
+            showHaveJoinedRaveModal={showHaveJoinedRaveModal}
+            redeemRewardSuccess={redeemRewardSuccess}
+            setRedeemRewardSuccess={setRedeemRewardSuccess}
+            setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
+            joinRaveRequest={joinRaveRequest}
+            handleRedeemReward={handleRedeemReward}
+          />
+        </div>
       )) || (
         <Spin spinning indicator={<LoadingOutlined spin />} size="large">
           <div />
