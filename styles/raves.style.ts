@@ -2,15 +2,16 @@ import styled from 'styled-components';
 import { Button, Modal } from 'antd';
 import { Colors } from '@/theme';
 
-export const TipBarWrapper = styled.div`
+export const TipBarWrapper = styled.div<{ isEnd: boolean }>`
   padding: 8px;
-  background: ${Colors.grayScale10};
+  background: ${(props) =>
+    props.isEnd ? Colors.grayScale90 : Colors.grayScale10};
   display: flex;
   align-items: center;
   gap: 10px;
   p {
     margin: 0;
-    color: ${Colors.grayScale70};
+    color: ${(props) => (props.isEnd ? Colors.white : Colors.grayScale70)};
     font-size: 15px;
     font-weight: 400;
     line-height: 21px;
@@ -139,6 +140,9 @@ export const ProgressBarWrapper = styled.div`
         right: -5px;
         top: -8px;
       }
+    }
+    .end {
+      background: ${Colors.linearGradient4};
     }
   }
 `;
