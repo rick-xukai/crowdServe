@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { message, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-
 import { useRouter } from 'next/router';
+
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
-import { CookieKeys } from '@/constants/Keys';
+import { CookieKeys, RouterKeys } from '@/constants/Keys';
 import {
   reset,
   joinRaveAction,
@@ -25,6 +25,7 @@ interface AppCallJoinRaveParameters {
   clickJoin: boolean;
   platform: string;
   version: string;
+  eventSlug: string;
 }
 
 const RavesDetail = ({
@@ -32,12 +33,14 @@ const RavesDetail = ({
   setJoinRaveSuccess,
   setJoinRaveButtonLoading,
   eventId,
+  eventSlug,
   setShowJoinRaveModal,
 }: {
   clickJoinRave: boolean;
   setJoinRaveSuccess: (status: boolean) => void;
   setJoinRaveButtonLoading: (status: boolean) => void;
   eventId: string;
+  eventSlug: string;
   setShowJoinRaveModal: (status: boolean) => void;
 }) => {
   const cookies = useCookie([
@@ -46,6 +49,8 @@ const RavesDetail = ({
     CookieKeys.appCallVersion,
   ]);
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { inviteCode }: any = router.query;
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
@@ -59,24 +64,31 @@ const RavesDetail = ({
   const [appCallJsSendEventId, setAppCallJsSendEventId] = useState<string>('');
   const [redeemRewardSuccess, setRedeemRewardSuccess] =
     useState<boolean>(false);
-  const router = useRouter();
-  const { inviteCode }: any = router.query;
+  const [appCallJsSendEventSlug, setAppCallJsSendEventSlug] =
+    useState<string>('');
 
   const joinRaveRequest = async (id?: string) => {
-    const response = await dispatch(
-      joinRaveAction({
-        id: id || eventId,
-        data: {
-          inviteCode: inviteCode || '',
-        },
-      })
-    );
-    if (response.type === joinRaveAction.fulfilled.toString()) {
-      dispatch(getRaveAction(id || eventId));
-      if (setJoinRaveSuccess) {
-        setJoinRaveSuccess(true);
+    if (cookies.getCookie(CookieKeys.userLoginToken)) {
+      const response = await dispatch(
+        joinRaveAction({
+          id: id || eventId,
+          data: {
+            inviteCode: inviteCode || '',
+          },
+        })
+      );
+      if (response.type === joinRaveAction.fulfilled.toString()) {
+        dispatch(getRaveAction(id || eventId));
+        if (setJoinRaveSuccess) {
+          setJoinRaveSuccess(true);
+        }
+        setShowHaveJoinedRaveModal(true);
       }
-      setShowHaveJoinedRaveModal(true);
+    } else {
+      router.push({
+        pathname: RouterKeys.login,
+        query: `redirect=${router.asPath}-previous=joinDetail`,
+      });
     }
   };
 
@@ -129,9 +141,12 @@ const RavesDetail = ({
           appCallJoinRaveParameters
         );
         setAppCallJsSendEventId(jsonResponse.eventId);
+        setAppCallJsSendEventSlug(jsonResponse.eventSlug);
         cookies.setCookie(CookieKeys.userLoginToken, jsonResponse.userToken);
-        cookies.setCookie(CookieKeys.appCallPlatform, jsonResponse.platform);
-        cookies.setCookie(CookieKeys.appCallVersion, jsonResponse.version);
+        if (jsonResponse.platform && jsonResponse.version) {
+          cookies.setCookie(CookieKeys.appCallPlatform, jsonResponse.platform);
+          cookies.setCookie(CookieKeys.appCallVersion, jsonResponse.version);
+        }
         dispatch(getRaveAction(jsonResponse.eventId));
         if (jsonResponse.clickJoin) {
           joinRaveRequest(jsonResponse.eventId);
@@ -152,6 +167,7 @@ const RavesDetail = ({
       {(!loading && (
         <div style={{ padding: (appCallJoinRaveParameters && 15) || 0 }}>
           <Raves
+            eventSlug={appCallJsSendEventSlug || eventSlug}
             raveData={raveData}
             showHaveJoinedRaveModal={showHaveJoinedRaveModal}
             redeemRewardSuccess={redeemRewardSuccess}

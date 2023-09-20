@@ -1,23 +1,23 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import _ from "lodash";
-import Router from "next/router";
-import { Row, Col, Input, message, Carousel } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
-import Image from "next/image";
-import { SearchOutlined } from "@ant-design/icons";
-import { isMobile } from "react-device-detect";
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import _ from 'lodash';
+import Router from 'next/router';
+import { Row, Col, Input, message, Carousel } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import Image from 'next/image';
+import { SearchOutlined } from '@ant-design/icons';
+import { isMobile } from 'react-device-detect';
 
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { RouterKeys } from "../constants/Keys";
-import { formatTimeStrByTimeString, formatLocation } from "../utils/func";
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { RouterKeys, SessionStorageKeys } from '../constants/Keys';
+import { formatTimeStrByTimeString, formatLocation } from '../utils/func';
 import {
   FormatTimeKeys,
   DefaultPageSize,
   DefaultEventListBannerPageSize,
   DefaultPage,
   ListPageScrollDifference,
-} from "../constants/General";
-import { Images } from "../theme";
+} from '../constants/General';
+import { Images } from '../theme';
 import {
   resetEventListData,
   selectEventListData,
@@ -29,7 +29,7 @@ import {
   selectEventListBanner,
   getEventListBannerAction,
   RaveStatus,
-} from "../slice/event.slice";
+} from '../slice/event.slice';
 import {
   setEventDataForAll,
   selectEventDataForAll,
@@ -46,21 +46,23 @@ import {
   resetEventRelatedState,
   setEventDataForSearch,
   selectEventDataForSearch,
-} from "../slice/eventCache.slice";
+} from '../slice/eventCache.slice';
 import {
   EventListContainer,
   EventItemContainer,
   DesktopEventItemContainer,
-} from "../styles/event.style";
-import PageHearderComponent from "../components/pageHearder";
-import OpenAppComponent from "../components/openAppComponent";
-import PageHearderResponsive from "../components/pageHearderResponsive";
-import PageBottomComponent from "../components/pageBottomComponent";
+} from '../styles/event.style';
+import PageHearderComponent from '../components/pageHearder';
+import OpenAppComponent from '../components/openAppComponent';
+import PageHearderResponsive from '../components/pageHearderResponsive';
+import PageBottomComponent from '../components/pageBottomComponent';
 
 const EventList = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const eventListRef = useRef<any>(null);
+  const inviteCodeForRave =
+    sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave) || '';
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -80,7 +82,7 @@ const EventList = () => {
   const [showSearchInput, setShowSearchInput] = useState<boolean>(false);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
   const [searchInputPlaceholder, setSearchInputPlaceholder] =
-    useState<string>("Search events");
+    useState<string>('Search events');
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -99,10 +101,10 @@ const EventList = () => {
 
   const searchInputChange = (value: string) => {
     if (!value) {
-      setSearchInputPlaceholder("Search events");
+      setSearchInputPlaceholder('Search events');
       dispatch(setEventDataForAll([]));
     }
-    eventListRef.current.addEventListener("scroll", scrollListener, true);
+    eventListRef.current.addEventListener('scroll', scrollListener, true);
     dispatch(resetEventRelatedState());
     dispatch(setSearchKeyword(value));
   };
@@ -116,18 +118,18 @@ const EventList = () => {
     if (searchKeyword) {
       return;
     }
-    setSearchInputPlaceholder("Search events");
+    setSearchInputPlaceholder('Search events');
   };
 
   useEffect(() => {
     if (!isFirstRender && error) {
       messageApi.open({
         content: error.message,
-        className: "error-message-event",
+        className: 'error-message-event',
       });
       if (eventListRef && eventListRef.current) {
         eventListRef.current.removeEventListener(
-          "scroll",
+          'scroll',
           scrollListener,
           true
         );
@@ -165,7 +167,7 @@ const EventList = () => {
           dispatch(setIsDisableRequest(true));
           if (eventListRef && eventListRef.current) {
             eventListRef.current.removeEventListener(
-              "scroll",
+              'scroll',
               scrollListener,
               true
             );
@@ -217,7 +219,7 @@ const EventList = () => {
       );
     }
     if (!isGetAllData && eventListRef && eventListRef.current) {
-      eventListRef.current.addEventListener("scroll", scrollListener, true);
+      eventListRef.current.addEventListener('scroll', scrollListener, true);
     }
     return () => {
       dispatch(resetEventListData());
@@ -225,7 +227,7 @@ const EventList = () => {
       dispatch(resetEventDetailLoading());
       if (eventListRef && eventListRef.current) {
         eventListRef.current.removeEventListener(
-          "scroll",
+          'scroll',
           scrollListener,
           true
         );
@@ -250,12 +252,18 @@ const EventList = () => {
   const renderFlame = (raveSet: boolean, raveStatus: RaveStatus) => {
     if (raveStatus === RaveStatus.end)
       // eslint-disable-next-line @next/next/no-img-element
-      return <img style={{ position: "absolute", right: 0 }} src={Images.FireDisabledIcon.src} alt="fire" />;
+      return (
+        <img
+          style={{ position: 'absolute', right: 0 }}
+          src={Images.FireDisabledIcon.src}
+          alt="fire"
+        />
+      );
     if (raveStatus === RaveStatus.inProgress)
-    return (
+      return (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          style={{ position: "absolute", right: 0 }}
+          style={{ position: 'absolute', right: 0 }}
           src={Images.FireGifIcon.src}
           alt="fire"
         />
@@ -317,7 +325,7 @@ const EventList = () => {
                         placeholder={searchInputPlaceholder}
                         prefix={<SearchOutlined />}
                         onChange={handleSearch}
-                        onFocus={() => setSearchInputPlaceholder("")}
+                        onFocus={() => setSearchInputPlaceholder('')}
                         onBlur={handleBlur}
                       />
                     </Col>
@@ -336,8 +344,12 @@ const EventList = () => {
                       onClick={() => {
                         Router.push(
                           RouterKeys.eventDetail.replace(
-                            ":slug",
-                            `${item.slug}-previous=events`
+                            ':slug',
+                            `${item.slug}${
+                              (inviteCodeForRave &&
+                                `?inviteCode=${inviteCodeForRave}`) ||
+                              ''
+                            }`
                           )
                         );
                         dispatch(setIsDisableRequest(true));
@@ -385,7 +397,7 @@ const EventList = () => {
                                       item.endTime,
                                       FormatTimeKeys.norm
                                     )}`) ||
-                                    "-"}
+                                    '-'}
                                 </div>
                               </Col>
                               <Col span={24} className="info-item">
@@ -405,7 +417,7 @@ const EventList = () => {
                                   className="info-item-icon"
                                 />
                                 <span className="info-description">
-                                  {item.organizerName || "-"}
+                                  {item.organizerName || '-'}
                                 </span>
                                 {renderFlame(item.raveSet, item.raveStatus)}
                               </Col>
@@ -432,7 +444,7 @@ const EventList = () => {
                     !loading && (
                       <Row className="no-event-row">
                         <Col span={24} className="no-event">
-                          <div style={{ margin: "auto", textAlign: "center" }}>
+                          <div style={{ margin: 'auto', textAlign: 'center' }}>
                             <Image
                               src={
                                 (searchKeyword && Images.NoSearchEventIcon) ||
@@ -442,8 +454,8 @@ const EventList = () => {
                             />
                             <p>
                               {(searchKeyword &&
-                                "Aoh, no matching events found.") ||
-                                "Oops! No upcoming events for now."}
+                                'Aoh, no matching events found.') ||
+                                'Oops! No upcoming events for now.'}
                             </p>
                           </div>
                         </Col>
@@ -457,7 +469,7 @@ const EventList = () => {
         <Col
           md={0}
           xs={24}
-          className={(isOpenAppShow && "page-main open-app") || "page-main"}
+          className={(isOpenAppShow && 'page-main open-app') || 'page-main'}
         >
           {(eventListBanner && eventListBanner.length && (
             <div className="carousel-banner">
@@ -503,7 +515,7 @@ const EventList = () => {
                         placeholder={searchInputPlaceholder}
                         prefix={<SearchOutlined />}
                         onChange={handleSearch}
-                        onFocus={() => setSearchInputPlaceholder("")}
+                        onFocus={() => setSearchInputPlaceholder('')}
                         onBlur={handleBlur}
                       />
                     </Col>
@@ -520,10 +532,11 @@ const EventList = () => {
                           onClick={() => {
                             Router.push(
                               RouterKeys.eventDetail.replace(
-                                ":slug",
-                                `${item.slug}&previous=${
-                                  window.location.hostname +
-                                  window.location.pathname
+                                ':slug',
+                                `${item.slug}${
+                                  (inviteCodeForRave &&
+                                    `?inviteCode=${inviteCodeForRave}`) ||
+                                  ''
                                 }`
                               )
                             );
@@ -565,7 +578,7 @@ const EventList = () => {
                                       item.endTime,
                                       FormatTimeKeys.norm
                                     )}`) ||
-                                    "-"}
+                                    '-'}
                                 </div>
                               </Col>
                               <Col span={24} className="info-item">
@@ -585,7 +598,7 @@ const EventList = () => {
                                   className="info-item-icon"
                                 />
                                 <span className="info-description">
-                                  {item.organizerName || "-"}
+                                  {item.organizerName || '-'}
                                 </span>
                                 {renderFlame(item.raveSet, item.raveStatus)}
                               </Col>
@@ -606,7 +619,7 @@ const EventList = () => {
                         <Row className="no-event-row">
                           <Col span={24} className="no-event">
                             <div
-                              style={{ margin: "auto", textAlign: "center" }}
+                              style={{ margin: 'auto', textAlign: 'center' }}
                             >
                               <Image
                                 src={
@@ -634,8 +647,12 @@ const EventList = () => {
                           onClick={() => {
                             Router.push(
                               RouterKeys.eventDetail.replace(
-                                ":slug",
-                                `${item.slug}-previous=events`
+                                ':slug',
+                                `${item.slug}${
+                                  (inviteCodeForRave &&
+                                    `?inviteCode=${inviteCodeForRave}`) ||
+                                  ''
+                                }`
                               )
                             );
                             dispatch(setIsDisableRequest(true));
@@ -676,7 +693,7 @@ const EventList = () => {
                                       item.endTime,
                                       FormatTimeKeys.norm
                                     )}`) ||
-                                    "-"}
+                                    '-'}
                                 </div>
                               </Col>
                               <Col span={24} className="info-item">
@@ -696,7 +713,7 @@ const EventList = () => {
                                   className="info-item-icon"
                                 />
                                 <span className="info-description">
-                                  {item.organizerName || "-"}
+                                  {item.organizerName || '-'}
                                 </span>
                                 {renderFlame(item.raveSet, item.raveStatus)}
                               </Col>
@@ -717,7 +734,7 @@ const EventList = () => {
                         <Row className="no-event-row">
                           <Col span={24} className="no-event">
                             <div
-                              style={{ margin: "auto", textAlign: "center" }}
+                              style={{ margin: 'auto', textAlign: 'center' }}
                             >
                               <Image
                                 src={

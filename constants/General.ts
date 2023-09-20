@@ -23,7 +23,7 @@ export const AppLandingPage = 'https://app.ticket-crowdserve.com/landing-page';
 export const AppHost = 'user.activated.cn';
 export const PrimaryMarket = 'Primary Market';
 export const PurchaseFromFan = 'Fan Resell';
-export const Rave = "Rave";
+export const Rave = 'Rave';
 export const MyTickets = 'My Tickets';
 export const MyEvents = 'My Events';
 export const MyCollectibles = 'My Collectibles';
@@ -56,8 +56,10 @@ export const ForgotPasswordAccountNotActivate =
 export const GoogleMapApiKeyDev = 'AIzaSyA2suiOjWXda3giLlDaKbH3XZh5rZtIoyU';
 export const GoogleMapApiKeyProd = 'AIzaSyCqzVq-mo37n0jfbkNk7K17ELw939KC8cw';
 export const RaveQuestShare = `Use the "Share the rave" button below. A referral link will be generated for you. You'll get rewarded everytime someone opens your link!`;
-export const RaveQuestBuyTickets = 'After a friend has joined the rave through your referral link, you get rewarded when they purchase a ticket for this event.';
+export const RaveQuestBuyTickets =
+  'After a friend has joined the rave through your referral link, you get rewarded when they purchase a ticket for this event.';
 export const RaveQuestInviteFriend = `Use the "Share the rave" button below. A referral link will be generated for you. You'll get rewarded for every friend that joins the rave through your link.`;
+export const JoinedUserAvatar = ['K', 'B', 'C', 'S', 'D', 'J'];
 
 export const TicketStatus = [
   {
