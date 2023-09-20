@@ -137,7 +137,7 @@ export const ProgressBarWrapper = styled.div`
       background: ${Colors.linearGradient2};
       img {
         position: absolute;
-        right: -5px;
+        right: -10px;
         top: -8px;
       }
     }
@@ -150,7 +150,9 @@ export const ProgressBarWrapper = styled.div`
 export const GiftItem = styled.div`
   position: absolute;
   top: -6px;
-  cursor: pointer;
+  @media (min-width: 1024px) {
+    cursor: pointer;
+  }
   p {
     margin: 0;
     color: ${Colors.white};
@@ -558,7 +560,6 @@ export const RedeemRewardModalContent = styled.div`
       z-index: -1;
     }
     .info {
-      width: 148px;
       margin: auto;
       border-radius: 8px;
       border: 4px solid ${Colors.branding};
@@ -567,7 +568,9 @@ export const RedeemRewardModalContent = styled.div`
       padding-bottom: 0;
       position: relative;
       .info-img {
-        width: 100%;
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
         border-radius: 8px;
       }
       .info-name {

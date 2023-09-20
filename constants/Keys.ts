@@ -6,6 +6,10 @@ export const LocalStorageKeys = {
   joinRavePopupKey: 'joinRavePopupKey',
 };
 
+export const SessionStorageKeys = {
+  inviteCodeForRave: 'inviteCodeForRave',
+};
+
 export const CookieKeys = {
   authUser: 'authUser',
   userLoginToken: 'userLoginToken',

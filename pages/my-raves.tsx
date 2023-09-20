@@ -45,7 +45,7 @@ import {
   selectmyRavesLoading,
   selectmyRavesData,
 } from '@/slice/myRaves.slice';
-import { RouterKeys } from '@/constants/Keys';
+import { RouterKeys, SessionStorageKeys } from '@/constants/Keys';
 
 const imgList = [
   'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687145233259-r06z.jpeg',
@@ -67,6 +67,8 @@ const MyRaves = () => {
   const { lg } = useBreakpoint();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const inviteCodeForRave =
+    sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave) || '';
   const currentPage = useAppSelector(selectCurrentPage);
   const isDisableRequest = useAppSelector(selectIsDisableRequest);
   const isGetAllData = useAppSelector(selectIsGetAllData);
@@ -96,20 +98,26 @@ const MyRaves = () => {
     if (isDisableRequest || isGetAllData) {
       return;
     }
-    dispatch(getMyRavesAction({ page: currentPage, size: 10 })).then((response: any) => {
-      if (response.type === getMyRavesAction.fulfilled.toString()) {
-        if (
-          !response.payload.length ||
-          response.payload.length < DefaultPageSize
-        ) {
-          dispatch(setIsGetAllData(true));
-          dispatch(setIsDisableRequest(true));
-          if (listRef && listRef.current) {
-            listRef.current.removeEventListener('scroll', scrollListener, true);
+    dispatch(getMyRavesAction({ page: currentPage, size: 10 })).then(
+      (response: any) => {
+        if (response.type === getMyRavesAction.fulfilled.toString()) {
+          if (
+            !response.payload.length ||
+            response.payload.length < DefaultPageSize
+          ) {
+            dispatch(setIsGetAllData(true));
+            dispatch(setIsDisableRequest(true));
+            if (listRef && listRef.current) {
+              listRef.current.removeEventListener(
+                'scroll',
+                scrollListener,
+                true
+              );
+            }
           }
         }
       }
-    });
+    );
   }, [currentPage]);
 
   useEffect(() => {
@@ -132,7 +140,11 @@ const MyRaves = () => {
   }, [isPageBottom]);
   const goToRaveDetail = (slug: string) => () => {
     dispatch(setTabActiveKey(Rave));
-    router.push(RouterKeys.eventDetail.replace(':slug', slug));
+    router.push(
+      `${RouterKeys.eventDetail.replace(':slug', slug)}${
+        (inviteCodeForRave && `?inviteCode=${inviteCodeForRave}`) || ''
+      }`
+    );
   };
 
   const saveScrollValue = () => {
@@ -172,12 +184,12 @@ const MyRaves = () => {
   return (
     <>
       {(loading && (
-        <div className='page-loading' ref={listRef}>
+        <div className="page-loading" ref={listRef}>
           <LoadingOutlined />
         </div>
       )) || (
         <PageContainer>
-          <div className='container-wrap'>
+          <div className="container-wrap">
             <Col md={24} xs={0}>
               <PageHearderResponsive saveScrollValue={saveScrollValue} />
             </Col>
@@ -187,12 +199,12 @@ const MyRaves = () => {
                 setMenuState={setMenuState}
               />
             </Col>
-            <Col className='page-main'>
+            <Col className="page-main">
               <PageTitle>Upcoming Raves</PageTitle>
               <Carousel autoplay>
                 {imgList.map((item) => (
                   <CarouselItem key={item}>
-                    <CarouselItemImg src={item} alt='' />
+                    <CarouselItemImg src={item} alt="" />
                   </CarouselItem>
                 ))}
               </Carousel>
@@ -201,7 +213,7 @@ const MyRaves = () => {
               <Row gutter={[16, 16]} ref={listRef}>
                 {isEmpty(data) ? (
                   <Empty>
-                    <img src={Images.MyRavesEmptyIcon.src} alt='empty' />
+                    <img src={Images.MyRavesEmptyIcon.src} alt="empty" />
                     <p>
                       {`You haven't joined any raves yet. Click `}
                       <a onClick={() => router.push(RouterKeys.eventList)}>
@@ -217,14 +229,14 @@ const MyRaves = () => {
                         status={matchStatus[item.status]}
                         onClick={goToRaveDetail(item.eventSlug)}
                       >
-                        <div className='head'>
-                          <span className='title'>{item.name}</span>
-                          <span className='badge'>
+                        <div className="head">
+                          <span className="title">{item.name}</span>
+                          <span className="badge">
                             {matchStatus[item.status]}
                           </span>
                         </div>
-                        <p className='description'>{item.description}</p>
-                        <div className='flame'>
+                        <p className="description">{item.description}</p>
+                        <div className="flame">
                           {item.status === RaveStatus.inProgress ? (
                             <FireIcon src={Images.FireGifIcon.src} />
                           ) : (

@@ -677,6 +677,7 @@ const JoinRaveModalBannerItem = styled.div`
     padding: 4px;
     background: ${Colors.black};
     border-radius: 5px;
+    height: 100%;
   }
   .items-img {
     height: 140px;
@@ -684,12 +685,13 @@ const JoinRaveModalBannerItem = styled.div`
     img {
       width: 100%;
       height: 100%;
-      border-radius: 10px;
-      object-fit: contain;
+      border-radius: 4px;
+      object-fit: cover;
     }
   }
   .item-name {
     margin-top: 10px;
+    margin-bottom: 5px;
     color: ${Colors.white};
     text-align: center;
     font-size: 14px;

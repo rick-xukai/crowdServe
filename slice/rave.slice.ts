@@ -164,7 +164,7 @@ interface RaveState {
 }
 
 const initialState: RaveState = {
-  loading: false,
+  loading: true,
   actionButtonLoading: false,
   redeemRewardLoading: false,
   error: null,
