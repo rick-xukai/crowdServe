@@ -61,19 +61,28 @@ const { useBreakpoint } = Grid;
 const TipBar = ({
   rewardData,
   redeemedUser,
+  isEnd,
 }: {
   rewardData: GetRaveResponseRewardListProps[];
   redeemedUser: number;
+  isEnd: boolean;
 }) => (
-  <TipBarWrapper>
+  <TipBarWrapper isEnd={isEnd}>
     <TipBarIcon src={Images.SmileIcon.src} alt='' />
-    <p>
-      {redeemedUser} ravers have claimed the reward! Only{' '}
-      <b>{(rewardData.length && rewardData[0].stock) || 0}</b>{' '}
-      {(rewardData.length && rewardData[0].name) || '-'} and{' '}
-      <b>{(rewardData.length && rewardData[1].stock) || 0}</b>{' '}
-      {(rewardData.length && rewardData[1].name) || '-'} left!
-    </p>
+    {isEnd ? (
+      <p>
+        The Rave already ended. 30 users participated in the rave and 20 ravers
+        got the rewards.
+      </p>
+    ) : (
+      <p>
+        {redeemedUser} ravers have claimed the reward! Only{' '}
+        <b>{(rewardData.length && rewardData[0].stock) || 0}</b>{' '}
+        {(rewardData.length && rewardData[0].name) || '-'} and{' '}
+        <b>{(rewardData.length && rewardData[1].stock) || 0}</b>{' '}
+        {(rewardData.length && rewardData[1].name) || '-'} left!
+      </p>
+    )}
   </TipBarWrapper>
 );
 
@@ -83,47 +92,53 @@ const ProgressBar = ({
   gifts,
   setRedeemRewardModalOpen,
   setCurrentShowReward,
+  isEnd,
 }: {
   current: number;
   total: number;
   gifts: GetRaveResponseRewardListProps[];
   setRedeemRewardModalOpen: (status: boolean) => void;
   setCurrentShowReward: (data: GetRaveResponseRewardListProps) => void;
+  isEnd: boolean;
 }) => {
   const { md } = useBreakpoint();
   return (
     <ProgressBarWrapper>
       <div className='progress-content'>
         <div
-          className='progress'
+          className={isEnd ? 'end progress' : 'progress'}
           style={{ width: `${(current / total) * 100}%` }}
         >
-          <FireIcon src={Images.FireGifIcon.src} />
+          <FireIcon
+            style={{ marginTop: isEnd ? 2 : '' }}
+            src={isEnd ? Images.FireDisabledIcon.src : Images.FireGifIcon.src}
+          />
         </div>
-        {gifts.map((item) => {
-          const gotGifts = item.img === Images.GiftCheersImg.src;
-          return (
-            <GiftItem
-              onClick={() => {
-                setRedeemRewardModalOpen(true);
-                setCurrentShowReward(item);
-              }}
-              style={{
-                left: `${(item.milestone / total) * 100 - (md ? 5 : 10)}%`,
-                top: gotGifts ? -12 : '',
-              }}
-              key={item.milestone}
-            >
-              <GiftImg
-                src={item.img}
-                style={{
-                  width: gotGifts ? 42 : '',
+        {!isEnd &&
+          gifts.map((item) => {
+            const gotGifts = item.img === Images.GiftCheersImg.src;
+            return (
+              <GiftItem
+                onClick={() => {
+                  setRedeemRewardModalOpen(true);
+                  setCurrentShowReward(item);
                 }}
-              />
-              {gotGifts ? null : <p>{item.milestone} Flames</p>}
-            </GiftItem>
-          );
-        })}
+                style={{
+                  left: `${(item.milestone / total) * 100 - (md ? 5 : 10)}%`,
+                  top: gotGifts ? -12 : '',
+                }}
+                key={item.milestone}
+              >
+                <GiftImg
+                  src={item.img}
+                  style={{
+                    width: gotGifts ? 42 : '',
+                  }}
+                />
+                {gotGifts ? null : <p>{item.milestone} Flames</p>}
+              </GiftItem>
+            );
+          })}
       </div>
     </ProgressBarWrapper>
   );
@@ -134,11 +149,13 @@ const ProgressContainer = ({
   currentFlamePoint,
   setRedeemRewardModalOpen,
   setCurrentShowReward,
+  isEnd,
 }: {
   giftList: GetRaveResponseRewardListProps[];
   currentFlamePoint: number;
   setRedeemRewardModalOpen: (status: boolean) => void;
   setCurrentShowReward: (data: GetRaveResponseRewardListProps) => void;
+  isEnd: boolean;
 }) => (
   <ProgressWrapper>
     <FlameTotal>
@@ -168,6 +185,7 @@ const ProgressContainer = ({
           }))}
           setRedeemRewardModalOpen={setRedeemRewardModalOpen}
           setCurrentShowReward={setCurrentShowReward}
+          isEnd={isEnd}
         />
       </div>
     </FlameProgress>
@@ -490,9 +508,10 @@ const Raves = ({
       redeemed: false,
     });
   const eventDetailData = useAppSelector(selectEventDetailData);
+  const { user, status } = raveData;
+  const isEnd = status === RaveStatus.end;
 
   const renderRedeemButton = () => {
-    const { user } = raveData;
     if (currentShowReward.stock === 0) {
       return (
         <Button disabled className='fully-redeemed'>
@@ -523,12 +542,14 @@ const Raves = ({
       <TipBar
         rewardData={raveData.reward || []}
         redeemedUser={raveData.redeemedUsers}
+        isEnd={isEnd}
       />
       <ProgressContainer
         setCurrentShowReward={setCurrentShowReward}
         setRedeemRewardModalOpen={setRedeemRewardModalOpen}
         giftList={raveData.reward}
         currentFlamePoint={raveData.user.flamePoint}
+        isEnd={isEnd}
       />
       <SectionTitle>Rave Description</SectionTitle>
       <RaveDescription>{raveData.description || '-'}</RaveDescription>
@@ -537,11 +558,12 @@ const Raves = ({
         list={raveData.quest}
         isEnd={raveData.status === RaveStatus.end}
       />
-      {raveData.user.joined ? (
+      {raveData.user.joined && !isEnd ? (
         <JoinButton type='primary' onClick={() => setSharePopupOpen(true)}>
           Share the Rave
         </JoinButton>
-      ) : (
+      ) : null}
+      {!raveData.user.joined && !isEnd ? (
         <JoinButton
           disabled={actionButtonLoading}
           type='primary'
@@ -550,7 +572,7 @@ const Raves = ({
           {actionButtonLoading && <LoadingOutlined />}
           Join the Rave
         </JoinButton>
-      )}
+      ) : null}
       <SectionTitle>More Raves Coming Soon</SectionTitle>
       <MoreRaves />
       <RavesPopUp
