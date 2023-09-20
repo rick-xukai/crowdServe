@@ -199,8 +199,9 @@ export const raveSlice = createSlice({
       .addCase(joinRaveAction.pending, (state) => {
         state.actionButtonLoading = true;
       })
-      .addCase(joinRaveAction.fulfilled, (state) => {
+      .addCase(joinRaveAction.fulfilled, (state, action) => {
         state.actionButtonLoading = false;
+        state.joinRaveResponse = action.payload;
       })
       .addCase(joinRaveAction.rejected, (state, action) => {
         state.actionButtonLoading = false;
