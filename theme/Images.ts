@@ -99,9 +99,12 @@ import CopyIcon from '../static/images/copy.png';
 import CopySuccessIcon from '../static/images/copy-success.png';
 import FreeIcon from '../static/images/free-icon.svg';
 import MascotsIcon from '../static/images/mascots-icon.svg';
-import FireDisabledIcon from "../static/images/fire-disabled.png";
-import MyRavesEmptyIcon from "../static/images/my-raves-empty.png";
+import FireDisabledIcon from '../static/images/fire-disabled.png';
+import MyRavesEmptyIcon from '../static/images/my-raves-empty.png';
 import TooltipIcon from '../static/images/tooltip.png';
+import GiftTicketImg from '../static/images/gift-ticket.png';
+import GiftTicketDisabledImg from '../static/images/gift-ticket-disabled.png';
+import GiftCheersDisabledImg from '../static/images/gift-cheers-disabled.png';
 
 const Images = {
   Safety,
@@ -208,6 +211,9 @@ const Images = {
   MascotsIcon,
   MyRavesEmptyIcon,
   TooltipIcon,
+  GiftTicketImg,
+  GiftTicketDisabledImg,
+  GiftCheersDisabledImg,
 };
 
 export default Images;

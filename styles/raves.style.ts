@@ -22,6 +22,8 @@ export const TipBarIcon = styled.img`
   width: 24px;
   height: 24px;
   flex-shrink: 0;
+  user-select: none;
+  user-drag: none;
 `;
 
 export const ProgressWrapper = styled.div`
@@ -31,6 +33,7 @@ export const ProgressWrapper = styled.div`
   @media (min-width: 768px) {
     margin-top: 32px;
   }
+
 `;
 
 export const FlameTotal = styled.div`
@@ -39,7 +42,8 @@ export const FlameTotal = styled.div`
   padding: 6px;
   display: flex;
   align-items: center;
-
+  user-drag: none;
+  user-select: none;
   .container {
     display: flex;
     align-items: center;
@@ -48,15 +52,17 @@ export const FlameTotal = styled.div`
     height: 100%;
     padding: 10px 15px;
     position: relative;
+    user-select: none;
+    user-drag: none;
   }
   .total {
     display: flex;
     justify-content: center;
     gap: 7px;
     min-width: 40px;
-
     align-items: center;
-
+    user-select: none;
+    user-drag: none;
     p {
       color: ${Colors.white};
       margin: 0;
@@ -72,11 +78,15 @@ export const StarIcon = styled.img`
   width: 25px;
   height: 25px;
   flex-shrink: 0;
+  user-select: none;
+  user-drag: none;
 `;
 
 export const FireIcon = styled.img`
   width: 20px;
   flex-shrink: 0;
+  user-select: none;
+  user-drag: none;
 `;
 
 export const FlameProgress = styled.div`
@@ -88,6 +98,8 @@ export const FlameProgress = styled.div`
     width: 100%;
     height: 100%;
     position: relative;
+    user-select: none;
+    user-drag: none;
   }
 `;
 
@@ -97,21 +109,27 @@ export const Border = styled.img`
   position: absolute;
   left: 0;
   top: 0;
+  user-select: none;
+  user-drag: none;
 `;
 
-export const CorderBorderLeft = styled.img`
+export const CornerBorderLeft = styled.img`
   position: absolute;
   left: 0;
   bottom: 0;
   width: 24px;
+  user-select: none;
+  user-drag: none;
 `;
 
-export const CorderBorderRight = styled.img`
+export const CornerBorderRight = styled.img`
   position: absolute;
   right: 0;
   bottom: 0;
   width: 24px;
   transform: rotate(-90deg);
+  user-select: none;
+  user-drag: none;
 `;
 
 export const ProgressBarWrapper = styled.div`
@@ -285,6 +303,7 @@ export const PlaceHolderItem = styled.div`
 export const PlaceHolderImg = styled.img`
   width: 100%;
   height: 100%;
+  user-drag: none;
 `;
 
 export const LockImg = styled.img`
@@ -293,6 +312,7 @@ export const LockImg = styled.img`
   top: 50%;
   transform: translate(-50%, -50%);
   width: 30px;
+  user-drag: none;
 `;
 
 export const PopUpContainer = styled(Modal)`
@@ -465,6 +485,7 @@ export const Ended = styled.div`
   backdrop-filter: blur(4px);
   z-index: 2;
   border-radius: 4px;
+  user-select: none;
   .content {
     position: absolute;
     top: 50%;
@@ -475,6 +496,8 @@ export const Ended = styled.div`
       display: block;
       margin: auto;
       margin-bottom: 16px;
+      user-select: none;
+      user-drag: none;
     }
     p {
       margin: 0;

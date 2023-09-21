@@ -8,8 +8,8 @@ import { useEffect, useState } from 'react';
 import RavesPopUp from './ravesPopup';
 import {
   Border,
-  CorderBorderLeft,
-  CorderBorderRight,
+  CornerBorderLeft,
+  CornerBorderRight,
   Ended,
   FireIcon,
   FlameProgress,
@@ -105,21 +105,34 @@ const ProgressBar = ({
   isEnd: boolean;
 }) => {
   const { md } = useBreakpoint();
+  const percent =
+    current >= total ? 100 : ((!current ? 0.5 : current) / total) * 100;
+  const steps = gifts.filter((item) => item.milestone < current);
+  let fireIconSize = 20;
+  steps.map(() => {
+    fireIconSize += 5;
+  });
+
   return (
     <ProgressBarWrapper>
       <div className="progress-content">
         <div
           className={isEnd ? 'end progress' : 'progress'}
-          style={{ width: `${(current / total) * 100}%` }}
+          style={{ width: `${percent}%` }}
         >
           <FireIcon
-            style={{ marginTop: isEnd ? 2 : '' }}
+            style={{
+              width: fireIconSize,
+              position: 'absolute',
+              top: '30%',
+              transform: 'translateY(-50%)',
+            }}
             src={isEnd ? Images.FireDisabledIcon.src : Images.FireGifIcon.src}
           />
         </div>
         {!isEnd &&
-          gifts.map((item) => {
-            const gotGifts = item.img === Images.GiftCheersImg.src;
+          gifts.map((item, index) => {
+            const gotGifts = item.milestone <= current;
             return (
               <GiftItem
                 onClick={() => {
@@ -128,14 +141,22 @@ const ProgressBar = ({
                 }}
                 style={{
                   left: `${(item.milestone / total) * 100 - (md ? 5 : 10)}%`,
-                  top: gotGifts ? -12 : '',
+                  top: gotGifts
+                    ? index !== 0 && !item.redeemed
+                      ? -15
+                      : -12
+                    : '',
                 }}
                 key={item.milestone}
               >
                 <GiftImg
                   src={item.img}
                   style={{
-                    width: gotGifts ? 42 : '',
+                    width: gotGifts
+                      ? index !== 0 && !item.redeemed
+                        ? 50
+                        : 42
+                      : '',
                   }}
                 />
                 {gotGifts ? null : <p>{item.milestone} Flames</p>}
@@ -173,19 +194,32 @@ const ProgressContainer = ({
       </div>
     </FlameTotal>
     <FlameProgress>
-      <div className="content">
-        <CorderBorderLeft src={Images.CornerBorderImg.src} />
-        <CorderBorderRight src={Images.CornerBorderImg.src} />
+      <div className='content'>
+        <CornerBorderLeft src={Images.CornerBorderImg.src} />
+        <CornerBorderRight src={Images.CornerBorderImg.src} />
         <ProgressBar
           current={currentFlamePoint}
           total={_.sumBy(giftList, 'milestone')}
-          gifts={giftList.map((item) => ({
-            ...item,
-            img:
-              item.milestone <= currentFlamePoint
-                ? Images.GiftCheersImg.src
-                : Images.GiftDisabledImg.src,
-          }))}
+          gifts={giftList.map((item, index) => {
+            const getImg = () => {
+
+              if (item.milestone <= currentFlamePoint) {
+                if (index === 0)
+                  return item.redeemed
+                    ? Images.GiftCheersDisabledImg.src
+                    : Images.GiftCheersImg.src;
+                return item.redeemed
+                  ? Images.GiftTicketDisabledImg.src
+                  : Images.GiftTicketImg.src;
+              }
+              return Images.GiftDisabledImg.src;
+            };
+
+            return {
+              ...item,
+              img: getImg(),
+            };
+          })}
           setRedeemRewardModalOpen={setRedeemRewardModalOpen}
           setCurrentShowReward={setCurrentShowReward}
           isEnd={isEnd}
