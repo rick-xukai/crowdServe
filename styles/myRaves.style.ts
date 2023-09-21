@@ -71,6 +71,9 @@ export const RaveItem = styled.div<{ status: 'ongoing' | 'end' }>`
   padding: 20px;
   border-radius: 4px;
   cursor: pointer;
+  @media (min-width: 768px) {
+    height: 156px;
+  }
   .head {
     display: flex;
     justify-content: space-between;
@@ -122,6 +125,11 @@ export const RaveItem = styled.div<{ status: 'ongoing' | 'end' }>`
     padding: 4px 10px;
     gap: 4px;
     border-radius: 34px;
+    color: ${Colors.white};
+    @media (min-width: 768px) {
+      position: absolute;
+      bottom: 20px;
+    }
   }
 `;
 
@@ -152,6 +160,7 @@ export const Empty = styled.div`
     line-height: 21px;
     margin-top: 15px;
     text-align: center;
+    color: ${Colors.white};
     a {
       color: ${Colors.branding};
       :hover {
