@@ -1282,7 +1282,9 @@ iframe {
 
 .custom-tooltip{
   width: 260px;
-  .ant-tooltip-inner{
-    white-space: break-spaces;
+  .ant-tooltip-content{
+    .ant-tooltip-inner{
+      white-space: break-spaces !important;
+    }
   }
 }
