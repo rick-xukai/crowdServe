@@ -68,7 +68,10 @@ const MyRaves = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const inviteCodeForRave =
-    sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave) || '';
+    typeof window !== 'undefined' && sessionStorage.getItem(
+      SessionStorageKeys.inviteCodeForRave
+    ) || '';
+
   const currentPage = useAppSelector(selectCurrentPage);
   const isDisableRequest = useAppSelector(selectIsDisableRequest);
   const isGetAllData = useAppSelector(selectIsGetAllData);
