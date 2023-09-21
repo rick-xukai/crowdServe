@@ -60,6 +60,13 @@ export const RaveQuestBuyTickets =
   'After a friend has joined the rave through your referral link, you get rewarded when they purchase a ticket for this event.';
 export const RaveQuestInviteFriend = `Use the "Share the rave" button below. A referral link will be generated for you. You'll get rewarded for every friend that joins the rave through your link.`;
 export const JoinedUserAvatar = ['K', 'B', 'C', 'S', 'D', 'J'];
+export const RAVE_UPCOMING = 1091;
+export const RAVE_ONGOING = 1092;
+export const RAVE_ENDED = 1093;
+export const RAVE_NOT_JOINED = 1094;
+export const RAVE_REWARD_OUT_OF_STOCK = 1095;
+export const RAVE_REWARD_ALREADY_REDEEMED = 1096;
+export const RAVE_REWARD_FLAME_NOT_ENOUGH = 1097;
 
 export const TicketStatus = [
   {

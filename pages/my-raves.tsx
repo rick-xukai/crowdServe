@@ -234,7 +234,15 @@ const MyRaves = () => {
                   </Empty>
                 ) : (
                   data.map((item) => (
-                    <Col span={24} md={12} key={item.name}>
+                    <Col
+                      span={24}
+                      md={12}
+                      key={item.name}
+                      style={{
+                        display:
+                          (item.status === RaveStatus.end && 'none') || 'block',
+                      }}
+                    >
                       <RaveItem
                         status={matchStatus[item.status]}
                         onClick={goToRaveDetail(item.eventSlug)}

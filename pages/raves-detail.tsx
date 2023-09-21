@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { message, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
+import styled from 'styled-components';
 
+import { bodyOverflow } from '@/utils/func';
+import { Colors } from '@/theme';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
+import { RAVE_ENDED } from '@/constants/General';
 import { CookieKeys, RouterKeys } from '@/constants/Keys';
 import {
   reset,
@@ -27,6 +31,17 @@ interface AppCallJoinRaveParameters {
   version: string;
   eventSlug: string;
 }
+
+const RaveDetailContent = styled.div`
+  .ant-spin-nested-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: ${Colors.backgorund};
+  }
+`;
 
 const RavesDetail = ({
   clickJoinRave,
@@ -121,6 +136,15 @@ const RavesDetail = ({
       if (setShowJoinRaveModal) {
         setShowJoinRaveModal(false);
       }
+      if (error.code === RAVE_ENDED) {
+        message.open({
+          content: (
+            <div>This rave has ended. Browse our other amazing events!</div>
+          ),
+          className: 'error-message-event rave-end',
+        });
+        return;
+      }
       message.open({
         content: error.message,
         className: 'error-message-event',
@@ -156,6 +180,14 @@ const RavesDetail = ({
   }, [appCallJoinRaveParameters]);
 
   useEffect(() => {
+    if (loading) {
+      bodyOverflow('hidden');
+    } else {
+      bodyOverflow('scroll');
+    }
+  }, [loading]);
+
+  useEffect(() => {
     (window as any).callJoinRave = callJoinRave;
     dispatch(getRaveAction(eventId));
     return () => {
@@ -164,26 +196,25 @@ const RavesDetail = ({
   }, []);
 
   return (
-    <>
-      {(!loading && (
-        <div style={{ padding: (appCallJoinRaveParameters && 15) || 0 }}>
-          <Raves
-            eventSlug={appCallJsSendEventSlug || eventSlug}
-            raveData={raveData}
-            showHaveJoinedRaveModal={showHaveJoinedRaveModal}
-            redeemRewardSuccess={redeemRewardSuccess}
-            setRedeemRewardSuccess={setRedeemRewardSuccess}
-            setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
-            joinRaveRequest={joinRaveRequest}
-            handleRedeemReward={handleRedeemReward}
-          />
-        </div>
-      )) || (
-        <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
+    <RaveDetailContent
+      style={{ padding: (appCallJoinRaveParameters && 15) || 0 }}
+    >
+      <Raves
+        eventSlug={appCallJsSendEventSlug || eventSlug}
+        raveData={raveData}
+        showHaveJoinedRaveModal={showHaveJoinedRaveModal}
+        redeemRewardSuccess={redeemRewardSuccess}
+        setRedeemRewardSuccess={setRedeemRewardSuccess}
+        setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
+        joinRaveRequest={joinRaveRequest}
+        handleRedeemReward={handleRedeemReward}
+      />
+      {loading && appCallJoinRaveParameters && (
+        <Spin spinning indicator={<LoadingOutlined spin />} size="large">
           <div />
         </Spin>
       )}
-    </>
+    </RaveDetailContent>
   );
 };
 

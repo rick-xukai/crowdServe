@@ -436,7 +436,6 @@ const EventDetail = ({
     }
     if (eventDetailData.raveSet) {
       dispatch(getRaveAction(id));
-      dispatch(setTabActiveKey(Rave));
     }
   }, [eventDetailData]);
 
@@ -483,9 +482,6 @@ const EventDetail = ({
   }, [id]);
 
   useEffect(() => {
-    // if (window.location.search.includes('previous=events')) {
-    //   localStorage.removeItem(LocalStorageKeys.joinRaveNotLogin);
-    // }
     if (!localStorage.getItem(LocalStorageKeys.pageViewTrackKeys)) {
       localStorage.setItem(
         LocalStorageKeys.pageViewTrackKeys,

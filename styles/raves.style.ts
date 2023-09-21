@@ -33,7 +33,6 @@ export const ProgressWrapper = styled.div`
   @media (min-width: 768px) {
     margin-top: 32px;
   }
-
 `;
 
 export const FlameTotal = styled.div`
@@ -506,7 +505,7 @@ export const Ended = styled.div`
       font-size: 18px;
       font-weight: 700;
       line-height: 25px;
-      color: ${Colors.white}
+      color: ${Colors.white};
     }
   }
 `;
