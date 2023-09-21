@@ -56,7 +56,7 @@ import {
   LinkCopied,
 } from '@/constants/General';
 import { RouterKeys } from '@/constants/Keys';
-import { RaveStatus, selectEventDetailData } from '@/slice/event.slice';
+import { RaveStatus } from '@/slice/event.slice';
 import { useAppSelector } from '@/app/hooks';
 
 const { useBreakpoint } = Grid;
@@ -106,11 +106,11 @@ const ProgressBar = ({
 }) => {
   const { md } = useBreakpoint();
   const percent =
-    current >= total ? 100 : ((!current ? 0.2 : current) / total) * 100;
+    current >= total ? 99 : ((!current ? 0.2 : current) / total) * 100;
   const steps = gifts.filter((item) => item.milestone < current);
   let fireIconSize = 22;
   steps.map(() => {
-    fireIconSize += 5;
+    fireIconSize += 8;
   });
 
   return (
@@ -124,14 +124,14 @@ const ProgressBar = ({
             style={{
               width: fireIconSize,
               position: 'absolute',
-              top: '30%',
+              top: '25%',
               transform: 'translateY(-50%)',
             }}
             src={isEnd ? Images.EndFlameImg.src : Images.FireGifIcon.src}
           />
         </div>
         {!isEnd &&
-          gifts.map((item, index) => {
+          gifts.map((item) => {
             const gotGifts = item.milestone <= current;
             return (
               <GiftItem
@@ -141,10 +141,8 @@ const ProgressBar = ({
                 }}
                 style={{
                   left: `${(item.milestone / total) * 100 - (md ? 5 : 10)}%`,
-                  top: gotGifts
-                    ? index !== 0 && !item.redeemed
+                  top: item.redeemed ? -10 :  gotGifts
                       ? -15
-                      : -12
                     : '',
                 }}
                 key={item.milestone}
@@ -152,11 +150,7 @@ const ProgressBar = ({
                 <GiftImg
                   src={item.img}
                   style={{
-                    width: gotGifts
-                      ? index !== 0 && !item.redeemed
-                        ? 50
-                        : 42
-                      : '',
+                    width: item.redeemed ? 32 : gotGifts ? 42 : '',
                   }}
                 />
                 {gotGifts ? null : <p>{item.milestone} Flames</p>}
@@ -238,15 +232,15 @@ const RaveList = ({
   const renderItemTooltip = (type: number) => {
     if (type === RaveQuestType.SHARE) {
       return (
-        <Tooltip title={RaveQuestShare} overlayClassName="custom-tooltip">
-          <img src={Images.TooltipIcon.src} alt="" />
+        <Tooltip title={RaveQuestShare} overlayClassName='custom-tooltip'>
+          <img src={Images.TooltipIcon.src} alt='' />
         </Tooltip>
       );
     }
     if (type === RaveQuestType.BUYTICKET) {
       return (
-        <Tooltip title={RaveQuestBuyTickets} overlayClassName="custom-tooltip">
-          <img src={Images.TooltipIcon.src} alt="" />
+        <Tooltip title={RaveQuestBuyTickets} overlayClassName='custom-tooltip'>
+          <img src={Images.TooltipIcon.src} alt='' />
         </Tooltip>
       );
     }
@@ -254,9 +248,9 @@ const RaveList = ({
       return (
         <Tooltip
           title={RaveQuestInviteFriend}
-          overlayClassName="custom-tooltip"
+          overlayClassName='custom-tooltip'
         >
-          <img src={Images.TooltipIcon.src} alt="" />
+          <img src={Images.TooltipIcon.src} alt='' />
         </Tooltip>
       );
     }
@@ -278,8 +272,8 @@ const RaveList = ({
     <Row gutter={[15, 15]} style={{ position: 'relative' }}>
       {isEnd ? (
         <Ended>
-          <div className="content">
-            <img src={Images.ThankyouGifIcon.src} alt="thank-you" />
+          <div className='content'>
+            <img src={Images.ThankyouGifIcon.src} alt='thank-you' />
             <p>This rave has ended. </p>
             <p>Browse our other amazing events!</p>
           </div>
@@ -289,18 +283,18 @@ const RaveList = ({
       {list.map((item, index) => (
         <Col span={24} key={`${item.name}-${index}`} lg={12}>
           <RaveItem>
-            <div className="head">
-              <span className="title">
+            <div className='head'>
+              <span className='title'>
                 {item.name}
                 {renderItemTooltip(item.type)}
               </span>
-              <span className="badge">
+              <span className='badge'>
                 <span>{item.getTimes * item.flamePoint}</span>
                 <span>/{item.limitUser * item.flamePoint}</span>
               </span>
             </div>
-            <p className="description">{item.description}</p>
-            <div className="flame">
+            <p className='description'>{item.description}</p>
+            <div className='flame'>
               + {item.flamePoint} <FireIcon src={Images.FireGifIcon.src} />{' '}
               {renderFriendText(item.type)}
             </div>
@@ -386,16 +380,16 @@ const PopUpContent = ({
     request.setRequestHeader('Cache-Control', 'no-cache');
     messageApi.open({
       content: (
-        <div className="message-content">
+        <div className='message-content'>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            className="image-ani-hourglass"
+            className='image-ani-hourglass'
             src={Images.HourglassWhite.src}
-            alt=""
+            alt=''
           />
           <div>
             Downloading
-            <span className="dot-ani" />
+            <span className='dot-ani' />
           </div>
         </div>
       ),
@@ -439,31 +433,31 @@ const PopUpContent = ({
     <div>
       <ShareLinkImg src={Images.ShareLinkIcon.src} />
       <ShareLinkContent>
-        <h4 className="title">Share your link!</h4>
-        <p className="sub-title">
+        <h4 className='title'>Share your link!</h4>
+        <p className='sub-title'>
           {`The more friends that use your link, the more lit you'll get!!`}
         </p>
-        <div className="share-link-area">
-          <div className="link-content">
-            <span className="link">{link}</span>
+        <div className='share-link-area'>
+          <div className='link-content'>
+            <span className='link'>{link}</span>
             {copySuccess ? (
               <Image
                 src={Images.CopySuccessIcon}
-                alt="copy"
+                alt='copy'
                 width={18}
                 height={18}
-                layout="fixed"
+                layout='fixed'
               />
             ) : null}
           </div>
           <Image
             src={Images.CopyBigIcon}
-            alt="copy"
+            alt='copy'
             width={32}
             height={32}
-            layout="fixed"
+            layout='fixed'
             onClick={handleCopy}
-            className="copy-icon"
+            className='copy-icon'
           />
         </div>
       </ShareLinkContent>
@@ -471,31 +465,31 @@ const PopUpContent = ({
         <span>You May Need</span>
       </YouMayNeed>
       <PostImage>
-        <div className="title">Post Image</div>
-        <div className="post-image-content">
+        <div className='title'>Post Image</div>
+        <div className='post-image-content'>
           <div>
             <Image
               src={image}
-              alt="post-image"
+              alt='post-image'
               width={112}
               height={56}
-              layout="fixed"
+              layout='fixed'
             />
           </div>
           <Image
             src={Images.DownloadIcon}
-            alt="download"
+            alt='download'
             width={19}
             height={19}
-            layout="fixed"
-            className="download"
+            layout='fixed'
+            className='download'
             onClick={saveImage}
           />
         </div>
       </PostImage>
       <PostContent>
-        <div className="title">Attractive Post Content</div>
-        <div className="post-content-main">
+        <div className='title'>Attractive Post Content</div>
+        <div className='post-content-main'>
           <p>
             {postContent}
             <br />
@@ -503,11 +497,11 @@ const PopUpContent = ({
           </p>
           <Image
             src={Images.CopyIcon}
-            alt="copy"
+            alt='copy'
             width={19}
             height={19}
-            layout="fixed"
-            className="icon"
+            layout='fixed'
+            className='icon'
             onClick={handleCopyPostContent}
           />
         </div>
@@ -551,21 +545,20 @@ const Raves = ({
       stock: 0,
       redeemed: false,
     });
-  const eventDetailData = useAppSelector(selectEventDetailData);
   const { user, status } = raveData;
   const isEnd = status === RaveStatus.end;
 
   const renderRedeemButton = () => {
     if (currentShowReward.stock === 0) {
       return (
-        <Button disabled className="fully-redeemed">
+        <Button disabled className='fully-redeemed'>
           Fully redeemed
         </Button>
       );
     }
     if (user.flamePoint < currentShowReward.milestone) {
       return (
-        <Button disabled className="need-more">
+        <Button disabled className='need-more'>
           {currentShowReward.milestone - user.flamePoint} More Flames to redeem
         </Button>
       );
@@ -610,7 +603,7 @@ const Raves = ({
       {!raveData.user.joined && !isEnd ? (
         <JoinButton
           disabled={actionButtonLoading}
-          type="primary"
+          type='primary'
           onClick={() => joinRaveRequest()}
         >
           {actionButtonLoading && <LoadingOutlined />}
@@ -626,7 +619,7 @@ const Raves = ({
         <PopUpContent
           currentEventSlug={eventSlug}
           inviteCode={raveData.user.inviteCode}
-          image={eventDetailData.image}
+          image={raveData.eventImage}
         />
       </RavesPopUp>
       <RavesPopUp
@@ -634,17 +627,17 @@ const Raves = ({
         onClose={() => setShowHaveJoinedRaveModal(false)}
       >
         <HaveJoinedRaveModalContent>
-          <Col className="content-mascotsIcon">
-            <img src={Images.MascotsIcon.src} alt="" />
+          <Col className='content-mascotsIcon'>
+            <img src={Images.MascotsIcon.src} alt='' />
           </Col>
-          <Col className="content-title">You have joined the rave!</Col>
-          <Col className="content-count">
+          <Col className='content-title'>You have joined the rave!</Col>
+          <Col className='content-count'>
             <span>
               <span>+ </span>
               {joinRaveResponse.flamePoint}
             </span>
             <span>
-              <img src={Images.FireGifIcon.src} alt="" />
+              <img src={Images.FireGifIcon.src} alt='' />
             </span>
           </Col>
         </HaveJoinedRaveModalContent>
@@ -655,34 +648,34 @@ const Raves = ({
           onClose={() => setRedeemRewardModalOpen(false)}
         >
           <RedeemRewardModalContent>
-            <Col className="redeem-title">Redeem Reward</Col>
-            <Col className="redeem-name">{currentShowReward.name}</Col>
-            <Col className="redeem-img-box">
-              <div className="redeem-info">
+            <Col className='redeem-title'>Redeem Reward</Col>
+            <Col className='redeem-name'>{currentShowReward.name}</Col>
+            <Col className='redeem-img-box'>
+              <div className='redeem-info'>
                 <img
-                  className="background"
+                  className='background'
                   src={Images.FireworksGifIcon.src}
-                  alt=""
+                  alt=''
                 />
-                <div className="info">
+                <div className='info'>
                   <img
-                    className="info-img"
+                    className='info-img'
                     src={currentShowReward.image || Images.BackgroundLogo.src}
-                    alt=""
+                    alt=''
                     onError={(e: any) => {
                       e.target.onerror = null;
                       e.target.src = Images.BackgroundLogo.src;
                     }}
                   />
                   <img
-                    className="left-icon"
+                    className='left-icon'
                     src={Images.WowGifIcon.src}
-                    alt=""
+                    alt=''
                   />
                 </div>
               </div>
             </Col>
-            <Col className="redeem-button">{renderRedeemButton()}</Col>
+            <Col className='redeem-button'>{renderRedeemButton()}</Col>
           </RedeemRewardModalContent>
         </RavesPopUp>
       </RedeemRewardPopupContainer>
@@ -691,13 +684,13 @@ const Raves = ({
         onClose={() => setRedeemRewardSuccess(false)}
       >
         <RedeemSuccessModalContent>
-          <Col className="title-img">
-            <img src={Images.CheersGifIcon.src} alt="" />
+          <Col className='title-img'>
+            <img src={Images.CheersGifIcon.src} alt='' />
           </Col>
-          <Col className="title">
+          <Col className='title'>
             Congratulations, you have redeemed a free drink!
           </Col>
-          <Col className="info">
+          <Col className='info'>
             The reward will be sent to your CrowdServe wallet in several
             minutes.
           </Col>

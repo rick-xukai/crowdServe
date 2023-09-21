@@ -318,6 +318,7 @@ export const LockImg = styled.img`
 export const PopUpContainer = styled(Modal)`
   &.ant-modal {
     max-width: calc(100vw - 48px);
+    margin-bottom: 80px;
   }
   .ant-modal-content {
     border-radius: 4px;
@@ -505,6 +506,7 @@ export const Ended = styled.div`
       font-size: 18px;
       font-weight: 700;
       line-height: 25px;
+      color: ${Colors.white}
     }
   }
 `;
@@ -615,7 +617,7 @@ export const RedeemRewardModalContent = styled.div`
   .redeem-button {
     text-align: center;
     .ant-btn {
-      width: 80%;
+      min-width: 80%;
       height: 45px;
       border-radius: 2px;
       background: ${Colors.branding};

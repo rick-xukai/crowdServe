@@ -52,6 +52,7 @@ export interface GetRaveResponseProps {
   user: GetRaveResponseUserProps;
   reward: GetRaveResponseRewardListProps[];
   quest: GetRaveResponseQuestProps[];
+  eventImage: string;
 }
 
 export interface JoinRaveResponse {
