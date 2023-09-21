@@ -106,16 +106,16 @@ const ProgressBar = ({
 }) => {
   const { md } = useBreakpoint();
   const percent =
-    current >= total ? 100 : ((!current ? 0.5 : current) / total) * 100;
+    current >= total ? 100 : ((!current ? 0.2 : current) / total) * 100;
   const steps = gifts.filter((item) => item.milestone < current);
-  let fireIconSize = 20;
+  let fireIconSize = 22;
   steps.map(() => {
     fireIconSize += 5;
   });
 
   return (
     <ProgressBarWrapper>
-      <div className="progress-content">
+      <div className='progress-content'>
         <div
           className={isEnd ? 'end progress' : 'progress'}
           style={{ width: `${percent}%` }}
@@ -127,7 +127,7 @@ const ProgressBar = ({
               top: '30%',
               transform: 'translateY(-50%)',
             }}
-            src={isEnd ? Images.FireDisabledIcon.src : Images.FireGifIcon.src}
+            src={isEnd ? Images.EndFlameImg.src : Images.FireGifIcon.src}
           />
         </div>
         {!isEnd &&
@@ -183,10 +183,10 @@ const ProgressContainer = ({
 }) => (
   <ProgressWrapper>
     <FlameTotal>
-      <div className="container">
+      <div className='container'>
         <Border src={Images.BorderImg.src} />
         <StarIcon src={Images.StarIcon.src} />
-        <div className="total">
+        <div className='total'>
           <FireIcon src={Images.FireGifIcon.src} />
           <p>{currentFlamePoint}</p>
         </div>
@@ -202,7 +202,6 @@ const ProgressContainer = ({
           total={_.sumBy(giftList, 'milestone')}
           gifts={giftList.map((item, index) => {
             const getImg = () => {
-
               if (item.milestone <= currentFlamePoint) {
                 if (index === 0)
                   return item.redeemed

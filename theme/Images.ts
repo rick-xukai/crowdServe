@@ -105,6 +105,7 @@ import TooltipIcon from '../static/images/tooltip.png';
 import GiftTicketImg from '../static/images/gift-ticket.png';
 import GiftTicketDisabledImg from '../static/images/gift-ticket-disabled.png';
 import GiftCheersDisabledImg from '../static/images/gift-cheers-disabled.png';
+import EndFlameImg from '../static/images/end-flame.png';
 
 const Images = {
   Safety,
@@ -214,6 +215,7 @@ const Images = {
   GiftTicketImg,
   GiftTicketDisabledImg,
   GiftCheersDisabledImg,
+  EndFlameImg,
 };
 
 export default Images;
