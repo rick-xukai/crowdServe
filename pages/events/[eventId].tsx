@@ -71,6 +71,7 @@ import {
   setTabActiveKey,
   selectTabActiveKey,
   visitSharedLinkAction,
+  RaveStatus,
 } from '../../slice/event.slice';
 import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
@@ -306,7 +307,11 @@ const EventDetail = ({
       localStorage.setItem(
         LocalStorageKeys.joinRavePopupKey,
         JSON.stringify([
-          { event: id, time: new Date().getTime(), joined: joined },
+          {
+            event: id,
+            time: new Date().getTime(),
+            joined: joined,
+          },
         ])
       );
     }
@@ -316,39 +321,50 @@ const EventDetail = ({
     if (cookies.getCookie(CookieKeys.userLoginToken)) {
       setClickJoinRave(true);
     } else {
+      localStorage.setItem(LocalStorageKeys.joinRaveNotLogin, 'true');
       router.push({
         pathname: RouterKeys.login,
-        query: `redirect=${router.asPath}-previous=joinPopup`,
+        query: `redirect=${router.asPath}&raves=joinPopup`,
       });
     }
   };
 
   useEffect(() => {
-    if (!raveData.user.joined) {
-      if (localStorage.getItem(LocalStorageKeys.joinRavePopupKey)) {
-        const currentTime = new Date().getTime();
-        const response: CloseRavesPopUpProps[] = JSON.parse(
-          localStorage.getItem(LocalStorageKeys.joinRavePopupKey) as string
-        );
-        const currentEvent: any = response.find((item) => item.event === id);
-        if (currentEvent) {
-          if (
-            !currentEvent.joined &&
-            Math.abs(currentTime - currentEvent.time) >= 2 * 60 * 60 * 1000
-          ) {
+    if (raveData.name) {
+      if (
+        !raveData.user.joined &&
+        eventDetailData.raveStatus !== RaveStatus.end
+      ) {
+        if (!localStorage.getItem(LocalStorageKeys.joinRaveNotLogin)) {
+          if (localStorage.getItem(LocalStorageKeys.joinRavePopupKey)) {
+            const currentTime = new Date().getTime();
+            const response: CloseRavesPopUpProps[] = JSON.parse(
+              localStorage.getItem(LocalStorageKeys.joinRavePopupKey) as string
+            );
+            const currentEvent: any = response.find(
+              (item) => item.event === id
+            );
+            if (currentEvent) {
+              if (
+                !currentEvent.joined &&
+                Math.abs(currentTime - currentEvent.time) >= 2 * 60 * 60 * 1000
+              ) {
+                setShowJoinRaveModal(true);
+              }
+            } else {
+              setShowJoinRaveModal(true);
+            }
+          } else {
             setShowJoinRaveModal(true);
           }
-        } else {
-          setShowJoinRaveModal(true);
         }
-      } else {
-        setShowJoinRaveModal(true);
       }
     }
   }, [raveData]);
 
   useEffect(() => {
     if (joinRaveSuccess) {
+      localStorage.removeItem(LocalStorageKeys.joinRaveNotLogin);
       setShowJoinRaveModal(false);
       localStorageJoinRavePopup(true);
     }
@@ -362,26 +378,23 @@ const EventDetail = ({
   };
 
   useEffect(() => {
-    const { eventId, inviteCode }: any = router.query;
+    const { eventId, inviteCode, previous, raves }: any = router.query;
     if (eventId) {
       const parameterArr = (eventId as string).split('-');
-      if (last(parameterArr)?.includes('previous=')) {
-        if (parameterArr[parameterArr.length - 1] === 'previous=joinPopup') {
+      if (previous) {
+        if (previous === 'events') {
+          localStorage.removeItem(LocalStorageKeys.joinRaveNotLogin);
+          setPreviousPage(`${window.location.hostname}/events`);
+        }
+      }
+      if (raves) {
+        if (raves === 'joinPopup') {
           setShowJoinRaveModal(false);
           setClickJoinRave(true);
         }
-        if (parameterArr[parameterArr.length - 2]) {
-          setEventId(parameterArr[parameterArr.length - 2] || '');
-        } else {
-          setEventCorrect(false);
-        }
-        setPreviousPage(
-          `${window.location.hostname}/${last(parameterArr)?.split('=')[1]}`
-        );
-        return;
       }
       if (last(parameterArr)) {
-        setEventId(last(parameterArr) || '');
+        setEventId(last(parameterArr)?.split('?')[0] || '');
       } else {
         setEventCorrect(false);
       }
@@ -392,7 +405,7 @@ const EventDetail = ({
         );
         dispatch(
           visitSharedLinkAction({
-            eventId: last(parameterArr) || '',
+            eventId: last(parameterArr)?.split('?')[0] || '',
             payload: {
               inviteCode,
               userId: cookies.getCookie(CookieKeys.userLoginId) || 0,
@@ -423,7 +436,6 @@ const EventDetail = ({
     }
     if (eventDetailData.raveSet) {
       dispatch(getRaveAction(id));
-      dispatch(setTabActiveKey(Rave));
     }
   }, [eventDetailData]);
 

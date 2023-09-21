@@ -4,6 +4,7 @@ export const LocalStorageKeys = {
   currentPageToSetting: 'currentPageToSetting',
   pageViewTrackKeys: 'pageViewTrackKeys',
   joinRavePopupKey: 'joinRavePopupKey',
+  joinRaveNotLogin: 'joinRaveNotLogin',
 };
 
 export const SessionStorageKeys = {

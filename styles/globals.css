@@ -262,6 +262,17 @@ a {
   border-radius: 4px !important;
 }
 
+.rave-end .ant-message-notice-content {
+  border-radius: 4px;
+  opacity: 0.9;
+  background: #ffeed4 !important;
+  backdrop-filter: blur(3px);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 19px;
+  color: #303034;
+}
+
 .ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
   color: #fff;
   border-color: #fff;
@@ -1288,6 +1299,6 @@ iframe {
   white-space: break-spaces !important;
 }
 
-.ant-tooltip .ant-tooltip-inner{
+.ant-tooltip .ant-tooltip-inner {
   white-space: break-spaces !important;
 }

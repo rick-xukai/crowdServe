@@ -675,7 +675,7 @@ const JoinRaveModalBannerItem = styled.div`
   }
   .gradient-box {
     padding: 4px;
-    background: ${Colors.black};
+    background: ${Colors.backgorund};
     border-radius: 5px;
     height: 100%;
   }

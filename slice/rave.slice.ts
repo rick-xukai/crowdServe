@@ -76,6 +76,7 @@ export const getRaveAction = createAsyncThunk<
       return response.data;
     }
     return rejectWithValue({
+      code: response.code,
       message: response.message,
     } as ErrorType);
   } catch (err: any) {
@@ -83,6 +84,7 @@ export const getRaveAction = createAsyncThunk<
       throw err;
     }
     return rejectWithValue({
+      code: err.code,
       message: err.response,
     } as ErrorType);
   }
@@ -101,9 +103,10 @@ export const joinRaveAction = createAsyncThunk<
   try {
     const response = await RaveService.joinRave(payload);
     if (verificationApi(response)) {
-      return response.data;
+      return response.data || {};
     }
     return rejectWithValue({
+      code: response.code,
       message: response.message,
     } as ErrorType);
   } catch (err: any) {
@@ -111,6 +114,7 @@ export const joinRaveAction = createAsyncThunk<
       throw err;
     }
     return rejectWithValue({
+      code: err.code,
       message: err.response,
     } as ErrorType);
   }
@@ -137,6 +141,7 @@ export const redeemRaveRewardAction = createAsyncThunk<
         return response.data;
       }
       return rejectWithValue({
+        code: response.code,
         message: response.message,
       } as ErrorType);
     } catch (err: any) {
@@ -144,6 +149,7 @@ export const redeemRaveRewardAction = createAsyncThunk<
         throw err;
       }
       return rejectWithValue({
+        code: err.code,
         message: err.response,
       } as ErrorType);
     }
@@ -158,6 +164,7 @@ interface RaveState {
   joinRaveResponse: JoinRaveResponse;
   error:
     | {
+        code: number | undefined;
         message: string | undefined;
       }
     | undefined
@@ -182,7 +189,7 @@ const initialState: RaveState = {
     user: {
       flamePoint: 0,
       inviteCode: '',
-      joined: true,
+      joined: false,
     },
     reward: [],
     quest: [],

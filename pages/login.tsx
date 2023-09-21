@@ -93,6 +93,8 @@ const Login = ({
       loginAction((defultLoginEmail && loginFormValue) || values)
     );
     if (
+      response &&
+      response.payload &&
       response.payload.code === Messages.activateAccountUserDosentExist1001.code
     ) {
       dispatch(verifyUserAction({ email: loginFormValue.email }));
@@ -151,7 +153,14 @@ const Login = ({
           )
         );
       } else {
-        router.push(redirectPage || RouterKeys.eventList);
+        if (router.query.raves) {
+          router.push({
+            pathname: redirectPage || RouterKeys.eventList,
+            query: `raves=${router.query.raves}`,
+          });
+        } else {
+          router.push(redirectPage || RouterKeys.eventList);
+        }
       }
     }
   }, [data]);
@@ -206,7 +215,7 @@ const Login = ({
                 <Form.Item name="email">
                   <Input
                     className={`${
-                      (loginFormValue.email && "border-white") || ""
+                      (loginFormValue.email && 'border-white') || ''
                     }`}
                     placeholder="Email"
                     bordered={false}
@@ -214,7 +223,7 @@ const Login = ({
                       setLoginFormValue({
                         ...loginFormValue,
                         email:
-                          (isEmail(e.target.value) && e.target.value) || "",
+                          (isEmail(e.target.value) && e.target.value) || '',
                       })
                     }
                   />
@@ -224,7 +233,7 @@ const Login = ({
                 <div>
                   <Input.Password
                     className={`${
-                      (loginFormValue.password && "border-white") || ""
+                      (loginFormValue.password && 'border-white') || ''
                     }`}
                     placeholder="Password"
                     bordered={false}
@@ -278,7 +287,7 @@ const Login = ({
           </div>
           <div
             className={
-              (isOpenAppShow && "page-bottom open-app") || "page-bottom"
+              (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
             }
           >
             <p className="registered">{`Don't have an account?`}</p>

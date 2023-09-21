@@ -40,6 +40,7 @@ const Colors = {
   grayishYellow: '#D96800',
   lightBlue: '#0092C0',
   greener: '#03A700',
+  buff: '#ffeed4',
   linearGradient3: `linear-gradient(to right, #6aedff, #de5df3)`,
   linearGradient4: `linear-gradient(270deg, #C5CAD2 10%, #EDEEF0 100%)`,
 };
