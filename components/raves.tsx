@@ -141,9 +141,7 @@ const ProgressBar = ({
                 }}
                 style={{
                   left: `${(item.milestone / total) * 100 - (md ? 5 : 10)}%`,
-                  top: item.redeemed ? -10 :  gotGifts
-                      ? -15
-                    : '',
+                  top: item.redeemed ? -10 : gotGifts ? -15 : '',
                 }}
                 key={item.milestone}
               >
@@ -560,6 +558,14 @@ const Raves = ({
       return (
         <Button disabled className='need-more'>
           {currentShowReward.milestone - user.flamePoint} More Flames to redeem
+        </Button>
+      );
+    }
+
+    if (currentShowReward.redeemed) {
+      return (
+        <Button disabled className='fully-redeemed'>
+          Congrats! Already redeemed
         </Button>
       );
     }
