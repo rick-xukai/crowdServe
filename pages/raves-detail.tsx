@@ -87,7 +87,7 @@ const RavesDetail = ({
     } else {
       router.push({
         pathname: RouterKeys.login,
-        query: `redirect=${router.asPath}-previous=joinDetail`,
+        query: `redirect=${router.asPath}&raves=joinDetail`,
       });
     }
   };

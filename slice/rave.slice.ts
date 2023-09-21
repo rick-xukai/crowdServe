@@ -101,7 +101,7 @@ export const joinRaveAction = createAsyncThunk<
   try {
     const response = await RaveService.joinRave(payload);
     if (verificationApi(response)) {
-      return response.data;
+      return response.data || {};
     }
     return rejectWithValue({
       message: response.message,
@@ -182,7 +182,7 @@ const initialState: RaveState = {
     user: {
       flamePoint: 0,
       inviteCode: '',
-      joined: true,
+      joined: false,
     },
     reward: [],
     quest: [],

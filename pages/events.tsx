@@ -355,8 +355,8 @@ const EventList = () => {
                             ':slug',
                             `${item.slug}${
                               (inviteCodeForRave &&
-                                `?inviteCode=${inviteCodeForRave}`) ||
-                              ''
+                                `?inviteCode=${inviteCodeForRave}&previous=events`) ||
+                              '?previous=events'
                             }`
                           )
                         );
@@ -543,8 +543,8 @@ const EventList = () => {
                                 ':slug',
                                 `${item.slug}${
                                   (inviteCodeForRave &&
-                                    `?inviteCode=${inviteCodeForRave}`) ||
-                                  ''
+                                    `?inviteCode=${inviteCodeForRave}&previous=events`) ||
+                                  '?previous=events'
                                 }`
                               )
                             );
@@ -658,8 +658,8 @@ const EventList = () => {
                                 ':slug',
                                 `${item.slug}${
                                   (inviteCodeForRave &&
-                                    `?inviteCode=${inviteCodeForRave}`) ||
-                                  ''
+                                    `?inviteCode=${inviteCodeForRave}&previous=events`) ||
+                                  '?previous=events'
                                 }`
                               )
                             );
