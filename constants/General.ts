@@ -35,7 +35,7 @@ export const SaveImage = 'Save Image';
 export const ShareEventLink = `Can't wait for {eventName}! Join me by getting your tickets here.\n {currentLink}`;
 export const ShareCollectibleLink =
   'Just bought {collectibleName}! Check it out at\n {currentLink}';
-export const LinkCopied = 'Link copied.';
+export const LinkCopied = 'Content copied.';
 export const ImageSaved = 'Image saved.';
 export const ImageSaveFailed = 'Image save failed.';
 export const FirebaseEventEnv =
