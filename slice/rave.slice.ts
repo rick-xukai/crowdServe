@@ -186,6 +186,7 @@ const initialState: RaveState = {
     },
     reward: [],
     quest: [],
+    eventImage: '',
   },
 };
 

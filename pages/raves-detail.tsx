@@ -157,6 +157,7 @@ const RavesDetail = ({
 
   useEffect(() => {
     (window as any).callJoinRave = callJoinRave;
+    dispatch(getRaveAction(eventId));
     return () => {
       dispatch(reset());
     };
@@ -178,7 +179,7 @@ const RavesDetail = ({
           />
         </div>
       )) || (
-        <Spin spinning indicator={<LoadingOutlined spin />} size="large">
+        <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
           <div />
         </Spin>
       )}

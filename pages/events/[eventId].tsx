@@ -983,7 +983,7 @@ const EventDetail = ({
                   </Col>
                   <Col
                     className={
-                      (raveData.reward.length > 2 && 'content-banner scroll') ||
+                      (raveData?.reward?.length > 2 && 'content-banner scroll') ||
                       'content-banner'
                     }
                   >
@@ -992,7 +992,7 @@ const EventDetail = ({
                         <JoinRaveModalBannerItem
                           key={`${item.name}-${index}`}
                           className={
-                            (raveData.reward.length > 2 && 'scroll-item') || ''
+                            (raveData?.reward?.length > 2 && 'scroll-item') || ''
                           }
                         >
                           <div className="gradient-box">
