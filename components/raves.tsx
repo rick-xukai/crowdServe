@@ -348,7 +348,7 @@ const PopUpContent = ({
   const link = `${AppDomain}/${RouterKeys.eventDetail.replace(
     ':slug',
     currentEventSlug
-  )}?inviteCode=${inviteCode}`;
+  ).replace('/', '')}?inviteCode=${inviteCode}`;
   const [copySuccess, setCopySuccess] = useState(false);
   const [saveImageUrl, setSaveImageUrl] = useState<any>('');
   const [messageApi, contextHolder] = message.useMessage();
