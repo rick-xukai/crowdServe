@@ -67,10 +67,6 @@ const MyRaves = () => {
   const { lg } = useBreakpoint();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const inviteCodeForRave =
-    typeof window !== 'undefined' && sessionStorage.getItem(
-      SessionStorageKeys.inviteCodeForRave
-    ) || '';
 
   const currentPage = useAppSelector(selectCurrentPage);
   const isDisableRequest = useAppSelector(selectIsDisableRequest);
@@ -79,6 +75,8 @@ const MyRaves = () => {
   const dataForAll = useAppSelector(selectDataForAll);
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
+  const [inviteCodeForRave, setInviteCodeForRave] = useState<string>('');
+
   const listRef = useRef<any>(null);
   const error = useAppSelector(selectError);
   const [messageApi, contextHolder] = message.useMessage();
@@ -163,6 +161,15 @@ const MyRaves = () => {
   }, [dataForAll]);
 
   useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      sessionStorage &&
+      sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave)
+    ) {
+      setInviteCodeForRave(
+        sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave) as string
+      );
+    }
     setIsFirstRender(false);
     if (!isGetAllData && listRef && listRef.current) {
       listRef.current.addEventListener('scroll', scrollListener, true);
