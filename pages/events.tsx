@@ -61,8 +61,6 @@ const EventList = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const eventListRef = useRef<any>(null);
-  const inviteCodeForRave =
-    sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave) || '';
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -83,6 +81,7 @@ const EventList = () => {
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
   const [searchInputPlaceholder, setSearchInputPlaceholder] =
     useState<string>('Search events');
+  const [inviteCodeForRave, setInviteCodeForRave] = useState<string>('');
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -209,6 +208,15 @@ const EventList = () => {
   }, [eventDataForAll]);
 
   useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      sessionStorage &&
+      sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave)
+    ) {
+      setInviteCodeForRave(
+        sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave) as string
+      );
+    }
     setIsFirstRender(false);
     if (!eventDataForAll.length) {
       dispatch(
