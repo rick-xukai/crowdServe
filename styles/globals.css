@@ -1280,11 +1280,10 @@ iframe {
   }
 }
 
-.custom-tooltip{
+.custom-tooltip {
   width: 260px;
-  .ant-tooltip-content{
-    .ant-tooltip-inner{
-      white-space: break-spaces !important;
-    }
-  }
+}
+
+.custom-tooltip .ant-tooltip-inner {
+  white-space: break-spaces !important;
 }
