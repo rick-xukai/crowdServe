@@ -22,6 +22,7 @@ const getRave = async (payload: string) => {
     .doGet();
   return response;
 };
+
 const redeemRaveReward = async (eventId: string, rewardId: string) => {
   const uri = API.redeemRaveReward.post
     .replace('{eventId}', eventId)
@@ -29,6 +30,9 @@ const redeemRaveReward = async (eventId: string, rewardId: string) => {
   const response = await requestClient()
     .setUri(uri)
     .setAuthorizationStatus()
+    .setHeaders({
+      'Content-Type': 'application/json'
+    })
     .doPost();
   return response;
 };

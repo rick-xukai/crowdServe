@@ -1287,3 +1287,7 @@ iframe {
 .custom-tooltip .ant-tooltip-inner {
   white-space: break-spaces !important;
 }
+
+.ant-tooltip .ant-tooltip-inner{
+  white-space: break-spaces !important;
+}
