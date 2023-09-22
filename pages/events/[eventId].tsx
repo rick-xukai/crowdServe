@@ -330,6 +330,12 @@ const EventDetail = ({
   };
 
   useEffect(() => {
+    if (clickJoinRave) {
+      dispatch(setTabActiveKey(Rave));
+    }
+  }, [clickJoinRave]);
+
+  useEffect(() => {
     if (raveData.name) {
       if (
         !raveData.user.joined &&
@@ -772,6 +778,7 @@ const EventDetail = ({
                     </div>
                     <div ref={itemTabs} className="item-tabs">
                       <Tabs
+                        activeKey={tabActiveKey}
                         defaultActiveKey={tabActiveKey}
                         items={
                           (eventDetailData.raveSet && tabsItem) ||
@@ -939,6 +946,7 @@ const EventDetail = ({
                       {tabActiveKey === Rave && eventDetailData.raveSet && (
                         <RavesDetail
                           clickJoinRave={clickJoinRave}
+                          setClickJoinRave={setClickJoinRave}
                           setJoinRaveSuccess={setJoinRaveSuccess}
                           setJoinRaveButtonLoading={setJoinRaveButtonLoading}
                           eventSlug={eventDetailData.slug}
@@ -995,7 +1003,8 @@ const EventDetail = ({
                   </Col>
                   <Col
                     className={
-                      (raveData?.reward?.length > 2 && 'content-banner scroll') ||
+                      (raveData?.reward?.length > 2 &&
+                        'content-banner scroll') ||
                       'content-banner'
                     }
                   >
@@ -1004,7 +1013,8 @@ const EventDetail = ({
                         <JoinRaveModalBannerItem
                           key={`${item.name}-${index}`}
                           className={
-                            (raveData?.reward?.length > 2 && 'scroll-item') || ''
+                            (raveData?.reward?.length > 2 && 'scroll-item') ||
+                            ''
                           }
                         >
                           <div className="gradient-box">
