@@ -117,16 +117,16 @@ const PageHearderResponsiveContainer = styled.div`
   @media (min-width: 768px) and (max-width: 1200px) {
     left: 0;
     right: 0;
-    padding-top: 0;
+    padding-top: 10px;
     padding-bottom: 0;
-    height: 60px;
+    min-height: 60px;
     display: flex;
     align-items: center;
     .header-menu {
       margin-left: 35px;
     }
     .header-main {
-      height: 40px;
+      height: 100%;
       width: 100%;
       max-width: 688px;
     }
