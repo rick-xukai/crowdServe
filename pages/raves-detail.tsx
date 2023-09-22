@@ -45,6 +45,7 @@ const RaveDetailContent = styled.div`
 
 const RavesDetail = ({
   clickJoinRave,
+  setClickJoinRave,
   setJoinRaveSuccess,
   setJoinRaveButtonLoading,
   eventId,
@@ -52,6 +53,7 @@ const RavesDetail = ({
   setShowJoinRaveModal,
 }: {
   clickJoinRave: boolean;
+  setClickJoinRave: (status: boolean) => void;
   setJoinRaveSuccess: (status: boolean) => void;
   setJoinRaveButtonLoading: (status: boolean) => void;
   eventId: string;
@@ -94,6 +96,9 @@ const RavesDetail = ({
       );
       if (response.type === joinRaveAction.fulfilled.toString()) {
         dispatch(getRaveAction(id || eventId));
+        if (setClickJoinRave) {
+          setClickJoinRave(false);
+        }
         if (setJoinRaveSuccess) {
           setJoinRaveSuccess(true);
         }
