@@ -8,7 +8,7 @@ import { bodyOverflow } from '@/utils/func';
 import { Colors } from '@/theme';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
-import { RAVE_ENDED } from '@/constants/General';
+import { RAVE_ENDED, RAVE_REWARD_OUT_OF_STOCK } from '@/constants/General';
 import { CookieKeys, RouterKeys } from '@/constants/Keys';
 import {
   reset,
@@ -83,18 +83,21 @@ const RavesDetail = ({
     useState<boolean>(false);
   const [appCallJsSendEventSlug, setAppCallJsSendEventSlug] =
     useState<string>('');
+  const [redeemRewardModalOpen, setRedeemRewardModalOpen] =
+    useState<boolean>(false);
 
-  const joinRaveRequest = async (id?: string) => {
+  const joinRaveRequest = async () => {
     if (cookies.getCookie(CookieKeys.userLoginToken)) {
       const response = await dispatch(
         joinRaveAction({
-          id: id || eventId,
+          id: appCallJsSendEventId || eventId,
           data: {
             inviteCode: inviteCode || '',
           },
         })
       );
       if (response.type === joinRaveAction.fulfilled.toString()) {
+        dispatch(getRaveAction(appCallJsSendEventId || eventId));
         if (setClickJoinRave) {
           setClickJoinRave(false);
         }
@@ -103,7 +106,6 @@ const RavesDetail = ({
         }
         setShowHaveJoinedRaveModal(true);
       }
-      dispatch(getRaveAction(id || eventId));
     } else {
       router.push({
         pathname: RouterKeys.login,
@@ -149,6 +151,20 @@ const RavesDetail = ({
           ),
           className: 'error-message-event rave-end',
         });
+        setRedeemRewardModalOpen(false);
+        return;
+      }
+      if (error.code === RAVE_REWARD_OUT_OF_STOCK) {
+        message.open({
+          content: (
+            <div>
+              This reward is fully redeemed. Continue completing quests and
+              earning flames to unlock other rewards!
+            </div>
+          ),
+          className: 'error-message-event rave-end',
+        });
+        setRedeemRewardModalOpen(false);
         return;
       }
       message.open({
@@ -179,7 +195,7 @@ const RavesDetail = ({
         }
         dispatch(getRaveAction(jsonResponse.eventId));
         if (jsonResponse.clickJoin) {
-          joinRaveRequest(jsonResponse.eventId);
+          joinRaveRequest();
         }
       }
     } catch (_) {}
@@ -195,7 +211,9 @@ const RavesDetail = ({
 
   useEffect(() => {
     (window as any).callJoinRave = callJoinRave;
-    dispatch(getRaveAction(eventId));
+    if (eventId) {
+      dispatch(getRaveAction(eventId));
+    }
     return () => {
       dispatch(reset());
     };
@@ -214,8 +232,10 @@ const RavesDetail = ({
         setShowHaveJoinedRaveModal={setShowHaveJoinedRaveModal}
         joinRaveRequest={joinRaveRequest}
         handleRedeemReward={handleRedeemReward}
+        redeemRewardModalOpen={redeemRewardModalOpen}
+        setRedeemRewardModalOpen={setRedeemRewardModalOpen}
       />
-      {loading && appCallJoinRaveParameters && (
+      {loading && !eventId && (
         <Spin spinning indicator={<LoadingOutlined spin />} size="large">
           <div />
         </Spin>

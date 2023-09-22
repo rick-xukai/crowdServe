@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { last, remove } from 'lodash';
+import { last, remove, uniq } from 'lodash';
 import {
   Spin,
   Row,
@@ -72,6 +72,8 @@ import {
   selectTabActiveKey,
   visitSharedLinkAction,
   RaveStatus,
+  setCloseJoinModalItems,
+  selectCloseJoinModalItems,
 } from '../../slice/event.slice';
 import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
@@ -96,7 +98,7 @@ import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
 import { logPageViewAction } from '@/slice/pageTrack.slice';
 import RavesPopUp from '@/components/ravesPopup';
 import RavesDetail from '@/pages/raves-detail';
-import { getRaveAction, selectRaveData } from '@/slice/rave.slice';
+import { getRaveAction, selectRaveData, reset } from '@/slice/rave.slice';
 
 interface CloseRavesPopUpProps {
   event: string;
@@ -134,6 +136,7 @@ const EventDetail = ({
   const eventDetailData = useAppSelector(selectEventDetailData);
   const eventMarket = useAppSelector(selectEventMarket);
   const raveData = useAppSelector(selectRaveData);
+  const closeJoinModalItems = useAppSelector(selectCloseJoinModalItems);
 
   const [id, setEventId] = useState<string>('');
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
@@ -336,6 +339,10 @@ const EventDetail = ({
   }, [clickJoinRave]);
 
   useEffect(() => {
+    const closeItem = closeJoinModalItems.find((item) => item === id);
+    if (closeItem) {
+      return;
+    }
     if (raveData.name) {
       if (
         !raveData.user.joined &&
@@ -380,6 +387,7 @@ const EventDetail = ({
   const ravesPopUpClose = () => {
     setShowJoinRaveModal(false);
     dispatch(getRaveAction(id));
+    dispatch(setCloseJoinModalItems(uniq([...closeJoinModalItems, id])));
     if (clickNotShowAnymore) {
       localStorageJoinRavePopup(false);
     }
@@ -396,7 +404,7 @@ const EventDetail = ({
         }
       }
       if (raves) {
-        if (raves === 'joinPopup') {
+        if (raves === 'joinPopup' || raves === 'joinDetail') {
           setShowJoinRaveModal(false);
           setClickJoinRave(true);
         }
@@ -497,6 +505,7 @@ const EventDetail = ({
       );
     }
     return () => {
+      dispatch(reset());
       dispatch(resetEventDatail());
       dispatch(resetError());
       dispatch(resetEventDetailLoading());
