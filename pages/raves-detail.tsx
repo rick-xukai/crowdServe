@@ -69,7 +69,8 @@ const RavesDetail = ({
   const router = useRouter();
   const inviteCode: any =
     router.query.inviteCode ||
-    sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave);
+    typeof window !== 'undefined' && sessionStorage &&
+      sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave);
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
