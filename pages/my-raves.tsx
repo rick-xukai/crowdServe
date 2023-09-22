@@ -48,10 +48,14 @@ import {
 import { RouterKeys, SessionStorageKeys } from '@/constants/Keys';
 
 const imgList = [
-  'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687145233259-r06z.jpeg',
-  'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1693277132950-YxY5.png',
-  'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1687167250641-TNUA.jpeg',
-  'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1690860909864-gWxk.jpg',
+  {
+    img: 'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1695347266177-P52p.jpeg',
+    link: '/events/tipsy-unicorn-x-emma-hewitt-clmr6zg930005qfgl8u2t1nwy?previous=events',
+  },
+  {
+    img: 'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1694763914413-l30H.jpg',
+    link: '/events/0915-duplicate-discount-testing-1-clmkcifyv0005qf28in8n2m14?previous=events',
+  },
 ];
 
 const { useBreakpoint } = Grid;
@@ -215,9 +219,11 @@ const MyRaves = () => {
               <PageTitle>Upcoming Raves</PageTitle>
               <Carousel autoplay>
                 {imgList.map((item) => (
-                  <CarouselItem key={item}>
-                    <CarouselItemImg src={item} alt='' />
-                  </CarouselItem>
+                  <a href={item.link} key={item.link}>
+                    <CarouselItem>
+                      <CarouselItemImg src={item.img} alt='' />
+                    </CarouselItem>
+                  </a>
                 ))}
               </Carousel>
               <BlankBlock size={lg ? 32 : 20} />
