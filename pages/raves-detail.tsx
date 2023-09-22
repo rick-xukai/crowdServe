@@ -89,18 +89,18 @@ const RavesDetail = ({
   const [redeemRewardModalOpen, setRedeemRewardModalOpen] =
     useState<boolean>(false);
 
-  const joinRaveRequest = async () => {
+  const joinRaveRequest = async (id?: string) => {
     if (cookies.getCookie(CookieKeys.userLoginToken)) {
       const response = await dispatch(
         joinRaveAction({
-          id: appCallJsSendEventId || eventId,
+          id: id || eventId,
           data: {
             inviteCode: inviteCode || '',
           },
         })
       );
       if (response.type === joinRaveAction.fulfilled.toString()) {
-        dispatch(getRaveAction(appCallJsSendEventId || eventId));
+        dispatch(getRaveAction(id || eventId));
         if (setClickJoinRave) {
           setClickJoinRave(false);
         }
@@ -198,7 +198,7 @@ const RavesDetail = ({
         }
         dispatch(getRaveAction(jsonResponse.eventId));
         if (jsonResponse.clickJoin) {
-          joinRaveRequest();
+          joinRaveRequest(jsonResponse.eventId);
         }
       }
     } catch (_) {}
@@ -238,7 +238,7 @@ const RavesDetail = ({
         redeemRewardModalOpen={redeemRewardModalOpen}
         setRedeemRewardModalOpen={setRedeemRewardModalOpen}
       />
-      {loading && appCallJoinRaveParameters && (
+      {loading && !eventId && (
         <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
           <div />
         </Spin>
