@@ -123,6 +123,7 @@ const RavesDetail = ({
     );
     if (response.type === redeemRaveRewardAction.fulfilled.toString()) {
       setRedeemRewardSuccess(true);
+      dispatch(getRaveAction(appCallJsSendEventId || eventId));
     }
   };
 
