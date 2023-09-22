@@ -191,15 +191,17 @@ const MyRaves = () => {
       });
     }
   }, [error]);
+
+  const filteredData = data.filter((item) => item.status !== RaveStatus.end);
   return (
     <>
       {(loading && (
-        <div className="page-loading" ref={listRef}>
+        <div className='page-loading' ref={listRef}>
           <LoadingOutlined />
         </div>
       )) || (
         <PageContainer>
-          <div className="container-wrap">
+          <div className='container-wrap'>
             <Col md={24} xs={0}>
               <PageHearderResponsive saveScrollValue={saveScrollValue} />
             </Col>
@@ -209,21 +211,21 @@ const MyRaves = () => {
                 setMenuState={setMenuState}
               />
             </Col>
-            <Col className="page-main">
+            <Col className='page-main'>
               <PageTitle>Upcoming Raves</PageTitle>
               <Carousel autoplay>
                 {imgList.map((item) => (
                   <CarouselItem key={item}>
-                    <CarouselItemImg src={item} alt="" />
+                    <CarouselItemImg src={item} alt='' />
                   </CarouselItem>
                 ))}
               </Carousel>
               <BlankBlock size={lg ? 32 : 20} />
               <PageTitle>My Raves</PageTitle>
-              <Row gutter={[16, 16]} ref={listRef}>
-                {isEmpty(data) ? (
+              {isEmpty(filteredData) ? (
+                <div ref={listRef}>
                   <Empty>
-                    <img src={Images.MyRavesEmptyIcon.src} alt="empty" />
+                    <img src={Images.MyRavesEmptyIcon.src} alt='empty' />
                     <p>
                       {`You haven't joined any raves yet. Click `}
                       <a onClick={() => router.push(RouterKeys.eventList)}>
@@ -232,29 +234,23 @@ const MyRaves = () => {
                       {` to discover more and join the fun!`}
                     </p>
                   </Empty>
-                ) : (
-                  data.map((item) => (
-                    <Col
-                      span={24}
-                      md={12}
-                      key={item.name}
-                      style={{
-                        display:
-                          (item.status === RaveStatus.end && 'none') || 'block',
-                      }}
-                    >
+                </div>
+              ) : (
+                <Row gutter={[16, 16]} ref={listRef}>
+                  {filteredData.map((item) => (
+                    <Col span={24} md={12} key={item.name}>
                       <RaveItem
                         status={matchStatus[item.status]}
                         onClick={goToRaveDetail(item.eventSlug)}
                       >
-                        <div className="head">
-                          <span className="title">{item.name}</span>
-                          <span className="badge">
+                        <div className='head'>
+                          <span className='title'>{item.name}</span>
+                          <span className='badge'>
                             {matchStatus[item.status]}
                           </span>
                         </div>
-                        <p className="description">{item.description}</p>
-                        <div className="flame">
+                        <p className='description'>{item.description}</p>
+                        <div className='flame'>
                           {item.status === RaveStatus.inProgress ? (
                             <FireIcon src={Images.FireGifIcon.src} />
                           ) : (
@@ -264,9 +260,9 @@ const MyRaves = () => {
                         </div>
                       </RaveItem>
                     </Col>
-                  ))
-                )}
-              </Row>
+                  ))}
+                </Row>
+              )}
             </Col>
             {!menuState && <PageBottomComponent />}
           </div>
