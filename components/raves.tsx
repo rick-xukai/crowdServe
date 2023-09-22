@@ -545,12 +545,15 @@ const Raves = ({
     });
   const { user, status } = raveData;
   const isEnd = status === RaveStatus.end;
+  useEffect(() => {
+    if (redeemRewardSuccess) setRedeemRewardModalOpen(false);
+  }, [redeemRewardSuccess]);
 
   const renderRedeemButton = () => {
-    if (currentShowReward.stock === 0) {
+    if (currentShowReward.redeemed) {
       return (
-        <Button disabled className="fully-redeemed">
-          Fully redeemed
+        <Button disabled className='fully-redeemed'>
+          Congrats! Already redeemed
         </Button>
       );
     }
@@ -561,14 +564,13 @@ const Raves = ({
         </Button>
       );
     }
-
-    if (currentShowReward.redeemed) {
-      return (
-        <Button disabled className='fully-redeemed'>
-          Congrats! Already redeemed
-        </Button>
-      );
-    }
+     if (currentShowReward.stock === 0) {
+       return (
+         <Button disabled className='fully-redeemed'>
+           Fully redeemed
+         </Button>
+       );
+     }
     return (
       <Button
         disabled={redeemRewardLoading}

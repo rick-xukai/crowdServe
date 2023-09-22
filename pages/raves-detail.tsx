@@ -95,7 +95,6 @@ const RavesDetail = ({
         })
       );
       if (response.type === joinRaveAction.fulfilled.toString()) {
-        dispatch(getRaveAction(id || eventId));
         if (setClickJoinRave) {
           setClickJoinRave(false);
         }
@@ -104,6 +103,7 @@ const RavesDetail = ({
         }
         setShowHaveJoinedRaveModal(true);
       }
+      dispatch(getRaveAction(id || eventId));
     } else {
       router.push({
         pathname: RouterKeys.login,
@@ -123,8 +123,8 @@ const RavesDetail = ({
     );
     if (response.type === redeemRaveRewardAction.fulfilled.toString()) {
       setRedeemRewardSuccess(true);
-      dispatch(getRaveAction(appCallJsSendEventId || eventId));
     }
+    dispatch(getRaveAction(appCallJsSendEventId || eventId));
   };
 
   const callJoinRave = (value: string) => {
