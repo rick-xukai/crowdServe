@@ -394,7 +394,11 @@ const EventDetail = ({
   };
 
   useEffect(() => {
-    const { eventId, inviteCode, previous, raves }: any = router.query;
+    const { eventId, previous, raves }: any = router.query;
+    const inviteCode: any =
+      router.query.inviteCode ||
+      sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave);
+
     if (eventId) {
       const parameterArr = (eventId as string).split('-');
       if (previous) {

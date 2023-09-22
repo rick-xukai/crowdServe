@@ -144,6 +144,10 @@ export const ProgressBarWrapper = styled.div`
     box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 0.25) inset,
       0px -1px 0px 0px #fff inset;
     position: relative;
+    @media (max-width: 768px) {
+      width: 90%;
+      margin: auto;
+    }
     .progress {
       position: absolute;
       top: 0;

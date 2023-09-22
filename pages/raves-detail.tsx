@@ -9,7 +9,7 @@ import { Colors } from '@/theme';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
 import { RAVE_ENDED, RAVE_REWARD_OUT_OF_STOCK } from '@/constants/General';
-import { CookieKeys, RouterKeys } from '@/constants/Keys';
+import { CookieKeys, RouterKeys, SessionStorageKeys } from '@/constants/Keys';
 import {
   reset,
   joinRaveAction,
@@ -67,7 +67,9 @@ const RavesDetail = ({
   ]);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { inviteCode }: any = router.query;
+  const inviteCode: any =
+    router.query.inviteCode ||
+    sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave);
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
@@ -235,8 +237,8 @@ const RavesDetail = ({
         redeemRewardModalOpen={redeemRewardModalOpen}
         setRedeemRewardModalOpen={setRedeemRewardModalOpen}
       />
-      {loading && !eventId && (
-        <Spin spinning indicator={<LoadingOutlined spin />} size="large">
+      {loading && appCallJoinRaveParameters && (
+        <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
           <div />
         </Spin>
       )}
