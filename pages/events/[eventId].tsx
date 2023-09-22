@@ -341,8 +341,8 @@ const EventDetail = ({
     }
   };
 
-  const checkUserJoined = async (id: string) => {
-    const response: any = await dispatch(getRaveAction(id));
+  const checkUserJoined = async (requestId: string) => {
+    const response: any = await dispatch(getRaveAction(requestId));
     if (response.type === getRaveAction.fulfilled.toString()) {
       if (response.payload) {
         const { user } = response.payload;
