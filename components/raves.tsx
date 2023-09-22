@@ -345,10 +345,9 @@ const PopUpContent = ({
   image: string;
 }) => {
   const postContent = 'Join me in this rave and win rewards together!';
-  const link = `${AppDomain}/${RouterKeys.eventDetail.replace(
-    ':slug',
-    currentEventSlug
-  ).replace('/', '')}?inviteCode=${inviteCode}`;
+  const link = `${AppDomain}/${RouterKeys.eventDetail
+    .replace(':slug', currentEventSlug)
+    .replace('/', '')}?inviteCode=${inviteCode}`;
   const [copySuccess, setCopySuccess] = useState(false);
   const [saveImageUrl, setSaveImageUrl] = useState<any>('');
   const [messageApi, contextHolder] = message.useMessage();
@@ -513,27 +512,29 @@ const Raves = ({
   raveData,
   showHaveJoinedRaveModal,
   redeemRewardSuccess,
+  redeemRewardModalOpen,
   setRedeemRewardSuccess,
   setShowHaveJoinedRaveModal,
   joinRaveRequest,
   handleRedeemReward,
+  setRedeemRewardModalOpen,
 }: {
   eventSlug: string;
   raveData: GetRaveResponseProps;
   showHaveJoinedRaveModal: boolean;
   redeemRewardSuccess: boolean;
+  redeemRewardModalOpen: boolean;
   setRedeemRewardSuccess: (status: boolean) => void;
   setShowHaveJoinedRaveModal: (status: boolean) => void;
   joinRaveRequest: () => void;
   handleRedeemReward: (currentReward: GetRaveResponseRewardListProps) => void;
+  setRedeemRewardModalOpen: (status: boolean) => void;
 }) => {
   const actionButtonLoading = useAppSelector(selectActionButtonLoading);
   const joinRaveResponse = useAppSelector(selectJoinRaveResponse);
   const redeemRewardLoading = useAppSelector(selectRedeemRewardLoading);
 
   const [sharePopupOpen, setSharePopupOpen] = useState<boolean>(false);
-  const [redeemRewardModalOpen, setRedeemRewardModalOpen] =
-    useState<boolean>(false);
   const [currentShowReward, setCurrentShowReward] =
     useState<GetRaveResponseRewardListProps>({
       id: '',
@@ -552,8 +553,15 @@ const Raves = ({
   const renderRedeemButton = () => {
     if (currentShowReward.redeemed) {
       return (
-        <Button disabled className='fully-redeemed'>
+        <Button disabled className="fully-redeemed">
           Congrats! Already redeemed
+        </Button>
+      );
+    }
+    if (currentShowReward.stock === 0) {
+      return (
+        <Button disabled className="fully-redeemed">
+          Fully redeemed
         </Button>
       );
     }
@@ -564,13 +572,6 @@ const Raves = ({
         </Button>
       );
     }
-     if (currentShowReward.stock === 0) {
-       return (
-         <Button disabled className='fully-redeemed'>
-           Fully redeemed
-         </Button>
-       );
-     }
     return (
       <Button
         disabled={redeemRewardLoading}

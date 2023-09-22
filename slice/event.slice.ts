@@ -232,8 +232,6 @@ export const visitSharedLinkAction = createAsyncThunk<
   }
 );
 
-;
-
 /**
  * Get event market
  */
@@ -305,6 +303,7 @@ interface EventState {
   eventListBanner: EventListBanner[];
   eventMarket: EventMarketResponseType[];
   joinRaveLoading: boolean;
+  closeJoinModalItems: [];
   eventDetailError:
     | {
         code: number | undefined;
@@ -330,6 +329,7 @@ const initialState: EventState = {
   error: null,
   eventDetailError: null,
   joinRaveLoading: false,
+  closeJoinModalItems: [],
   eventDetailData: {
     id: '',
     name: '',
@@ -393,6 +393,9 @@ export const eventSlice = createSlice({
     },
     setTabActiveKey: (state, action) => {
       state.tabActiveKey = action.payload;
+    },
+    setCloseJoinModalItems: (state, action) => {
+      state.closeJoinModalItems = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -480,6 +483,7 @@ export const {
   resetEventListData,
   resetEventDetailLoading,
   setTabActiveKey,
+  setCloseJoinModalItems,
 } = eventSlice.actions;
 
 export const selectLoading = (state: RootState) => state.event.loading;
@@ -501,5 +505,7 @@ export const selectTabActiveKey = (state: RootState) =>
   state.event.tabActiveKey;
 export const selectJoinRaveLoading = (state: RootState) =>
   state.event.joinRaveLoading;
+export const selectCloseJoinModalItems = (state: RootState) =>
+  state.event.closeJoinModalItems;
 
 export default eventSlice.reducer;

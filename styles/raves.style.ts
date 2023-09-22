@@ -282,7 +282,7 @@ export const JoinButton = styled(Button)`
   margin-top: 40px;
   display: block;
   border-radius: 2px;
-  background: var(--branding-primary-red, #fc0006);
+  background: ${Colors.branding};
   width: 250px;
   height: 45px;
   font-size: 15px;
@@ -290,6 +290,11 @@ export const JoinButton = styled(Button)`
   font-weight: 700;
   line-height: 21px;
   text-transform: uppercase;
+  &.ant-btn-primary:disabled {
+    background: ${Colors.branding};
+    color: ${Colors.white};
+    border: none;
+  }
   :hover {
     opacity: 0.8;
   }
