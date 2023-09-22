@@ -196,7 +196,6 @@ const MyRaves = () => {
     }
   }, [error]);
 
-  const filteredData = data.filter((item) => item.status !== RaveStatus.end);
   return (
     <>
       {(loading && (
@@ -219,7 +218,7 @@ const MyRaves = () => {
               <PageTitle>Upcoming Raves</PageTitle>
               <Carousel autoplay>
                 {imgList.map((item) => (
-                  <a href={item.link} key={item.link}>
+                  <a href={item.link} key={item.link} target='_blank'>
                     <CarouselItem>
                       <CarouselItemImg src={item.img} alt='' />
                     </CarouselItem>
@@ -228,7 +227,7 @@ const MyRaves = () => {
               </Carousel>
               <BlankBlock size={lg ? 32 : 20} />
               <PageTitle>My Raves</PageTitle>
-              {isEmpty(filteredData) ? (
+              {isEmpty(data) ? (
                 <div ref={listRef}>
                   <Empty>
                     <img src={Images.MyRavesEmptyIcon.src} alt='empty' />
@@ -243,7 +242,7 @@ const MyRaves = () => {
                 </div>
               ) : (
                 <Row gutter={[16, 16]} ref={listRef}>
-                  {filteredData.map((item) => (
+                  {data.map((item) => (
                     <Col span={24} md={12} key={item.name}>
                       <RaveItem
                         status={matchStatus[item.status]}
