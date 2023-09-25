@@ -633,15 +633,7 @@ const Raves = ({
         list={raveData.quest}
         isEnd={raveData.status === RaveStatus.end}
       />
-      <JoinButton
-          disabled={actionButtonLoading}
-          type="primary"
-          onClick={() => joinRaveRequest(_.last(eventSlug.split('-')) || '')}
-        >
-          {actionButtonLoading && <LoadingOutlined />}
-          Join the Rave
-        </JoinButton>
-      {/* {raveData.user.joined && !isEnd ? (
+      {raveData.user.joined && !isEnd ? (
         <JoinButton type="primary" onClick={() => setSharePopupOpen(true)}>
           Share the Rave
         </JoinButton>
@@ -655,7 +647,7 @@ const Raves = ({
           {actionButtonLoading && <LoadingOutlined />}
           Join the Rave
         </JoinButton>
-      ) : null} */}
+      ) : null}
       <SectionTitle>More Raves Coming Soon</SectionTitle>
       <MoreRaves />
       <RavesPopUp
