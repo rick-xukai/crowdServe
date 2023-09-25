@@ -171,6 +171,17 @@ export const ProgressBarWrapper = styled.div`
 export const GiftItem = styled.div`
   position: absolute;
   top: -6px;
+  &.last-gift {
+    @media (max-width: 375px) {
+      left: 86% !important;
+    }
+    @media (min-width: 576px) {
+      left: 94% !important;
+    }
+    @media (max-width: 576px) {
+      left: 90% !important;
+    }
+  }
   @media (min-width: 1024px) {
     cursor: pointer;
   }

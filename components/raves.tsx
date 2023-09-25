@@ -100,6 +100,7 @@ const ProgressBar = ({
   setRedeemRewardModalOpen,
   setCurrentShowReward,
   isEnd,
+  lastGift,
 }: {
   current: number;
   total: number;
@@ -107,10 +108,11 @@ const ProgressBar = ({
   setRedeemRewardModalOpen: (status: boolean) => void;
   setCurrentShowReward: (data: GetRaveResponseRewardListProps) => void;
   isEnd: boolean;
+  lastGift: GetRaveResponseRewardListProps;
 }) => {
   const { md } = useBreakpoint();
   const percent =
-    current >= total ? 99 : ((!current ? 0.2 : current) / total) * 100;
+    current >= lastGift.milestone ? 99 : ((!current ? 0.2 : current) / lastGift.milestone) * 100;
   const steps = gifts.filter((item) => item.milestone < current);
   let fireIconSize = 22;
   steps.map(() => {
@@ -139,6 +141,7 @@ const ProgressBar = ({
             const gotGifts = item.milestone <= current;
             return (
               <GiftItem
+                className={lastGift.id === item.id && 'last-gift' || ''}
                 onClick={() => {
                   setRedeemRewardModalOpen(true);
                   setCurrentShowReward(item);
@@ -218,6 +221,7 @@ const ProgressContainer = ({
           setRedeemRewardModalOpen={setRedeemRewardModalOpen}
           setCurrentShowReward={setCurrentShowReward}
           isEnd={isEnd}
+          lastGift={_.last(giftList) as GetRaveResponseRewardListProps}
         />
       </div>
     </FlameProgress>
@@ -512,7 +516,6 @@ const PopUpContent = ({
 };
 
 const Raves = ({
-  callJoinRave,
   eventSlug,
   raveData,
   showHaveJoinedRaveModal,
@@ -525,7 +528,6 @@ const Raves = ({
   setRedeemRewardModalOpen,
   getRaveData,
 }: {
-  callJoinRave: (data: any) => void;
   eventSlug: string;
   raveData: GetRaveResponseProps;
   showHaveJoinedRaveModal: boolean;
@@ -597,10 +599,6 @@ const Raves = ({
       getRaveData();
     }
   };
-
-  useEffect(() => {
-    callJoinRave('{"userToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjg0NywiaWF0IjoxNjk0MTQ1ODM2LCJleHAiOjI5MDM3NDU4MzZ9.sgMH-RBYIq7rsZ_UYlffXnK3poMA20kBMrXzqS7CcME", "eventId": "clmkcifyv0005qf28in8n2m14", "clickJoin": false}')
-  }, []);
 
   return (
     <ReactPullToRefresh

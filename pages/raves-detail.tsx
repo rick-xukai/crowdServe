@@ -4,7 +4,6 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
-import { bodyOverflow } from '@/utils/func';
 import { Colors } from '@/theme';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
@@ -214,14 +213,6 @@ const RavesDetail = ({
     } catch (_) {}
   }, [appCallJoinRaveParameters]);
 
-  // useEffect(() => {
-  //   if (loading) {
-  //     bodyOverflow('hidden');
-  //   } else {
-  //     bodyOverflow('scroll');
-  //   }
-  // }, [loading]);
-
   useEffect(() => {
     (window as any).callJoinRave = callJoinRave;
     if (eventId) {
@@ -240,7 +231,6 @@ const RavesDetail = ({
       }}
     >
       <Raves
-        callJoinRave={callJoinRave}
         eventSlug={appCallJsSendEventSlug || eventSlug}
         raveData={raveData}
         showHaveJoinedRaveModal={showHaveJoinedRaveModal}
