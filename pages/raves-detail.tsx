@@ -69,8 +69,9 @@ const RavesDetail = ({
   const router = useRouter();
   const inviteCode: any =
     router.query.inviteCode ||
-    typeof window !== 'undefined' && sessionStorage &&
-      sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave);
+    (typeof window !== 'undefined' &&
+      sessionStorage &&
+      sessionStorage.getItem(SessionStorageKeys.inviteCodeForRave));
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
@@ -221,8 +222,9 @@ const RavesDetail = ({
       dispatch(reset());
     };
   }, []);
-
+console.log(appCallJsSendEventId);
   return (
+
     <RaveDetailContent
       style={{ padding: (appCallJoinRaveParameters && 15) || 0 }}
     >
@@ -237,6 +239,10 @@ const RavesDetail = ({
         handleRedeemReward={handleRedeemReward}
         redeemRewardModalOpen={redeemRewardModalOpen}
         setRedeemRewardModalOpen={setRedeemRewardModalOpen}
+        callJoinRave={callJoinRave}
+        getRaveData={() => {
+          dispatch(getRaveAction(appCallJsSendEventId || eventId));
+        }}
       />
       {loading && !eventId && (
         <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
