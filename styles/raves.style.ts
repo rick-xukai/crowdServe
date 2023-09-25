@@ -179,7 +179,15 @@ export const GiftItem = styled.div`
       left: 86% !important;
     }
     @media (min-width: 576px) {
+      left: 94.5% !important;
+    }
+  }
+  &.got-gift {
+    @media (max-width: 768px) {
       left: 94% !important;
+    }
+    @media (max-width: 375px) {
+      left: 89% !important;
     }
   }
   @media (min-width: 1024px) {
@@ -443,6 +451,11 @@ export const PostImage = styled.div`
   padding: 16px 20px;
   background: rgba(255, 255, 255, 0.3);
   margin-bottom: 12px;
+  .view-post-img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
   .download {
     cursor: pointer;
   }
