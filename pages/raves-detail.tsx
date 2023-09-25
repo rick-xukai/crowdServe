@@ -248,9 +248,9 @@ const RavesDetail = ({
         handleRedeemReward={handleRedeemReward}
         redeemRewardModalOpen={redeemRewardModalOpen}
         setRedeemRewardModalOpen={setRedeemRewardModalOpen}
-        getRaveData={() => {
-          dispatch(getRaveAction(appCallJsSendEventId || eventId));
-        }}
+        // getRaveData={() => {
+        //   dispatch(getRaveAction(appCallJsSendEventId || eventId));
+        // }}
       />
       {loading && !eventId && (
         <div className="page-loading">
