@@ -100,6 +100,7 @@ const ProgressBar = ({
   setRedeemRewardModalOpen,
   setCurrentShowReward,
   isEnd,
+  lastGift,
 }: {
   current: number;
   total: number;
@@ -107,10 +108,11 @@ const ProgressBar = ({
   setRedeemRewardModalOpen: (status: boolean) => void;
   setCurrentShowReward: (data: GetRaveResponseRewardListProps) => void;
   isEnd: boolean;
+  lastGift: GetRaveResponseRewardListProps;
 }) => {
   const { md } = useBreakpoint();
   const percent =
-    current >= total ? 99 : ((!current ? 0.2 : current) / total) * 100;
+    current >= lastGift.milestone ? 99 : ((!current ? 0.2 : current) / lastGift.milestone) * 100;
   const steps = gifts.filter((item) => item.milestone < current);
   let fireIconSize = 22;
   steps.map(() => {
@@ -139,6 +141,7 @@ const ProgressBar = ({
             const gotGifts = item.milestone <= current;
             return (
               <GiftItem
+                className={lastGift.id === item.id && 'last-gift' || ''}
                 onClick={() => {
                   setRedeemRewardModalOpen(true);
                   setCurrentShowReward(item);
@@ -218,6 +221,7 @@ const ProgressContainer = ({
           setRedeemRewardModalOpen={setRedeemRewardModalOpen}
           setCurrentShowReward={setCurrentShowReward}
           isEnd={isEnd}
+          lastGift={_.last(giftList) as GetRaveResponseRewardListProps}
         />
       </div>
     </FlameProgress>
