@@ -53,6 +53,7 @@ export interface GetRaveResponseProps {
   reward: GetRaveResponseRewardListProps[];
   quest: GetRaveResponseQuestProps[];
   eventImage: string;
+  shareImage: string;
 }
 
 export interface JoinRaveResponse {
@@ -194,6 +195,7 @@ const initialState: RaveState = {
     reward: [],
     quest: [],
     eventImage: '',
+    shareImage: '',
   },
 };
 
