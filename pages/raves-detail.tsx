@@ -222,7 +222,7 @@ const RavesDetail = ({
       dispatch(reset());
     };
   }, []);
-console.log(appCallJsSendEventId);
+
   return (
 
     <RaveDetailContent
@@ -239,7 +239,6 @@ console.log(appCallJsSendEventId);
         handleRedeemReward={handleRedeemReward}
         redeemRewardModalOpen={redeemRewardModalOpen}
         setRedeemRewardModalOpen={setRedeemRewardModalOpen}
-        callJoinRave={callJoinRave}
         getRaveData={() => {
           dispatch(getRaveAction(appCallJsSendEventId || eventId));
         }}

@@ -522,7 +522,6 @@ const Raves = ({
   joinRaveRequest,
   handleRedeemReward,
   setRedeemRewardModalOpen,
-  callJoinRave,
   getRaveData,
 }: {
   eventSlug: string;
@@ -535,7 +534,6 @@ const Raves = ({
   joinRaveRequest: (id: string) => void;
   handleRedeemReward: (currentReward: GetRaveResponseRewardListProps) => void;
   setRedeemRewardModalOpen: (status: boolean) => void;
-  callJoinRave: any;
   getRaveData?: any;
 }) => {
   const actionButtonLoading = useAppSelector(selectActionButtonLoading);
@@ -558,12 +556,6 @@ const Raves = ({
   useEffect(() => {
     if (redeemRewardSuccess) setRedeemRewardModalOpen(false);
   }, [redeemRewardSuccess]);
-
-  useEffect(() => {
-    callJoinRave(
-      '{"userToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjg0NywiaWF0IjoxNjk0MTQ1ODM2LCJleHAiOjI5MDM3NDU4MzZ9.sgMH-RBYIq7rsZ_UYlffXnK3poMA20kBMrXzqS7CcME", "eventId": "clmkcifyv0005qf28in8n2m14", "clickJoin": false}'
-    );
-  }, []);
 
   const renderRedeemButton = () => {
     if (currentShowReward.redeemed) {
