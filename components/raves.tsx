@@ -64,6 +64,11 @@ import { useAppSelector } from '@/app/hooks';
 //   ssr: false,
 // });
 const { useBreakpoint } = Grid;
+declare global {
+  interface Window {
+    DownloadImage: any;
+  }
+}
 
 const TipBar = ({
   rewardData,
@@ -387,6 +392,9 @@ const PopUpContent = ({
   };
 
   const saveImage = () => {
+    if (window && window.DownloadImage) {
+      window.DownloadImage.postMessage(`${image}-${_.last(image.split('.'))}`);
+    }
     setSaveImageUrl('');
     let request = new XMLHttpRequest();
     request.open('get', image, true);
