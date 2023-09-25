@@ -474,6 +474,7 @@ const PopUpContent = ({
               width={112}
               height={56}
               layout='fixed'
+              objectFit='cover'
             />
           </div>
           <Image
@@ -597,9 +598,7 @@ const Raves = ({
   };
 
   return (
-    <ReactPullToRefresh
-      onRefresh={onRefresh}
-    >
+    <ReactPullToRefresh onRefresh={onRefresh}>
       <TipBar
         rewardData={raveData.reward || []}
         redeemedUser={raveData.redeemedUsers}
@@ -643,7 +642,7 @@ const Raves = ({
         <PopUpContent
           currentEventSlug={eventSlug}
           inviteCode={raveData.user.inviteCode}
-          image={raveData.eventImage}
+          image={raveData.shareImage}
         />
       </RavesPopUp>
       <RavesPopUp
