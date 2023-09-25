@@ -451,11 +451,6 @@ export const PostImage = styled.div`
   padding: 16px 20px;
   background: rgba(255, 255, 255, 0.3);
   margin-bottom: 12px;
-  .view-post-img {
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
-  }
   .download {
     cursor: pointer;
   }

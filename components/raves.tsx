@@ -204,7 +204,7 @@ const ProgressContainer = ({
         <CornerBorderRight src={Images.CornerBorderImg.src} />
         <ProgressBar
           current={currentFlamePoint}
-          total={_.last(giftList) && _.last(giftList)?.milestone || 0}
+          total={(_.last(giftList) && _.last(giftList)?.milestone) || 0}
           gifts={giftList.map((item, index) => {
             const getImg = () => {
               if (item.milestone <= currentFlamePoint) {
@@ -353,10 +353,14 @@ const PopUpContent = ({
   currentEventSlug,
   inviteCode,
   image,
+  setOpenViewPost,
+  setSharePopupOpen,
 }: {
   currentEventSlug: string;
   inviteCode: string;
   image: string;
+  setOpenViewPost: (status: boolean) => void;
+  setSharePopupOpen: (status: boolean) => void;
 }) => {
   const postContent = 'Join me in this rave and win rewards together!';
   const link = `${AppDomain}/${RouterKeys.eventDetail
@@ -364,7 +368,6 @@ const PopUpContent = ({
     .replace('/', '')}?inviteCode=${inviteCode}`;
   const [copySuccess, setCopySuccess] = useState(false);
   const [saveImageUrl, setSaveImageUrl] = useState<any>('');
-  const [openViewPost, setOpenViewPost] = useState<boolean>(false);
   const [messageApi, contextHolder] = message.useMessage();
   let timer: any = null;
   const handleCopy = () => {
@@ -477,12 +480,14 @@ const PopUpContent = ({
         <span>You May Need</span>
       </YouMayNeed>
       <PostImage>
-        <RavesPopUp open={openViewPost} onClose={() => setOpenViewPost(false)}>
-          <img className="view-post-img" src={image} alt="" />
-        </RavesPopUp>
         <div className="title">Post Image</div>
         <div className="post-image-content">
-          <div onClick={() => setOpenViewPost(true)}>
+          <div
+            onClick={() => {
+              setSharePopupOpen(false);
+              setOpenViewPost(true);
+            }}
+          >
             <Image
               src={image}
               alt="post-image"
@@ -557,6 +562,7 @@ const Raves = ({
   const redeemRewardLoading = useAppSelector(selectRedeemRewardLoading);
 
   const [sharePopupOpen, setSharePopupOpen] = useState<boolean>(false);
+  const [openViewPost, setOpenViewPost] = useState<boolean>(false);
   const [currentShowReward, setCurrentShowReward] =
     useState<GetRaveResponseRewardListProps>({
       id: '',
@@ -633,15 +639,7 @@ const Raves = ({
         list={raveData.quest}
         isEnd={raveData.status === RaveStatus.end}
       />
-      <JoinButton
-          disabled={actionButtonLoading}
-          type="primary"
-          onClick={() => joinRaveRequest(_.last(eventSlug.split('-')) || '')}
-        >
-          {actionButtonLoading && <LoadingOutlined />}
-          Join the Rave
-        </JoinButton>
-      {/* {raveData.user.joined && !isEnd ? (
+      {raveData.user.joined && !isEnd ? (
         <JoinButton type="primary" onClick={() => setSharePopupOpen(true)}>
           Share the Rave
         </JoinButton>
@@ -655,9 +653,18 @@ const Raves = ({
           {actionButtonLoading && <LoadingOutlined />}
           Join the Rave
         </JoinButton>
-      ) : null} */}
+      ) : null}
       <SectionTitle>More Raves Coming Soon</SectionTitle>
       <MoreRaves />
+      <RavesPopUp
+        open={openViewPost}
+        onClose={() => {
+          setOpenViewPost(false);
+          setSharePopupOpen(true);
+        }}
+      >
+        <img className="view-post-img" src={raveData.shareImage} alt="" />
+      </RavesPopUp>
       <RavesPopUp
         open={sharePopupOpen}
         onClose={() => setSharePopupOpen(false)}
@@ -666,6 +673,8 @@ const Raves = ({
           currentEventSlug={eventSlug}
           inviteCode={raveData.user.inviteCode}
           image={raveData.shareImage}
+          setOpenViewPost={setOpenViewPost}
+          setSharePopupOpen={setSharePopupOpen}
         />
       </RavesPopUp>
       <RavesPopUp

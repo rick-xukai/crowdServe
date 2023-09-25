@@ -49,6 +49,11 @@ const RaveDetailContent = styled.div`
       font-size: 30px;
     }
   }
+  .view-post-img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const RavesDetail = ({
