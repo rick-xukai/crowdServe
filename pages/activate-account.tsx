@@ -200,7 +200,7 @@ const ActivateAccount = ({
         }
       );
       if (currentTicketId && !currentTicketEventSlug) {
-        router.push(RouterKeys.myTickets);
+        router.push(RouterKeys.eventList);
         return;
       }
       if (currentTicketEventSlug) {
@@ -212,7 +212,7 @@ const ActivateAccount = ({
         );
         return;
       }
-      router.push(RouterKeys.myTickets);
+      router.push(RouterKeys.eventList);
     }
   }, [data.token]);
 
