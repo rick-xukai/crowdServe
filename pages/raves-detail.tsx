@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { message, Spin } from 'antd';
+import { message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
@@ -33,13 +33,22 @@ interface AppCallJoinRaveParameters {
 }
 
 const RaveDetailContent = styled.div`
-  .ant-spin-nested-loading {
+  height: 100%;
+  .page-loading {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 10;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    color: ${Colors.branding};
     background: ${Colors.backgorund};
+    .anticon-loading {
+      margin: auto;
+      font-size: 30px;
+    }
   }
 `;
 
@@ -244,9 +253,9 @@ const RavesDetail = ({
         }}
       />
       {loading && !eventId && (
-        <Spin spinning indicator={<LoadingOutlined spin />} size='large'>
-          <div />
-        </Spin>
+        <div className="page-loading">
+          <LoadingOutlined />
+        </div>
       )}
     </RaveDetailContent>
   );

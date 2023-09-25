@@ -360,8 +360,9 @@ const EventDetail = ({
   }, [clickJoinRave]);
 
   useEffect(() => {
+    const { raves }: any = router.query;
     const closeItem = closeJoinModalItems.find((item) => item === id);
-    if (closeItem) {
+    if (closeItem || raves) {
       return;
     }
     if (raveData.name) {

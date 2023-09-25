@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { AppProps } from 'next/app';
 import { ConfigProvider } from 'antd';
 import Head from 'next/head';
@@ -9,12 +9,29 @@ import { getAnalytics, logEvent } from 'firebase/analytics';
 import firebaseApp from '../firebase';
 import { wrapper } from '../app/store';
 import '../styles/globals.css';
+import UserService from '../services/API/User/User.service';
+import Maintenance from '../pages/maintenance';
 
 function MyApp({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;
 
+  const [maintenanceApi, setMaintenanceApi] = useState<boolean>(false);
+
+  const requestMaintenance = async () => {
+    try {
+      const isApiMaintenance = await UserService.checkApiMaintenance();
+      if (isApiMaintenance === 1) {
+        setMaintenanceApi(true);
+      }
+    } catch (error) {
+      setMaintenanceApi(false);
+      return {};
+    }
+  };
+
   useEffect(() => {
+    requestMaintenance();
     const analytics = getAnalytics(firebaseApp);
     logEvent(analytics, 'screen_view');
   }, []);
@@ -35,7 +52,7 @@ function MyApp({ Component, ...rest }: AppProps) {
         </ConfigProvider>
       </GoogleOAuthProvider> */}
       <ConfigProvider theme={{ hashed: false, token: { fontFamily: 'Heebo' } }}>
-        <Component {...pageProps} />
+        {(maintenanceApi && <Maintenance />) || <Component {...pageProps} />}
       </ConfigProvider>
     </Provider>
   );
