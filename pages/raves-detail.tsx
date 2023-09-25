@@ -214,13 +214,13 @@ const RavesDetail = ({
     } catch (_) {}
   }, [appCallJoinRaveParameters]);
 
-  useEffect(() => {
-    if (loading) {
-      bodyOverflow('hidden');
-    } else {
-      bodyOverflow('scroll');
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if (loading) {
+  //     bodyOverflow('hidden');
+  //   } else {
+  //     bodyOverflow('scroll');
+  //   }
+  // }, [loading]);
 
   useEffect(() => {
     (window as any).callJoinRave = callJoinRave;
@@ -233,11 +233,14 @@ const RavesDetail = ({
   }, []);
 
   return (
-
     <RaveDetailContent
-      style={{ padding: (appCallJoinRaveParameters && 15) || 0 }}
+      style={{
+        padding: (appCallJoinRaveParameters && 15) || 0,
+        overflow: (loading && 'hidden') || 'initial',
+      }}
     >
       <Raves
+        callJoinRave={callJoinRave}
         eventSlug={appCallJsSendEventSlug || eventSlug}
         raveData={raveData}
         showHaveJoinedRaveModal={showHaveJoinedRaveModal}

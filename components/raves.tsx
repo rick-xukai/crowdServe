@@ -512,6 +512,7 @@ const PopUpContent = ({
 };
 
 const Raves = ({
+  callJoinRave,
   eventSlug,
   raveData,
   showHaveJoinedRaveModal,
@@ -524,6 +525,7 @@ const Raves = ({
   setRedeemRewardModalOpen,
   getRaveData,
 }: {
+  callJoinRave: (data: any) => void;
   eventSlug: string;
   raveData: GetRaveResponseProps;
   showHaveJoinedRaveModal: boolean;
@@ -595,6 +597,10 @@ const Raves = ({
       getRaveData();
     }
   };
+
+  useEffect(() => {
+    callJoinRave('{"userToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjg0NywiaWF0IjoxNjk0MTQ1ODM2LCJleHAiOjI5MDM3NDU4MzZ9.sgMH-RBYIq7rsZ_UYlffXnK3poMA20kBMrXzqS7CcME", "eventId": "clmkcifyv0005qf28in8n2m14", "clickJoin": false}')
+  }, []);
 
   return (
     <ReactPullToRefresh
