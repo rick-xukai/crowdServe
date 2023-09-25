@@ -393,8 +393,9 @@ const PopUpContent = ({
 
   const saveImage = () => {
     if (window && window.DownloadImage) {
-      window.DownloadImage.postMessage(`${image}-${_.last(image.split('.'))}`);
+      window.DownloadImage.postMessage(`${image}+${_.last(image.split('.'))}`);
     }
+    return;
     setSaveImageUrl('');
     let request = new XMLHttpRequest();
     request.open('get', image, true);
