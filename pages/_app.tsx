@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { AppProps } from 'next/app';
 import { ConfigProvider } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { getAnalytics, logEvent } from 'firebase/analytics';
@@ -18,19 +17,14 @@ function MyApp({ Component, ...rest }: AppProps) {
   const { pageProps } = props;
 
   const [maintenanceApi, setMaintenanceApi] = useState<boolean>(false);
-  const [requestMaintenanceLoading, setRequestMaintenanceLoading] =
-    useState<boolean>(true);
 
   const requestMaintenance = async () => {
-    setRequestMaintenanceLoading(true);
     try {
       const isApiMaintenance = await UserService.checkApiMaintenance();
-      setRequestMaintenanceLoading(false);
       if (isApiMaintenance === 1) {
         setMaintenanceApi(true);
       }
     } catch (error) {
-      setRequestMaintenanceLoading(false);
       setMaintenanceApi(false);
       return {};
     }
@@ -41,14 +35,6 @@ function MyApp({ Component, ...rest }: AppProps) {
     const analytics = getAnalytics(firebaseApp);
     logEvent(analytics, 'screen_view');
   }, []);
-
-  if (requestMaintenanceLoading) {
-    return (
-      <div className="page-loading">
-        <LoadingOutlined />
-      </div>
-    );
-  }
 
   return (
     <Provider store={store}>
