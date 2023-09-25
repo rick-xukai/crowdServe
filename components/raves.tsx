@@ -416,9 +416,10 @@ const PopUpContent = ({
   };
 
   useEffect(() => {
+    const surfix = image.slice(image.lastIndexOf('.'));
     if (saveImageUrl) {
       const elA = document.createElement('a');
-      elA.download = `post-${Date.now()}.png`;
+      elA.download = `post-${Date.now()}.${surfix}`;
       elA.href = saveImageUrl;
       elA.click();
       elA.remove();
