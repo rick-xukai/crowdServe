@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 
 import RavesPopUp from './ravesPopup';
 import {
@@ -60,9 +60,9 @@ import { RouterKeys } from '@/constants/Keys';
 import { RaveStatus } from '@/slice/event.slice';
 import { useAppSelector } from '@/app/hooks';
 
-const ReactPullToRefresh = dynamic(() => import('react-pull-to-refresh'), {
-  ssr: false,
-});
+// const ReactPullToRefresh = dynamic(() => import('react-pull-to-refresh'), {
+//   ssr: false,
+// });
 const { useBreakpoint } = Grid;
 
 const TipBar = ({
@@ -523,7 +523,7 @@ const Raves = ({
   joinRaveRequest,
   handleRedeemReward,
   setRedeemRewardModalOpen,
-  getRaveData,
+  // getRaveData,
 }: {
   eventSlug: string;
   raveData: GetRaveResponseProps;
@@ -535,7 +535,7 @@ const Raves = ({
   joinRaveRequest: (id: string) => void;
   handleRedeemReward: (currentReward: GetRaveResponseRewardListProps) => void;
   setRedeemRewardModalOpen: (status: boolean) => void;
-  getRaveData?: any;
+  // getRaveData?: any;
 }) => {
   const actionButtonLoading = useAppSelector(selectActionButtonLoading);
   const joinRaveResponse = useAppSelector(selectJoinRaveResponse);
@@ -591,14 +591,14 @@ const Raves = ({
     );
   };
 
-  const onRefresh = async () => {
-    if (getRaveData) {
-      getRaveData();
-    }
-  };
+  // const onRefresh = async () => {
+  //   if (getRaveData) {
+  //     getRaveData();
+  //   }
+  // };
 
   return (
-    <ReactPullToRefresh onRefresh={onRefresh}>
+    <div >
       <TipBar
         rewardData={raveData.reward || []}
         redeemedUser={raveData.redeemedUsers}
@@ -719,7 +719,7 @@ const Raves = ({
           </Col>
         </RedeemSuccessModalContent>
       </RavesPopUp>
-    </ReactPullToRefresh>
+    </div>
   );
 };
 export default Raves;
