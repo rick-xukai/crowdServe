@@ -191,7 +191,7 @@ const ActivateAccountNormalFlow = ({
         path: '/',
         domain: window.location.hostname,
       });
-      router.push(RouterKeys.myTickets);
+      router.push(RouterKeys.eventList);
     }
   }, [data]);
 

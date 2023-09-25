@@ -526,7 +526,7 @@ const Raves = ({
   redeemRewardModalOpen: boolean;
   setRedeemRewardSuccess: (status: boolean) => void;
   setShowHaveJoinedRaveModal: (status: boolean) => void;
-  joinRaveRequest: () => void;
+  joinRaveRequest: (id: string) => void;
   handleRedeemReward: (currentReward: GetRaveResponseRewardListProps) => void;
   setRedeemRewardModalOpen: (status: boolean) => void;
 }) => {
@@ -613,7 +613,7 @@ const Raves = ({
         <JoinButton
           disabled={actionButtonLoading}
           type="primary"
-          onClick={() => joinRaveRequest()}
+          onClick={() => joinRaveRequest(_.last(eventSlug.split('-')) || '')}
         >
           {actionButtonLoading && <LoadingOutlined />}
           Join the Rave
