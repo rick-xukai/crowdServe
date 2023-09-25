@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { AppProps } from 'next/app';
 import { ConfigProvider } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { getAnalytics, logEvent } from 'firebase/analytics';
@@ -9,15 +10,45 @@ import { getAnalytics, logEvent } from 'firebase/analytics';
 import firebaseApp from '../firebase';
 import { wrapper } from '../app/store';
 import '../styles/globals.css';
+import UserService from '../services/API/User/User.service';
+import Maintenance from '../pages/maintenance';
 
 function MyApp({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;
 
+  const [maintenanceApi, setMaintenanceApi] = useState<boolean>(false);
+  const [requestMaintenanceLoading, setRequestMaintenanceLoading] =
+    useState<boolean>(true);
+
+  const requestMaintenance = async () => {
+    setRequestMaintenanceLoading(true);
+    try {
+      const isApiMaintenance = await UserService.checkApiMaintenance();
+      setRequestMaintenanceLoading(false);
+      if (isApiMaintenance === 1) {
+        setMaintenanceApi(true);
+      }
+    } catch (error) {
+      setRequestMaintenanceLoading(false);
+      setMaintenanceApi(false);
+      return {};
+    }
+  };
+
   useEffect(() => {
+    requestMaintenance();
     const analytics = getAnalytics(firebaseApp);
     logEvent(analytics, 'screen_view');
   }, []);
+
+  if (requestMaintenanceLoading) {
+    return (
+      <div className="page-loading">
+        <LoadingOutlined />
+      </div>
+    );
+  }
 
   return (
     <Provider store={store}>
@@ -35,7 +66,7 @@ function MyApp({ Component, ...rest }: AppProps) {
         </ConfigProvider>
       </GoogleOAuthProvider> */}
       <ConfigProvider theme={{ hashed: false, token: { fontFamily: 'Heebo' } }}>
-        <Component {...pageProps} />
+        {(maintenanceApi && <Maintenance />) || <Component {...pageProps} />}
       </ConfigProvider>
     </Provider>
   );
