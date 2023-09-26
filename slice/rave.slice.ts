@@ -216,6 +216,7 @@ export const raveSlice = createSlice({
       })
       .addCase(joinRaveAction.rejected, (state, action) => {
         state.actionButtonLoading = false;
+        state.loading = false;
         if (action.payload) {
           state.error = action.payload as ErrorType;
         } else {
