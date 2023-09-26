@@ -55,6 +55,7 @@ import {
   RaveQuestInviteFriend,
   AppDomain,
   LinkCopied,
+  ImageSaveFailed,
 } from '@/constants/General';
 import { RouterKeys } from '@/constants/Keys';
 import { RaveStatus } from '@/slice/event.slice';
@@ -430,6 +431,12 @@ const PopUpContent = ({
           };
           oFileReader.readAsDataURL(blob);
           messageApi.destroy();
+        } else {
+          messageApi.destroy();
+          messageApi.open({
+            content: ImageSaveFailed,
+            className: 'error-message-event',
+          });
         }
       };
       request.send();
