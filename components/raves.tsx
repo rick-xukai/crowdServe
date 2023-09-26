@@ -74,17 +74,19 @@ const TipBar = ({
   rewardData,
   redeemedUser,
   isEnd,
+  joinedUser,
 }: {
   rewardData: GetRaveResponseRewardListProps[];
   redeemedUser: number;
   isEnd: boolean;
+    joinedUser: number;
 }) => (
   <TipBarWrapper isEnd={isEnd}>
-    <TipBarIcon src={Images.SmileIcon.src} alt="" />
+    <TipBarIcon src={Images.SmileIcon.src} alt='' />
     {isEnd ? (
       <p>
-        The Rave already ended. 30 users participated in the rave and 20 ravers
-        got the rewards.
+        The Rave already ended. {joinedUser} users participated in the rave and{' '}
+        {redeemedUser} ravers got the rewards.
       </p>
     ) : (
       <p>
@@ -131,7 +133,7 @@ const ProgressBar = ({
           className={isEnd ? 'end progress' : 'progress'}
           style={{ width: `${percent}%` }}
         >
-          {current < total && (
+          {(current < total || isEnd) && (
             <FireIcon
               style={{
                 width: fireIconSize,
@@ -633,6 +635,7 @@ const Raves = ({
         rewardData={raveData.reward || []}
         redeemedUser={raveData.redeemedUsers}
         isEnd={isEnd}
+        joinedUser={raveData.joinedUsers}
       />
       <ProgressContainer
         setCurrentShowReward={setCurrentShowReward}

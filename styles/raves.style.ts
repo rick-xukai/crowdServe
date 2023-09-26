@@ -145,7 +145,7 @@ export const ProgressBarWrapper = styled.div`
       0px -1px 0px 0px #fff inset;
     position: relative;
     @media (max-width: 768px) {
-      width: 90%;
+      width: 80%;
       margin: auto;
     }
     .progress {

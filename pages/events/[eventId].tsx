@@ -1076,9 +1076,9 @@ const EventDetail = ({
                     </Avatar.Group>
                     <div className="users-count">
                       {`${
-                        (raveData.joinedUsers >= 20 && raveData.joinedUsers) ||
-                        `${raveData.joinedUsers} +`
-                      } users have joined the Rave`}
+                        (raveData.joinedUsers >= 10 && raveData.joinedUsers) ||
+                        '10'
+                      } + users have joined the Rave`}
                     </div>
                   </Col>
                   <Col className="content-button">
