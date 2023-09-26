@@ -70,7 +70,7 @@ export const getRaveAction = createAsyncThunk<
   {
     rejectValue: ErrorType;
   }
->('getRave/getRaveAction', async (payload, { rejectWithValue }) => {
+  >('getRave/getRaveAction', async (payload, { rejectWithValue }) => {
   try {
     const response = await RaveService.getRave(payload);
     if (verificationApi(response)) {
