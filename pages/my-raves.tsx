@@ -49,12 +49,8 @@ import { RouterKeys, SessionStorageKeys } from '@/constants/Keys';
 
 const imgList = [
   {
-    img: 'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1695347266177-P52p.jpeg',
-    link: '/events/tipsy-unicorn-x-emma-hewitt-clmr6zg930005qfgl8u2t1nwy?previous=events',
-  },
-  {
-    img: 'https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1694763914413-l30H.jpg',
-    link: '/events/0915-duplicate-discount-testing-1-clmkcifyv0005qf28in8n2m14?previous=events',
+    img: 'https://crowdserve-ticket-images.s3-ap-southeast-1.amazonaws.com/events/1694677010861-gpDm.jpg',
+    link: 'https://app.ticket-crowdserve.com/events/tipsy-unicorn-x-emma-hewitt-clmg2dvk0001tqp01t0fzpj4c?previous=events',
   },
 ];
 
