@@ -423,12 +423,7 @@ const PopUpContent = ({
       request.onload = function () {
         if (this.status === 200) {
           let blob = this.response;
-          let oFileReader = new FileReader();
-          oFileReader.onloadend = function (e: any) {
-            const base64 = e.target.result;
-            setSaveImageUrl(base64);
-          };
-          oFileReader.readAsDataURL(blob);
+          setSaveImageUrl(window.URL.createObjectURL(blob));
           messageApi.destroy();
         }
       };
