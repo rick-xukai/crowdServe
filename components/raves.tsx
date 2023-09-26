@@ -131,7 +131,7 @@ const ProgressBar = ({
           className={isEnd ? 'end progress' : 'progress'}
           style={{ width: `${percent}%` }}
         >
-          {current < total && (
+          {(current < total || isEnd) && (
             <FireIcon
               style={{
                 width: fireIconSize,
