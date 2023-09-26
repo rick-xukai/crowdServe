@@ -452,7 +452,7 @@ const EventDetail = ({
   }, [router.isReady]);
 
   useEffect(() => {
-    const { source, ticket, eventId } = router.query;
+    const { source, ticket, eventId, raves } = router.query;
     if (eventDetailData.slug) {
       if (eventDetailData.slug !== eventId) {
         router.push(
@@ -467,7 +467,7 @@ const EventDetail = ({
         }
       }
     }
-    if (eventDetailData.raveSet) {
+    if (eventDetailData.raveSet && !raves) {
       dispatch(getRaveAction(id));
     }
   }, [eventDetailData]);

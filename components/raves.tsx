@@ -64,6 +64,11 @@ import { useAppSelector } from '@/app/hooks';
 //   ssr: false,
 // });
 const { useBreakpoint } = Grid;
+declare global {
+  interface Window {
+    DownloadImage: any;
+  }
+}
 
 const TipBar = ({
   rewardData,
@@ -387,42 +392,46 @@ const PopUpContent = ({
   };
 
   const saveImage = () => {
-    setSaveImageUrl('');
-    let request = new XMLHttpRequest();
-    request.open('get', image, true);
-    request.responseType = 'blob';
-    request.setRequestHeader('Cache-Control', 'no-cache');
-    messageApi.open({
-      content: (
-        <div className="message-content">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="image-ani-hourglass"
-            src={Images.HourglassWhite.src}
-            alt=""
-          />
-          <div>
-            Downloading
-            <span className="dot-ani" />
+    if (window && window.DownloadImage) {
+      window.DownloadImage.postMessage(`${image}+${_.last(image.split('.'))}`);
+    } else {
+      setSaveImageUrl('');
+      let request = new XMLHttpRequest();
+      request.open('get', image, true);
+      request.responseType = 'blob';
+      request.setRequestHeader('Cache-Control', 'no-cache');
+      messageApi.open({
+        content: (
+          <div className="message-content">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="image-ani-hourglass"
+              src={Images.HourglassWhite.src}
+              alt=""
+            />
+            <div>
+              Downloading
+              <span className="dot-ani" />
+            </div>
           </div>
-        </div>
-      ),
-      className: 'default-message default-message-download',
-      duration: 0,
-    });
-    request.onload = function () {
-      if (this.status === 200) {
-        let blob = this.response;
-        let oFileReader = new FileReader();
-        oFileReader.onloadend = function (e: any) {
-          const base64 = e.target.result;
-          setSaveImageUrl(base64);
-        };
-        oFileReader.readAsDataURL(blob);
-        messageApi.destroy();
-      }
-    };
-    request.send();
+        ),
+        className: 'default-message default-message-download',
+        duration: 0,
+      });
+      request.onload = function () {
+        if (this.status === 200) {
+          let blob = this.response;
+          let oFileReader = new FileReader();
+          oFileReader.onloadend = function (e: any) {
+            const base64 = e.target.result;
+            setSaveImageUrl(base64);
+          };
+          oFileReader.readAsDataURL(blob);
+          messageApi.destroy();
+        }
+      };
+      request.send();
+    }
   };
 
   useEffect(() => {
