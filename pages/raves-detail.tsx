@@ -138,31 +138,6 @@ const RavesDetail = ({
         });
       }
     }
-    // if (cookies.getCookie(CookieKeys.userLoginToken)) {
-    //   const response = await dispatch(
-    //     joinRaveAction({
-    //       id: id || eventId,
-    //       data: {
-    //         inviteCode: inviteCode || '',
-    //       },
-    //     })
-    //   );
-    //   if (response.type === joinRaveAction.fulfilled.toString()) {
-    //     dispatch(getRaveAction(id || eventId));
-    //     if (setClickJoinRave) {
-    //       setClickJoinRave(false);
-    //     }
-    //     if (setJoinRaveSuccess) {
-    //       setJoinRaveSuccess(true);
-    //     }
-    //     setShowHaveJoinedRaveModal(true);
-    //   }
-    // } else {
-    // router.push({
-    //   pathname: RouterKeys.login,
-    //   query: `redirect=${router.asPath}&raves=joinDetail`,
-    // });
-    // }
   };
 
   const handleRedeemReward = async (
@@ -244,9 +219,10 @@ const RavesDetail = ({
           cookies.setCookie(CookieKeys.appCallPlatform, jsonResponse.platform);
           cookies.setCookie(CookieKeys.appCallVersion, jsonResponse.version);
         }
-        dispatch(getRaveAction(jsonResponse.eventId));
         if (jsonResponse.clickJoin) {
           joinRaveRequest(jsonResponse.eventId);
+        } else {
+          dispatch(getRaveAction(jsonResponse.eventId));
         }
       }
     } catch (_) {}
