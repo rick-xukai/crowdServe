@@ -8,6 +8,15 @@ export type EventNameType =
   | 'webapp_join_rave_success'
   | 'webapp_join_rave_failed'
   | 'webapp_share_rave_button_click'
+  | 'webapp_event_detail_page_view_dev'
+  | 'webapp_join_rave_popup_view_dev'
+  | 'webapp_popup_join_rave_button_click_dev'
+  | 'webapp_popup_join_rave_success_dev'
+  | 'webapp_popup_join_rave_failed_dev'
+  | 'webapp_join_rave_button_click_dev'
+  | 'webapp_join_rave_success_dev'
+  | 'webapp_join_rave_failed_dev'
+  | 'webapp_share_rave_button_click_dev'
 
 interface EventNameProps {
   eventDetailPageView: EventNameType;

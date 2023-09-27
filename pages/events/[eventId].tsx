@@ -27,6 +27,7 @@ import { NextSeo } from 'next-seo';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { useCollapse } from 'react-collapsed';
+import { format } from 'date-fns';
 
 import {
   formatTimeStrByTimeString,
@@ -35,6 +36,7 @@ import {
   formatDescription,
   checkOperatingSys,
   generateRandomString,
+  firebaseTrackMethod,
 } from '../../utils/func';
 import {
   FormatTimeKeys,
@@ -51,6 +53,7 @@ import {
   DefaultPageType,
   DefaultPlatform,
   JoinedUserAvatar,
+  FirebaseTrackEventName,
 } from '../../constants/General';
 import { CookieKeys, LocalStorageKeys } from '../../constants/Keys';
 import { Images } from '../../theme';
@@ -100,6 +103,7 @@ import RavesPopUp from '@/components/ravesPopup';
 import RavesDetail from '@/pages/raves-detail';
 import { setLoginRedirectPage } from '@/slice/user.slice';
 import { getRaveAction, selectRaveData, reset } from '@/slice/rave.slice';
+// import { FirebaseTrackEventName } from '@/constants/FirebaseTrackEvent';
 
 interface CloseRavesPopUpProps {
   event: string;
@@ -402,6 +406,14 @@ const EventDetail = ({
   }, [raveData]);
 
   useEffect(() => {
+    if (showJoinRaveModal) {
+      firebaseTrackMethod(FirebaseTrackEventName.joinRavePopupView, {
+        webEventId: id,
+      });
+    }
+  }, [showJoinRaveModal]);
+
+  useEffect(() => {
     if (joinRaveSuccess) {
       localStorage.removeItem(LocalStorageKeys.joinRaveNotLogin);
       setShowJoinRaveModal(false);
@@ -514,6 +526,9 @@ const EventDetail = ({
 
   useEffect(() => {
     if (id) {
+      firebaseTrackMethod(FirebaseTrackEventName.eventDetailPageView, {
+        webEventId: id,
+      });
       getData(id);
     }
   }, [id]);

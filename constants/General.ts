@@ -67,7 +67,17 @@ export const RAVE_NOT_JOINED = 1094;
 export const RAVE_REWARD_OUT_OF_STOCK = 1095;
 export const RAVE_REWARD_ALREADY_REDEEMED = 1096;
 export const RAVE_REWARD_FLAME_NOT_ENOUGH = 1097;
-
+export const FirebaseTrackEventName = {
+  eventDetailPageView: `webapp_event_detail_page_view${FirebaseEventEnv}`,
+  joinRavePopupView: `webapp_join_rave_popup_view${FirebaseEventEnv}`,
+  popupJoinRaveButtonClick: `webapp_popup_join_rave_button_click${FirebaseEventEnv}`,
+  popupJoinRaveSuccess: `webapp_popup_join_rave_success${FirebaseEventEnv}`,
+  popupJoinRaveFailed: `webapp_popup_join_rave_failed${FirebaseEventEnv}`,
+  joinRaveButtonClick: `webapp_join_rave_button_click${FirebaseEventEnv}`,
+  joinRaveSuccess: `webapp_join_rave_success${FirebaseEventEnv}`,
+  joinRaveFailed: `webapp_join_rave_failed${FirebaseEventEnv}`,
+  shareRaveButtonClick: `webapp_share_rave_button_click${FirebaseEventEnv}`,
+};
 export const TicketStatus = [
   {
     text: 'UPCOMING',

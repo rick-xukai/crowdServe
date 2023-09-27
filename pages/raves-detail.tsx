@@ -7,7 +7,12 @@ import styled from 'styled-components';
 import { Colors } from '@/theme';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
-import { RAVE_ENDED, RAVE_REWARD_OUT_OF_STOCK } from '@/constants/General';
+import { firebaseTrackMethod } from '@/utils/func';
+import {
+  RAVE_ENDED,
+  RAVE_REWARD_OUT_OF_STOCK,
+  FirebaseTrackEventName,
+} from '@/constants/General';
 import { CookieKeys, RouterKeys, SessionStorageKeys } from '@/constants/Keys';
 import {
   reset,
@@ -78,6 +83,7 @@ const RavesDetail = ({
     CookieKeys.userLoginToken,
     CookieKeys.appCallPlatform,
     CookieKeys.appCallVersion,
+    CookieKeys.userLoginId,
   ]);
   const dispatch = useAppDispatch();
   const router = useRouter();
