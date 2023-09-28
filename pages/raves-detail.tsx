@@ -20,6 +20,7 @@ import {
   redeemRaveRewardAction,
   GetRaveResponseRewardListProps,
 } from '@/slice/rave.slice';
+import { setLoginRedirectPage } from '@/slice/user.slice';
 import Raves from '@/components/raves';
 
 interface AppCallJoinRaveParameters {
@@ -132,6 +133,9 @@ const RavesDetail = ({
       if (token) {
         requestFunction(id);
       } else {
+        dispatch(
+          setLoginRedirectPage(`${router.asPath}&raves=joinDetail`)
+        );
         router.push({
           pathname: RouterKeys.login,
           query: `redirect=${router.asPath}&raves=joinDetail`,

@@ -308,6 +308,7 @@ interface UserState {
   forgotPasswordLoading: boolean;
   data: LoginResponseType;
   userGender: UserGenderResponseType[];
+  loginRedirectPage: string;
   forgotPasswordError:
     | {
         code: number | undefined;
@@ -338,16 +339,37 @@ const initialState: UserState = {
   },
   error: null,
   forgotPasswordError: null,
+  loginRedirectPage: '',
 };
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    reset: () => initialState,
+    reset: (state) => {
+      state.loading = false;
+      state.forgotPasswordLoading = false;
+      state.getUserGenderLoading = true;
+      state.userGender = [];
+      state.data = {
+        user: {
+          userId: 0,
+          email: '',
+        },
+        token: '',
+      };
+      state.error = null;
+      state.forgotPasswordError = null;
+    },
+    resetLoginRedirectPage: (state) => {
+      state.loginRedirectPage = '';
+    },
     resetForgotPasswordValue: (state) => {
       state.forgotPasswordError = null;
       state.forgotPasswordLoading = false;
+    },
+    setLoginRedirectPage: (state, action) => {
+      state.loginRedirectPage = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -467,7 +489,12 @@ export const userSlice = createSlice({
   },
 });
 
-export const { reset, resetForgotPasswordValue } = userSlice.actions;
+export const {
+  reset,
+  resetForgotPasswordValue,
+  setLoginRedirectPage,
+  resetLoginRedirectPage,
+} = userSlice.actions;
 
 export const selectLoading = (state: RootState) => state.user.loading;
 export const selectForgotPasswordLoading = (state: RootState) =>
@@ -479,5 +506,7 @@ export const selectData = (state: RootState) => state.user.data;
 export const selectUserGender = (state: RootState) => state.user.userGender;
 export const selectGetUserGenderLoading = (state: RootState) =>
   state.user.getUserGenderLoading;
+export const selectLoginRedirectPage = (state: RootState) =>
+  state.user.loginRedirectPage;
 
 export default userSlice.reducer;

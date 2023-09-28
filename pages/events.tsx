@@ -252,6 +252,7 @@ const EventList = () => {
       // eslint-disable-next-line @next/next/no-img-element
       return (
         <img
+          className="fire-disabled"
           style={{ position: 'absolute', right: 0 }}
           src={Images.FireDisabledIcon.src}
           alt='fire'
@@ -261,6 +262,7 @@ const EventList = () => {
       return (
         // eslint-disable-next-line @next/next/no-img-element
         <img
+          className="fire-gif-icon"
           style={{ position: 'absolute', right: 0 }}
           src={Images.FireGifIcon.src}
           alt='fire'
@@ -413,8 +415,8 @@ const EventList = () => {
                                 <span className='info-description'>
                                   {item.organizerName || '-'}
                                 </span>
-                                {renderFlame(item.raveSet, item.raveStatus)}
                               </Col>
+                              {renderFlame(item.raveSet, item.raveStatus)}
                             </Row>
                           </div>
                         </Col>
@@ -590,8 +592,8 @@ const EventList = () => {
                                 <span className='info-description'>
                                   {item.organizerName || '-'}
                                 </span>
-                                {renderFlame(item.raveSet, item.raveStatus)}
                               </Col>
+                              {renderFlame(item.raveSet, item.raveStatus)}
                             </Row>
                           </div>
                         </EventItemContainer>
@@ -701,8 +703,8 @@ const EventList = () => {
                                 <span className='info-description'>
                                   {item.organizerName || '-'}
                                 </span>
-                                {renderFlame(item.raveSet, item.raveStatus)}
                               </Col>
+                              {renderFlame(item.raveSet, item.raveStatus)}
                             </Row>
                           </div>
                         </EventItemContainer>

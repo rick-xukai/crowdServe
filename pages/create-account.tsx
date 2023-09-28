@@ -18,7 +18,7 @@ import {
   CaretDownOutlined,
 } from '@ant-design/icons';
 import { format } from 'date-fns';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -28,6 +28,8 @@ import {
   getErrorMessage,
   base64Encrypt,
   isUserName,
+  base64Decrypt,
+  generateRandomString,
 } from '../utils/func';
 import {
   TermsConditionsLink,
@@ -40,7 +42,7 @@ import {
   CountryItemProps,
   VerificationCodeLength,
 } from '../constants/General';
-import { RouterKeys, CookieKeys } from '../constants/Keys';
+import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { LoginContainer } from '../styles/login-style';
 import {
   reset,
@@ -54,18 +56,40 @@ import {
   getUserGenderAction,
   selectUserGender,
   selectGetUserGenderLoading,
+  selectLoginRedirectPage,
+  resetLoginRedirectPage,
 } from '../slice/user.slice';
+import { resetTicketsCache } from '../slice/ticketsCache.slice';
+import { resetTicketsListData } from '../slice/tickets.slice';
+import { resetCrowdFundCache } from '../slice/crowdFundCache.slice';
+import {
+  resetEventCache,
+  setEventDataForSearch,
+} from '../slice/eventCache.slice';
+import { resetMyTicketsCache } from '../slice/myTicketsCache.slice';
+import { resetMyCollectiblesCache } from '../slice/myCollectiblesCache.slice';
+import { resetCollectionDetailCache } from '../slice/collectionDetailCache.slice';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 import Messages from '../constants/Messages';
 import AuthPageHearder from '@/components/authPageHearder';
 import countryDataList from '@/utils/countrycode.data.json';
+import { resetMyRavesCache } from '@/slice/myRaves.slice';
 
-const CreateAccount = () => {
+const CreateAccount = ({
+  redirectPage,
+  currentTicketEventSlug,
+  ticketIdFormEmailLink,
+}: {
+  redirectPage: string;
+  currentTicketEventSlug: string;
+  ticketIdFormEmailLink: string;
+}) => {
   const cookies = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
+    CookieKeys.userLoginId,
   ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -77,6 +101,7 @@ const CreateAccount = () => {
   const error = useAppSelector(selectError);
   const getUserGenderLoading = useAppSelector(selectGetUserGenderLoading);
   const userGender = useAppSelector(selectUserGender);
+  const loginRedirectPage = useAppSelector(selectLoginRedirectPage);
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
@@ -117,11 +142,22 @@ const CreateAccount = () => {
           verifyUserAction({ email: createAccountValue.email })
         );
         if (result.type === verifyUserAction.fulfilled.toString()) {
-          router.push(
-            `${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({
-              email: createAccountValue.email,
-            })}`
-          );
+          if (redirectPage || loginRedirectPage) {
+            router.push({
+              pathname: RouterKeys.activateAccountNormalFlow,
+              query: `redirect=${
+                redirectPage || loginRedirectPage
+              }&email=${base64Encrypt({
+                email: createAccountValue.email,
+              })}`,
+            });
+          } else {
+            router.push(
+              `${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({
+                email: createAccountValue.email,
+              })}`
+            );
+          }
         }
       } else {
         setTextShak(true);
@@ -201,6 +237,18 @@ const CreateAccount = () => {
     setShowCountryItems(false);
   };
 
+  const handleResetPageCache = () => {
+    dispatch(resetTicketsListData());
+    dispatch(resetTicketsCache());
+    dispatch(resetEventCache());
+    dispatch(resetMyTicketsCache());
+    dispatch(resetMyCollectiblesCache());
+    dispatch(resetCollectionDetailCache());
+    dispatch(resetCrowdFundCache());
+    dispatch(setEventDataForSearch([]));
+    dispatch(resetMyRavesCache());
+  };
+
   useEffect(() => {
     if (userGender.length) {
       const genderOptions: any = [];
@@ -227,7 +275,42 @@ const CreateAccount = () => {
         path: '/',
         domain: window.location.hostname,
       });
-      router.push(RouterKeys.eventList);
+      cookies.setCookie(CookieKeys.userLoginId, data.user.userId, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
+      localStorage.setItem(
+        LocalStorageKeys.pageViewTrackKeys,
+        generateRandomString()
+      );
+      handleResetPageCache();
+      dispatch(resetLoginRedirectPage());
+      if (ticketIdFormEmailLink && !currentTicketEventSlug) {
+        router.push(RouterKeys.myTickets);
+        return;
+      }
+      if (currentTicketEventSlug) {
+        router.push(
+          RouterKeys.myTicketsEventDetail.replace(
+            ':slug',
+            currentTicketEventSlug
+          )
+        );
+      } else {
+        const currentRedirectPage =
+          redirectPage ||
+          (loginRedirectPage && loginRedirectPage) ||
+          RouterKeys.eventList;
+        if (router.query.raves) {
+          router.push({
+            pathname: redirectPage || currentRedirectPage,
+            query: `raves=${router.query.raves}`,
+          });
+        } else {
+          router.push(redirectPage || currentRedirectPage);
+        }
+      }
     }
   }, [data]);
 
@@ -414,7 +497,7 @@ const CreateAccount = () => {
                         <Form.Item name="code">
                           <Input
                             className={`${
-                              (createAccountValue.code && "border-white") || ""
+                              (createAccountValue.code && 'border-white') || ''
                             }`}
                             placeholder="Enter verification code"
                             bordered={false}
@@ -634,7 +717,18 @@ const CreateAccount = () => {
                   <p className="registered">Already have an account?</p>
                   <p
                     className="activate"
-                    onClick={() => router.push(RouterKeys.login)}
+                    onClick={() => {
+                      if (redirectPage || loginRedirectPage) {
+                        router.push({
+                          pathname: RouterKeys.login,
+                          query: `redirect=${
+                            redirectPage || loginRedirectPage
+                          }`,
+                        });
+                      } else {
+                        router.push(RouterKeys.login);
+                      }
+                    }}
                   >
                     LOGIN
                   </p>
@@ -652,6 +746,31 @@ const CreateAccount = () => {
       )}
     </>
   );
+};
+
+CreateAccount.getInitialProps = async (ctx: any) => {
+  const { query } = ctx;
+  let currentTicketEventSlug = '';
+  let ticketIdFormEmailLink = '';
+  let redirectPage = '';
+  try {
+    if (!isEmpty(query)) {
+      const { redirect, raves } = query;
+      if (raves && redirect) {
+        redirectPage = `${redirect}&raves=${raves}`;
+      } else {
+        const parameters = base64Decrypt(Object.keys(query)[0]);
+        currentTicketEventSlug = parameters.eventSlug;
+        ticketIdFormEmailLink = parameters.ticketId;
+        redirectPage = query.redirect || '';
+      }
+    }
+  } catch (_) {}
+  return {
+    currentTicketEventSlug,
+    redirectPage,
+    ticketIdFormEmailLink,
+  };
 };
 
 export default CreateAccount;

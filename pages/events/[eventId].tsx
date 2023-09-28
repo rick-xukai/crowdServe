@@ -98,6 +98,7 @@ import { StatusContainer } from '@/styles/myTicketsEventDetail.style';
 import { logPageViewAction } from '@/slice/pageTrack.slice';
 import RavesPopUp from '@/components/ravesPopup';
 import RavesDetail from '@/pages/raves-detail';
+import { setLoginRedirectPage } from '@/slice/user.slice';
 import { getRaveAction, selectRaveData, reset } from '@/slice/rave.slice';
 
 interface CloseRavesPopUpProps {
@@ -325,6 +326,9 @@ const EventDetail = ({
       setClickJoinRave(true);
     } else {
       localStorage.setItem(LocalStorageKeys.joinRaveNotLogin, 'true');
+      dispatch(
+        setLoginRedirectPage(`${router.asPath}&raves=joinPopup`)
+      );
       router.push({
         pathname: RouterKeys.login,
         query: `redirect=${router.asPath}&raves=joinPopup`,
@@ -1077,8 +1081,8 @@ const EventDetail = ({
                     <div className="users-count">
                       {`${
                         (raveData.joinedUsers >= 10 && raveData.joinedUsers) ||
-                        '10'
-                      } + users have joined the Rave`}
+                        '10 +'
+                      } users have joined the Rave`}
                     </div>
                   </Col>
                   <Col className="content-button">

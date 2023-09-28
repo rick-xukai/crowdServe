@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Button, Form, Input, message } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
+import { isEmpty } from 'lodash';
 
 import {
   PasswordNotMatch,
@@ -18,6 +19,7 @@ import {
   base64Decrypt,
   isEmail,
   base64Encrypt,
+  generateRandomString,
 } from '@/utils/func';
 import { verifyUserAction } from '@/slice/user.slice';
 import {
@@ -30,6 +32,8 @@ import {
   loginAction,
   selectData,
   reset,
+  selectLoginRedirectPage,
+  resetLoginRedirectPage,
 } from '@/slice/user.slice';
 import { resetTicketsCache } from '@/slice/ticketsCache.slice';
 import { resetTicketsListData } from '@/slice/tickets.slice';
@@ -42,15 +46,26 @@ import { resetMyTicketsCache } from '@/slice/myTicketsCache.slice';
 import { resetMyCollectiblesCache } from '@/slice/myCollectiblesCache.slice';
 import { resetCollectionDetailCache } from '@/slice/collectionDetailCache.slice';
 import { LoginContainer } from '@/styles/login-style';
-import { RouterKeys, CookieKeys } from '@/constants/Keys';
+import { RouterKeys, CookieKeys, LocalStorageKeys } from '@/constants/Keys';
 import Messages from '@/constants/Messages';
 import AuthPageHearder from '@/components/authPageHearder';
 import { resetMyRavesCache } from '@/slice/myRaves.slice';
 
-const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
+const ForgotPassword = ({
+  defultEmail,
+  redirectPage,
+  currentTicketEventSlug,
+  ticketIdFormEmailLink,
+}: {
+  defultEmail: string;
+  redirectPage: string;
+  currentTicketEventSlug: string;
+  ticketIdFormEmailLink: string;
+}) => {
   const cookies = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
+    CookieKeys.userLoginId,
   ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -58,6 +73,7 @@ const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
   const loading = useAppSelector(selectForgotPasswordLoading);
   const error = useAppSelector(selectForgotPasswordError);
   const data = useAppSelector(selectData);
+  const loginRedirectPage = useAppSelector(selectLoginRedirectPage);
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [sendVerificationCode, setSendVerificationCode] =
@@ -151,9 +167,43 @@ const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
         path: '/',
         domain: window.location.hostname,
       });
+      cookies.setCookie(CookieKeys.userLoginId, data.user.userId, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
+      localStorage.setItem(
+        LocalStorageKeys.pageViewTrackKeys,
+        generateRandomString()
+      );
       handleResetPageCache();
       dispatch(reset());
-      router.push(RouterKeys.eventList);
+      dispatch(resetLoginRedirectPage());
+      if (ticketIdFormEmailLink && !currentTicketEventSlug) {
+        router.push(RouterKeys.myTickets);
+        return;
+      }
+      if (currentTicketEventSlug) {
+        router.push(
+          RouterKeys.myTicketsEventDetail.replace(
+            ':slug',
+            currentTicketEventSlug
+          )
+        );
+      } else {
+        const currentRedirectPage =
+          redirectPage ||
+          (loginRedirectPage && loginRedirectPage) ||
+          RouterKeys.eventList;
+        if (router.query.raves) {
+          router.push({
+            pathname: redirectPage || currentRedirectPage,
+            query: `raves=${router.query.raves}`,
+          });
+        } else {
+          router.push(redirectPage || currentRedirectPage);
+        }
+      }
     }
   }, [data]);
 
@@ -168,12 +218,23 @@ const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
       }
       if (error.code === Messages.activateAccountUserDosentExist1001.code) {
         dispatch(verifyUserAction({ email: forgotPasswordValue.email }));
-        router.push(
-          `${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({
-            email: forgotPasswordValue.email,
-            source: ForgotPasswordAccountNotActivate,
-          })}`
-        );
+        if (redirectPage || loginRedirectPage) {
+          router.push({
+            pathname: RouterKeys.activateAccountNormalFlow,
+            query: `redirect=${
+              redirectPage || loginRedirectPage
+            }&email=${base64Encrypt({
+              email: forgotPasswordValue.email,
+            })}&source=${ForgotPasswordAccountNotActivate}`,
+          });
+        } else {
+          router.push(
+            `${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({
+              email: forgotPasswordValue.email,
+              source: ForgotPasswordAccountNotActivate,
+            })}`
+          );
+        }
         return;
       }
       if (error.code === Messages.invalidActivationCode.code) {
@@ -346,12 +407,28 @@ const ForgotPassword = ({ defultEmail }: { defultEmail: string }) => {
 ForgotPassword.getInitialProps = async (ctx: any) => {
   const { query } = ctx;
   let defultEmail = undefined;
+  let redirectPage = '';
+  let currentTicketEventSlug = '';
+  let ticketIdFormEmailLink = '';
   try {
-    const parameters = base64Decrypt(Object.keys(query)[0]);
-    defultEmail = parameters.email;
+    if (!isEmpty(query)) {
+      const { redirect, raves } = query;
+      if (raves && redirect) {
+        redirectPage = `${redirect}&raves=${raves}`;
+      } else {
+        const parameters = base64Decrypt(Object.keys(query)[0]);
+        defultEmail = parameters.email;
+        currentTicketEventSlug = parameters.eventSlug;
+        ticketIdFormEmailLink = parameters.ticketId;
+        redirectPage = query.redirect || '';
+      }
+    }
   } catch (_) {}
   return {
     defultEmail,
+    currentTicketEventSlug,
+    redirectPage,
+    ticketIdFormEmailLink,
   };
 };
 

@@ -26,6 +26,9 @@ import {
   selectLoading,
   selectData,
   reset,
+  setLoginRedirectPage,
+  selectLoginRedirectPage,
+  resetLoginRedirectPage,
 } from '../slice/user.slice';
 import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
@@ -65,6 +68,7 @@ const Login = ({
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
   const data = useAppSelector(selectData);
+  const loginRedirectPage = useAppSelector(selectLoginRedirectPage);
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [loginEmailParameter, setLoginEmailParameter] = useState<string>(
@@ -79,7 +83,7 @@ const Login = ({
   useEffect(() => {
     const { query } = router;
     if (query && !isEmpty(query)) {
-      if (!query.redirect) {
+      if (!query.redirect && query.redirect !== '') {
         const parameters = base64Decrypt(Object.keys(query)[0]);
         if (parameters.email) {
           setLoginEmailParameter(parameters.email);
@@ -141,6 +145,7 @@ const Login = ({
         generateRandomString()
       );
       handleResetPageCache();
+      dispatch(resetLoginRedirectPage());
       if (ticketIdFormEmailLink && !currentTicketEventSlug) {
         router.push(RouterKeys.myTickets);
         return;
@@ -153,17 +158,27 @@ const Login = ({
           )
         );
       } else {
+        const currentRedirectPage =
+          redirectPage ||
+          (loginRedirectPage && loginRedirectPage) ||
+          RouterKeys.eventList;
         if (router.query.raves) {
           router.push({
-            pathname: redirectPage || RouterKeys.eventList,
+            pathname: redirectPage || currentRedirectPage,
             query: `raves=${router.query.raves}`,
           });
         } else {
-          router.push(redirectPage || RouterKeys.eventList);
+          router.push(redirectPage || currentRedirectPage);
         }
       }
     }
   }, [data]);
+
+  useEffect(() => {
+    if (redirectPage) {
+      dispatch(setLoginRedirectPage(redirectPage));
+    }
+  }, [redirectPage]);
 
   useEffect(() => {
     if (
@@ -251,14 +266,34 @@ const Login = ({
                   <p className="forgot-password">
                     <span
                       onClick={() => {
-                        if (loginEmailParameter) {
-                          router.push(
-                            `${RouterKeys.forgotPassword}?${base64Encrypt({
-                              email: loginEmailParameter,
-                            })}`
-                          );
+                        if (redirectPage || loginRedirectPage) {
+                          if (loginEmailParameter) {
+                            router.push({
+                              pathname: RouterKeys.forgotPassword,
+                              query: `redirect=${
+                                redirectPage || loginRedirectPage
+                              }&email=${base64Encrypt({
+                                email: loginEmailParameter,
+                              })}`,
+                            });
+                          } else {
+                            router.push({
+                              pathname: RouterKeys.forgotPassword,
+                              query: `redirect=${
+                                redirectPage || loginRedirectPage
+                              }`,
+                            });
+                          }
                         } else {
-                          router.push(RouterKeys.forgotPassword);
+                          if (loginEmailParameter) {
+                            router.push(
+                              `${RouterKeys.forgotPassword}?${base64Encrypt({
+                                email: loginEmailParameter,
+                              })}`
+                            );
+                          } else {
+                            router.push(RouterKeys.forgotPassword);
+                          }
                         }
                       }}
                     >
@@ -293,7 +328,16 @@ const Login = ({
             <p className="registered">{`Don't have an account?`}</p>
             <p
               className="activate"
-              onClick={() => router.push(RouterKeys.createAccount)}
+              onClick={() => {
+                if (redirectPage || loginRedirectPage) {
+                  router.push({
+                    pathname: RouterKeys.createAccount,
+                    query: `redirect=${redirectPage || loginRedirectPage}`,
+                  });
+                } else {
+                  router.push(RouterKeys.createAccount);
+                }
+              }}
             >
               REGISTER NOW
             </p>
@@ -312,19 +356,24 @@ Login.getInitialProps = async (ctx: any) => {
   let currentTicketEventSlug = '';
   let ticketIdFormEmailLink = '';
   let redirectPage = '';
-  if (!isEmpty(query)) {
-    redirectPage = query.redirect || '';
-  }
   try {
     const token = req.cookies[CookieKeys.userLoginToken];
     if (token) {
       res.writeHead(302, { Location: redirectPage || RouterKeys.eventList });
       res.end();
     } else {
-      const parameters = base64Decrypt(Object.keys(query)[0]);
-      defultLoginEmail = parameters.email;
-      currentTicketEventSlug = parameters.eventSlug;
-      ticketIdFormEmailLink = parameters.ticketId;
+      if (!isEmpty(query)) {
+        const { redirect, raves } = query;
+        if (raves && redirect) {
+          redirectPage = `${redirect}&raves=${raves}`;
+        } else {
+          const parameters = base64Decrypt(Object.keys(query)[0]);
+          redirectPage = query.redirect || '';
+          defultLoginEmail = parameters.email;
+          currentTicketEventSlug = parameters.eventSlug;
+          ticketIdFormEmailLink = parameters.ticketId;
+        }
+      }
     }
   } catch (_) {}
   return {
