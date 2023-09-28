@@ -27,7 +27,6 @@ import { NextSeo } from 'next-seo';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { useCollapse } from 'react-collapsed';
-import { format } from 'date-fns';
 
 import {
   formatTimeStrByTimeString,
