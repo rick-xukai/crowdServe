@@ -103,7 +103,6 @@ import RavesPopUp from '@/components/ravesPopup';
 import RavesDetail from '@/pages/raves-detail';
 import { setLoginRedirectPage } from '@/slice/user.slice';
 import { getRaveAction, selectRaveData, reset } from '@/slice/rave.slice';
-// import { FirebaseTrackEventName } from '@/constants/FirebaseTrackEvent';
 
 interface CloseRavesPopUpProps {
   event: string;
