@@ -21,7 +21,12 @@ import { isEmpty, cloneDeep } from 'lodash';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { isPassword, getErrorMessage, base64Decrypt } from '../utils/func';
+import {
+  isPassword,
+  getErrorMessage,
+  base64Decrypt,
+  generateRandomString,
+} from '../utils/func';
 import {
   TokenExpire,
   PasswordNotMatch,
@@ -34,7 +39,7 @@ import {
   DefaultSelectCountry,
   CountryItemProps,
 } from '../constants/General';
-import { RouterKeys, CookieKeys } from '../constants/Keys';
+import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { LoginContainer } from '../styles/login-style';
 import OpenAppComponent from '../components/openAppComponent';
 import {
@@ -47,18 +52,38 @@ import {
   getUserGenderAction,
   selectUserGender,
   selectGetUserGenderLoading,
+  selectLoginRedirectPage,
+  resetLoginRedirectPage,
 } from '../slice/user.slice';
+import { resetTicketsCache } from '../slice/ticketsCache.slice';
+import { resetTicketsListData } from '../slice/tickets.slice';
+import { resetCrowdFundCache } from '../slice/crowdFundCache.slice';
+import {
+  resetEventCache,
+  setEventDataForSearch,
+} from '../slice/eventCache.slice';
+import { resetMyTicketsCache } from '../slice/myTicketsCache.slice';
+import { resetMyCollectiblesCache } from '../slice/myCollectiblesCache.slice';
+import { resetCollectionDetailCache } from '../slice/collectionDetailCache.slice';
 import AuthPageHearder from '@/components/authPageHearder';
 import countryDataList from '@/utils/countrycode.data.json';
+import { resetMyRavesCache } from '@/slice/myRaves.slice';
 
 const ActivateAccountNormalFlow = ({
   accountEmail,
+  redirectPage,
+  currentTicketEventSlug,
+  ticketIdFormEmailLink,
 }: {
   accountEmail: string;
+  redirectPage: string;
+  currentTicketEventSlug: string;
+  ticketIdFormEmailLink: string;
 }) => {
   const cookies = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
+    CookieKeys.userLoginId,
   ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -70,6 +95,7 @@ const ActivateAccountNormalFlow = ({
   const error = useAppSelector(selectError);
   const getUserGenderLoading = useAppSelector(selectGetUserGenderLoading);
   const userGender = useAppSelector(selectUserGender);
+  const loginRedirectPage = useAppSelector(selectLoginRedirectPage);
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
@@ -165,6 +191,18 @@ const ActivateAccountNormalFlow = ({
     setShowCountryItems(false);
   };
 
+  const handleResetPageCache = () => {
+    dispatch(resetTicketsListData());
+    dispatch(resetTicketsCache());
+    dispatch(resetEventCache());
+    dispatch(resetMyTicketsCache());
+    dispatch(resetMyCollectiblesCache());
+    dispatch(resetCollectionDetailCache());
+    dispatch(resetCrowdFundCache());
+    dispatch(setEventDataForSearch([]));
+    dispatch(resetMyRavesCache());
+  };
+
   useEffect(() => {
     if (userGender.length) {
       const genderOptions: any = [];
@@ -191,21 +229,61 @@ const ActivateAccountNormalFlow = ({
         path: '/',
         domain: window.location.hostname,
       });
-      router.push(RouterKeys.eventList);
+      cookies.setCookie(CookieKeys.userLoginId, data.user.userId, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
+      localStorage.setItem(
+        LocalStorageKeys.pageViewTrackKeys,
+        generateRandomString()
+      );
+      handleResetPageCache();
+      dispatch(resetLoginRedirectPage());
+      if (ticketIdFormEmailLink && !currentTicketEventSlug) {
+        router.push(RouterKeys.myTickets);
+        return;
+      }
+      if (currentTicketEventSlug) {
+        router.push(
+          RouterKeys.myTicketsEventDetail.replace(
+            ':slug',
+            currentTicketEventSlug
+          )
+        );
+      } else {
+        const currentRedirectPage =
+          redirectPage ||
+          (loginRedirectPage && loginRedirectPage) ||
+          RouterKeys.eventList;
+        if (router.query.raves) {
+          router.push({
+            pathname: redirectPage || currentRedirectPage,
+            query: `raves=${router.query.raves}`,
+          });
+        } else {
+          router.push(redirectPage || currentRedirectPage);
+        }
+      }
     }
   }, [data]);
 
   useEffect(() => {
     const { query } = router;
     if (query && !isEmpty(query)) {
-      const parameters = base64Decrypt(Object.keys(query)[0]);
-      if (parameters.source) {
-        if (parameters.source === ForgotPasswordAccountNotActivate) {
-          message.open({
-            content: ActivateAccountFirst,
-            className: 'error-message-login',
-          });
-        }
+      const { source, redirect, raves } = query;
+      let currentSource = '';
+      if (redirect && raves) {
+        currentSource = (source as string) || '';
+      } else {
+        const parameters = base64Decrypt(Object.keys(query)[0]);
+        currentSource = parameters.source;
+      }
+      if (currentSource && currentSource === ForgotPasswordAccountNotActivate) {
+        message.open({
+          content: ActivateAccountFirst,
+          className: 'error-message-login',
+        });
       } else {
         message.open({
           content: AccountNotActivate,
@@ -505,7 +583,16 @@ const ActivateAccountNormalFlow = ({
                 <p className="registered">Already have an account?</p>
                 <p
                   className="activate"
-                  onClick={() => router.push(RouterKeys.login)}
+                  onClick={() => {
+                    if (redirectPage || loginRedirectPage) {
+                      router.push({
+                        pathname: RouterKeys.login,
+                        query: `redirect=${redirectPage || loginRedirectPage}`,
+                      });
+                    } else {
+                      router.push(RouterKeys.login);
+                    }
+                  }}
                 >
                   LOGIN
                 </p>
@@ -522,11 +609,32 @@ const ActivateAccountNormalFlow = ({
 ActivateAccountNormalFlow.getInitialProps = async (ctx: any) => {
   const { query } = ctx;
   let accountEmail = '';
+  let currentTicketEventSlug = '';
+  let ticketIdFormEmailLink = '';
+  let redirectPage = '';
   try {
-    const parameters = base64Decrypt(Object.keys(query)[0]);
-    accountEmail = parameters.email;
+    if (!isEmpty(query)) {
+      const { redirect, raves, email } = query;
+      if (raves && redirect) {
+        redirectPage = `${redirect}&raves=${raves}`;
+        const { email: currentEmail } =
+          base64Decrypt(email.replaceAll('=', '')) || {};
+        accountEmail = currentEmail || '';
+      } else {
+        const parameters = base64Decrypt(Object.keys(query)[0]);
+        currentTicketEventSlug = parameters.eventSlug;
+        ticketIdFormEmailLink = parameters.ticketId;
+        redirectPage = query.redirect || '';
+        accountEmail = parameters.email;
+      }
+    }
   } catch (_) {}
-  return { accountEmail };
+  return {
+    accountEmail,
+    redirectPage,
+    currentTicketEventSlug,
+    ticketIdFormEmailLink,
+  };
 };
 
 export default ActivateAccountNormalFlow;

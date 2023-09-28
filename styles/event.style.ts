@@ -47,6 +47,26 @@ const EventListContainer = styled.div`
       bottom: 0;
     }
   }
+  .fire-disabled {
+    right: 0px;
+    bottom: 0;
+    width: 20px;
+  }
+  .fire-gif-icon {
+    right: 0px;
+    width: 40px;
+    bottom: 0;
+  }
+  @media (max-width: 768px) {
+    .fire-gif-icon {
+      right: 8px !important;
+      bottom: 8px;
+    }
+    .fire-disabled {
+      right: 8px !important;
+      bottom: 8px;
+    }
+  }
   @media (min-width: 768px) and (max-width: 1200px) {
     .container-wrap {
       max-width: 688px;
