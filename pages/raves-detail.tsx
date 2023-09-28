@@ -128,7 +128,7 @@ const RavesDetail = ({
   const requestFunction = async (requestId: string, type?: string) => {
     const response: any = await dispatch(
       joinRaveAction({
-        id: 'requestId',
+        id: requestId,
         data: {
           inviteCode: inviteCode || '',
         },
