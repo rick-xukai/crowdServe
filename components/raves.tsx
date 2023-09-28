@@ -56,10 +56,13 @@ import {
   AppDomain,
   LinkCopied,
   ImageSaveFailed,
+  FirebaseTrackEventName,
 } from '@/constants/General';
-import { RouterKeys } from '@/constants/Keys';
+import { firebaseTrackMethod } from '@/utils/func';
+import { RouterKeys, CookieKeys } from '@/constants/Keys';
 import { RaveStatus } from '@/slice/event.slice';
 import { useAppSelector } from '@/app/hooks';
+import { useCookie } from '@/hooks';
 
 const ReactPullToRefresh = dynamic(
   () => import('react-simple-pull-to-refresh'),
@@ -83,10 +86,10 @@ const TipBar = ({
   rewardData: GetRaveResponseRewardListProps[];
   redeemedUser: number;
   isEnd: boolean;
-    joinedUser: number;
+  joinedUser: number;
 }) => (
   <TipBarWrapper isEnd={isEnd}>
-    <TipBarIcon src={Images.SmileIcon.src} alt='' />
+    <TipBarIcon src={Images.SmileIcon.src} alt="" />
     {isEnd ? (
       <p>
         The Rave already ended. {joinedUser} users participated in the rave and{' '}
@@ -568,11 +571,13 @@ const Raves = ({
   redeemRewardModalOpen: boolean;
   setRedeemRewardSuccess: (status: boolean) => void;
   setShowHaveJoinedRaveModal: (status: boolean) => void;
-  joinRaveRequest: (id: string) => void;
+  joinRaveRequest: (id: string, type?: string) => void;
   handleRedeemReward: (currentReward: GetRaveResponseRewardListProps) => void;
   setRedeemRewardModalOpen: (status: boolean) => void;
   getRaveData?: any;
 }) => {
+  const cookies = useCookie([CookieKeys.userLoginId]);
+
   const actionButtonLoading = useAppSelector(selectActionButtonLoading);
   const joinRaveResponse = useAppSelector(selectJoinRaveResponse);
   const redeemRewardLoading = useAppSelector(selectRedeemRewardLoading);
@@ -598,21 +603,21 @@ const Raves = ({
   const renderRedeemButton = () => {
     if (currentShowReward.redeemed) {
       return (
-        <Button disabled className='fully-redeemed'>
+        <Button disabled className="fully-redeemed">
           Congrats! Already redeemed
         </Button>
       );
     }
     if (currentShowReward.stock === 0) {
       return (
-        <Button disabled className='fully-redeemed'>
+        <Button disabled className="fully-redeemed">
           Fully redeemed
         </Button>
       );
     }
     if (user.flamePoint < currentShowReward.milestone) {
       return (
-        <Button disabled className='need-more'>
+        <Button disabled className="need-more">
           {currentShowReward.milestone - user.flamePoint} More Flames to redeem
         </Button>
       );
@@ -633,6 +638,16 @@ const Raves = ({
       getRaveData();
     }
   };
+
+  useEffect(() => {
+    if (sharePopupOpen) {
+      const userId = cookies.getCookie(CookieKeys.userLoginId);
+      firebaseTrackMethod(FirebaseTrackEventName.shareRaveButtonClick, {
+        webEventId: _.last(eventSlug.split('-')) || '',
+        webUserId: userId || '',
+      });
+    }
+  }, [sharePopupOpen]);
 
   return (
     <ReactPullToRefresh onRefresh={onRefresh}>
@@ -658,15 +673,17 @@ const Raves = ({
           isEnd={raveData.status === RaveStatus.end}
         />
         {raveData.user.joined && !isEnd ? (
-          <JoinButton type='primary' onClick={() => setSharePopupOpen(true)}>
+          <JoinButton type="primary" onClick={() => setSharePopupOpen(true)}>
             Share the Rave
           </JoinButton>
         ) : null}
         {!raveData.user.joined && !isEnd ? (
           <JoinButton
             disabled={actionButtonLoading}
-            type='primary'
-            onClick={() => joinRaveRequest(_.last(eventSlug.split('-')) || '')}
+            type="primary"
+            onClick={() =>
+              joinRaveRequest(_.last(eventSlug.split('-')) || '', 'joinDetail')
+            }
           >
             {actionButtonLoading && <LoadingOutlined />}
             Join the Rave
@@ -681,7 +698,7 @@ const Raves = ({
             setSharePopupOpen(true);
           }}
         >
-          <img className='view-post-img' src={raveData.shareImage} alt='' />
+          <img className="view-post-img" src={raveData.shareImage} alt="" />
         </RavesPopUp>
         <RavesPopUp
           open={sharePopupOpen}
@@ -700,17 +717,17 @@ const Raves = ({
           onClose={() => setShowHaveJoinedRaveModal(false)}
         >
           <HaveJoinedRaveModalContent>
-            <Col className='content-mascotsIcon'>
-              <img src={Images.MascotsIcon.src} alt='' />
+            <Col className="content-mascotsIcon">
+              <img src={Images.MascotsIcon.src} alt="" />
             </Col>
-            <Col className='content-title'>You have joined the rave!</Col>
-            <Col className='content-count'>
+            <Col className="content-title">You have joined the rave!</Col>
+            <Col className="content-count">
               <span>
                 <span>+ </span>
                 {joinRaveResponse.flamePoint}
               </span>
               <span>
-                <img src={Images.FireGifIcon.src} alt='' />
+                <img src={Images.FireGifIcon.src} alt="" />
               </span>
             </Col>
           </HaveJoinedRaveModalContent>
@@ -721,34 +738,34 @@ const Raves = ({
             onClose={() => setRedeemRewardModalOpen(false)}
           >
             <RedeemRewardModalContent>
-              <Col className='redeem-title'>Redeem Reward</Col>
-              <Col className='redeem-name'>{currentShowReward.name}</Col>
-              <Col className='redeem-img-box'>
-                <div className='redeem-info'>
+              <Col className="redeem-title">Redeem Reward</Col>
+              <Col className="redeem-name">{currentShowReward.name}</Col>
+              <Col className="redeem-img-box">
+                <div className="redeem-info">
                   <img
-                    className='background'
+                    className="background"
                     src={Images.FireworksGifIcon.src}
-                    alt=''
+                    alt=""
                   />
-                  <div className='info'>
+                  <div className="info">
                     <img
-                      className='info-img'
+                      className="info-img"
                       src={currentShowReward.image || Images.BackgroundLogo.src}
-                      alt=''
+                      alt=""
                       onError={(e: any) => {
                         e.target.onerror = null;
                         e.target.src = Images.BackgroundLogo.src;
                       }}
                     />
                     <img
-                      className='left-icon'
+                      className="left-icon"
                       src={Images.WowGifIcon.src}
-                      alt=''
+                      alt=""
                     />
                   </div>
                 </div>
               </Col>
-              <Col className='redeem-button'>{renderRedeemButton()}</Col>
+              <Col className="redeem-button">{renderRedeemButton()}</Col>
             </RedeemRewardModalContent>
           </RavesPopUp>
         </RedeemRewardPopupContainer>
@@ -757,13 +774,13 @@ const Raves = ({
           onClose={() => setRedeemRewardSuccess(false)}
         >
           <RedeemSuccessModalContent>
-            <Col className='title-img'>
-              <img src={Images.CheersGifIcon.src} alt='' />
+            <Col className="title-img">
+              <img src={Images.CheersGifIcon.src} alt="" />
             </Col>
-            <Col className='title'>
+            <Col className="title">
               Congratulations, you have redeemed a free drink!
             </Col>
-            <Col className='info'>
+            <Col className="info">
               The reward will be sent to your CrowdServe wallet in several
               minutes.
             </Col>
