@@ -25,7 +25,6 @@ import {
   PriceUnit,
   FormatTimeKeys,
 } from '../constants/General';
-import { EventNameType } from '@/constants/FirebaseTrackEvent';
 import firebaseApp from '@/firebase';
 
 Chart.register(
