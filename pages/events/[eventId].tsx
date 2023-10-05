@@ -35,6 +35,7 @@ import {
   formatDescription,
   checkOperatingSys,
   generateRandomString,
+  firebaseTrackMethod,
 } from '../../utils/func';
 import {
   FormatTimeKeys,
@@ -51,6 +52,7 @@ import {
   DefaultPageType,
   DefaultPlatform,
   JoinedUserAvatar,
+  FirebaseTrackEventName,
 } from '../../constants/General';
 import { CookieKeys, LocalStorageKeys } from '../../constants/Keys';
 import { Images } from '../../theme';
@@ -402,6 +404,14 @@ const EventDetail = ({
   }, [raveData]);
 
   useEffect(() => {
+    if (showJoinRaveModal) {
+      firebaseTrackMethod(FirebaseTrackEventName.joinRavePopupView, {
+        webEventId: id,
+      });
+    }
+  }, [showJoinRaveModal]);
+
+  useEffect(() => {
     if (joinRaveSuccess) {
       localStorage.removeItem(LocalStorageKeys.joinRaveNotLogin);
       setShowJoinRaveModal(false);
@@ -514,6 +524,9 @@ const EventDetail = ({
 
   useEffect(() => {
     if (id) {
+      firebaseTrackMethod(FirebaseTrackEventName.eventDetailPageView, {
+        webEventId: id,
+      });
       getData(id);
     }
   }, [id]);

@@ -13,6 +13,7 @@ import {
   Legend,
 } from 'chart.js';
 import _ from 'lodash';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 
 import Messages from '../constants/Messages';
 import { Colors } from '../theme';
@@ -22,7 +23,9 @@ import {
   GooglePlayLink,
   AppHost,
   PriceUnit,
+  FormatTimeKeys,
 } from '../constants/General';
+import firebaseApp from '@/firebase';
 
 Chart.register(
   LineController,
@@ -359,4 +362,12 @@ export const generateRandomLetters = (length: number) => {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return result.split('');
+};
+
+export const firebaseTrackMethod = (eventName: string, payload: any) => {
+  const analytics = getAnalytics(firebaseApp);
+  logEvent(analytics, eventName, {
+    ...payload,
+    webTimestamp: format(new Date(), FormatTimeKeys.norm),
+  });
 };

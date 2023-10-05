@@ -7,7 +7,12 @@ import styled from 'styled-components';
 import { Colors } from '@/theme';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { useCookie } from '@/hooks';
-import { RAVE_ENDED, RAVE_REWARD_OUT_OF_STOCK } from '@/constants/General';
+import { firebaseTrackMethod } from '@/utils/func';
+import {
+  RAVE_ENDED,
+  RAVE_REWARD_OUT_OF_STOCK,
+  FirebaseTrackEventName,
+} from '@/constants/General';
 import { CookieKeys, RouterKeys, SessionStorageKeys } from '@/constants/Keys';
 import {
   reset,
@@ -78,6 +83,7 @@ const RavesDetail = ({
     CookieKeys.userLoginToken,
     CookieKeys.appCallPlatform,
     CookieKeys.appCallVersion,
+    CookieKeys.userLoginId,
   ]);
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -104,17 +110,36 @@ const RavesDetail = ({
   const [redeemRewardModalOpen, setRedeemRewardModalOpen] =
     useState<boolean>(false);
 
-  const requestFunction = async (requestId?: string) => {
-    const response = await dispatch(
+  const track = (trackType: string, logId: string, errorDetail?: string) => {
+    const userId = cookies.getCookie(CookieKeys.userLoginId);
+    const trackPayload: any = {
+      webEventId: logId,
+      webUserId: userId || '',
+    };
+    if (
+      trackType === FirebaseTrackEventName.joinRaveFailed ||
+      trackType === FirebaseTrackEventName.popupJoinRaveFailed
+    ) {
+      trackPayload.webErrorDetail = errorDetail;
+    }
+    firebaseTrackMethod(trackType, trackPayload);
+  };
+
+  const requestFunction = async (requestId: string, type?: string) => {
+    const response: any = await dispatch(
       joinRaveAction({
-        id: requestId || eventId,
+        id: requestId,
         data: {
           inviteCode: inviteCode || '',
         },
       })
     );
     if (response.type === joinRaveAction.fulfilled.toString()) {
-      dispatch(getRaveAction(requestId || eventId));
+      const trackType =
+        (type && FirebaseTrackEventName.joinRaveSuccess) ||
+        FirebaseTrackEventName.popupJoinRaveSuccess;
+      track(trackType, requestId);
+      dispatch(getRaveAction(requestId));
       if (setClickJoinRave) {
         setClickJoinRave(false);
       }
@@ -122,20 +147,24 @@ const RavesDetail = ({
         setJoinRaveSuccess(true);
       }
       setShowHaveJoinedRaveModal(true);
+    } else {
+      const { payload } = response;
+      const trackType =
+        (type && FirebaseTrackEventName.joinRaveFailed) ||
+        FirebaseTrackEventName.popupJoinRaveFailed;
+      track(trackType, requestId, (payload && payload.message) || '');
     }
   };
 
-  const joinRaveRequest = async (id?: string) => {
+  const joinRaveRequest = async (id: string, type?: string) => {
     if (appCallJoinRaveParameters) {
-      requestFunction(id);
+      requestFunction(id, type);
     } else {
       const token = cookies.getCookie(CookieKeys.userLoginToken);
       if (token) {
-        requestFunction(id);
+        requestFunction(id, type);
       } else {
-        dispatch(
-          setLoginRedirectPage(`${router.asPath}&raves=joinDetail`)
-        );
+        dispatch(setLoginRedirectPage(`${router.asPath}&raves=joinDetail`));
         router.push({
           pathname: RouterKeys.login,
           query: `redirect=${router.asPath}&raves=joinDetail`,
@@ -206,7 +235,7 @@ const RavesDetail = ({
 
   useEffect(() => {
     if (clickJoinRave) {
-      joinRaveRequest();
+      joinRaveRequest(eventId);
     }
   }, [clickJoinRave]);
 
