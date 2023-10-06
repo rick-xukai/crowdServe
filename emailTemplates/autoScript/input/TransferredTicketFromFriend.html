@@ -1,0 +1,78 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>CrowdServe - Transferred ticket from your friend</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+  </head>
+  <body style="margin: auto;">
+    <div class="email-container-nft">
+      <div class="email-header">
+        <img src="https://static.wixstatic.com/media/8bf0ac_92df1da1bb4c457b90dd8fa00ed5221c~mv2.png/v1/fill/w_360,h_142,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/CROWDSERVE_LOGO_LONG_WHT.png" alt="" class="email-logo">
+      </div>
+      <div class="email-content">
+        <div class="content-title">
+          A transferred ticket from your friend
+        </div>
+        <div class="content-detail">
+          <p class="detail-text">Hey {{recipient_name}},</p>
+          <p class="detail-text">
+            We're excited to inform you that {{sender_name}} has transferred an event ticket to you through on CrowdServe. You're now all set to attend {{event_name}} and have a fantastic time!
+          </p>
+          <div style="background-image: url('https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1696560546265-diEL.png');" class="ticket-detail">
+            <div class="ticket-detail-left">
+              <img src="{{ticket_image}}" alt="" />
+            </div>
+            <div class="ticket-detail-right">
+              <div class="ticket-info">
+                <p class="title">
+                  {{ticket_name}}
+                </p>
+                <p class="info-item">
+                  <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt="" />
+                  {{event_time}}
+                </p>
+                <p class="info-item">
+                  <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt="" />
+                  {{event_location}}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="notes">
+            <p class="notes-title">Notes:</p>
+            <p class="notes-text">
+              {{notes}}
+            </p>
+          </div>
+          <p class="detail-text">
+            You can find the transferred ticket in your CrowdServe account to claim it or Click on the button below
+          </p>
+          <div style="display: flex; justify-content: center;">
+            <button class="click-nft-ticket">
+              <a href="{{claim_url}}" target="_blank" style="color: #F8F6F0 !important;">
+                <span style="margin: auto;">CLAIM TICKET</span>
+              </a>
+            </button>
+          </div>
+          <p class="detail-text">
+            We hope you enjoy the event and have a wonderful time!
+          </p>
+          <p class="detail-text">
+            Yours Sincerely,<br />
+            CrowdServe
+          </p>
+          <p class="unsubscribe">
+            If you don't want to receive this type of email in the future, please
+            <a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank">unsubscribe</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
