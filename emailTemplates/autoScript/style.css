@@ -189,6 +189,8 @@ a {
   font-size: 12px;
   font-weight: 700;
   line-height: 18px;
+  height: 20px;
+  max-height: 20px;
 }
 
 .notes .notes-title span {
@@ -204,6 +206,7 @@ a {
 
 .ticket-detail {
   display: flex;
+  overflow: hidden;
 }
 
 .ticket-detail-left {
@@ -214,7 +217,7 @@ a {
 
 .ticket-detail-left img {
   width: 100%;
-  height: 100%;
+  height: 100% !important;
   object-fit: cover;
   border-radius: 4px;
 }
