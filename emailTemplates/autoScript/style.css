@@ -15,13 +15,13 @@ a,
 
 .email-container-nft {
   margin: auto;
-  background: #F8F6F0;
+  background: #f8f6f0;
   max-width: 640px;
 }
 
 .email-header {
   height: 95px;
-  background: #27272A;
+  background: #27272a;
   display: flex;
   align-items: center;
 }
@@ -41,7 +41,7 @@ a,
 .content-title {
   padding-top: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #DCDCE1;
+  border-bottom: 1px solid #dcdce1;
   font-weight: 700;
   font-size: 20px;
   color: #303034;
@@ -73,38 +73,38 @@ a,
 .unsubscribe {
   font-weight: 400;
   font-size: 13px;
-  color: #ABACB6;
-  border-top: 1px solid #DCDCE1;
+  color: #abacb6;
+  border-top: 1px solid #dcdce1;
   padding-top: 20px;
   margin-top: 20px;
   margin-bottom: 0;
 }
 
 .unsubscribe-btn {
-  color: #ABACB6 !important;
+  color: #abacb6 !important;
   text-decoration: underline !important;
 }
 
 button {
   width: 200px;
   height: 45px;
-  background: #FC0006;
+  background: #fc0006;
   border-radius: 2px;
   border: none;
   margin-bottom: 20px;
   font-weight: 700;
   font-size: 15px;
-  color: #F8F6F0;
+  color: #f8f6f0;
 }
 
 a {
   text-decoration: none;
-  color: #1974D2;
+  color: #1974d2;
 }
 
 .email-container-code {
   margin: auto;
-  background: #F8F6F0;
+  background: #f8f6f0;
   max-width: 640px;
 }
 
@@ -166,4 +166,94 @@ a {
   font-weight: 700;
   font-size: 15px;
   color: #303034;
+}
+
+.ticket-detail {
+  min-height: 140px;
+  max-height: 140px;
+}
+
+.notes {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  display: flex;
+}
+
+.notes p {
+  margin: 0;
+}
+
+.notes .notes-title {
+  margin-right: 10px;
+  color: #717179;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  height: 20px;
+  max-height: 20px;
+}
+
+.notes .notes-title span {
+  white-space: nowrap;
+}
+
+.notes .notes-text {
+  color: #717179;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 19px;
+}
+
+.ticket-detail {
+  display: flex;
+  overflow: hidden;
+}
+
+.ticket-detail-left {
+  width: 120px;
+  height: calc(140px - 20px);
+  padding: 10px;
+}
+
+.ticket-detail-left img {
+  width: 100%;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.ticket-detail-right {
+  width: calc(100% - 198px);
+  margin-left: 18px;
+  padding: 10px 20px;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.ticket-detail-right .ticket-info {
+  margin-bottom: 0;
+}
+
+.ticket-detail-right .ticket-info :last-child {
+  margin-bottom: 0;
+}
+
+.ticket-detail-right .ticket-info .title {
+  color: #fff;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 24px;
+  margin-top: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ticket-detail-right .ticket-info .info-item {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 19px;
 }
