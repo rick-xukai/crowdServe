@@ -226,8 +226,8 @@ a {
   width: calc(100% - 198px);
   margin-left: 18px;
   padding: 10px 20px;
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .ticket-detail-right .ticket-info {
