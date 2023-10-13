@@ -31,8 +31,21 @@ const getPriceChartData = async (payload: string) => {
   return response;
 };
 
+const claimTransfer = async (payload: string) => {
+  const uri = API.claimTransfer.post.replace('{code}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .setHeaders({
+      'Content-Type': 'application/json',
+    })
+    .doPost();
+  return response;
+};
+
 export default {
   getCollectibleDetail,
   getConnectedEvents,
   getPriceChartData,
+  claimTransfer,
 };

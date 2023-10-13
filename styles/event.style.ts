@@ -241,6 +241,14 @@ const EventListContainer = styled.div`
       max-width: 496px;
     }
   }
+  .transfer-status-modal {
+    .ant-modal-body {
+      color: ${Colors.grayScale50};
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 21px;
+    }
+  }
 `;
 
 const EventItemContainer = styled.div`

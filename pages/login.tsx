@@ -363,9 +363,15 @@ Login.getInitialProps = async (ctx: any) => {
       res.end();
     } else {
       if (!isEmpty(query)) {
-        const { redirect, raves } = query;
-        if (raves && redirect) {
-          redirectPage = `${redirect}&raves=${raves}`;
+        const { redirect, raves, userEmail } = query;
+        if (redirect) {
+          redirectPage = redirect;
+          if (raves) {
+            redirectPage = `${redirect}&raves=${raves}`;
+          }
+          if (userEmail) {
+            defultLoginEmail = userEmail;
+          }
         } else {
           const parameters = base64Decrypt(Object.keys(query)[0]);
           redirectPage = query.redirect || '';

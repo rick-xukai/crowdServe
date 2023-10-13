@@ -122,6 +122,7 @@ export interface MyEventTicketListResponseType {
   description: string;
   animationType: string;
   animationUrl: string;
+  transferStatus: number;
   ticketNo?: string;
   price?: number;
   seat?: number;

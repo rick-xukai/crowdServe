@@ -334,6 +334,9 @@ const MyTicketItemContainer = styled.div`
       }
       .ticket-onsale {
         width: 52px;
+        &.transfer {
+          height: 52px;
+        }
         span {
           width: 100% !important;
           height: 100% !important;
@@ -356,6 +359,9 @@ const MyTicketItemContainer = styled.div`
           width: 53px;
           height: 50px;
           padding-left: 8px;
+          &.transfer {
+            height: 40px;
+          }
         }
       }
     }
@@ -391,6 +397,9 @@ const MyTicketItemContainer = styled.div`
           width: 53px;
           height: 50px;
           padding-left: 8px;
+          &.transfer {
+            height: 40px;
+          }
         }
       }
     }
@@ -490,9 +499,37 @@ const EventDetailCard = styled(Col)`
   }
 `;
 
+const TransferStatusContainer = styled.div`
+  height: 32px;
+  line-height: 32px;
+  padding: 0 10px;
+  position: absolute;
+  z-index: 1;
+  border-radius: 2px;
+  background: ${Colors.greenRgb};
+  backdrop-filter: blur(2px);
+  color: ${Colors.white};
+  font-family: Oswald;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  left: 5px;
+  top: 5px;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @media (max-width: 576px) {
+    max-width: unset;
+    width: 90%;
+    text-align: center;
+  }
+`;
+
 export {
   MyTicketsEventDetailContainer,
   StatusContainer,
   MyTicketItemContainer,
   EventDetailCard,
+  TransferStatusContainer,
 };

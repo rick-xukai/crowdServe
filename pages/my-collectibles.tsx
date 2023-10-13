@@ -12,6 +12,7 @@ import {
   ListPageScrollDifference,
   DefaultPageSize,
   TicketSaleStatus,
+  TransferStatus,
 } from '../constants/General';
 import { RouterKeys } from '../constants/Keys';
 import {
@@ -112,6 +113,11 @@ const MyCollectibles = () => {
             {ticket.saleStatus === TicketSaleStatus.onsale.status && (
               <div className="sale-icon">
                 <Image src={Images.OnSaleIcon} alt="" />
+              </div>
+            )}
+            {ticket.transferStatus === TransferStatus.PENDING && (
+              <div className="sale-icon">
+                <Image src={Images.TransferIcon} alt="" />
               </div>
             )}
           </Col>

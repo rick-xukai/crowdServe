@@ -67,6 +67,8 @@ export const RAVE_NOT_JOINED = 1094;
 export const RAVE_REWARD_OUT_OF_STOCK = 1095;
 export const RAVE_REWARD_ALREADY_REDEEMED = 1096;
 export const RAVE_REWARD_FLAME_NOT_ENOUGH = 1097;
+export const ALREADY_CLAIMED = 1025;
+export const NOT_FOUND = 404;
 export const FirebaseTrackEventName = {
   eventDetailPageView: `webapp_event_detail_page_view${FirebaseEventEnv}`,
   joinRavePopupView: `webapp_join_rave_popup_view${FirebaseEventEnv}`,
@@ -208,3 +210,15 @@ export interface CountryItemProps {
   shortCode: string;
   country: string;
 }
+export const TransferRecordStatus = {
+  INIT: 0,
+  RECEIVING: 1,
+  RECEIVED: 2,
+  CANCELLED: 3,
+};
+export const TransferStatus = {
+  INIT: 0,
+  PENDING: 1,
+  RECEIVING: 2,
+  RECEIVED: 3,
+};

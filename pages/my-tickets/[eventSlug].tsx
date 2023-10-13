@@ -23,6 +23,7 @@ import {
   PriceUnit,
   TicketSaleStatus,
   SetRefundKey,
+  TransferStatus,
 } from '../../constants/General';
 import Messages from '../../constants/Messages';
 import {
@@ -77,6 +78,22 @@ const TicketDetailTabletAndMobile = ({
   const [showDescriptionMoreMobile, setShowDescriptionMoreMobile] =
     useState<boolean>(false);
 
+  const renderCheckTicketQRCodeButton = () => {
+    if (detailData.transferStatus !== TransferStatus.PENDING) {
+      if (
+        detailData.status === 0 &&
+        detailData.saleStatus === TicketSaleStatus.unsale.status
+      ) {
+        return (
+          <div className="qr-code-btn-content">
+            <Button onClick={buttonAction}>CHECK TICKET QR CODE</Button>
+          </div>
+        );
+      }
+    }
+    return null;
+  };
+
   return (
     <>
       <div className="detail-image">
@@ -103,6 +120,11 @@ const TicketDetailTabletAndMobile = ({
         {detailData.saleStatus === TicketSaleStatus.onsale.status && (
           <div className="ticket-sale-status">
             <Image src={Images.OnSaleIcon} alt="" />
+          </div>
+        )}
+        {detailData.transferStatus === TransferStatus.PENDING && (
+          <div className="ticket-sale-status">
+            <Image src={Images.TransferIcon} alt="" />
           </div>
         )}
       </div>
@@ -195,12 +217,7 @@ const TicketDetailTabletAndMobile = ({
         </Row>
       </div>
       <Col className="detail-action" span={24}>
-        {detailData.status === 0 &&
-          detailData.saleStatus === TicketSaleStatus.unsale.status && (
-            <div className="qr-code-btn-content">
-              <Button onClick={buttonAction}>CHECK TICKET QR CODE</Button>
-            </div>
-          )}
+        {renderCheckTicketQRCodeButton()}
         <p
           className={
             (detailData.status === 0 &&
@@ -263,6 +280,7 @@ const MyTicketsEventDetail = () => {
       ticketNo: '',
       price: 0,
       seat: 0,
+      transferStatus: 0,
     });
   const [popupBackgroundImage, setPopupBackgroundImage] = useState<{
     backgroundImage: string;
@@ -367,11 +385,34 @@ const MyTicketsEventDetail = () => {
     if (
       item.status ===
         TicketStatus.find((status) => status.text === 'UPCOMING')?.key ||
-      item.saleStatus === TicketSaleStatus.onsale.status
+      item.saleStatus === TicketSaleStatus.onsale.status ||
+      item.transferStatus === TransferStatus.PENDING
     ) {
       colNum = (point === 'xs' && 20) || 18;
     }
     return colNum;
+  };
+
+  const renderCheckTicketQRCodeButton = () => {
+    if (currentShowPopupTicket.transferStatus !== TransferStatus.PENDING) {
+      if (
+        currentShowPopupTicket.status === 0 &&
+        currentShowPopupTicket.saleStatus === TicketSaleStatus.unsale.status
+      ) {
+        return (
+          <Button
+            onClick={() => {
+              setCurrentCheckTicketId(currentShowPopupTicket.id);
+              setShowTicketItemDetailModal(false);
+              setShowQrCodeModal(true);
+            }}
+          >
+            CHECK TICKET QR CODE
+          </Button>
+        );
+      }
+    }
+    return null;
   };
 
   const onMapLoad = useCallback((map: any) => {
@@ -811,87 +852,118 @@ const MyTicketsEventDetail = () => {
                                         return null;
                                       })}
                                     </Col>
-                                    {(item.status ===
-                                      TicketStatus.find(
-                                        (status) => status.text === 'UPCOMING'
-                                      )?.key ||
-                                      item.saleStatus ===
-                                        TicketSaleStatus.onsale.status) && (
+                                    {(item.transferStatus ===
+                                      TransferStatus.PENDING && (
+                                      <Col xs={4} sm={6}>
+                                        <div className="item-detail-status">
+                                          <div className="item-detail-icon ticket-onsale transfer">
+                                            <Image
+                                              src={Images.TransferIcon}
+                                              alt=""
+                                            />
+                                          </div>
+                                        </div>
+                                      </Col>
+                                    )) || (
                                       <>
-                                        <Col xs={4} sm={0}>
-                                          <div className="item-detail-status">
-                                            {item.saleStatus ===
-                                              TicketSaleStatus.unsale
-                                                .status && (
-                                              <div className="item-detail-icon">
-                                                <Image
-                                                  src={Images.QrCodeButton}
-                                                  alt=""
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setCurrentCheckTicketId(
-                                                      item.id
-                                                    );
-                                                    if (
-                                                      window.innerWidth < 576
-                                                    ) {
-                                                      setShowQrCodeDrawer(true);
-                                                    } else {
-                                                      setShowQrCodeModal(true);
-                                                    }
-                                                  }}
-                                                />
+                                        {(item.status ===
+                                          TicketStatus.find(
+                                            (status) =>
+                                              status.text === 'UPCOMING'
+                                          )?.key ||
+                                          item.saleStatus ===
+                                            TicketSaleStatus.onsale.status) && (
+                                          <>
+                                            <Col xs={4} sm={0}>
+                                              <div className="item-detail-status">
+                                                {item.saleStatus ===
+                                                  TicketSaleStatus.unsale
+                                                    .status && (
+                                                  <div className="item-detail-icon">
+                                                    <Image
+                                                      src={Images.QrCodeButton}
+                                                      alt=""
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setCurrentCheckTicketId(
+                                                          item.id
+                                                        );
+                                                        if (
+                                                          window.innerWidth <
+                                                          576
+                                                        ) {
+                                                          setShowQrCodeDrawer(
+                                                            true
+                                                          );
+                                                        } else {
+                                                          setShowQrCodeModal(
+                                                            true
+                                                          );
+                                                        }
+                                                      }}
+                                                    />
+                                                  </div>
+                                                )}
+                                                {item.saleStatus ===
+                                                  TicketSaleStatus.onsale
+                                                    .status && (
+                                                  <div className="item-detail-icon ticket-onsale">
+                                                    <Image
+                                                      src={
+                                                        Images.TicketsOnSaleIcon
+                                                      }
+                                                      alt=""
+                                                    />
+                                                  </div>
+                                                )}
                                               </div>
-                                            )}
-                                            {item.saleStatus ===
-                                              TicketSaleStatus.onsale
-                                                .status && (
-                                              <div className="item-detail-icon ticket-onsale">
-                                                <Image
-                                                  src={Images.TicketsOnSaleIcon}
-                                                  alt=""
-                                                />
+                                            </Col>
+                                            <Col sm={6} xs={0}>
+                                              <div className="item-detail-status">
+                                                {item.saleStatus ===
+                                                  TicketSaleStatus.unsale
+                                                    .status && (
+                                                  <div className="item-detail-icon">
+                                                    <Image
+                                                      src={Images.QrCodeButton}
+                                                      alt=""
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setCurrentCheckTicketId(
+                                                          item.id
+                                                        );
+                                                        if (
+                                                          window.innerWidth <
+                                                          576
+                                                        ) {
+                                                          setShowQrCodeDrawer(
+                                                            true
+                                                          );
+                                                        } else {
+                                                          setShowQrCodeModal(
+                                                            true
+                                                          );
+                                                        }
+                                                      }}
+                                                    />
+                                                  </div>
+                                                )}
+                                                {item.saleStatus ===
+                                                  TicketSaleStatus.onsale
+                                                    .status && (
+                                                  <div className="item-detail-icon ticket-onsale">
+                                                    <Image
+                                                      src={
+                                                        Images.TicketsOnSaleIcon
+                                                      }
+                                                      alt=""
+                                                    />
+                                                  </div>
+                                                )}
                                               </div>
-                                            )}
-                                          </div>
-                                        </Col>
-                                        <Col sm={6} xs={0}>
-                                          <div className="item-detail-status">
-                                            {item.saleStatus ===
-                                              TicketSaleStatus.unsale
-                                                .status && (
-                                              <div className="item-detail-icon">
-                                                <Image
-                                                  src={Images.QrCodeButton}
-                                                  alt=""
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setCurrentCheckTicketId(
-                                                      item.id
-                                                    );
-                                                    if (
-                                                      window.innerWidth < 576
-                                                    ) {
-                                                      setShowQrCodeDrawer(true);
-                                                    } else {
-                                                      setShowQrCodeModal(true);
-                                                    }
-                                                  }}
-                                                />
-                                              </div>
-                                            )}
-                                            {item.saleStatus ===
-                                              TicketSaleStatus.onsale
-                                                .status && (
-                                              <div className="item-detail-icon ticket-onsale">
-                                                <Image
-                                                  src={Images.TicketsOnSaleIcon}
-                                                  alt=""
-                                                />
-                                              </div>
-                                            )}
-                                          </div>
-                                        </Col>
+                                            </Col>
+                                          </>
+                                        )}
                                       </>
                                     )}
                                   </Row>
@@ -1007,6 +1079,12 @@ const MyTicketsEventDetail = () => {
                                 TicketSaleStatus.onsale.status && (
                                 <div className="ticket-sale-status">
                                   <Image src={Images.OnSaleIcon} alt="" />
+                                </div>
+                              )}
+                              {currentShowPopupTicket.transferStatus ===
+                                TransferStatus.PENDING && (
+                                <div className="ticket-sale-status">
+                                  <Image src={Images.TransferIcon} alt="" />
                                 </div>
                               )}
                             </div>
@@ -1135,21 +1213,7 @@ const MyTicketsEventDetail = () => {
                                   </Row>
                                 </div>
                                 <Col className="detail-action" span={24}>
-                                  {currentShowPopupTicket.status === 0 &&
-                                    currentShowPopupTicket.saleStatus ===
-                                      TicketSaleStatus.unsale.status && (
-                                      <Button
-                                        onClick={() => {
-                                          setCurrentCheckTicketId(
-                                            currentShowPopupTicket.id
-                                          );
-                                          setShowTicketItemDetailModal(false);
-                                          setShowQrCodeModal(true);
-                                        }}
-                                      >
-                                        CHECK TICKET QR CODE
-                                      </Button>
-                                    )}
+                                  {renderCheckTicketQRCodeButton()}
                                   <p onClick={handleCheckCollectibleDetail}>
                                     CHECK COLLECTIBLE DETAIL
                                   </p>

@@ -19,6 +19,7 @@ export interface GetMyCollectiblesListPayloadType {
 export interface MyCollectiblesTickets {
   image: string;
   saleStatus: number;
+  transferStatus: number;
 }
 
 export interface MyCollectiblesListResponseType {
@@ -47,6 +48,7 @@ export interface MyCollectiblesOrganizerTicketsType {
   image: string;
   status: number;
   saleStatus: number;
+  transferStatus: number;
 }
 
 /**

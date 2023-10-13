@@ -46,6 +46,13 @@ export const defaultCollectibleDetail = {
     status: 0,
     createdAt: '',
   },
+  transferStatus: 0,
+  owner: true,
+  transfer: {
+    code: '',
+    notes: '',
+    toUserEmail: '',
+  },
 };
 
 export const defaultConnectedEventItem = {
@@ -120,6 +127,14 @@ export interface CollectibleDetailResponseType {
     status: number;
     createdAt: string;
   };
+  transferStatus: number;
+  owner: boolean;
+  transfer: {
+    code: string;
+    notes: string;
+    toUserEmail: string;
+  };
+  transferCode?: string;
 }
 
 export interface ConnectedEventsResponseType {
@@ -251,11 +266,48 @@ export const getPriceChartDataAction = createAsyncThunk<
   }
 );
 
+/**
+ * Claim Transfer
+ */
+export const claimTransferAction = createAsyncThunk<
+  { userTicketId: string },
+  string,
+  {
+    rejectValue: ErrorType;
+  }
+>('claimTransfer/claimTransferAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await CollectibleService.claimTransfer(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
 interface CollectibleState {
   loading: boolean;
+  claimTransferLoading: boolean;
   priceChartData: PriceChartResponseType[];
   collectibleDetail: CollectibleDetailResponseType;
   connectedEvents: ConnectedEventsResponseType[];
+  claimTransferError:
+    | {
+        code: number | undefined;
+        message: string | undefined;
+      }
+    | undefined
+    | null;
   error:
     | {
         code: number | undefined;
@@ -267,7 +319,9 @@ interface CollectibleState {
 
 const initialState: CollectibleState = {
   loading: true,
+  claimTransferLoading: false,
   error: null,
+  claimTransferError: null,
   collectibleDetail: defaultCollectibleDetail,
   connectedEvents: [],
   priceChartData: [],
@@ -337,6 +391,20 @@ export const collectibleSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(claimTransferAction.pending, (state) => {
+        state.claimTransferLoading = true;
+      })
+      .addCase(claimTransferAction.fulfilled, (state, action: any) => {
+        state.claimTransferLoading = false;
+      })
+      .addCase(claimTransferAction.rejected, (state, action) => {
+        state.claimTransferLoading = false;
+        if (action.payload) {
+          state.claimTransferError = action.payload as ErrorType;
+        } else {
+          state.claimTransferError = action.error as ErrorType;
+        }
       });
   },
 });
@@ -356,4 +424,9 @@ export const selectConnectedEvents = (state: RootState) =>
   state.collectible.connectedEvents;
 export const selectPriceChartData = (state: RootState) =>
   state.collectible.priceChartData;
+export const selectClaimTransferLoading = (state: RootState) =>
+  state.collectible.claimTransferLoading;
+export const selectClaimTransferError = (state: RootState) =>
+  state.collectible.claimTransferError;
+
 export default collectibleSlice.reducer;

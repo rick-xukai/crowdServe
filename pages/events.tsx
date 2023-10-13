@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import _ from 'lodash';
-import Router from 'next/router';
-import { Row, Col, Input, message, Carousel } from 'antd';
+import Router, { useRouter } from 'next/router';
+import { Row, Col, Input, message, Carousel, Modal, Button } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
@@ -61,6 +61,7 @@ const EventList = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const eventListRef = useRef<any>(null);
+  const routers = useRouter();
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -81,6 +82,8 @@ const EventList = () => {
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
   const [searchInputPlaceholder, setSearchInputPlaceholder] =
     useState<string>('Search events');
+  const [showNotSameAccountModal, setShowNotSameAccountModal] =
+    useState<boolean>(false);
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -118,6 +121,15 @@ const EventList = () => {
     }
     setSearchInputPlaceholder('Search events');
   };
+
+  useEffect(() => {
+    const { query } = routers;
+    if (query) {
+      if (query.transferSameAccount === 'false') {
+        setShowNotSameAccountModal(true);
+      }
+    }
+  }, [routers.isReady]);
 
   useEffect(() => {
     if (!isFirstRender && error) {
@@ -240,7 +252,7 @@ const EventList = () => {
   if (loading && !eventDataForAll.length) {
     return (
       <EventListContainer ref={eventListRef}>
-        <div className='page-loading'>
+        <div className="page-loading">
           <LoadingOutlined />
         </div>
       </EventListContainer>
@@ -255,7 +267,7 @@ const EventList = () => {
           className="fire-disabled"
           style={{ position: 'absolute', right: 0 }}
           src={Images.FireDisabledIcon.src}
-          alt='fire'
+          alt="fire"
         />
       );
     if (raveStatus === RaveStatus.inProgress)
@@ -265,7 +277,7 @@ const EventList = () => {
           className="fire-gif-icon"
           style={{ position: 'absolute', right: 0 }}
           src={Images.FireGifIcon.src}
-          alt='fire'
+          alt="fire"
         />
       );
     return null;
@@ -273,7 +285,7 @@ const EventList = () => {
 
   return (
     <EventListContainer ref={eventListRef}>
-      <div className='container-wrap'>
+      <div className="container-wrap">
         <Col md={24} xs={0}>
           <PageHearderResponsive saveScrollValue={saveScrollValue} />
         </Col>
@@ -283,16 +295,16 @@ const EventList = () => {
             setMenuState={setMenuState}
           />
         </Col>
-        <Col md={24} xs={0} className='page-main desktop-responsive'>
+        <Col md={24} xs={0} className="page-main desktop-responsive">
           {(eventListBanner && eventListBanner.length && (
             <Row>
               <Col span={24}>
                 <Carousel autoplay>
                   {eventListBanner &&
                     eventListBanner.map((item) => (
-                      <div key={item.link} className='banner-item'>
-                        <a href={item.link} target='_blank'>
-                          <img src={item.image} alt='' />
+                      <div key={item.link} className="banner-item">
+                        <a href={item.link} target="_blank">
+                          <img src={item.image} alt="" />
                         </a>
                       </div>
                     ))}
@@ -303,23 +315,23 @@ const EventList = () => {
             null}
           <Row>
             <Col
-              className='event-list'
+              className="event-list"
               span={24}
               style={{
                 marginTop:
                   !eventListBanner || (!eventListBanner.length && 20) || 0,
               }}
             >
-              <div className='page-title'>
+              <div className="page-title">
                 <Row>
-                  <Col span={24} className='title'>
+                  <Col span={24} className="title">
                     EVENTS
                   </Col>
                   {showSearchInput && (
                     <Col md={24} lg={24} xl={12}>
                       <Input.Search
                         allowClear={{
-                          clearIcon: <Image src={Images.ClearIcon} alt='' />,
+                          clearIcon: <Image src={Images.ClearIcon} alt="" />,
                         }}
                         defaultValue={searchKeyword}
                         placeholder={searchInputPlaceholder}
@@ -334,7 +346,7 @@ const EventList = () => {
               </div>
               {(((searchKeyword && eventDataForSearch) || eventDataForAll)
                 .length && (
-                <div className='event-list-container event-list-container-responsive'>
+                <div className="event-list-container event-list-container-responsive">
                   {(
                     (searchKeyword && eventDataForSearch) ||
                     eventDataForAll
@@ -354,17 +366,17 @@ const EventList = () => {
                         );
                       }}
                     >
-                      <Row className='desktop-event-row'>
+                      <Row className="desktop-event-row">
                         <Col
                           md={24}
                           lg={24}
                           xl={9}
-                          className='event-background'
+                          className="event-background"
                         >
                           <Image
                             src={item.image || Images.BackgroundLogo.src}
-                            layout='fill'
-                            alt=''
+                            layout="fill"
+                            alt=""
                             onError={(e: any) => {
                               e.target.onerror = null;
                               e.target.src = Images.BackgroundLogo.src;
@@ -372,18 +384,18 @@ const EventList = () => {
                           />
                         </Col>
                         <Col md={24} lg={24} xl={15}>
-                          <div className='item-info'>
-                            <Row className='item-info-row'>
-                              <Col span={24} className='info-title'>
+                          <div className="item-info">
+                            <Row className="item-info-row">
+                              <Col span={24} className="info-title">
                                 {item.name}
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
-                                  className='info-item-icon'
+                                  className="info-item-icon"
                                   src={Images.ClockIcon}
-                                  alt=''
+                                  alt=""
                                 />
-                                <div className='info-description'>
+                                <div className="info-description">
                                   {(item.startTime &&
                                     item.endTime &&
                                     `${formatTimeStrByTimeString(
@@ -396,23 +408,23 @@ const EventList = () => {
                                     '-'}
                                 </div>
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
                                   src={Images.LocationIcon}
-                                  alt=''
-                                  className='info-item-icon'
+                                  alt=""
+                                  className="info-item-icon"
                                 />
-                                <div className='info-description'>
+                                <div className="info-description">
                                   {formatLocation(item.location, item.address)}
                                 </div>
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
                                   src={Images.OrganiserIcon}
-                                  alt=''
-                                  className='info-item-icon'
+                                  alt=""
+                                  className="info-item-icon"
                                 />
-                                <span className='info-description'>
+                                <span className="info-description">
                                   {item.organizerName || '-'}
                                 </span>
                               </Col>
@@ -427,7 +439,7 @@ const EventList = () => {
                     ((searchKeyword && eventDataForSearch) || eventDataForAll)
                       .length &&
                     isMobile && (
-                      <div className='load-more'>
+                      <div className="load-more">
                         <LoadingOutlined />
                         Loading...
                       </div>
@@ -438,15 +450,15 @@ const EventList = () => {
                   {!((searchKeyword && eventDataForSearch) || eventDataForAll)
                     .length &&
                     !loading && (
-                      <Row className='no-event-row'>
-                        <Col span={24} className='no-event'>
+                      <Row className="no-event-row">
+                        <Col span={24} className="no-event">
                           <div style={{ margin: 'auto', textAlign: 'center' }}>
                             <Image
                               src={
                                 (searchKeyword && Images.NoSearchEventIcon) ||
                                 Images.NoEventIcon
                               }
-                              alt=''
+                              alt=""
                             />
                             <p>
                               {(searchKeyword &&
@@ -468,16 +480,16 @@ const EventList = () => {
           className={(isOpenAppShow && 'page-main open-app') || 'page-main'}
         >
           {(eventListBanner && eventListBanner.length && (
-            <div className='carousel-banner'>
+            <div className="carousel-banner">
               <Row>
                 <Col span={24}>
                   <Carousel autoplay>
                     {eventListBanner &&
                       eventListBanner.map((item: any) => (
-                        <div key={item.link} className='banner-item'>
-                          <a href={item.link} target='_blank'>
+                        <div key={item.link} className="banner-item">
+                          <a href={item.link} target="_blank">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={item.image} alt='' />
+                            <img src={item.image} alt="" />
                           </a>
                         </div>
                       ))}
@@ -489,23 +501,23 @@ const EventList = () => {
             null}
           <Row>
             <Col
-              className='event-list mobile'
+              className="event-list mobile"
               span={24}
               style={{
                 paddingTop:
                   (eventListBanner && eventListBanner.length && 215) || 0,
               }}
             >
-              <div className='page-title'>
+              <div className="page-title">
                 <Row>
-                  <Col span={24} md={12} className='title'>
+                  <Col span={24} md={12} className="title">
                     EVENTS
                   </Col>
                   {showSearchInput && (
                     <Col span={24} md={12}>
                       <Input.Search
                         allowClear={{
-                          clearIcon: <Image src={Images.ClearIcon} alt='' />,
+                          clearIcon: <Image src={Images.ClearIcon} alt="" />,
                         }}
                         defaultValue={searchKeyword}
                         placeholder={searchInputPlaceholder}
@@ -521,7 +533,7 @@ const EventList = () => {
               {searchKeyword && (
                 <>
                   {(eventDataForSearch.length && (
-                    <div className='event-list-container'>
+                    <div className="event-list-container">
                       {eventDataForSearch.map((item) => (
                         <EventItemContainer
                           key={item.id}
@@ -538,29 +550,29 @@ const EventList = () => {
                             );
                           }}
                         >
-                          <div className='event-background'>
+                          <div className="event-background">
                             <Image
                               src={item.image || Images.BackgroundLogo.src}
-                              layout='fill'
-                              alt=''
+                              layout="fill"
+                              alt=""
                               onError={(e: any) => {
                                 e.target.onerror = null;
                                 e.target.src = Images.BackgroundLogo.src;
                               }}
                             />
                           </div>
-                          <div className='item-info'>
-                            <Row className='item-info-row'>
-                              <Col span={24} className='info-title'>
+                          <div className="item-info">
+                            <Row className="item-info-row">
+                              <Col span={24} className="info-title">
                                 {item.name}
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
-                                  className='info-item-icon'
+                                  className="info-item-icon"
                                   src={Images.ClockIcon}
-                                  alt=''
+                                  alt=""
                                 />
-                                <div className='info-description'>
+                                <div className="info-description">
                                   {(item.startTime &&
                                     item.endTime &&
                                     `${formatTimeStrByTimeString(
@@ -573,23 +585,23 @@ const EventList = () => {
                                     '-'}
                                 </div>
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
                                   src={Images.LocationIcon}
-                                  alt=''
-                                  className='info-item-icon'
+                                  alt=""
+                                  className="info-item-icon"
                                 />
-                                <div className='info-description'>
+                                <div className="info-description">
                                   {formatLocation(item.location, item.address)}
                                 </div>
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
                                   src={Images.OrganiserIcon}
-                                  alt=''
-                                  className='info-item-icon'
+                                  alt=""
+                                  className="info-item-icon"
                                 />
-                                <span className='info-description'>
+                                <span className="info-description">
                                   {item.organizerName || '-'}
                                 </span>
                               </Col>
@@ -599,7 +611,7 @@ const EventList = () => {
                         </EventItemContainer>
                       ))}
                       {loading && eventDataForSearch.length && isMobile && (
-                        <div className='load-more'>
+                        <div className="load-more">
                           <LoadingOutlined />
                           Loading...
                         </div>
@@ -608,8 +620,8 @@ const EventList = () => {
                   )) || (
                     <>
                       {!loading && (
-                        <Row className='no-event-row'>
-                          <Col span={24} className='no-event'>
+                        <Row className="no-event-row">
+                          <Col span={24} className="no-event">
                             <div
                               style={{ margin: 'auto', textAlign: 'center' }}
                             >
@@ -618,7 +630,7 @@ const EventList = () => {
                                   (searchKeyword && Images.NoSearchEventIcon) ||
                                   Images.NoEventIcon
                                 }
-                                alt=''
+                                alt=""
                               />
                               <p>Aoh, no matching events found.</p>
                             </div>
@@ -632,7 +644,7 @@ const EventList = () => {
               {!searchKeyword && (
                 <>
                   {(eventDataForAll.length && (
-                    <div className='event-list-container'>
+                    <div className="event-list-container">
                       {eventDataForAll.map((item) => (
                         <EventItemContainer
                           key={item.id}
@@ -649,29 +661,29 @@ const EventList = () => {
                             );
                           }}
                         >
-                          <div className='event-background'>
+                          <div className="event-background">
                             <Image
                               src={item.image || Images.BackgroundLogo.src}
-                              layout='fill'
-                              alt=''
+                              layout="fill"
+                              alt=""
                               onError={(e: any) => {
                                 e.target.onerror = null;
                                 e.target.src = Images.BackgroundLogo.src;
                               }}
                             />
                           </div>
-                          <div className='item-info'>
-                            <Row className='item-info-row'>
-                              <Col span={24} className='info-title'>
+                          <div className="item-info">
+                            <Row className="item-info-row">
+                              <Col span={24} className="info-title">
                                 {item.name}
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
-                                  className='info-item-icon'
+                                  className="info-item-icon"
                                   src={Images.ClockIcon}
-                                  alt=''
+                                  alt=""
                                 />
-                                <div className='info-description'>
+                                <div className="info-description">
                                   {(item.startTime &&
                                     item.endTime &&
                                     `${formatTimeStrByTimeString(
@@ -684,23 +696,23 @@ const EventList = () => {
                                     '-'}
                                 </div>
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
                                   src={Images.LocationIcon}
-                                  alt=''
-                                  className='info-item-icon'
+                                  alt=""
+                                  className="info-item-icon"
                                 />
-                                <div className='info-description'>
+                                <div className="info-description">
                                   {formatLocation(item.location, item.address)}
                                 </div>
                               </Col>
-                              <Col span={24} className='info-item'>
+                              <Col span={24} className="info-item">
                                 <Image
                                   src={Images.OrganiserIcon}
-                                  alt=''
-                                  className='info-item-icon'
+                                  alt=""
+                                  className="info-item-icon"
                                 />
-                                <span className='info-description'>
+                                <span className="info-description">
                                   {item.organizerName || '-'}
                                 </span>
                               </Col>
@@ -710,7 +722,7 @@ const EventList = () => {
                         </EventItemContainer>
                       ))}
                       {loading && eventDataForAll.length && isMobile && (
-                        <div className='load-more'>
+                        <div className="load-more">
                           <LoadingOutlined />
                           Loading...
                         </div>
@@ -719,8 +731,8 @@ const EventList = () => {
                   )) || (
                     <>
                       {!loading && (
-                        <Row className='no-event-row'>
-                          <Col span={24} className='no-event'>
+                        <Row className="no-event-row">
+                          <Col span={24} className="no-event">
                             <div
                               style={{ margin: 'auto', textAlign: 'center' }}
                             >
@@ -729,7 +741,7 @@ const EventList = () => {
                                   (searchKeyword && Images.NoSearchEventIcon) ||
                                   Images.NoEventIcon
                                 }
-                                alt=''
+                                alt=""
                               />
                               <p>Oops! No upcoming events for now.</p>
                             </div>
@@ -743,6 +755,24 @@ const EventList = () => {
             </Col>
           </Row>
         </Col>
+        <Modal
+          className="transfer-status-modal"
+          open={showNotSameAccountModal}
+          centered
+          closeIcon={false}
+          footer={[
+            <Button
+              key="OK"
+              type="primary"
+              onClick={() => setShowNotSameAccountModal(false)}
+            >
+              OK
+            </Button>,
+          ]}
+          getContainer={false}
+        >
+          Ticket pending transfer does not match the email for this account.
+        </Modal>
         {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}
         {contextHolder}
         {!menuState && <PageBottomComponent />}

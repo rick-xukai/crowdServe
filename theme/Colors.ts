@@ -43,6 +43,8 @@ const Colors = {
   buff: '#ffeed4',
   linearGradient3: `linear-gradient(to right, #6aedff, #de5df3)`,
   linearGradient4: `linear-gradient(270deg, #C5CAD2 10%, #EDEEF0 100%)`,
+  orange: '#EB920D',
+  greenRgb: 'rgba(0, 211, 135, 0.80)',
 };
 
 export default Colors;

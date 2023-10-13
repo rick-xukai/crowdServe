@@ -112,6 +112,12 @@ const API = {
   visitSharedLink: {
     post: '/api/v1/rave/{eventId}/shared',
   },
+  getTransferDetailsByCode: {
+    get: '/api/v1/transfer/{code}',
+  },
+  claimTransfer: {
+    post: '/api/v1/transfer/{code}/claim',
+  },
 };
 
 export default API;
