@@ -549,47 +549,50 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
                             <Col span={20} className="info-name">
                               {collectibleDetail.name || '-'}
                             </Col>
-                            <Col span={4} className="info-share-button">
-                              <div className="share-content">
-                                <Dropdown
-                                  trigger={['click']}
-                                  animation="slide-up"
-                                  overlay={
-                                    <div className="share-menu">
-                                      <ul>
-                                        <li onClick={copyUrl}>
-                                          <span>{CopyLink}</span>
-                                        </li>
-                                        <li onClick={saveImage}>
-                                          <span>{SaveImage}</span>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  }
-                                  onVisibleChange={(status) => {
-                                    if (status) {
-                                      const analytics =
-                                        getAnalytics(firebaseApp);
-                                      logEvent(
-                                        analytics,
-                                        `web_share_button_click${FirebaseEventEnv}`
-                                      );
-                                    }
-                                  }}
-                                >
-                                  <button className="dropdown-btn">
-                                    <Col xl={0} span={24}>
-                                      <Image src={Images.ShareIcon} alt="" />
-                                    </Col>
-                                    <Col xl={24} span={0}>
-                                      <div className="share-trigger">
-                                        <Image src={Images.ShareIcon} alt="" />
+                            {collectibleDetail.owner && (
+                              <Col span={4} className="info-share-button">
+                                <div className="share-content">
+                                  <Dropdown
+                                    trigger={['click']}
+                                    animation="slide-up"
+                                    overlay={
+                                      <div className="share-menu">
+                                        <ul>
+                                          <li onClick={copyUrl}>
+                                            <span>{CopyLink}</span>
+                                          </li>
+                                          <li onClick={saveImage}>
+                                            <span>{SaveImage}</span>
+                                          </li>
+                                        </ul>
                                       </div>
-                                    </Col>
-                                  </button>
-                                </Dropdown>
-                              </div>
-                              {collectibleDetail.owner && (
+                                    }
+                                    onVisibleChange={(status) => {
+                                      if (status) {
+                                        const analytics =
+                                          getAnalytics(firebaseApp);
+                                        logEvent(
+                                          analytics,
+                                          `web_share_button_click${FirebaseEventEnv}`
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    <button className="dropdown-btn">
+                                      <Col xl={0} span={24}>
+                                        <Image src={Images.ShareIcon} alt="" />
+                                      </Col>
+                                      <Col xl={24} span={0}>
+                                        <div className="share-trigger">
+                                          <Image
+                                            src={Images.ShareIcon}
+                                            alt=""
+                                          />
+                                        </div>
+                                      </Col>
+                                    </button>
+                                  </Dropdown>
+                                </div>
                                 <div className="share-content more-icon">
                                   <Dropdown
                                     trigger={['click']}
@@ -612,8 +615,8 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
                                     </button>
                                   </Dropdown>
                                 </div>
-                              )}
-                            </Col>
+                              </Col>
+                            )}
                           </Row>
                           <Col span={24} className="info-organiser">
                             <div style={{ fontWeight: 300, marginRight: 5 }}>
@@ -1079,14 +1082,15 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
         ]}
         getContainer={false}
       >
-        {transferStatus && (
+        {(transferStatus && (
           <>
             {transferStatus === TransferRecordStatus.RECEIVED &&
               'You have already claimed this ticket.'}
             {transferStatus === TransferRecordStatus.CANCELLED &&
               'The transfer is expired.'}
           </>
-        ) || null}
+        )) ||
+          null}
         {claimTransferErrorMessage && claimTransferErrorMessage}
       </Modal>
       {contextHolder}
