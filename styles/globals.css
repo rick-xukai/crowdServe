@@ -558,7 +558,15 @@ iframe {
   height: auto;
 }
 
-.share-popover .ant-popover-content .ant-popover-inner .share-menu ul {
+.rc-dropdown .more-icon-share ul {
+  max-width: unset !important;
+}
+
+.rc-dropdown .more-icon-share ul li {
+  white-space: nowrap;
+}
+
+.rc-dropdown .share-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -1301,4 +1309,11 @@ iframe {
 
 .ant-tooltip .ant-tooltip-inner {
   white-space: break-spaces !important;
+}
+
+.claim-success .ant-message-notice-content {
+  background: #00d387 !important;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
 }

@@ -16,6 +16,27 @@ const CollectibleDetailContainer = styled.div`
   .page-main {
     margin-top: 45px;
     padding: 0 20px 20px 20px;
+    @media (max-width: 1200px) {
+      padding: 0;
+    }
+    @media (max-width: 768px) {
+      padding: 0 20px 20px 20px;
+    }
+    .transferred-status {
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      color: ${Colors.white};
+      background: ${Colors.greenRgb};
+      margin-bottom: 12px;
+      backdrop-filter: blur(2px);
+      font-family: 'Oswald';
+      font-weight: Bold;
+      font-size: 20px;
+      &.accept {
+        background: ${Colors.orange};
+      }
+    }
     .collectible-info-image {
       width: 100%;
       height: 335px;
@@ -50,11 +71,15 @@ const CollectibleDetailContainer = styled.div`
       line-height: 32px;
     }
     .info-share-button {
-      text-align: right;
       z-index: 1;
+      display: flex;
+      justify-content: end;
       .share-content {
         padding-top: 4px;
         height: 100%;
+        &.more-icon {
+          margin-left: 10px;
+        }
         @media (min-width: 1200px) {
           padding-top: 2px;
         }
@@ -67,9 +92,15 @@ const CollectibleDetailContainer = styled.div`
         padding-top: 3px;
       }
       .share-trigger {
+        width: 36px;
+        height: 36px;
         display: flex;
         align-items: center;
-        justify-content: end;
+        justify-content: center;
+        :hover {
+          background: ${Colors.grayScale70};
+          border-radius: 50%;
+        }
         > :first-child {
           width: 20px !important;
           height: 20px !important;
@@ -174,6 +205,14 @@ const CollectibleDetailContainer = styled.div`
         font-size: 16px;
         color: ${Colors.white};
         margin-bottom: 20px;
+      }
+    }
+    .transfer-status-modal {
+      .ant-modal-body {
+        color: ${Colors.grayScale50};
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 21px;
       }
     }
   }
@@ -339,11 +378,14 @@ const CollectibleDetailContainer = styled.div`
         .event-info {
           height: calc(100vh - 205px);
         }
+        .collectible-info {
+          height: calc(100vh - 205px);
+        }
       }
       .collectible-info {
         padding-right: 30px;
         padding-bottom: 0;
-        height: calc(100vh - 205px);
+        height: calc(100vh - 135px);
         overflow: auto;
         border-right: 1.5px solid ${Colors.grayScale90};
         padding-bottom: 24px;

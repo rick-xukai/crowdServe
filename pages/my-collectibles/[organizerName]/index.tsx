@@ -14,6 +14,7 @@ import {
   TicketSaleStatus,
   ListPageScrollDifference,
   DefaultPageSize,
+  TransferStatus,
 } from '../../../constants/General';
 import {
   getMyCollectiblesOrganizerInfoAction,
@@ -320,8 +321,10 @@ const CollectionDetail = () => {
                             <Row>
                               <Col
                                 span={
-                                  (item.saleStatus ===
-                                    TicketSaleStatus.onsale.status &&
+                                  ((item.saleStatus ===
+                                    TicketSaleStatus.onsale.status ||
+                                    item.transferStatus ===
+                                      TransferStatus.PENDING) &&
                                     18) ||
                                   24
                                 }
@@ -342,6 +345,22 @@ const CollectionDetail = () => {
                                         <Image src={Images.OnSaleIcon} alt="" />
                                       </div>
                                     )}
+                                  </div>
+                                </Col>
+                              )}
+                              {item.transferStatus ===
+                                TransferStatus.PENDING && (
+                                <Col span={6}>
+                                  <div className="item-detail-status">
+                                    <div
+                                      className="item-detail-icon ticket-onsale"
+                                      style={{
+                                        height: 'auto',
+                                        display: 'flex',
+                                      }}
+                                    >
+                                      <Image src={Images.TransferIcon} alt="" />
+                                    </div>
                                   </div>
                                 </Col>
                               )}

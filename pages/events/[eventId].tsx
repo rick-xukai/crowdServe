@@ -8,12 +8,11 @@ import {
   Tabs,
   Tooltip,
   message,
-  Modal,
   Button,
   Avatar,
   Checkbox,
 } from 'antd';
-import { isAndroid, isIOS, isDesktop, browserName } from 'react-device-detect';
+import { isDesktop, browserName } from 'react-device-detect';
 import type { TabsProps } from 'antd';
 import {
   LoadingOutlined,
@@ -30,7 +29,6 @@ import { useCollapse } from 'react-collapsed';
 
 import {
   formatTimeStrByTimeString,
-  openApp,
   formatLocation,
   formatDescription,
   checkOperatingSys,
@@ -43,7 +41,6 @@ import {
   PrimaryMarket,
   PurchaseFromFan,
   Rave,
-  AppLandingPage,
   FirebaseEventEnv,
   AppDomain,
   DefaultEventListBannerPageSize,
@@ -102,6 +99,7 @@ import RavesPopUp from '@/components/ravesPopup';
 import RavesDetail from '@/pages/raves-detail';
 import { setLoginRedirectPage } from '@/slice/user.slice';
 import { getRaveAction, selectRaveData, reset } from '@/slice/rave.slice';
+import ShowOpenAppModalComponent from '@/components/showOpenAppModal';
 
 interface CloseRavesPopUpProps {
   event: string;
@@ -118,7 +116,6 @@ const EventDetail = ({
 }: {
   openGraphDetail: TicketDetailResponseType;
 }) => {
-  const openAppInIos = useRef<any>(null);
   const itemTabs = useRef<any>(null);
   const detailContentRef = useRef<any>(null);
   const router = useRouter();
@@ -230,18 +227,6 @@ const EventDetail = ({
     }
   };
 
-  const handleOpenApp = () => {
-    if (isDesktop) {
-      router.push(RouterKeys.landingPage);
-    } else {
-      if (isIOS) {
-        openAppInIos.current.click();
-      } else if (isAndroid) {
-        openApp();
-      }
-    }
-  };
-
   const toShopify = (data: EventTicketTypeResponseType) => {
     if (data.stock === 0 || !data.externalLink) {
       return;
@@ -328,9 +313,7 @@ const EventDetail = ({
       setClickJoinRave(true);
     } else {
       localStorage.setItem(LocalStorageKeys.joinRaveNotLogin, 'true');
-      dispatch(
-        setLoginRedirectPage(`${router.asPath}&raves=joinPopup`)
-      );
+      dispatch(setLoginRedirectPage(`${router.asPath}&raves=joinPopup`));
       router.push({
         pathname: RouterKeys.login,
         query: `redirect=${router.asPath}&raves=joinPopup`,
@@ -1004,43 +987,10 @@ const EventDetail = ({
                   </div>
                 </div>
                 {!menuState && <PageBottomComponent />}
-                <Modal
-                  title=""
-                  centered
-                  closable={false}
-                  footer={null}
+                <ShowOpenAppModalComponent
                   open={clickEventMarketModalOpen}
-                  className="eventMarketModal"
-                  onCancel={() => setClickEventMarketModalOpen(false)}
-                >
-                  <div className="container">
-                    <div className="market-modal-main">
-                      <Image src={Images.MyWalletIcon} alt="" />
-                      <p className="title">
-                        Open the app to access the full functionality.
-                      </p>
-                      <p className="info">
-                        With our app, you can view your account balance, track
-                        your transaction history.
-                      </p>
-                      <div className="market-modal-bottom">
-                        <Button onClick={handleOpenApp}>OPEN NOW</Button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="close-modal">
-                    <Image
-                      src={Images.CloseIcon}
-                      alt=""
-                      onClick={() => setClickEventMarketModalOpen(false)}
-                    />
-                  </div>
-                  <a
-                    ref={openAppInIos}
-                    href={AppLandingPage}
-                    style={{ display: 'none' }}
-                  />
-                </Modal>
+                  setOpen={setClickEventMarketModalOpen}
+                />
               </div>
               <RavesPopUp open={showJoinRaveModal} onClose={ravesPopUpClose}>
                 <JoinRaveModalContent>

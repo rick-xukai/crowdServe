@@ -23,36 +23,27 @@
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
             We're excited to inform you that {{sender_name}} has transferred an event ticket to you through on CrowdServe. You're now all set to attend {{event_name}} and have a fantastic time!
           </p>
-          <div style="background-image: url('https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1696560546265-diEL.png'); text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;overflow: hidden;" class="ticket-detail">
-            <div class="ticket-detail-left" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; width: 120px;height: calc(140px - 20px);padding: 10px;">
-              <img src="{{ticket_image}}" alt style="width: 100%;height: 100% !important;object-fit: cover;border-radius: 4px;">
-            </div>
-            <div class="ticket-detail-right" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; width: calc(100% - 198px);margin-left: 18px;padding: 10px 20px;display: flex !important;align-items: center !important;">
-              <div class="ticket-info" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px; margin-bottom: 0;">
-                <p class="title" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; font-weight: 700;font-size: 13px;color: #303034;margin-bottom: 6px; color: #fff;font-size: 17px;font-weight: 500;line-height: 24px;margin-top: 0;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">
-                  {{ticket_name}}
-                </p>
-                <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;align-items: center;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034; color: #fff;font-size: 13px;font-weight: 300;line-height: 19px;">
-                  <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt style="width: 14px;height: 14px;margin-right: 8px;">
-                  {{event_time}}
-                </p>
-                <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;align-items: center;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034; color: #fff;font-size: 13px;font-weight: 300;line-height: 19px;">
-                  <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt style="width: 14px;height: 14px;margin-right: 8px;">
-                  {{event_location}}
-                </p>
-              </div>
-            </div>
+          <div class="ticket-img event-publish" style="background-image: url({{ticket_image}}); text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin: auto;margin-bottom: 20px;width: 200px;height: 200px;border-radius: 4px;background-position: center;background-repeat: no-repeat;background-size: cover; margin: initial;width: 100%;height: 240px;background-size: cover;"></div>
+          <div class="ticket-info" style="margin-top: 20px; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;">
+            <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034;">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt style="width: 14px;height: 14px;margin-right: 8px;margin-top: 3px;">
+              {{event_time}}
+            </p>
+            <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034;">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt style="width: 14px;height: 14px;margin-right: 8px;margin-top: 3px;">
+              {{event_location}}
+            </p>
           </div>
           <div class="notes" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-top: 10px;margin-bottom: 20px;display: flex;">
             <p class="notes-title" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin: 0; margin-right: 10px;color: #717179;font-size: 12px;font-weight: 700;line-height: 18px;height: 20px;max-height: 20px;">
-              <span style="white-space: nowrap;">Notes:</span>
+              <span style="white-space: nowrap !important;">Notes:</span>
             </p>
             <p class="notes-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin: 0; color: #717179;font-size: 13px;font-weight: 400;line-height: 19px;">
               {{notes}}
             </p>
           </div>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            You can find the transferred ticket in your CrowdServe account to claim it or Click on the button below
+            Click on the button below to claim the transferred ticket.
           </p>
           <div style="display: flex; justify-content: center; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif;">
             <button class="click-nft-ticket" style="padding-left: 0;padding-right: 0; width: 200px;height: 45px;background: #fc0006;border-radius: 2px;border: none;margin-bottom: 20px;font-weight: 700;font-size: 15px;color: #f8f6f0;">

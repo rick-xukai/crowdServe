@@ -50,11 +50,13 @@ import { ActivateAccountContainer } from '@/styles/activateAccount.style';
 import countryDataList from '@/utils/countrycode.data.json';
 
 const ActivateAccount = ({
+  redirectPage,
   defultEmail,
   activateCode,
   currentTicketId,
   currentTicketEventSlug,
 }: {
+  redirectPage: string;
   defultEmail: string;
   activateCode: string;
   currentTicketId: string;
@@ -210,6 +212,10 @@ const ActivateAccount = ({
             currentTicketEventSlug
           )
         );
+        return;
+      }
+      if (redirectPage) {
+        router.push(redirectPage);
         return;
       }
       router.push(RouterKeys.eventList);
@@ -516,18 +522,31 @@ const ActivateAccount = ({
 
 ActivateAccount.getInitialProps = async (ctx: any) => {
   const { query } = ctx;
+  let redirectPage = '';
   let defultEmail = '';
   let activateCode = '';
   let currentTicketId = '';
   let currentTicketEventSlug = '';
   try {
-    const parameters = base64Decrypt(Object.keys(query)[0]);
-    defultEmail = parameters.email;
-    activateCode = parameters.code;
-    currentTicketId = parameters.ticketId;
-    currentTicketEventSlug = parameters.eventSlug;
+    if (query.redirect && query.userEmail && query.activateCode) {
+      defultEmail = query.userEmail;
+      redirectPage = query.redirect;
+      activateCode = query.activateCode;
+    } else {
+      const parameters = base64Decrypt(Object.keys(query)[0]);
+      defultEmail = parameters.email;
+      activateCode = parameters.code;
+      currentTicketId = parameters.ticketId;
+      currentTicketEventSlug = parameters.eventSlug;
+    }
   } catch (_) {}
-  return { defultEmail, activateCode, currentTicketId, currentTicketEventSlug };
+  return {
+    defultEmail,
+    activateCode,
+    currentTicketId,
+    currentTicketEventSlug,
+    redirectPage,
+  };
 };
 
 export default ActivateAccount;

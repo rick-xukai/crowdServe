@@ -24,25 +24,16 @@
           <p class="detail-text">
             We're excited to inform you that {{sender_name}} has transferred an event ticket to you through on CrowdServe. You're now all set to attend {{event_name}} and have a fantastic time!
           </p>
-          <div style="background-image: url('https://crowdserve-ticket-images-dev.s3-ap-southeast-1.amazonaws.com/events/1696560546265-diEL.png');" class="ticket-detail">
-            <div class="ticket-detail-left">
-              <img src="{{ticket_image}}" alt="" />
-            </div>
-            <div class="ticket-detail-right">
-              <div class="ticket-info">
-                <p class="title">
-                  {{ticket_name}}
-                </p>
-                <p class="info-item">
-                  <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt="" />
-                  {{event_time}}
-                </p>
-                <p class="info-item">
-                  <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt="" />
-                  {{event_location}}
-                </p>
-              </div>
-            </div>
+          <div class="ticket-img event-publish" style="background-image: url({{ticket_image}});"></div>
+          <div class="ticket-info" style="margin-top: 20px;">
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt="" />
+              {{event_time}}
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt="" />
+              {{event_location}}
+            </p>
           </div>
           <div class="notes">
             <p class="notes-title">
@@ -53,7 +44,7 @@
             </p>
           </div>
           <p class="detail-text">
-            You can find the transferred ticket in your CrowdServe account to claim it or Click on the button below
+            Click on the button below to claim the transferred ticket.
           </p>
           <div style="display: flex; justify-content: center;">
             <button class="click-nft-ticket">

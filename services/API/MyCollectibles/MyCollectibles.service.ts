@@ -33,7 +33,10 @@ const getMyCollectiblesOrganizerTicketList = async (
   requestId: string,
   payload: GetMyCollectiblesListPayloadType
 ) => {
-  const uri = API.getMyCollectiblesOrganizerTicketList.get.replace('{organizerId}', requestId);
+  const uri = API.getMyCollectiblesOrganizerTicketList.get.replace(
+    '{organizerId}',
+    requestId
+  );
   const response = await requestClient()
     .setUri(uri)
     .setAuthorizationStatus()
@@ -42,8 +45,18 @@ const getMyCollectiblesOrganizerTicketList = async (
   return response;
 };
 
+const getTransferDetailsByCode = async (payload: string) => {
+  const uri = API.getTransferDetailsByCode.get.replace('{code}', payload);
+  const response = await requestClient()
+    .setUri(uri)
+    .setAuthorizationStatus()
+    .doGet();
+  return response;
+};
+
 export default {
   getMyCollectiblesList,
   getMyCollectiblesOrganizerInfo,
   getMyCollectiblesOrganizerTicketList,
+  getTransferDetailsByCode,
 };

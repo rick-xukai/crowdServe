@@ -106,6 +106,8 @@ import GiftTicketImg from '../static/images/gift-ticket.png';
 import GiftTicketDisabledImg from '../static/images/gift-ticket-disabled.png';
 import GiftCheersDisabledImg from '../static/images/gift-cheers-disabled.png';
 import EndFlameImg from '../static/images/end-flame.png';
+import MoreIcon from '../static/images/more-icon.svg';
+import TransferIcon from '../static/images/transfer-icon.svg';
 
 const Images = {
   Safety,
@@ -216,6 +218,8 @@ const Images = {
   GiftTicketDisabledImg,
   GiftCheersDisabledImg,
   EndFlameImg,
+  MoreIcon,
+  TransferIcon,
 };
 
 export default Images;

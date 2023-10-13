@@ -114,6 +114,15 @@ const PageHearderResponsiveContainer = styled.div`
     right: 0;
     top: 50px;
   }
+  @media (max-width: 1200px) {
+    .header-menu {
+      margin-left: 25px !important;
+      .menu-item {
+        font-size: 14px;
+        margin-right: 15px;
+      }
+    }
+  }
   @media (min-width: 768px) and (max-width: 1200px) {
     left: 0;
     right: 0;
@@ -193,11 +202,11 @@ const PageHearderResponsive = ({
 
   return (
     <PageHearderResponsiveContainer
-      className={(backgroundTransparent && "backgroundTransparent") || ""}
+      className={(backgroundTransparent && 'backgroundTransparent') || ''}
     >
       <div className="header-main">
         <Row>
-          <Col span={21}>
+          <Col md={22} xl={21}>
             <Row>
               <Col className="header-logo">
                 <Image
@@ -213,8 +222,8 @@ const PageHearderResponsive = ({
                 >
                   <span
                     className={
-                      (router.pathname === RouterKeys.eventList && "active") ||
-                      ""
+                      (router.pathname === RouterKeys.eventList && 'active') ||
+                      ''
                     }
                   >
                     EVENTS
@@ -240,8 +249,8 @@ const PageHearderResponsive = ({
                 >
                   <span
                     className={
-                      (router.pathname === RouterKeys.myTickets && "active") ||
-                      ""
+                      (router.pathname === RouterKeys.myTickets && 'active') ||
+                      ''
                     }
                   >
                     MY TICKETS
@@ -254,8 +263,8 @@ const PageHearderResponsive = ({
                   <span
                     className={
                       (router.pathname === RouterKeys.myCollectibles &&
-                        "active") ||
-                      ""
+                        'active') ||
+                      ''
                     }
                   >
                     MY COLLECTIBLES
@@ -267,9 +276,7 @@ const PageHearderResponsive = ({
                 >
                   <span
                     className={
-                      (router.pathname === RouterKeys.myRaves &&
-                        "active") ||
-                      ""
+                      (router.pathname === RouterKeys.myRaves && 'active') || ''
                     }
                   >
                     MY RAVES
@@ -295,8 +302,8 @@ const PageHearderResponsive = ({
                 >
                   <span
                     className={
-                      (router.pathname === RouterKeys.myWallet && "active") ||
-                      ""
+                      (router.pathname === RouterKeys.myWallet && 'active') ||
+                      ''
                     }
                   >
                     MY WALLET
@@ -305,7 +312,7 @@ const PageHearderResponsive = ({
               </Col>
             </Row>
           </Col>
-          <Col span={3} className="right-button">
+          <Col md={2} xl={3} className="right-button">
             {isUserToken !== null && (
               <>
                 {(!isUserToken && (
