@@ -260,10 +260,9 @@ const RavesDetail = ({
       }
     } catch (_) {}
   }, [appCallJoinRaveParameters]);
+
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      (window as any).callJoinRave = callJoinRave;
-    }
+    (window as any).callJoinRave = callJoinRave;
     if (eventId) {
       dispatch(getRaveAction(eventId));
     }
@@ -271,9 +270,11 @@ const RavesDetail = ({
       dispatch(reset());
     };
   }, []);
-  const fetchData = () => {
-    dispatch(getRaveAction(appCallJsSendEventId || eventId));
-  };
+
+  // const fetchData = () => {
+  //   dispatch(getRaveAction(appCallJsSendEventId || eventId));
+  // };
+
   return (
     <RaveDetailContent
       style={{
@@ -292,7 +293,7 @@ const RavesDetail = ({
         handleRedeemReward={handleRedeemReward}
         redeemRewardModalOpen={redeemRewardModalOpen}
         setRedeemRewardModalOpen={setRedeemRewardModalOpen}
-        getRaveData={fetchData}
+        // getRaveData={fetchData}
       />
       {loading && !eventId && (
         <div className='page-loading'>
