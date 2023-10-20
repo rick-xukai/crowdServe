@@ -108,6 +108,10 @@ import GiftCheersDisabledImg from '../static/images/gift-cheers-disabled.png';
 import EndFlameImg from '../static/images/end-flame.png';
 import MoreIcon from '../static/images/more-icon.svg';
 import TransferIcon from '../static/images/transfer-icon.svg';
+import DoubleArrowRight from '../static/images/double-arrow-right.svg';
+import SellIcon from '../static/images/sell.svg';
+import TransferFriend from '../static/images/transfer-friend.svg';
+import RecallIcon from '../static/images/recall.svg';
 
 const Images = {
   Safety,
@@ -220,6 +224,10 @@ const Images = {
   EndFlameImg,
   MoreIcon,
   TransferIcon,
+  DoubleArrowRight,
+  SellIcon,
+  TransferFriend,
+  RecallIcon,
 };
 
 export default Images;

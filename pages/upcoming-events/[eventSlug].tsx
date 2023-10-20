@@ -61,6 +61,7 @@ import ClientModalComponent from '../../components/clientModal';
 import ShowQRCodeElementComponent from '../../components/showQRCodeElement';
 import { RouterKeys } from '../../constants/Keys';
 import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
+import ShowOpenAppModalComponent from '@/components/showOpenAppModal';
 
 const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = [
   'places',
@@ -70,10 +71,12 @@ const TicketDetailTabletAndMobile = ({
   detailData,
   checkCollectibleDetail,
   buttonAction,
+  setShowOpenAppAction,
 }: {
   detailData: MyEventTicketListResponseType;
   checkCollectibleDetail: () => void;
   buttonAction: () => void;
+  setShowOpenAppAction: () => void;
 }) => {
   const [showDescriptionMoreMobile, setShowDescriptionMoreMobile] =
     useState<boolean>(false);
@@ -86,7 +89,13 @@ const TicketDetailTabletAndMobile = ({
       ) {
         return (
           <div className="qr-code-btn-content">
-            <Button onClick={buttonAction}>CHECK TICKET QR CODE</Button>
+            <div className="item-detail-icon">
+              <img
+                src={Images.QrCodeButton.src}
+                alt=""
+                onClick={buttonAction}
+              />
+            </div>
           </div>
         );
       }
@@ -146,6 +155,52 @@ const TicketDetailTabletAndMobile = ({
       </div>
       <div className="info-name">
         <p>{detailData.name || '-'}</p>
+      </div>
+      <div className="sell-and-transfer">
+        {detailData.saleStatus === TicketSaleStatus.unsale.status &&
+          detailData.transferStatus === TransferStatus.INIT && (
+            <>
+              <Button
+                className="sell-transfer-button"
+                onClick={setShowOpenAppAction}
+              >
+                <img src={Images.SellIcon.src} alt="" />
+                SELL
+              </Button>
+              <Button
+                className="sell-transfer-button"
+                onClick={setShowOpenAppAction}
+              >
+                <img src={Images.TransferFriend.src} alt="" />
+                TRANSFER
+              </Button>
+            </>
+          )}
+        {detailData.saleStatus === TicketSaleStatus.onsale.status && (
+          <Button
+            style={{ width: '100%' }}
+            className="sell-transfer-button"
+            onClick={setShowOpenAppAction}
+          >
+            <img src={Images.RecallIcon.src} alt="" />
+            RECALL MY LISTING
+          </Button>
+        )}
+        {detailData.saleStatus === TicketSaleStatus.unsale.status &&
+          detailData.transferStatus === TransferStatus.PENDING && (
+            <Button
+              style={{ width: '100%' }}
+              className="sell-transfer-button"
+              onClick={setShowOpenAppAction}
+            >
+              <img
+                style={{ width: 15 }}
+                src={Images.HourglassWhite.src}
+                alt=""
+              />
+              TRANSFER PROGRESS
+            </Button>
+          )}
       </div>
       <Col span={24} className="ticket-description" style={{ marginTop: 10 }}>
         {(showDescriptionMoreMobile && (
@@ -217,7 +272,6 @@ const TicketDetailTabletAndMobile = ({
         </Row>
       </div>
       <Col className="detail-action" span={24}>
-        {renderCheckTicketQRCodeButton()}
         <p
           className={
             (detailData.status === 0 &&
@@ -228,7 +282,9 @@ const TicketDetailTabletAndMobile = ({
           onClick={checkCollectibleDetail}
         >
           VIEW FULL TICKET DETAILS
+          <img src={Images.DoubleArrowRight.src} alt="" />
         </p>
+        {renderCheckTicketQRCodeButton()}
       </Col>
     </>
   );
@@ -294,6 +350,7 @@ const MyTicketsEventDetail = () => {
   const [showMap, setShowMap] = useState<boolean>(false);
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const [needShowMore, setNeedShowMore] = useState<boolean>(false);
+  const [showOpenAppModal, setShowOpenAppModal] = useState<boolean>(false);
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
@@ -400,15 +457,17 @@ const MyTicketsEventDetail = () => {
         currentShowPopupTicket.saleStatus === TicketSaleStatus.unsale.status
       ) {
         return (
-          <Button
-            onClick={() => {
-              setCurrentCheckTicketId(currentShowPopupTicket.id);
-              setShowTicketItemDetailModal(false);
-              setShowQrCodeModal(true);
-            }}
-          >
-            CHECK TICKET QR CODE
-          </Button>
+          <div className="item-detail-icon">
+            <img
+              src={Images.QrCodeButton.src}
+              alt=""
+              onClick={() => {
+                setCurrentCheckTicketId(currentShowPopupTicket.id);
+                setShowTicketItemDetailModal(false);
+                setShowQrCodeModal(true);
+              }}
+            />
+          </div>
         );
       }
     }
@@ -1149,6 +1208,75 @@ const MyTicketsEventDetail = () => {
                                     />
                                   )}
                                 </Col>
+                                <div className="sell-and-transfer">
+                                  {currentShowPopupTicket.saleStatus ===
+                                    TicketSaleStatus.unsale.status &&
+                                    currentShowPopupTicket.transferStatus ===
+                                      TransferStatus.INIT && (
+                                      <>
+                                        <Button
+                                          className="sell-transfer-button"
+                                          onClick={() => {
+                                            setShowTicketItemDetailModal(false);
+                                            setShowOpenAppModal(true);
+                                          }}
+                                        >
+                                          <img
+                                            src={Images.SellIcon.src}
+                                            alt=""
+                                          />
+                                          SELL
+                                        </Button>
+                                        <Button
+                                          className="sell-transfer-button"
+                                          onClick={() => {
+                                            setShowTicketItemDetailModal(false);
+                                            setShowOpenAppModal(true);
+                                          }}
+                                        >
+                                          <img
+                                            src={Images.TransferFriend.src}
+                                            alt=""
+                                          />
+                                          TRANSFER
+                                        </Button>
+                                      </>
+                                    )}
+                                  {currentShowPopupTicket.saleStatus ===
+                                    TicketSaleStatus.onsale.status && (
+                                    <Button
+                                      style={{ width: '100%' }}
+                                      className="sell-transfer-button"
+                                      onClick={() => {
+                                        setShowTicketItemDetailModal(false);
+                                        setShowOpenAppModal(true);
+                                      }}
+                                    >
+                                      <img src={Images.RecallIcon.src} alt="" />
+                                      RECALL MY LISTING
+                                    </Button>
+                                  )}
+                                  {currentShowPopupTicket.saleStatus ===
+                                    TicketSaleStatus.unsale.status &&
+                                    currentShowPopupTicket.transferStatus ===
+                                      TransferStatus.PENDING && (
+                                      <Button
+                                        style={{ width: '100%' }}
+                                        className="sell-transfer-button"
+                                        onClick={() => {
+                                          setShowTicketItemDetailModal(false);
+                                          setShowOpenAppModal(true);
+                                        }}
+                                      >
+                                        <img
+                                          style={{ width: 15 }}
+                                          src={Images.HourglassWhite.src}
+                                          alt=""
+                                        />
+                                        TRANSFER PROGRESS
+                                      </Button>
+                                    )}
+                                </div>
                                 <div className="info-description">
                                   <Row gutter={[6, 6]}>
                                     <Col
@@ -1213,10 +1341,14 @@ const MyTicketsEventDetail = () => {
                                   </Row>
                                 </div>
                                 <Col className="detail-action" span={24}>
-                                  {renderCheckTicketQRCodeButton()}
                                   <p onClick={handleCheckCollectibleDetail}>
                                     VIEW FULL TICKET DETAILS
+                                    <img
+                                      src={Images.DoubleArrowRight.src}
+                                      alt=""
+                                    />
                                   </p>
+                                  {renderCheckTicketQRCodeButton()}
                                 </Col>
                               </div>
                             </div>
@@ -1227,6 +1359,10 @@ const MyTicketsEventDetail = () => {
                         <TicketDetailTabletAndMobile
                           detailData={currentShowPopupTicket}
                           checkCollectibleDetail={handleCheckCollectibleDetail}
+                          setShowOpenAppAction={() => {
+                            setShowTicketItemDetailModal(false);
+                            setShowOpenAppModal(true);
+                          }}
                           buttonAction={() => {
                             setCurrentCheckTicketId(currentShowPopupTicket.id);
                             setShowTicketItemDetailModal(false);
@@ -1262,6 +1398,10 @@ const MyTicketsEventDetail = () => {
                       <TicketDetailTabletAndMobile
                         detailData={currentShowPopupTicket}
                         checkCollectibleDetail={handleCheckCollectibleDetail}
+                        setShowOpenAppAction={() => {
+                          setShowTicketItemDetailDrawer(false);
+                          setShowOpenAppModal(true);
+                        }}
                         buttonAction={() => {
                           setCurrentCheckTicketId(currentShowPopupTicket.id);
                           setShowTicketItemDetailDrawer(false);
@@ -1273,6 +1413,10 @@ const MyTicketsEventDetail = () => {
                 </Drawer>
                 {contextHolder}
               </div>
+              <ShowOpenAppModalComponent
+                open={showOpenAppModal}
+                setOpen={setShowOpenAppModal}
+              />
             </MyTicketsEventDetailContainer>
           )}
         </>
