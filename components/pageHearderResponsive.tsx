@@ -253,7 +253,7 @@ const PageHearderResponsive = ({
                       ''
                     }
                   >
-                    MY TICKETS
+                    UPCOMING EVENTS
                   </span>
                 </div>
                 <div
@@ -267,7 +267,7 @@ const PageHearderResponsive = ({
                       ''
                     }
                   >
-                    MY COLLECTIBLES
+                    ALL TICKETS
                   </span>
                 </div>
                 <div

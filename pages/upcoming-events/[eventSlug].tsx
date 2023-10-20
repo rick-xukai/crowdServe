@@ -227,7 +227,7 @@ const TicketDetailTabletAndMobile = ({
           }
           onClick={checkCollectibleDetail}
         >
-          CHECK COLLECTIBLE DETAIL
+          VIEW FULL TICKET DETAILS
         </p>
       </Col>
     </>
@@ -1215,7 +1215,7 @@ const MyTicketsEventDetail = () => {
                                 <Col className="detail-action" span={24}>
                                   {renderCheckTicketQRCodeButton()}
                                   <p onClick={handleCheckCollectibleDetail}>
-                                    CHECK COLLECTIBLE DETAIL
+                                    VIEW FULL TICKET DETAILS
                                   </p>
                                 </Col>
                               </div>
