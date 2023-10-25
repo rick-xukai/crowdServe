@@ -81,7 +81,7 @@ const EventsScanContainer = styled.div`
   }
   .ant-checkbox {
     margin-right: 5px;
-    margin-top: -25px;
+    /* margin-top: -25px; */
   }
   .ant-checkbox-inner {
     background: transparent;
@@ -122,7 +122,7 @@ const EventsScanContainer = styled.div`
     }
     .ant-checkbox-wrapper {
       .ant-checkbox {
-        margin-top: -2px;
+        margin-top: -4px;
       }
       .all {
         color: ${Colors.white};

@@ -131,7 +131,7 @@ const EventsScan = () => {
           </div>
         )}
       </div>
-      {sourceData.length && (
+      {(sourceData.length && (
         <div className="page-bottom">
           <Row className="content">
             <Col span={6}>
@@ -143,11 +143,12 @@ const EventsScan = () => {
               </Checkbox>
             </Col>
             <Col span={18}>
-              <Button>Rock N' Roll</Button>
+              <Button disabled={!checkedList.length}>Rock N' Roll</Button>
             </Col>
           </Row>
         </div>
-      ) || null}
+      )) ||
+        null}
     </EventsScanContainer>
   );
 };
