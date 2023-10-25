@@ -935,12 +935,11 @@ const EventDetail = ({
                                     }
                                   >
                                     <div className="item-background">
-                                      <Image
+                                      <img
                                         src={
                                           item.thumbnailUrl ||
                                           Images.BackgroundLogo.src
                                         }
-                                        layout="fill"
                                         alt=""
                                         onError={(e: any) => {
                                           e.target.onerror = null;
@@ -948,14 +947,25 @@ const EventDetail = ({
                                             Images.BackgroundLogo.src;
                                         }}
                                       />
+                                      {item.owner && (
+                                        <div className="owner-content">
+                                          <img
+                                            src={Images.IsOwner.src}
+                                            alt=""
+                                          />
+                                          <p>Your listed ticket</p>
+                                        </div>
+                                      )}
                                     </div>
-                                    <div className="item-price">
-                                      <span>
+                                    <div className="item-bottom">
+                                      <div className="bottom-type">
+                                        {item.type}
+                                      </div>
+                                      <div className="bottom-price">
                                         {item.sellPrice.toFixed(2)}{' '}
                                         {item.currency}
-                                      </span>
+                                      </div>
                                     </div>
-                                    <div className="item-type">{item.type}</div>
                                   </SecondaryMarketItem>
                                 </Col>
                               ))}

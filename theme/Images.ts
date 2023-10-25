@@ -111,6 +111,7 @@ import TransferIcon from '../static/images/transfer-icon.svg';
 import DoubleArrowRight from '../static/images/double-arrow-right.svg';
 import SellIcon from '../static/images/sell.svg';
 import TransferFriend from '../static/images/transfer-friend.svg';
+import IsOwner from '../static/images/is-owner.svg';
 import RecallIcon from '../static/images/recall.svg';
 
 const Images = {
@@ -227,6 +228,7 @@ const Images = {
   DoubleArrowRight,
   SellIcon,
   TransferFriend,
+  IsOwner,
   RecallIcon,
 };
 

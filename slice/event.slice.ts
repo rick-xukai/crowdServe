@@ -104,6 +104,7 @@ export interface EventMarketResponseType {
   userName: string;
   currency: string;
   sellPrice: number;
+  owner: boolean;
 }
 
 /**
