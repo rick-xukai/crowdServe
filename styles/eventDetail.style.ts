@@ -435,6 +435,11 @@ const TicketTypeItem = styled(Col)`
     .type-img {
       height: 140px;
     }
+    .type-info {
+      .description {
+        -webkit-line-clamp: 2;
+      }
+    }
   }
   @media (max-width: 768px) {
     .type-info {
