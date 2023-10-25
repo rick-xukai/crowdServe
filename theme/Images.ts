@@ -113,6 +113,7 @@ import SellIcon from '../static/images/sell.svg';
 import TransferFriend from '../static/images/transfer-friend.svg';
 import IsOwner from '../static/images/is-owner.svg';
 import RecallIcon from '../static/images/recall.svg';
+import ArrowDown from '../static/images/arrow-down.svg';
 
 const Images = {
   Safety,
@@ -230,6 +231,7 @@ const Images = {
   TransferFriend,
   IsOwner,
   RecallIcon,
+  ArrowDown,
 };
 
 export default Images;

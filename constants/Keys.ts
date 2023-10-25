@@ -44,4 +44,5 @@ export const RouterKeys = {
   collectionDetail: '/all-tickets/:slug',
   collectibleDetail: '/all-tickets/:orgname-slug/:slug',
   myRaves: '/my-raves',
+  eventsScan: '/events-scan',
 };
