@@ -934,6 +934,12 @@ const EventDetail = ({
                                       setClickEventMarketModalOpen(true)
                                     }
                                   >
+                                    {item.owner && (
+                                      <div className="owner-content">
+                                        <img src={Images.IsOwner.src} alt="" />
+                                        <p>Your listed ticket</p>
+                                      </div>
+                                    )}
                                     <div className="item-background">
                                       <img
                                         src={
@@ -947,7 +953,7 @@ const EventDetail = ({
                                             Images.BackgroundLogo.src;
                                         }}
                                       />
-                                      {item.owner && (
+                                      {/* {item.owner && (
                                         <div className="owner-content">
                                           <img
                                             src={Images.IsOwner.src}
@@ -955,7 +961,7 @@ const EventDetail = ({
                                           />
                                           <p>Your listed ticket</p>
                                         </div>
-                                      )}
+                                      )} */}
                                     </div>
                                     <div className="item-bottom">
                                       <div className="bottom-type">

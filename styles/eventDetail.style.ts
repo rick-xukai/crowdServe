@@ -450,6 +450,31 @@ const SecondaryMarketItem = styled.div`
   border-radius: 4px;
   padding: 2px;
   background: ${Colors.grayScale70};
+  .owner-content {
+    background: ${Colors.grayScale10};
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 0px;
+    bottom: 48.5px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    p {
+      color: ${Colors.backgorund};
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0;
+      margin-left: 6px;
+    }
+    img {
+      width: 12px;
+    }
+  }
   .item-background {
     position: relative;
     width: 100%;
@@ -460,29 +485,6 @@ const SecondaryMarketItem = styled.div`
       height: 100%;
       object-fit: cover;
       border-radius: 4px;
-    }
-    .owner-content {
-      background: ${Colors.grayScale10};
-      position: absolute;
-      bottom: 0;
-      width: 103%;
-      left: -2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-top: 2px;
-      padding-bottom: 2px;
-      p {
-        color: ${Colors.backgorund};
-        text-align: center;
-        font-size: 12px;
-        font-weight: 700;
-        margin: 0;
-        margin-left: 6px;
-      }
-      img {
-        width: 12px;
-      }
     }
   }
   .item-bottom {
