@@ -8,8 +8,17 @@ import { dataEncryption } from '../utils/func';
 import users from '../users';
 import { LoginContainer } from '../styles/scan-login.style';
 import { useCookie } from '../hooks';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import {
+  scannerLoginAction,
+  selectScannerLoginLoading,
+} from '@/slice/user.slice';
 
 const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
+  const dispatch = useAppDispatch();
+
+  const loginLoading = useAppSelector(selectScannerLoginLoading);
+
   const [rememberMe, setRememberMe] = useState<boolean>(true);
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -25,7 +34,7 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
         dataEncryption(
           localStorage.getItem(LocalStorageKeys.rememberMe),
           Decrypt
-        ),
+        )
       );
       if (rememberMe) {
         setUserName(rememberMeData.username);
@@ -34,7 +43,12 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
     }
   }, []);
 
-  const signIn = () => {
+  const signIn = async () => {
+    const response = await dispatch(
+      scannerLoginAction({ email: userName, password })
+    );
+    console.log(response);
+    return;
     const validUser = users.filter(
       (item) => item.user === userName && item.password === password
     );
@@ -44,13 +58,10 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
           username: userName,
           password: password,
         }),
-        Encrypt,
+        Encrypt
       );
       if (rememberMe) {
-        localStorage.setItem(
-          LocalStorageKeys.rememberMe,
-          userInfo,
-        );
+        localStorage.setItem(LocalStorageKeys.rememberMe, userInfo);
       } else {
         localStorage.removeItem(LocalStorageKeys.rememberMe);
       }
@@ -105,7 +116,11 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
         <div>
           <button onClick={signIn}>Sign In</button>
         </div>
-        {!isValidUser && <p className="error-message-invalid">Username and password are invalid.</p>}
+        {!isValidUser && (
+          <p className="error-message-invalid">
+            Username and password are invalid.
+          </p>
+        )}
       </div>
     </LoginContainer>
   );

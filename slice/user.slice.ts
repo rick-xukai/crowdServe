@@ -302,8 +302,38 @@ export const verificationCodeAction = createAsyncThunk<
   }
 );
 
+/**
+ * Scanner Login
+ */
+export const scannerLoginAction = createAsyncThunk<
+  any,
+  any,
+  {
+    rejectValue: ErrorType;
+  }
+>('scannerLogin/scannerLoginAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await UserService.doScannerLogin(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
 interface UserState {
   loading: boolean;
+  scannerLoginLoading: boolean;
   getUserGenderLoading: boolean;
   forgotPasswordLoading: boolean;
   data: LoginResponseType;
@@ -327,6 +357,7 @@ interface UserState {
 
 const initialState: UserState = {
   loading: false,
+  scannerLoginLoading: false,
   forgotPasswordLoading: false,
   getUserGenderLoading: true,
   userGender: [],
@@ -485,6 +516,22 @@ export const userSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(scannerLoginAction.pending, (state) => {
+        // state.data = {} as LoginResponseType;
+        state.scannerLoginLoading = true;
+      })
+      .addCase(scannerLoginAction.fulfilled, (state, action: any) => {
+        state.scannerLoginLoading = false;
+        // state.data = action.payload;
+      })
+      .addCase(scannerLoginAction.rejected, (state, action) => {
+        state.scannerLoginLoading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
       });
   },
 });
@@ -508,5 +555,7 @@ export const selectGetUserGenderLoading = (state: RootState) =>
   state.user.getUserGenderLoading;
 export const selectLoginRedirectPage = (state: RootState) =>
   state.user.loginRedirectPage;
+export const selectScannerLoginLoading = (state: RootState) =>
+  state.user.scannerLoginLoading;
 
 export default userSlice.reducer;

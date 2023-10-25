@@ -118,6 +118,9 @@ const API = {
   claimTransfer: {
     post: '/api/v1/transfer/{code}/claim',
   },
+  scannerLogin: {
+    post: '/admin/session',
+  },
 };
 
 export default API;
