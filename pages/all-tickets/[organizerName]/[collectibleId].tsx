@@ -546,7 +546,11 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
                               )}
                           </Col>
                           <Row style={{ alignItems: 'start' }}>
-                            <Col span={20} className="info-name">
+                            <Col
+                              span={20}
+                              className="info-name"
+                              style={{ paddingRight: 10 }}
+                            >
                               {collectibleDetail.name || '-'}
                             </Col>
                             {collectibleDetail.owner && (

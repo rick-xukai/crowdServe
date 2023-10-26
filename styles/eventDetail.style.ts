@@ -435,6 +435,11 @@ const TicketTypeItem = styled(Col)`
     .type-img {
       height: 140px;
     }
+    .type-info {
+      .description {
+        -webkit-line-clamp: 2;
+      }
+    }
   }
   @media (max-width: 768px) {
     .type-info {
@@ -448,19 +453,60 @@ const TicketTypeItem = styled(Col)`
 const SecondaryMarketItem = styled.div`
   position: relative;
   border-radius: 4px;
-  padding: 6px;
-  height: 167px;
-  .item-background {
+  padding: 2px;
+  background: ${Colors.grayScale70};
+  .owner-content {
+    background: ${Colors.grayScale10};
     position: absolute;
-    top: 0px;
-    left: 0px;
+    bottom: 0;
     width: 100%;
-    height: 100%;
+    left: 0px;
+    bottom: 48.5px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    p {
+      color: ${Colors.backgorund};
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0;
+      margin-left: 6px;
+    }
+    img {
+      width: 12px;
+    }
+  }
+  .item-background {
+    position: relative;
+    width: 100%;
+    height: 158px;
+    max-height: 158px;
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 4px;
+    }
+  }
+  .item-bottom {
+    background: ${Colors.grayScale70};
+    padding: 6px 6px 0 6px;
+    .bottom-type {
+      color: ${Colors.white};
+      font-size: 15px;
+      font-weight: 400;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bottom-price {
+      color: ${Colors.branding};
+      font-size: 14px;
+      font-weight: 700;
     }
   }
   .item-price {

@@ -327,7 +327,7 @@ const PageHearderComponent = ({
                     (router.pathname === RouterKeys.myTickets && "active") || ""
                   }`}
                 >
-                  MY TICKETS
+                  UPCOMING EVENTS
                 </span>
               </Col>
             </Row>
@@ -343,7 +343,7 @@ const PageHearderComponent = ({
                     ""
                   }`}
                 >
-                  MY COLLECTIBLES
+                  ALL TICKETS
                 </span>
               </Col>
             </Row>

@@ -962,6 +962,29 @@ iframe {
   display: flex;
   align-items: center;
 }
+.ticket-detail-mobile .ant-drawer-body .sell-and-transfer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.ticket-detail-mobile .ant-drawer-body .sell-and-transfer .ant-btn {
+  width: 48%;
+  background: transparent;
+  color: #f8f6f0;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  border-radius: 2px;
+  border: 1px solid #f8f6f0;
+  box-shadow: none;
+}
+.ticket-detail-mobile .ant-drawer-body .sell-and-transfer .ant-btn img {
+  margin-right: 10px;
+}
 .ticket-detail-mobile .ant-drawer-body .info-name p {
   text-align: center;
   width: 100%;
@@ -1010,6 +1033,24 @@ iframe {
   margin-top: 15px;
   min-height: 45px;
 }
+.ticket-detail-mobile
+  .ant-drawer-body
+  .detail-action
+  .qr-code-btn-content
+  .item-detail-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ticket-detail-mobile
+  .ant-drawer-body
+  .detail-action
+  .qr-code-btn-content
+  .item-detail-icon
+  img {
+  width: 60px;
+  height: 60px;
+}
 .ticket-detail-mobile .ant-drawer-body .detail-action .ant-btn {
   height: 45px;
   background: #fc0006;
@@ -1024,9 +1065,14 @@ iframe {
   font-weight: 400;
   font-size: 15px;
   color: #f8f6f0;
-  margin-top: 12px;
+  margin-top: 20px;
   margin-bottom: 0;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ticket-detail-mobile .ant-drawer-body .detail-action p img {
+  margin-left: 6px;
 }
 .ticket-detail-mobile .ant-drawer-body .detail-action .no-check-code {
   margin-top: 40px;
@@ -1107,6 +1153,26 @@ iframe {
   .ticketDetailModal
     .ant-modal-content
     .detail-info
+    .detail-info-content
+    .item-detail-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  .ticketDetailModal
+    .ant-modal-content
+    .detail-info
+    .detail-info-content
+    .item-detail-icon
+    img {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+  }
+  .ticketDetailModal
+    .ant-modal-content
+    .detail-info
     .info-description-item
     .item-row {
     padding: 6px 9px;
@@ -1149,6 +1215,38 @@ iframe {
     color: #ffffff;
   }
 
+  .ticketDetailModal .ant-modal-content .detail-info .sell-and-transfer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  .ticketDetailModal
+    .ant-modal-content
+    .detail-info
+    .sell-and-transfer
+    .ant-btn {
+    width: 48%;
+    background: transparent;
+    color: #f8f6f0;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+    border-radius: 2px;
+    border: 1px solid #f8f6f0;
+    box-shadow: none;
+  }
+  .ticketDetailModal
+    .ant-modal-content
+    .detail-info
+    .sell-and-transfer
+    .ant-btn
+    img {
+    margin-right: 10px;
+  }
   .ticketDetailModal .ant-modal-content .detail-image :first-child {
     width: 410px;
     height: 410px !important;
@@ -1160,10 +1258,15 @@ iframe {
     font-weight: 400;
     font-size: 15px;
     color: #f8f6f0;
-    margin-top: 12px;
+    margin-top: 20px;
     margin-bottom: 0;
-    text-align: center;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ticketDetailModal .ant-modal-content .detail-action p img {
+    margin-left: 6px;
   }
   .ticketDetailModal .ant-modal-content .detail-action p:hover {
     text-decoration: underline;
@@ -1225,6 +1328,29 @@ iframe {
     display: flex;
     align-items: center;
   }
+  .ticketDetailModal .ant-modal-content .sell-and-transfer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  .ticketDetailModal .ant-modal-content .sell-and-transfer .ant-btn {
+    width: 48%;
+    background: transparent;
+    color: #f8f6f0;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+    border-radius: 2px;
+    border: 1px solid #f8f6f0;
+    box-shadow: none;
+  }
+  .ticketDetailModal .ant-modal-content .sell-and-transfer .ant-btn img {
+    margin-right: 10px;
+  }
   .ticketDetailModal .ant-modal-content .info-name p {
     text-align: center;
   }
@@ -1263,9 +1389,16 @@ iframe {
     font-weight: 400;
     font-size: 15px;
     color: #f8f6f0;
-    margin-top: 12px;
+    margin-top: 20px;
     margin-bottom: 0;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ticketDetailModal .ant-modal-content .detail-action .item-detail-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .ticketDetailModal .ant-modal-content .detail-action .no-check-code {
     margin-top: 20px;

@@ -389,7 +389,7 @@ const CollectionDetail = () => {
                   </Button>,
                 ]}
               >
-                <p>{`You don't have any collectibles for this collection yet.`}</p>
+                <p>{`You don't have any tickets for this collection yet.`}</p>
               </ClientModalComponent>
             </CollectionDetailContainer>
           )}

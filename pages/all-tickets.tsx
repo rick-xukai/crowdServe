@@ -282,7 +282,7 @@ const MyCollectibles = () => {
                 <div className="no-collectibles">
                   <div className="page-main-no-collectibles">
                     <Image src={Images.MyCollectiblesIcon} alt="" />
-                    <p className="title">No Collectibles.</p>
+                    <p className="title">No Tickets.</p>
                   </div>
                 </div>
               )}

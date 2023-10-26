@@ -32,7 +32,7 @@ const MyCollectiblesContainer = styled.div`
       .title {
         margin-top: 20px;
         margin-bottom: 10px;
-        font-weight: 700;
+        font-weight: 500;
         font-size: 20px;
         color: ${Colors.grayScale20};
       }
