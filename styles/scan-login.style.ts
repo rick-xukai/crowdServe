@@ -29,6 +29,14 @@ const LoginContainer = styled.div`
     .form-input {
       margin-bottom: 20px;
       border-radius: 2px;
+      .hidden-auto-complete {
+        height: 0;
+        width: 0;
+        overflow: hidden;
+        padding: 0;
+        border: none;
+        position: absolute;
+      }
       input {
         width: 100%;
         height: 35px;
@@ -61,7 +69,7 @@ const LoginContainer = styled.div`
         width: 18px;
         height: 18px;
       }
-      input[type=checkbox] {
+      input[type='checkbox'] {
         accent-color: ${Colors.branding};
       }
       span {
@@ -82,6 +90,12 @@ const LoginContainer = styled.div`
       background: ${Colors.branding};
       border: none;
       color: ${Colors.white};
+      .anticon {
+        margin-left: 10px;
+      }
+    }
+    button:disabled {
+      background: ${Colors.brandingGray};
     }
     .error-message-invalid {
       color: ${Colors.branding};

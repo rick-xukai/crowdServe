@@ -394,7 +394,7 @@ export async function getServerSideProps(ctx: any) {
   try {
     const response = await TicketService.checkEvent(query.eventId);
     const handleAuth = () => {
-      const token = req.cookies[CookieKeys.authUser];
+      const token = req.cookies[CookieKeys.scannerLoginToken];
       if (!token) {
         res.writeHead(302, {
           Location: `${RouterKeys.scanLogin}?eventId=${query.eventId || ''}`,

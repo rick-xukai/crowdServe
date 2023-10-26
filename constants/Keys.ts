@@ -1,5 +1,5 @@
 export const LocalStorageKeys = {
-  rememberMe: 'rememberMe',
+  scannerLoginRememberMe: 'scannerLoginRememberMe',
   closeInstallAppTime: 'closeInstallAppTime',
   currentPageToSetting: 'currentPageToSetting',
   pageViewTrackKeys: 'pageViewTrackKeys',
@@ -12,6 +12,7 @@ export const SessionStorageKeys = {
 };
 
 export const CookieKeys = {
+  scannerLoginToken: 'scannerLoginToken',
   authUser: 'authUser',
   userLoginToken: 'userLoginToken',
   userLoginEmail: 'userLoginEmail',
