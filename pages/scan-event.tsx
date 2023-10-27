@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { MenuProps } from 'antd';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
@@ -24,8 +24,20 @@ import {
   selectScannerEventList,
   selectError,
   selectLoading,
+  // setPage,
+  // setSize,
+  selectPage,
+  selectSize,
+  // selectIsDisableRequest,
+  // setIsDisableRequest,
 } from '@/slice/scanner.slice';
+import { reset as userSliceReset } from '@/slice/user.slice';
 import Messages from '@/constants/Messages';
+// import {
+//   DefaultPage,
+//   DefaultPageSize,
+//   ListPageScrollDifference,
+// } from '@/constants/General';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -36,14 +48,19 @@ const EventsScan = () => {
   ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const eventsListContainer = useRef<any>(null);
 
+  const page = useAppSelector(selectPage);
+  const size = useAppSelector(selectSize);
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const scannerEventList = useAppSelector(selectScannerEventList);
+  // const isDisableRequest = useAppSelector(selectIsDisableRequest);
 
   const [listOptions, setListOptions] = useState<any[]>([]);
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
   const [scannerName, setScannerName] = useState<string>('');
+  // const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
 
   const items: MenuProps['items'] = [
     {
@@ -75,12 +92,19 @@ const EventsScan = () => {
   };
 
   const onClick = () => {
+    dispatch(userSliceReset());
     dispatch(resetScannerLoginResponse());
     cookie.removeCookie(CookieKeys.scannerLoginToken, {
       path: '/',
       domain: window.location.hostname,
     });
     router.push(RouterKeys.scanLogin);
+  };
+
+  const startScanCode = () => {
+    router.push(
+      RouterKeys.scanQrCode.replace(':eventId', base64Encrypt(checkedList))
+    );
   };
 
   useEffect(() => {
@@ -117,8 +141,43 @@ const EventsScan = () => {
   }, [scannerEventList]);
 
   useEffect(() => {
+    dispatch(
+      getScannerEventListAction({
+        page,
+        size,
+      })
+    );
+  }, [page]);
+
+  // useEffect(() => {
+  //   if (isPageBottom && !loading) {
+  //     dispatch(setPage(page + 1));
+  //   }
+  // }, [isPageBottom]);
+
+  // const handleScroll = (event: any) => {
+  //   const { clientHeight, scrollHeight, scrollTop } = event.target;
+  //   if (scrollTop + clientHeight + ListPageScrollDifference > scrollHeight) {
+  //     dispatch(setIsDisableRequest(false));
+  //   }
+  //   setIsPageBottom(
+  //     scrollTop + clientHeight + ListPageScrollDifference > scrollHeight
+  //   );
+  // };
+
+  // const scrollListener = useCallback((e: any) => {
+  //   handleScroll(e);
+  // }, []);
+
+  useEffect(() => {
+    // if (eventsListContainer && eventsListContainer.current) {
+    //   eventsListContainer.current.addEventListener(
+    //     'scroll',
+    //     scrollListener,
+    //     true
+    //   );
+    // }
     setScannerName(cookie.getCookie(CookieKeys.scannerLoginUser) || '');
-    dispatch(getScannerEventListAction());
     // const localCheckedEvents = sessionStorage.getItem(
     //   SessionStorageKeys.scannerSelectEvent
     // );
@@ -130,12 +189,6 @@ const EventsScan = () => {
     };
   }, []);
 
-  const startScanCode = () => {
-    router.push(
-      RouterKeys.scanQrCode.replace(':eventId', base64Encrypt(checkedList))
-    );
-  };
-
   return (
     <>
       {(loading && (
@@ -145,7 +198,7 @@ const EventsScan = () => {
           </div>
         </EventsScanContainer>
       )) || (
-        <EventsScanContainer>
+        <EventsScanContainer ref={eventsListContainer}>
           <div className="page-header">
             <Row>
               <Col span={12} className="logo-img">
@@ -218,20 +271,22 @@ const EventsScan = () => {
   );
 };
 
-export async function getServerSideProps(ctx: any) {
-  const { req } = ctx;
-  const token = req.cookies[CookieKeys.scannerLoginToken];
-  if (!token) {
+EventsScan.getInitialProps = async (ctx: any) => {
+  const { req, res } = ctx;
+  try {
+    const token = req.cookies[CookieKeys.scannerLoginToken];
+    if (!token) {
+      res.writeHead(302, { Location: RouterKeys.scanLogin });
+      res.end();
+    }
+  } catch (error) {
     return {
-      redirect: {
-        destination: RouterKeys.scanLogin,
-        permanent: false,
-      },
+      props: {},
     };
   }
   return {
     props: {},
   };
-}
+};
 
 export default EventsScan;

@@ -4,6 +4,8 @@ import { Row } from 'antd';
 import { Colors } from '@/theme';
 
 const EventsScanContainer = styled.div`
+  height: 100%;
+  overflow: auto;
   .page-loading {
     width: 100%;
     height: 100%;

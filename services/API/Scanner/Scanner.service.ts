@@ -1,13 +1,15 @@
 import { RequestClientClass } from '../../../utils/requestClient';
 import API from '../../../constants/API';
+import { ScannerEventListPayload } from '@/slice/scanner.slice';
 
 const requestClient = () =>
   new RequestClientClass(process.env.NEXT_PUBLIC_API_SERVER);
 
-const getScannerEventList = async () => {
+const getScannerEventList = async (payload: ScannerEventListPayload) => {
   const uri = API.getScannerEventList.get;
   const response = await requestClient()
     .setUri(uri)
+    .setQueryParameter(payload)
     .setAuthorizationStatus()
     .doGet();
   return response;

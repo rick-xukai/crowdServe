@@ -361,7 +361,7 @@ const ScanQrCodePage: NextPage = () => {
   const router = useRouter();
 
   const [result, setResult] = useState('');
-  const [showQrReader, setShowQrReader] = useState(false);
+  const [showQrReader, setShowQrReader] = useState(true);
   const [id, setEventId] = useState<string[]>([]);
   const [eventCorrect, setEventCorrect] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -415,19 +415,7 @@ const ScanQrCodePage: NextPage = () => {
         </>
       )) || (
         <>
-          {(eventCorrect && !loading && (
-            <div className="scan-start">
-              <div className="scan-start-mask" />
-              <div className="scan-start-container">
-                <p>
-                  <Image src={Images.Logo} alt="" />
-                </p>
-                <button onClick={() => setShowQrReader(true)}>
-                  SCAN QR CODE
-                </button>
-              </div>
-            </div>
-          )) || (
+          {!eventCorrect && (
             <div className="verify-container">
               <div className="items" style={{ width: '100%' }}>
                 <div style={{ textAlign: 'center' }}>
@@ -451,33 +439,33 @@ const ScanQrCodePage: NextPage = () => {
   );
 };
 
-export async function getServerSideProps(ctx: any) {
-  const { req, res, query } = ctx;
-  try {
-    const response = await TicketService.checkEvent(query.eventId);
-    const handleAuth = () => {
-      const token = req.cookies[CookieKeys.scannerLoginToken];
-      if (!token) {
-        res.writeHead(302, {
-          Location: `${RouterKeys.scanLogin}?eventId=${query.eventId || ''}`,
-        });
-        res.end();
-        return {
-          props: {},
-        };
-      }
-    };
-    if (response.code !== Messages.notFound.code) {
-      await handleAuth();
-    }
-    return {
-      props: {},
-    };
-  } catch (error) {
-    return {
-      props: {},
-    };
-  }
-}
+// export async function getServerSideProps(ctx: any) {
+//   const { req, res, query } = ctx;
+//   try {
+//     const response = await TicketService.checkEvent(query.eventId);
+//     const handleAuth = () => {
+//       const token = req.cookies[CookieKeys.scannerLoginToken];
+//       if (!token) {
+//         res.writeHead(302, {
+//           Location: `${RouterKeys.scanLogin}?eventId=${query.eventId || ''}`,
+//         });
+//         res.end();
+//         return {
+//           props: {},
+//         };
+//       }
+//     };
+//     if (response.code !== Messages.notFound.code) {
+//       await handleAuth();
+//     }
+//     return {
+//       props: {},
+//     };
+//   } catch (error) {
+//     return {
+//       props: {},
+//     };
+//   }
+// }
 
 export default ScanQrCodePage;
