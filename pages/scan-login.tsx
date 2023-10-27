@@ -32,18 +32,17 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
 
   useEffect(() => {
     if (error) {
+      let errorMessage = error.message;
       if (error.code === Messages.notFound.code) {
-        message.open({
-          content: Messages.notFound.text,
-          className: 'error-message-event',
-        });
+        errorMessage = Messages.notFound.text;
       }
       if (error.code === Messages.invalidPassword.code) {
-        message.open({
-          content: Messages.invalidPassword.text,
-          className: 'error-message-event',
-        });
+        errorMessage = Messages.invalidPassword.text;
       }
+      message.open({
+        content: errorMessage,
+        className: 'error-message-event',
+      });
     }
   }, [error]);
 
