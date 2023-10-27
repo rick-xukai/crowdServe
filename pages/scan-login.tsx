@@ -34,7 +34,7 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
     if (error) {
       let errorMessage = error.message;
       if (error.code === Messages.notFound.code) {
-        errorMessage = Messages.notFound.text;
+        errorMessage = 'There is no account associated with the email.';
       }
       if (error.code === Messages.invalidPassword.code) {
         errorMessage = Messages.invalidPassword.text;
