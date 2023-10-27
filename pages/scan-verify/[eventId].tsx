@@ -75,6 +75,8 @@ const ScanQrCodeResult = ({
   setResult: (value: string) => void;
   setShowQrReader: (value: boolean) => void;
 }) => {
+  const router = useRouter();
+
   const [scannerCodeDetail, setScannerCodeDetail] = useState<
     ScannerCodeDetail[] | null
   >(null);
@@ -340,9 +342,9 @@ const ScanQrCodeResult = ({
                   {verifyMessage.success && (
                     <button
                       className="back-home"
-                      onClick={() => setShowQrReader(false)}
+                      onClick={() => router.push(RouterKeys.eventsScan)}
                     >
-                      BACK TO HOME
+                      BACK TO EVENT LIST
                     </button>
                   )}
                 </div>
