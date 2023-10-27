@@ -200,11 +200,17 @@ const ScanQrCodePageContainers = styled.div`
       .total-info-type {
         margin-bottom: 5px;
         color: ${Colors.white};
-        font-weight: 500;
-        font-size: 15px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        font-size: 13px;
+        font-weight: 400;
+        display: flex;
+        align-items: start;
+        .text {
+          margin-left: 5px;
+        }
+        > :first-child {
+          width: 16px !important;
+          height: 16px !important;
+        }
       }
       .total-info-redeemed {
         font-weight: 400;

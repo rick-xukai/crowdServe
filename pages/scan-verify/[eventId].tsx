@@ -32,6 +32,7 @@ interface ScannerCodeDetail {
     cancelledAt: string;
     total: number;
     redeemed: number;
+    eventName: string;
   };
   redeemCode: string;
 }
@@ -53,6 +54,7 @@ interface RedeemResponse {
     cancelledAt: string;
     total: number;
     redeemed: number;
+    eventName: string;
   };
 }
 
@@ -232,6 +234,10 @@ const ScanQrCodeResult = ({
                   <div className="border-box" key={item.redeemCode}>
                     <div className="result-container">
                       <div className="result-items">
+                        <p className="items-title">Event</p>
+                        <p className="items-value">{item.ticket.eventName}</p>
+                      </div>
+                      <div className="result-items">
                         <p className="items-title">Participant</p>
                         <p className="items-value">{item.user.name}</p>
                       </div>
@@ -299,7 +305,16 @@ const ScanQrCodeResult = ({
                 {redeemResponse && redeemResponse.ticket && (
                   <div className="total-info">
                     <p className="total-info-type">
-                      {redeemResponse.ticket.type || '-'}
+                      <img src={Images.SuccessCongratulations.src} alt="" />
+                      <span className="text">
+                        {redeemResponse.ticket.eventName || '-'}
+                      </span>
+                    </p>
+                    <p className="total-info-type">
+                      <img src={Images.ConfirmationNumber.src} alt="" />
+                      <span className="text">
+                        {redeemResponse.ticket.type || '-'}
+                      </span>
                     </p>
                     <p className="total-info-redeemed">
                       <Image src={Images.OrganiserIcon} alt="" />

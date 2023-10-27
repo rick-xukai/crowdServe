@@ -114,6 +114,8 @@ import TransferFriend from '../static/images/transfer-friend.svg';
 import IsOwner from '../static/images/is-owner.svg';
 import RecallIcon from '../static/images/recall.svg';
 import ArrowDown from '../static/images/arrow-down.svg';
+import SuccessCongratulations from '../static/images/success-congratulations.svg';
+import ConfirmationNumber from '../static/images/confirmation-number.svg';
 
 const Images = {
   Safety,
@@ -232,6 +234,8 @@ const Images = {
   IsOwner,
   RecallIcon,
   ArrowDown,
+  SuccessCongratulations,
+  ConfirmationNumber,
 };
 
 export default Images;
