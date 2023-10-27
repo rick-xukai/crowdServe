@@ -5,14 +5,17 @@ export const LocalStorageKeys = {
   pageViewTrackKeys: 'pageViewTrackKeys',
   joinRavePopupKey: 'joinRavePopupKey',
   joinRaveNotLogin: 'joinRaveNotLogin',
+  scannerSelectEvent: 'scannerSelectEvent',
 };
 
 export const SessionStorageKeys = {
   inviteCodeForRave: 'inviteCodeForRave',
+  scannerSelectEvent: 'scannerSelectEvent',
 };
 
 export const CookieKeys = {
   scannerLoginToken: 'scannerLoginToken',
+  scannerLoginUser: 'scannerLoginUser',
   authUser: 'authUser',
   userLoginToken: 'userLoginToken',
   userLoginEmail: 'userLoginEmail',
@@ -24,7 +27,7 @@ export const CookieKeys = {
 export const RouterKeys = {
   login: '/login',
   forgotPassword: '/forgot-password',
-  scanQrCode: '/scan-qr-code/:eventId',
+  scanQrCode: '/scan-verify/:eventId',
   scanLogin: '/scan-login',
   ticketsList: '/my',
   landingPage: '/landing-page',
@@ -45,5 +48,5 @@ export const RouterKeys = {
   collectionDetail: '/all-tickets/:slug',
   collectibleDetail: '/all-tickets/:orgname-slug/:slug',
   myRaves: '/my-raves',
-  eventsScan: '/events-scan',
+  eventsScan: '/scan-event',
 };

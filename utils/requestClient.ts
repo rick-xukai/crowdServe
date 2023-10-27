@@ -130,7 +130,12 @@ export class RequestClientClass {
 
   async doMethod(method = 'GET') {
     if (this.authorizationStatus) {
-      const userToken = this.cookies.get(CookieKeys.userLoginToken);
+      let userToken = '';
+      if (this.uri.indexOf('admin') !== -1) {
+        userToken = this.cookies.get(CookieKeys.scannerLoginToken);
+      } else {
+        userToken = this.cookies.get(CookieKeys.userLoginToken);
+      }
       if (userToken) {
         this.setHeaders({
           authorization: `${AuthorizationType.bearer} ${userToken}`,
@@ -176,8 +181,10 @@ export class RequestClientClass {
         response.data &&
         response.data.code === Messages.userTokenDeprecated.code
       ) {
-        this.cookies.remove(CookieKeys.userLoginToken);
-        Router.push(RouterKeys.login);
+        if (this.uri.indexOf('admin') === -1 && this.uri !== '/maintenance') {
+          this.cookies.remove(CookieKeys.userLoginToken);
+          Router.push(RouterKeys.login);
+        }
       }
       return response;
     });

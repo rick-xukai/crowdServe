@@ -15,6 +15,10 @@ const Messages = {
     code: 404,
     text: `Email address not found. Please check your email address or create a new account.`,
   },
+  forbidden: {
+    code: 403,
+    text: 'Forbidden',
+  },
   activateAccountUserDosentExist1001: {
     code: 1001,
     text: `Email address not found. Please check your email address or create a new account.`,
@@ -25,7 +29,7 @@ const Messages = {
   },
   invalidPassword: {
     code: 1003,
-    text: 'Wrong email or password.'
+    text: 'Wrong email or password.',
   },
   invalidActivationCode: {
     code: 1004,
@@ -53,7 +57,7 @@ const Messages = {
   },
   userTokenDeprecated: {
     code: 1011,
-    text: 'user token is deprecated',
+    text: 'User token is deprecated, please login again',
   },
   ticketCancelled: {
     code: 1014,
@@ -69,7 +73,7 @@ const Messages = {
   },
   eventMismatch: {
     code: 1042,
-    text: 'Invalid QR code, this ticket is not accessible for this event.'
+    text: 'Invalid QR code, this ticket is not accessible for this event.',
   },
   alreadyUserGoogleRegister: {
     code: 1043,

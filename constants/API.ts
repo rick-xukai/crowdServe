@@ -121,6 +121,15 @@ const API = {
   scannerLogin: {
     post: '/admin/session',
   },
+  getScannerEventList: {
+    get: '/admin/event/scan',
+  },
+  verifyScanCode: {
+    post: '/admin/event/scan/verify',
+  },
+  redeemScanCode: {
+    put: '/admin/event/scan/ticket/{redeemCode}',
+  },
 };
 
 export default API;

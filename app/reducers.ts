@@ -17,6 +17,7 @@ import collectionDetailCacheReducer from '../slice/collectionDetailCache.slice';
 import pageTrackReducer from '../slice/pageTrack.slice';
 import myRavesReducer from '../slice/myRaves.slice';
 import raveReducer from '../slice/rave.slice';
+import scannerReducer from '../slice/scanner.slice';
 
 const createRootReducer = () =>
   combineReducers({
@@ -37,6 +38,7 @@ const createRootReducer = () =>
     pageTrack: pageTrackReducer,
     myRaves: myRavesReducer,
     rave: raveReducer,
+    scanner: scannerReducer,
   });
 
 export default createRootReducer;

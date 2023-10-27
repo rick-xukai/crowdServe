@@ -4,6 +4,20 @@ import { Row } from 'antd';
 import { Colors } from '@/theme';
 
 const EventsScanContainer = styled.div`
+  .page-loading {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    color: ${Colors.branding};
+    .anticon {
+      margin: auto;
+    }
+  }
   .page-header {
     padding: 10px 20px;
     border-bottom: 1px solid ${Colors.grayScale70};
@@ -32,6 +46,7 @@ const EventsScanContainer = styled.div`
         font-weight: 400;
         display: flex;
         align-items: center;
+        text-transform: uppercase;
         img {
           margin-left: 10px;
         }
@@ -56,6 +71,14 @@ const EventsScanContainer = styled.div`
       border-radius: 4px;
       background: ${Colors.grayScale70};
       margin-bottom: 10px;
+      position: relative;
+      .ant-checkbox {
+        position: absolute;
+        top: 14px;
+      }
+      .ant-checkbox+span {
+        padding-left: 35px;
+      }
     }
     .event-name {
       color: ${Colors.white};
@@ -79,10 +102,9 @@ const EventsScanContainer = styled.div`
       background: ${Colors.branding};
     }
   }
-  .ant-checkbox {
+  /* .ant-checkbox {
     margin-right: 5px;
-    /* margin-top: -25px; */
-  }
+  } */
   .ant-checkbox-inner {
     background: transparent;
     border: 1px solid ${Colors.white};

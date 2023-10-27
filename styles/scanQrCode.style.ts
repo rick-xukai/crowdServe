@@ -52,6 +52,11 @@ const ScanQrCodePageContainers = styled.div`
         height: 62px !important;
       }
     }
+    .detail-content {
+      > :last-child {
+        margin-bottom: 0px;
+      }
+    }
     .border-box {
       background: linear-gradient(
         180deg,
@@ -61,6 +66,7 @@ const ScanQrCodePageContainers = styled.div`
       padding: 0.5px;
       border-radius: 2px;
       position: relative;
+      margin-bottom: 70px;
       .action-button,
       .button-text {
         position: absolute;

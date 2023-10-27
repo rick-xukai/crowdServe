@@ -11,24 +11,48 @@ import { PriceUnit } from '../../constants/General';
 import TicketService from '../../services/API/Ticket/Ticket.service';
 import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
 import { Images } from '../../theme';
-import { verificationApi } from '../../utils/func';
+import { verificationApi, base64Decrypt } from '../../utils/func';
 import Messages from '../../constants/Messages';
+import ScannerService from '@/services/API/Scanner/Scanner.service';
 
-interface ScanQrCodeDetail {
-  ticket: {
-    id: number;
-    no: string;
-    seat: number;
-    status: number;
-    type: number;
-    price: number;
-    redeemed: number;
-    total: number;
-  };
+interface ScannerCodeDetail {
   user: {
-    email: string;
     id: number;
     name: string;
+    email: string;
+  };
+  ticket: {
+    id: number;
+    status: number;
+    type: string;
+    price: number;
+    seat: number;
+    no: string;
+    redeemedAt: string;
+    cancelledAt: string;
+    total: number;
+    redeemed: number;
+  };
+  redeemCode: string;
+}
+
+interface RedeemResponse {
+  user: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  ticket: {
+    id: number;
+    status: number;
+    type: string;
+    price: number;
+    seat: number;
+    no: string;
+    redeemedAt: string;
+    cancelledAt: string;
+    total: number;
+    redeemed: number;
   };
 }
 
@@ -45,13 +69,17 @@ const ScanQrCodeResult = ({
   setShowQrReader,
 }: {
   result: string;
-  currentEventId: string;
+  currentEventId: string[];
   setResult: (value: string) => void;
   setShowQrReader: (value: boolean) => void;
 }) => {
-  const [detail, setDetail] = useState<ScanQrCodeDetail | null>(null);
+  const [scannerCodeDetail, setScannerCodeDetail] = useState<
+    ScannerCodeDetail[] | null
+  >(null);
+  const [redeemResponse, setRedeemResponse] = useState<RedeemResponse | null>(
+    null
+  );
   const [verify, setVerify] = useState(false);
-  const [redeemCode, setRedeemCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [verifyMessage, setVerifyMessage] = useState<VerifyMessage>({
     message: '',
@@ -119,18 +147,17 @@ const ScanQrCodeResult = ({
   const handleGetScanQrCodeDetail = async (value: string) => {
     if (value) {
       try {
-        const response = await TicketService.doVerifyTicket({
+        const response = await ScannerService.verifyScanCode({
           code: value,
-          eventId: currentEventId,
+          eventIds: currentEventId,
         });
         if (verificationApi(response)) {
-          setDetail(response.data);
-          setRedeemCode(response.data.redeemCode);
+          setScannerCodeDetail(response.data);
         } else {
           const { ticket } = response.data || {};
           checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
           setVerify(true);
-          setDetail({} as ScanQrCodeDetail);
+          setScannerCodeDetail([]);
         }
       } catch (error: any) {
         if (error.response) {
@@ -144,7 +171,7 @@ const ScanQrCodeResult = ({
           checkStatusType(Messages.networkError.code);
         }
         setVerify(true);
-        setDetail({} as ScanQrCodeDetail);
+        setScannerCodeDetail([]);
       }
     } else {
       checkStatusType(Messages.invalidUnlawful.code);
@@ -152,17 +179,17 @@ const ScanQrCodeResult = ({
     }
   };
 
-  const handleVerify = async () => {
+  const handleVerify = async (code: string) => {
     if (loading) {
       return;
     }
     setLoading(true);
     try {
-      const response = await TicketService.doRedeemTicket({ code: redeemCode });
+      const response = await ScannerService.redeemScanCode(code);
       if (verificationApi(response)) {
-        setDetail(response.data);
+        setRedeemResponse(response.data);
       } else {
-        setDetail({} as ScanQrCodeDetail);
+        setRedeemResponse({} as RedeemResponse);
       }
       if (response) {
         const { ticket } = response.data || {};
@@ -172,7 +199,7 @@ const ScanQrCodeResult = ({
     } catch (error: any) {
       checkStatusType(Messages.networkError.code);
       setLoading(false);
-      setDetail({} as ScanQrCodeDetail);
+      setRedeemResponse({} as RedeemResponse);
     }
     setVerify(true);
   };
@@ -183,7 +210,7 @@ const ScanQrCodeResult = ({
 
   return (
     <div className="scan-result">
-      {detail && (
+      {scannerCodeDetail && (
         <>
           <div className="scan-back" onClick={() => setResult('')}>
             <Image src={Images.BackArrow} alt="" />
@@ -191,52 +218,70 @@ const ScanQrCodeResult = ({
           </div>
           {(!verify && (
             <div className="result-detail">
-              <div style={{ width: '100%', marginTop: -50 }}>
+              <div
+                style={{
+                  width: '100%',
+                  marginTop: (scannerCodeDetail.length > 1 && 0) || -50,
+                }}
+                className="detail-content"
+              >
                 <div className="result-logo">
                   <Image src={Images.Logo} alt="" />
                 </div>
-                <div className="border-box">
-                  <div className="result-container">
-                    <div className="result-items">
-                      <p className="items-title">Participant</p>
-                      <p className="items-value">{detail.user.name}</p>
-                    </div>
-                    <div className="result-items">
-                      <p className="items-title">Email</p>
-                      <p className="items-value">{detail.user.email}</p>
-                    </div>
-                    <div className="result-items">
-                      <div>
-                        <p className="items-title">Ticket Type</p>
-                        <p className="items-value">{detail.ticket.type || '-'}</p>
+                {scannerCodeDetail.map((item) => (
+                  <div className="border-box" key={item.redeemCode}>
+                    <div className="result-container">
+                      <div className="result-items">
+                        <p className="items-title">Participant</p>
+                        <p className="items-value">{item.user.name}</p>
+                      </div>
+                      <div className="result-items">
+                        <p className="items-title">Email</p>
+                        <p className="items-value">{item.user.email}</p>
+                      </div>
+                      <div className="result-items">
+                        <div>
+                          <p className="items-title">Ticket Type</p>
+                          <p className="items-value">
+                            {item.ticket.type || '-'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="result-items display-flex">
+                        <div style={{ width: '50%' }}>
+                          <p className="items-title">Ticket Price</p>
+                          <p className="items-value">
+                            {(item.ticket.price &&
+                              `${(item.ticket.price as number).toFixed(
+                                2
+                              )} ${PriceUnit}`) ||
+                              '-'}
+                          </p>
+                        </div>
+                        <div style={{ width: '50%' }}>
+                          <p className="items-title">Seat Number</p>
+                          <p className="items-value">
+                            {item.ticket.seat || '-'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="result-items">
+                        <p className="items-title">Ticket Number</p>
+                        <p className="items-value">{item.ticket.no || '-'}</p>
                       </div>
                     </div>
-                    <div className="result-items display-flex">
-                      <div style={{ width: '50%' }}>
-                        <p className="items-title">Ticket Price</p>
-                        <p className="items-value">
-                          {(detail.ticket.price &&
-                            `${detail.ticket.price.toFixed(2)} ${PriceUnit}`) ||
-                            '-'}
-                        </p>
-                      </div>
-                      <div style={{ width: '50%' }}>
-                        <p className="items-title">Seat Number</p>
-                        <p className="items-value">{detail.ticket.seat || '-'}</p>
-                      </div>
-                    </div>
-                    <div className="result-items">
-                      <p className="items-title">Ticket Number</p>
-                      <p className="items-value">{detail.ticket.no || '-'}</p>
+                    <div
+                      className="action-button"
+                      onClick={() => handleVerify(item.redeemCode)}
+                    >
+                      <Image src={Images.ButtonVerify} alt="" />
+                      <p className="button-text">
+                        {(loading && <p className="laoding-cover" />) ||
+                          'VERIFY'}
+                      </p>
                     </div>
                   </div>
-                  <div className="action-button" onClick={handleVerify}>
-                    <Image src={Images.ButtonVerify} alt="" />
-                    <p className="button-text">
-                      {(loading && <p className="laoding-cover" />) || 'VERIFY'}
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           )) || (
@@ -251,20 +296,22 @@ const ScanQrCodeResult = ({
                     dangerouslySetInnerHTML={{ __html: verifyMessage.message }}
                   />
                 </div>
-                {detail && detail.ticket && (
+                {redeemResponse && redeemResponse.ticket && (
                   <div className="total-info">
-                    <p className="total-info-type">{detail.ticket.type || '-'}</p>
+                    <p className="total-info-type">
+                      {redeemResponse.ticket.type || '-'}
+                    </p>
                     <p className="total-info-redeemed">
                       <Image src={Images.OrganiserIcon} alt="" />
                       <span style={{ color: '#FFFFFF', marginLeft: 5 }}>
-                        {(detail.ticket.redeemed &&
-                          detail.ticket.redeemed.toLocaleString()) ||
+                        {(redeemResponse.ticket.redeemed &&
+                          redeemResponse.ticket.redeemed.toLocaleString()) ||
                           '-'}
                       </span>{' '}
                       /{' '}
                       <span>
-                        {(detail.ticket.total &&
-                          detail.ticket.total.toLocaleString()) ||
+                        {(redeemResponse.ticket.total &&
+                          redeemResponse.ticket.total.toLocaleString()) ||
                           '-'}
                       </span>
                     </p>
@@ -298,23 +345,21 @@ const ScanQrCodePage: NextPage = () => {
 
   const [result, setResult] = useState('');
   const [showQrReader, setShowQrReader] = useState(false);
-  const [id, setEventId] = useState<string>('');
+  const [id, setEventId] = useState<string[]>([]);
   const [eventCorrect, setEventCorrect] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const checkEvent = async (checkEventId: string) => {
-    const response = await TicketService.checkEvent(checkEventId);
-    setLoading(false);
-    if (response.code !== Messages.notFound.code) {
-      setEventCorrect(true);
-    }
-  };
 
   useEffect(() => {
     const { eventId } = router.query;
     if (eventId) {
-      setEventId(eventId.toString());
-      checkEvent(eventId.toString());
+      setLoading(false);
+      try {
+        const ids = base64Decrypt(eventId as string);
+        setEventId(ids);
+        setEventCorrect(true);
+      } catch (error) {
+        setEventCorrect(false);
+      }
     }
   }, [router.isReady]);
 
