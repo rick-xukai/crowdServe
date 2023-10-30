@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { verificationApi } from '../utils/func';
 import ScannerService from '@/services/API/Scanner/Scanner.service';
-import { DefaultPage, DefaultPageSize } from '@/constants/General';
 
 /* eslint-disable no-param-reassign, complexity */
 

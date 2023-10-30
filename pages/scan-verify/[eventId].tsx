@@ -71,12 +71,10 @@ const ScanQrCodeResult = ({
   result,
   currentEventId,
   setResult,
-  setShowQrReader,
 }: {
   result: string;
   currentEventId: string[];
   setResult: (value: string) => void;
-  setShowQrReader: (value: boolean) => void;
 }) => {
   const cookie = useCookie([CookieKeys.scannerLoginToken]);
   const dispatch = useAppDispatch();
@@ -98,7 +96,6 @@ const ScanQrCodeResult = ({
   });
 
   const checkStatusType = (statusCode: number, data?: string) => {
-    console.log(statusCode);
     switch (statusCode) {
       case Messages.success.code:
         setVerifyMessage({
@@ -387,7 +384,6 @@ const ScanQrCodePage: NextPage = () => {
   const router = useRouter();
 
   const [result, setResult] = useState('');
-  const [showQrReader, setShowQrReader] = useState(true);
   const [id, setEventId] = useState<string[]>([]);
   const [eventCorrect, setEventCorrect] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -411,7 +407,7 @@ const ScanQrCodePage: NextPage = () => {
       <Head>
         <title>Scan QR Code</title>
       </Head>
-      {(showQrReader && (
+      {(eventCorrect && (
         <>
           {(!result && (
             <div>
@@ -438,31 +434,26 @@ const ScanQrCodePage: NextPage = () => {
               result={result}
               currentEventId={id}
               setResult={setResult}
-              setShowQrReader={setShowQrReader}
             />
           )}
         </>
       )) || (
-        <>
-          {!eventCorrect && (
-            <div className="verify-container">
-              <div className="items" style={{ width: '100%' }}>
-                <div style={{ textAlign: 'center' }}>
-                  {(loading && (
-                    <div className="loading-box">
-                      <LoadingOutlined />
-                    </div>
-                  )) || <Image src={Images.Dissatisfaction} alt="" />}
+        <div className="verify-container">
+          <div className="items" style={{ width: '100%' }}>
+            <div style={{ textAlign: 'center' }}>
+              {(loading && (
+                <div className="loading-box">
+                  <LoadingOutlined />
                 </div>
-                {!loading && (
-                  <div>
-                    <p className="verify-message">Invalid URL</p>
-                  </div>
-                )}
-              </div>
+              )) || <Image src={Images.Dissatisfaction} alt="" />}
             </div>
-          )}
-        </>
+            {!loading && (
+              <div>
+                <p className="verify-message">Invalid URL</p>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </ScanQrCodePageContainers>
   );

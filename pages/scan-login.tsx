@@ -113,7 +113,6 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
           />
         </div>
         <div className="form-input input-password">
-          {/* <input className="hidden-auto-complete" type="password" /> */}
           <Input.Password
             value={password}
             name="password"
