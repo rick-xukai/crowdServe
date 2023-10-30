@@ -78,7 +78,7 @@ const EventsScanContainer = styled.div`
         position: absolute;
         top: 14px;
       }
-      .ant-checkbox+span {
+      .ant-checkbox + span {
         padding-left: 35px;
       }
     }
@@ -98,15 +98,19 @@ const EventsScanContainer = styled.div`
       font-weight: 400;
       margin-top: 5px;
     }
+    .load-more-loading {
+      text-align: center;
+      .anticon {
+        color: ${Colors.white};
+        font-size: 20px;
+      }
+    }
   }
   .ant-checkbox-checked {
     .ant-checkbox-inner {
       background: ${Colors.branding};
     }
   }
-  /* .ant-checkbox {
-    margin-right: 5px;
-  } */
   .ant-checkbox-inner {
     background: transparent;
     border: 1px solid ${Colors.white};

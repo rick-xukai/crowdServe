@@ -56,12 +56,9 @@ export const getScannerEventListAction = createAsyncThunk<
   }
 );
 
-interface CrowdFundState {
+interface ScannerState {
   loading: boolean;
   scannerEventList: ScannerEventListProps[];
-  page: number;
-  size: number;
-  isDisableRequest: boolean;
   error:
     | {
         code: number | undefined;
@@ -71,11 +68,8 @@ interface CrowdFundState {
     | null;
 }
 
-const initialState: CrowdFundState = {
+const initialState: ScannerState = {
   loading: true,
-  page: DefaultPage,
-  size: DefaultPageSize,
-  isDisableRequest: false,
   scannerEventList: [],
   error: null,
 };
@@ -87,15 +81,6 @@ export const scannerSlice = createSlice({
     reset: () => initialState,
     resetError: (state) => {
       state.error = null;
-    },
-    setPage: (state, action) => {
-      state.page = action.payload;
-    },
-    setSize: (state, action) => {
-      state.size = action.payload;
-    },
-    setIsDisableRequest: (state, action) => {
-      state.isDisableRequest = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -119,15 +104,10 @@ export const scannerSlice = createSlice({
   },
 });
 
-export const { reset, resetError, setPage, setSize, setIsDisableRequest } =
-  scannerSlice.actions;
+export const { reset, resetError } = scannerSlice.actions;
 
 export const selectLoading = (state: RootState) => state.scanner.loading;
 export const selectError = (state: RootState) => state.scanner.error;
-export const selectPage = (state: RootState) => state.scanner.page;
-export const selectSize = (state: RootState) => state.scanner.size;
-export const selectIsDisableRequest = (state: RootState) =>
-  state.scanner.isDisableRequest;
 export const selectScannerEventList = (state: RootState) =>
   state.scanner.scannerEventList;
 

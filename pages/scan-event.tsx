@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { MenuProps } from 'antd';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { Row, Col, Dropdown, Checkbox, Button, message } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
+import _ from 'lodash';
 
 import { base64Encrypt } from '@/utils/func';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
@@ -12,9 +13,7 @@ import { Images } from '@/theme';
 import { useCookie } from '@/hooks';
 import {
   CookieKeys,
-  // LocalStorageKeys,
   RouterKeys,
-  // SessionStorageKeys,
 } from '@/constants/Keys';
 import { EventsScanContainer, EventItem } from '@/styles/eventsScan.style';
 import { resetScannerLoginResponse } from '@/slice/user.slice';
@@ -24,20 +23,23 @@ import {
   selectScannerEventList,
   selectError,
   selectLoading,
-  // setPage,
-  // setSize,
+} from '@/slice/scanner.slice';
+import {
+  setPage,
   selectPage,
   selectSize,
-  // selectIsDisableRequest,
-  // setIsDisableRequest,
-} from '@/slice/scanner.slice';
+  selectIsDisableRequest,
+  setIsDisableRequest,
+  selectLoadMoreLoading,
+  selectScannerEventListForAll,
+  setIsGetAllData,
+  selectIsGetAllData,
+  setScannerEventListForAll,
+  reset as resetScannerCache,
+} from '@/slice/scannerCache.slice';
 import { reset as userSliceReset } from '@/slice/user.slice';
 import Messages from '@/constants/Messages';
-// import {
-//   DefaultPage,
-//   DefaultPageSize,
-//   ListPageScrollDifference,
-// } from '@/constants/General';
+import { DefaultPageSize } from '@/constants/General';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -55,12 +57,15 @@ const EventsScan = () => {
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const scannerEventList = useAppSelector(selectScannerEventList);
-  // const isDisableRequest = useAppSelector(selectIsDisableRequest);
+  const isDisableRequest = useAppSelector(selectIsDisableRequest);
+  const loadMoreLoading = useAppSelector(selectLoadMoreLoading);
+  const scannerEventListForAll = useAppSelector(selectScannerEventListForAll);
+  const isGetAllData = useAppSelector(selectIsGetAllData);
 
   const [listOptions, setListOptions] = useState<any[]>([]);
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
   const [scannerName, setScannerName] = useState<string>('');
-  // const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
+  const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
 
   const items: MenuProps['items'] = [
     {
@@ -71,21 +76,9 @@ const EventsScan = () => {
 
   const handleChange = (list: CheckboxValueType[]) => {
     setCheckedList(list);
-    // sessionStorage.setItem(
-    //   SessionStorageKeys.scannerSelectEvent,
-    //   JSON.stringify(list)
-    // );
   };
 
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
-    // if (!e.target.checked) {
-    //   sessionStorage.removeItem(SessionStorageKeys.scannerSelectEvent);
-    // } else {
-    //   sessionStorage.setItem(
-    //     SessionStorageKeys.scannerSelectEvent,
-    //     JSON.stringify(listOptions.map((item) => item.value))
-    //   );
-    // }
     setCheckedList(
       (e.target.checked && listOptions.map((item) => item.value)) || []
     );
@@ -94,6 +87,7 @@ const EventsScan = () => {
   const onClick = () => {
     dispatch(userSliceReset());
     dispatch(resetScannerLoginResponse());
+    dispatch(resetScannerCache());
     cookie.removeCookie(CookieKeys.scannerLoginToken, {
       path: '/',
       domain: window.location.hostname,
@@ -105,6 +99,15 @@ const EventsScan = () => {
     router.push(
       RouterKeys.scanQrCode.replace(':eventId', base64Encrypt(checkedList))
     );
+  };
+
+  const handleScroll = () => {
+    const { scrollHeight, clientHeight, scrollTop } =
+      eventsListContainer.current;
+    setIsPageBottom(scrollHeight - clientHeight <= scrollTop + 1);
+    if (scrollHeight - clientHeight <= scrollTop + 1) {
+      dispatch(setIsDisableRequest(false));
+    }
   };
 
   useEffect(() => {
@@ -126,7 +129,7 @@ const EventsScan = () => {
 
   useEffect(() => {
     setListOptions(
-      scannerEventList.map((item) => {
+      scannerEventListForAll.map((item) => {
         return {
           label: (
             <Col>
@@ -138,52 +141,51 @@ const EventsScan = () => {
         };
       })
     );
+  }, [scannerEventListForAll]);
+
+  useEffect(() => {
+    if (scannerEventList) {
+      dispatch(
+        setScannerEventListForAll(
+          _.uniqWith(
+            [...scannerEventListForAll, ...scannerEventList],
+            _.isEqual
+          )
+        )
+      );
+    }
   }, [scannerEventList]);
 
   useEffect(() => {
+    if (isDisableRequest || isGetAllData) {
+      return;
+    }
     dispatch(
       getScannerEventListAction({
         page,
         size,
       })
-    );
+    ).then((response: any) => {
+      if (response.type === getScannerEventListAction.fulfilled.toString()) {
+        if (
+          !response.payload.length ||
+          response.payload.length < DefaultPageSize
+        ) {
+          dispatch(setIsGetAllData(true));
+          dispatch(setIsDisableRequest(true));
+        }
+      }
+    });
   }, [page]);
 
-  // useEffect(() => {
-  //   if (isPageBottom && !loading) {
-  //     dispatch(setPage(page + 1));
-  //   }
-  // }, [isPageBottom]);
-
-  // const handleScroll = (event: any) => {
-  //   const { clientHeight, scrollHeight, scrollTop } = event.target;
-  //   if (scrollTop + clientHeight + ListPageScrollDifference > scrollHeight) {
-  //     dispatch(setIsDisableRequest(false));
-  //   }
-  //   setIsPageBottom(
-  //     scrollTop + clientHeight + ListPageScrollDifference > scrollHeight
-  //   );
-  // };
-
-  // const scrollListener = useCallback((e: any) => {
-  //   handleScroll(e);
-  // }, []);
+  useEffect(() => {
+    if (isPageBottom && !loading) {
+      dispatch(setPage(page + 1));
+    }
+  }, [isPageBottom]);
 
   useEffect(() => {
-    // if (eventsListContainer && eventsListContainer.current) {
-    //   eventsListContainer.current.addEventListener(
-    //     'scroll',
-    //     scrollListener,
-    //     true
-    //   );
-    // }
     setScannerName(cookie.getCookie(CookieKeys.scannerLoginUser) || '');
-    // const localCheckedEvents = sessionStorage.getItem(
-    //   SessionStorageKeys.scannerSelectEvent
-    // );
-    // if (localCheckedEvents) {
-    //   setCheckedList(JSON.parse(localCheckedEvents));
-    // }
     return () => {
       dispatch(reset());
     };
@@ -191,14 +193,14 @@ const EventsScan = () => {
 
   return (
     <>
-      {(loading && (
+      {(loading && !scannerEventListForAll.length && (
         <EventsScanContainer>
           <div className="page-loading">
             <LoadingOutlined />
           </div>
         </EventsScanContainer>
       )) || (
-        <EventsScanContainer ref={eventsListContainer}>
+        <EventsScanContainer ref={eventsListContainer} onScroll={handleScroll}>
           <div className="page-header">
             <Row>
               <Col span={12} className="logo-img">
@@ -217,7 +219,7 @@ const EventsScan = () => {
             </Row>
           </div>
           <div className="page-main">
-            {(scannerEventList.length && (
+            {(scannerEventListForAll.length && (
               <>
                 <Row>
                   <Col className="title">UPCOMING EVENTS</Col>
@@ -231,6 +233,11 @@ const EventsScan = () => {
                     />
                   </EventItem>
                 </div>
+                {loadMoreLoading && (
+                  <div className="load-more-loading">
+                    <LoadingOutlined />
+                  </div>
+                )}
               </>
             )) || (
               <div className="no-data">
@@ -239,7 +246,7 @@ const EventsScan = () => {
               </div>
             )}
           </div>
-          {(scannerEventList.length && (
+          {(scannerEventListForAll.length && (
             <div className="page-bottom">
               <Row className="content">
                 <Col span={6}>

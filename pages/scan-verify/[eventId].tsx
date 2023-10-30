@@ -85,6 +85,7 @@ const ScanQrCodeResult = ({
   );
   const [verify, setVerify] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentVerifyItem, setCurrentVerifyItem] = useState<string>('');
   const [verifyMessage, setVerifyMessage] = useState<VerifyMessage>({
     message: '',
     image: '',
@@ -158,7 +159,7 @@ const ScanQrCodeResult = ({
         if (verificationApi(response)) {
           setScannerCodeDetail(response.data);
         } else {
-          const { ticket } = response.data || {};
+          const { ticket } = response.data[0] || {};
           checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
           setVerify(true);
           setScannerCodeDetail([]);
@@ -187,6 +188,7 @@ const ScanQrCodeResult = ({
     if (loading) {
       return;
     }
+    setCurrentVerifyItem(code);
     setLoading(true);
     try {
       const response = await ScannerService.redeemScanCode(code);
@@ -225,7 +227,7 @@ const ScanQrCodeResult = ({
               <div
                 style={{
                   width: '100%',
-                  marginTop: (scannerCodeDetail.length > 1 && 0) || -50,
+                  marginTop: (scannerCodeDetail.length > 1 && 50) || 0,
                 }}
                 className="detail-content"
               >
@@ -284,7 +286,9 @@ const ScanQrCodeResult = ({
                     >
                       <Image src={Images.ButtonVerify} alt="" />
                       <p className="button-text">
-                        {(loading && <p className="laoding-cover" />) ||
+                        {(loading && item.redeemCode === currentVerifyItem && (
+                          <p className="laoding-cover" />
+                        )) ||
                           'VERIFY'}
                       </p>
                     </div>
@@ -389,7 +393,10 @@ const ScanQrCodePage: NextPage = () => {
         <>
           {(!result && (
             <div>
-              <div className="scan-back" onClick={() => setShowQrReader(false)}>
+              <div
+                className="scan-back"
+                onClick={() => router.push(RouterKeys.eventsScan)}
+              >
                 <Image src={Images.BackArrow} alt="" />
                 <span style={{ marginLeft: 8 }}>BACK</span>
               </div>
