@@ -5,14 +5,18 @@ import { QrReader } from 'react-qr-reader';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { LoadingOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 
-import { RouterKeys } from '../../constants/Keys';
+import { RouterKeys, CookieKeys } from '../../constants/Keys';
 import { PriceUnit } from '../../constants/General';
 import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
 import { Images } from '../../theme';
 import { verificationApi, base64Decrypt } from '../../utils/func';
 import Messages from '../../constants/Messages';
 import ScannerService from '@/services/API/Scanner/Scanner.service';
+import { useAppDispatch } from '@/app/hooks';
+import { reset, resetScannerLoginResponse } from '@/slice/user.slice';
+import { useCookie } from '@/hooks';
 
 interface ScannerCodeDetail {
   user: {
@@ -74,6 +78,8 @@ const ScanQrCodeResult = ({
   setResult: (value: string) => void;
   setShowQrReader: (value: boolean) => void;
 }) => {
+  const cookie = useCookie([CookieKeys.scannerLoginToken]);
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const [scannerCodeDetail, setScannerCodeDetail] = useState<
@@ -92,6 +98,7 @@ const ScanQrCodeResult = ({
   });
 
   const checkStatusType = (statusCode: number, data?: string) => {
+    console.log(statusCode);
     switch (statusCode) {
       case Messages.success.code:
         setVerifyMessage({
@@ -138,6 +145,19 @@ const ScanQrCodeResult = ({
           success: false,
         });
         break;
+      case Messages.userTokenDeprecated.code:
+        message.open({
+          content: Messages.userTokenDeprecated.text,
+          className: 'error-message-event',
+        });
+        dispatch(reset());
+        dispatch(resetScannerLoginResponse());
+        cookie.removeCookie(CookieKeys.scannerLoginToken, {
+          path: '/',
+          domain: window.location.hostname,
+        });
+        router.push(RouterKeys.scanLogin);
+        break;
       default:
         setVerifyMessage({
           message: Messages.invalidUnlawful.text,
@@ -158,8 +178,11 @@ const ScanQrCodeResult = ({
         if (verificationApi(response)) {
           setScannerCodeDetail(response.data);
         } else {
-          const { ticket } = response.data[0] || {};
-          checkStatusType(response.code, (ticket && ticket.redeemedAt) || '');
+          let ticketRedeemedAt = '';
+          if (response.data && response.data[0] && response.data[0].ticket) {
+            ticketRedeemedAt = response.data[0].ticket.redeemedAt;
+          }
+          checkStatusType(response.code, ticketRedeemedAt);
           setVerify(true);
           setScannerCodeDetail([]);
         }
