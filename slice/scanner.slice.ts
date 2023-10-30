@@ -78,9 +78,9 @@ export const scannerSlice = createSlice({
   name: 'scanner',
   initialState,
   reducers: {
-    reset: () => initialState,
-    resetError: (state) => {
+    reset: (state) => {
       state.error = null;
+      state.scannerEventList = [];
     },
   },
   extraReducers: (builder) => {
@@ -104,7 +104,7 @@ export const scannerSlice = createSlice({
   },
 });
 
-export const { reset, resetError } = scannerSlice.actions;
+export const { reset } = scannerSlice.actions;
 
 export const selectLoading = (state: RootState) => state.scanner.loading;
 export const selectError = (state: RootState) => state.scanner.error;
