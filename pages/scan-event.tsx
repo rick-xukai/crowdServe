@@ -11,12 +11,12 @@ import { base64Encrypt } from '@/utils/func';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { Images } from '@/theme';
 import { useCookie } from '@/hooks';
-import {
-  CookieKeys,
-  RouterKeys,
-} from '@/constants/Keys';
+import { CookieKeys, RouterKeys } from '@/constants/Keys';
 import { EventsScanContainer, EventItem } from '@/styles/eventsScan.style';
-import { resetScannerLoginResponse } from '@/slice/user.slice';
+import {
+  resetScannerLoginResponse,
+  reset as userSliceReset,
+} from '@/slice/user.slice';
 import {
   reset,
   getScannerEventListAction,
@@ -30,14 +30,11 @@ import {
   selectSize,
   selectIsDisableRequest,
   setIsDisableRequest,
-  selectLoadMoreLoading,
   selectScannerEventListForAll,
   setIsGetAllData,
   selectIsGetAllData,
   setScannerEventListForAll,
-  reset as resetScannerCache,
 } from '@/slice/scannerCache.slice';
-import { reset as userSliceReset } from '@/slice/user.slice';
 import Messages from '@/constants/Messages';
 import { DefaultPageSize } from '@/constants/General';
 
@@ -58,7 +55,6 @@ const EventsScan = () => {
   const error = useAppSelector(selectError);
   const scannerEventList = useAppSelector(selectScannerEventList);
   const isDisableRequest = useAppSelector(selectIsDisableRequest);
-  const loadMoreLoading = useAppSelector(selectLoadMoreLoading);
   const scannerEventListForAll = useAppSelector(selectScannerEventListForAll);
   const isGetAllData = useAppSelector(selectIsGetAllData);
 
@@ -87,7 +83,6 @@ const EventsScan = () => {
   const onClick = () => {
     dispatch(userSliceReset());
     dispatch(resetScannerLoginResponse());
-    dispatch(resetScannerCache());
     cookie.removeCookie(CookieKeys.scannerLoginToken, {
       path: '/',
       domain: window.location.hostname,
@@ -129,17 +124,15 @@ const EventsScan = () => {
 
   useEffect(() => {
     setListOptions(
-      scannerEventListForAll.map((item) => {
-        return {
-          label: (
-            <Col>
-              <div className="event-name">{item.name}</div>
-              <div className="event-date">{item.time}</div>
-            </Col>
-          ),
-          value: item.uuid,
-        };
-      })
+      scannerEventListForAll.map((item) => ({
+        label: (
+          <Col>
+            <div className="event-name">{item.name}</div>
+            <div className="event-date">{item.time}</div>
+          </Col>
+        ),
+        value: item.uuid,
+      }))
     );
   }, [scannerEventListForAll]);
 
@@ -233,9 +226,10 @@ const EventsScan = () => {
                     />
                   </EventItem>
                 </div>
-                {loadMoreLoading && (
+                {loading && (
                   <div className="load-more-loading">
                     <LoadingOutlined />
+                    <span className="loading-text">loading...</span>
                   </div>
                 )}
               </>

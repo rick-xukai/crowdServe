@@ -100,6 +100,12 @@ const EventsScanContainer = styled.div`
     }
     .load-more-loading {
       text-align: center;
+      padding-bottom: 10px;
+      .loading-text {
+        color: ${Colors.white};
+        margin-left: 10px;
+        font-size: 14px;
+      }
       .anticon {
         color: ${Colors.white};
         font-size: 20px;

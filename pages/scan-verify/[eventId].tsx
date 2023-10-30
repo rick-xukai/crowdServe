@@ -6,9 +6,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import { RouterKeys, CookieKeys } from '../../constants/Keys';
+import { RouterKeys } from '../../constants/Keys';
 import { PriceUnit } from '../../constants/General';
-import TicketService from '../../services/API/Ticket/Ticket.service';
 import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
 import { Images } from '../../theme';
 import { verificationApi, base64Decrypt } from '../../utils/func';

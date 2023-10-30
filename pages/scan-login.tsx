@@ -16,6 +16,7 @@ import {
   selectScannerLoginResponse,
 } from '@/slice/user.slice';
 import Messages from '@/constants/Messages';
+import { reset as resetScannerCache } from '@/slice/scannerCache.slice';
 
 const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
   const dispatch = useAppDispatch();
@@ -86,6 +87,7 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
         path: '/',
         domain: window.location.hostname,
       });
+      dispatch(resetScannerCache());
       if (currentEventId) {
         Router.push(RouterKeys.scanQrCode.replace(':eventId', currentEventId));
       } else {
