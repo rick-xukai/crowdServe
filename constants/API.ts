@@ -119,16 +119,16 @@ const API = {
     post: '/api/v1/transfer/{code}/claim',
   },
   scannerLogin: {
-    post: '/admin/session',
+    post: '/scanner/session',
   },
   getScannerEventList: {
-    get: '/admin/event/scan',
+    get: '/scanner/event',
   },
   verifyScanCode: {
-    post: '/admin/event/scan/verify',
+    post: '/scanner/verify',
   },
   redeemScanCode: {
-    put: '/admin/event/scan/ticket/{redeemCode}',
+    put: '/scanner/redeem/:redeemCode',
   },
 };
 

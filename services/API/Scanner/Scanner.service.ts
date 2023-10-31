@@ -29,7 +29,7 @@ const verifyScanCode = async (payload: {
 };
 
 const redeemScanCode = async (payload: string) => {
-  const uri = API.redeemScanCode.put.replace('{redeemCode}', payload);
+  const uri = API.redeemScanCode.put.replace(':redeemCode', payload);
   const response = await requestClient()
     .setUri(uri)
     .setAuthorizationStatus()

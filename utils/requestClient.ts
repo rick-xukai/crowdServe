@@ -131,7 +131,7 @@ export class RequestClientClass {
   async doMethod(method = 'GET') {
     if (this.authorizationStatus) {
       let userToken = '';
-      if (this.uri.indexOf('admin') !== -1) {
+      if (this.uri.indexOf('scanner') !== -1) {
         userToken = this.cookies.get(CookieKeys.scannerLoginToken);
       } else {
         userToken = this.cookies.get(CookieKeys.userLoginToken);
@@ -181,7 +181,7 @@ export class RequestClientClass {
         response.data &&
         response.data.code === Messages.userTokenDeprecated.code
       ) {
-        if (this.uri.indexOf('admin') === -1 && this.uri !== '/maintenance') {
+        if (this.uri.indexOf('scanner') === -1 && this.uri !== '/maintenance') {
           this.cookies.remove(CookieKeys.userLoginToken);
           Router.push(RouterKeys.login);
         }
