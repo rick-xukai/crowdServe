@@ -408,6 +408,7 @@ const TicketTypeItem = styled(Col)`
     }
   }
   .out-stock-mask {
+    text-align: center;
     position: absolute;
     top: 6px;
     left: 0;

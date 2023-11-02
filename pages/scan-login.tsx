@@ -1,64 +1,103 @@
 import React, { useState, useEffect } from 'react';
-import { Input } from 'antd';
+import { Input, message } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import Router from 'next/router';
 
-import { Encrypt, Decrypt } from '../constants/General';
+import { Encrypt, Decrypt, TokenExpire } from '../constants/General';
 import { LocalStorageKeys, RouterKeys, CookieKeys } from '../constants/Keys';
-import { dataEncryption } from '../utils/func';
-import users from '../users';
+import { dataEncryption, isEmail } from '../utils/func';
 import { LoginContainer } from '../styles/scan-login.style';
 import { useCookie } from '../hooks';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import {
+  scannerLoginAction,
+  selectScannerLoginLoading,
+  selectError,
+  selectScannerLoginResponse,
+} from '@/slice/user.slice';
+import Messages from '@/constants/Messages';
+import { reset as resetScannerCache } from '@/slice/scannerCache.slice';
 
 const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
-  const [rememberMe, setRememberMe] = useState<boolean>(true);
-  const [userName, setUserName] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [isValidUser, setIsValidUser] = useState<boolean>(true);
-  const [userNameChanged, setUserNameChanged] = useState<boolean>(false);
-  const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
-  const cookies = useCookie([CookieKeys.authUser]);
+  const loginLoading = useAppSelector(selectScannerLoginLoading);
+  const error = useAppSelector(selectError);
+  const data = useAppSelector(selectScannerLoginResponse);
+
+  const [rememberMe, setRememberMe] = useState<boolean>(true);
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  const cookies = useCookie([CookieKeys.scannerLoginToken]);
 
   useEffect(() => {
-    if (localStorage.getItem(LocalStorageKeys.rememberMe)) {
+    if (error) {
+      let errorMessage = error.message;
+      if (error.code === Messages.notFound.code) {
+        errorMessage = 'There is no account associated with the email.';
+      }
+      if (error.code === Messages.invalidPassword.code) {
+        errorMessage = Messages.invalidPassword.text;
+      }
+      message.open({
+        content: errorMessage,
+        className: 'error-message-event',
+      });
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (localStorage.getItem(LocalStorageKeys.scannerLoginRememberMe)) {
       const rememberMeData = JSON.parse(
         dataEncryption(
-          localStorage.getItem(LocalStorageKeys.rememberMe),
+          localStorage.getItem(LocalStorageKeys.scannerLoginRememberMe),
           Decrypt
-        ),
+        )
       );
       if (rememberMe) {
-        setUserName(rememberMeData.username);
+        setUserEmail(rememberMeData.userEmail);
         setPassword(rememberMeData.password);
       }
     }
   }, []);
 
-  const signIn = () => {
-    const validUser = users.filter(
-      (item) => item.user === userName && item.password === password
-    );
-    if (validUser.length === 1) {
+  useEffect(() => {
+    if (data.token) {
+      const currentDate = new Date();
       const userInfo = dataEncryption(
         JSON.stringify({
-          username: userName,
+          userEmail: userEmail,
           password: password,
         }),
-        Encrypt,
+        Encrypt
       );
       if (rememberMe) {
-        localStorage.setItem(
-          LocalStorageKeys.rememberMe,
-          userInfo,
-        );
+        localStorage.setItem(LocalStorageKeys.scannerLoginRememberMe, userInfo);
       } else {
-        localStorage.removeItem(LocalStorageKeys.rememberMe);
+        localStorage.removeItem(LocalStorageKeys.scannerLoginRememberMe);
       }
-      cookies.setCookie(CookieKeys.authUser, userInfo);
-      Router.push(RouterKeys.scanQrCode.replace(':eventId', currentEventId));
-    } else {
-      setIsValidUser(false);
+      cookies.setCookie(CookieKeys.scannerLoginToken, data.token, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
+      cookies.setCookie(CookieKeys.scannerLoginUser, data.user.name, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
+      dispatch(resetScannerCache());
+      if (currentEventId) {
+        Router.push(RouterKeys.scanQrCode.replace(':eventId', currentEventId));
+      } else {
+        Router.push(RouterKeys.eventsScan);
+      }
     }
+  }, [data]);
+
+  const signIn = () => {
+    dispatch(scannerLoginAction({ email: userEmail, password }));
   };
 
   return (
@@ -67,32 +106,20 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
         <p className="form-title">WELCOME TO CROWDSERVE!</p>
         <div className="form-input">
           <Input
-            value={userName}
+            value={userEmail}
             name="user-name"
             placeholder="User Name"
-            onChange={(e) => {
-              setUserName(e.target.value);
-              setUserNameChanged(true);
-            }}
+            onChange={(e) => setUserEmail(e.target.value)}
           />
         </div>
-        {!userName && userNameChanged && (
-          <p className="error-message">Please input your username!</p>
-        )}
         <div className="form-input input-password">
           <Input.Password
             value={password}
             name="password"
             placeholder="Password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setPasswordChanged(true);
-            }}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {!password && passwordChanged && (
-          <p className="error-message">Please input your password!</p>
-        )}
         <div className="form-checkbox">
           <input
             name="rememberMe"
@@ -103,18 +130,29 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
           <span>Remember me</span>
         </div>
         <div>
-          <button onClick={signIn}>Sign In</button>
+          <button
+            disabled={!isEmail(userEmail) || !password || loginLoading}
+            onClick={signIn}
+          >
+            Sign In
+            {loginLoading && <LoadingOutlined />}
+          </button>
         </div>
-        {!isValidUser && <p className="error-message-invalid">Username and password are invalid.</p>}
       </div>
     </LoginContainer>
   );
 };
 
 ScanLogin.getInitialProps = async (ctx: any) => {
-  const { query } = ctx;
+  const { query, req, res } = ctx;
   let currentEventId = '';
+
   try {
+    const token = req.cookies[CookieKeys.scannerLoginToken];
+    if (token) {
+      res.writeHead(302, { Location: RouterKeys.eventsScan });
+      res.end();
+    }
     currentEventId = query.eventId;
   } catch (_) {}
   return { currentEventId };

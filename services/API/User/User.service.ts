@@ -88,6 +88,15 @@ const getUserGender = async () => {
   return response;
 };
 
+const doScannerLogin = async (payload: any) => {
+  const uri = API.scannerLogin.post;
+  const response = await requestClient()
+    .setUri(uri)
+    .setPayload(payload)
+    .doPost();
+  return response;
+};
+
 export default {
   doLogin,
   doLogout,
@@ -98,4 +107,5 @@ export default {
   getUserGender,
   doForgotPasswordReset,
   doForgotPasswordSendVerificationCode,
+  doScannerLogin,
 };

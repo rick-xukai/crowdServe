@@ -60,6 +60,19 @@ export interface UserGenderResponseType {
   label: string;
 }
 
+export interface ScannerLoginResponseType {
+  token: string;
+  user: {
+    email: string;
+    id: string;
+    lastLoginAt: string;
+    name: string;
+    organizerId: number;
+    role: number;
+    status: number;
+  };
+}
+
 /**
  * Login
  */
@@ -302,8 +315,39 @@ export const verificationCodeAction = createAsyncThunk<
   }
 );
 
+/**
+ * Scanner Login
+ */
+export const scannerLoginAction = createAsyncThunk<
+  ScannerLoginResponseType,
+  { email: string; password: string },
+  {
+    rejectValue: ErrorType;
+  }
+>('scannerLogin/scannerLoginAction', async (payload, { rejectWithValue }) => {
+  try {
+    const response = await UserService.doScannerLogin(payload);
+    if (verificationApi(response)) {
+      return response.data;
+    }
+    return rejectWithValue({
+      code: response.code,
+      message: response.message,
+    } as ErrorType);
+  } catch (err: any) {
+    if (!err.response) {
+      throw err;
+    }
+    return rejectWithValue({
+      message: err.response,
+    } as ErrorType);
+  }
+});
+
 interface UserState {
   loading: boolean;
+  scannerLoginLoading: boolean;
+  scannerLoginResponse: ScannerLoginResponseType;
   getUserGenderLoading: boolean;
   forgotPasswordLoading: boolean;
   data: LoginResponseType;
@@ -327,6 +371,19 @@ interface UserState {
 
 const initialState: UserState = {
   loading: false,
+  scannerLoginLoading: false,
+  scannerLoginResponse: {
+    token: '',
+    user: {
+      email: '',
+      id: '',
+      lastLoginAt: '',
+      name: '',
+      organizerId: 0,
+      role: 0,
+      status: 0,
+    },
+  },
   forgotPasswordLoading: false,
   getUserGenderLoading: true,
   userGender: [],
@@ -370,6 +427,20 @@ export const userSlice = createSlice({
     },
     setLoginRedirectPage: (state, action) => {
       state.loginRedirectPage = action.payload;
+    },
+    resetScannerLoginResponse: (state) => {
+      state.scannerLoginResponse = {
+        token: '',
+        user: {
+          email: '',
+          id: '',
+          lastLoginAt: '',
+          name: '',
+          organizerId: 0,
+          role: 0,
+          status: 0,
+        },
+      };
     },
   },
   extraReducers: (builder) => {
@@ -485,6 +556,22 @@ export const userSlice = createSlice({
         } else {
           state.error = action.error as ErrorType;
         }
+      })
+      .addCase(scannerLoginAction.pending, (state) => {
+        state.scannerLoginResponse = {} as ScannerLoginResponseType;
+        state.scannerLoginLoading = true;
+      })
+      .addCase(scannerLoginAction.fulfilled, (state, action: any) => {
+        state.scannerLoginLoading = false;
+        state.scannerLoginResponse = action.payload;
+      })
+      .addCase(scannerLoginAction.rejected, (state, action) => {
+        state.scannerLoginLoading = false;
+        if (action.payload) {
+          state.error = action.payload as ErrorType;
+        } else {
+          state.error = action.error as ErrorType;
+        }
       });
   },
 });
@@ -494,6 +581,7 @@ export const {
   resetForgotPasswordValue,
   setLoginRedirectPage,
   resetLoginRedirectPage,
+  resetScannerLoginResponse,
 } = userSlice.actions;
 
 export const selectLoading = (state: RootState) => state.user.loading;
@@ -508,5 +596,9 @@ export const selectGetUserGenderLoading = (state: RootState) =>
   state.user.getUserGenderLoading;
 export const selectLoginRedirectPage = (state: RootState) =>
   state.user.loginRedirectPage;
+export const selectScannerLoginLoading = (state: RootState) =>
+  state.user.scannerLoginLoading;
+export const selectScannerLoginResponse = (state: RootState) =>
+  state.user.scannerLoginResponse;
 
 export default userSlice.reducer;

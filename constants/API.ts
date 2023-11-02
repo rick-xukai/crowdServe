@@ -118,6 +118,18 @@ const API = {
   claimTransfer: {
     post: '/api/v1/transfer/{code}/claim',
   },
+  scannerLogin: {
+    post: '/scanner/session',
+  },
+  getScannerEventList: {
+    get: '/scanner/event',
+  },
+  verifyScanCode: {
+    post: '/scanner/verify',
+  },
+  redeemScanCode: {
+    put: '/scanner/redeem/:redeemCode',
+  },
 };
 
 export default API;
