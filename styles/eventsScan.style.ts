@@ -66,6 +66,9 @@ const EventsScanContainer = styled.div`
     }
     .event-list {
       margin-top: 20px;
+      .ant-checkbox-group {
+        width: 100%;
+      }
     }
     .ant-checkbox-wrapper {
       width: 100%;
