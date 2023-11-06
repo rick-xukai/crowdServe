@@ -1038,12 +1038,19 @@ const EventDetail = ({
                               />
                             </div>
                             <div className="item-name">{item.name}</div>
-                            <object className="free-icon" type="image/svg+xml" data={Images.FreeIcon.src}></object>
-                            {/* <img
-                              className="free-icon"
-                              src={Images.FreeIcon.src}
-                              alt=""
-                            /> */}
+                            {(isDesktop && (
+                              <img
+                                className="free-icon"
+                                src={Images.FreeIcon.src}
+                                alt=""
+                              />
+                            )) || (
+                              <object
+                                className="free-icon"
+                                type="image/svg+xml"
+                                data={Images.FreeIcon.src}
+                              ></object>
+                            )}
                           </div>
                         </JoinRaveModalBannerItem>
                       ))}
