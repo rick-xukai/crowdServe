@@ -31,6 +31,7 @@ export interface GetRaveResponseRewardListProps {
   milestone: number;
   stock: number;
   redeemed: boolean;
+  icon: string;
   img?: string;
 }
 

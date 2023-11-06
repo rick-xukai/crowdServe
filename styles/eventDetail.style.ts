@@ -161,6 +161,23 @@ const EventDetailContainer = styled.div`
       color: ${Colors.white};
     }
   }
+  .item-tabs {
+    &.tabs-rave {
+      @media (max-width: 420px) {
+        .ant-tabs-tab {
+          margin: 0 0 0 18px;
+        }
+        .ant-tabs-tab-btn {
+          font-size: 14px;
+        }
+        .ant-tabs-nav-list {
+          > :first-child {
+            margin: 0 0 0 0;
+          }
+        }
+      }
+    }
+  }
   .ant-tabs {
     margin-top: 30px;
     @media (max-width: 576px) {
@@ -314,6 +331,9 @@ const EventDetailContainer = styled.div`
         margin-top: -22px;
       }
     }
+  }
+  .ant-modal-content {
+    padding: 15px 15px !important;
   }
 `;
 
@@ -563,6 +583,12 @@ const JoinRaveModalContent = styled.div`
     padding: 20px 22px;
     &.scroll {
       overflow: auto;
+      padding-top: 12px;
+      padding-left: 10px;
+      @media (min-width: 375px) {
+        padding-top: 17px;
+        padding-left: 15px;
+      }
       .banner-items {
         justify-content: initial;
       }

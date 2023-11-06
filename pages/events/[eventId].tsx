@@ -805,7 +805,13 @@ const EventDetail = ({
                         </EventDetailCard>
                       </Row>
                     </div>
-                    <div ref={itemTabs} className="item-tabs">
+                    <div
+                      ref={itemTabs}
+                      className={
+                        (eventDetailData.raveSet && 'item-tabs tabs-rave') ||
+                        'item-tabs'
+                      }
+                    >
                       <Tabs
                         activeKey={tabActiveKey}
                         defaultActiveKey={tabActiveKey}
@@ -953,15 +959,6 @@ const EventDetail = ({
                                             Images.BackgroundLogo.src;
                                         }}
                                       />
-                                      {/* {item.owner && (
-                                        <div className="owner-content">
-                                          <img
-                                            src={Images.IsOwner.src}
-                                            alt=""
-                                          />
-                                          <p>Your listed ticket</p>
-                                        </div>
-                                      )} */}
                                     </div>
                                     <div className="item-bottom">
                                       <div className="bottom-type">
@@ -1041,11 +1038,12 @@ const EventDetail = ({
                               />
                             </div>
                             <div className="item-name">{item.name}</div>
-                            <img
+                            <object className="free-icon" type="image/svg+xml" data={Images.FreeIcon.src}></object>
+                            {/* <img
                               className="free-icon"
                               src={Images.FreeIcon.src}
                               alt=""
-                            />
+                            /> */}
                           </div>
                         </JoinRaveModalBannerItem>
                       ))}

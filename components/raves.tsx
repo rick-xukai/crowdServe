@@ -97,11 +97,21 @@ const TipBar = ({
       </p>
     ) : (
       <p>
-        {redeemedUser} ravers have claimed the reward! Only{' '}
-        <b>{(rewardData.length && rewardData[0].stock) || 0}</b>{' '}
-        {(rewardData.length && rewardData[0].name) || '-'} and{' '}
-        <b>{(rewardData.length && rewardData[1].stock) || 0}</b>{' '}
-        {(rewardData.length && rewardData[1].name) || '-'} left!
+        {redeemedUser} {(redeemedUser > 1 && 'ravers have') || 'raver has'}{' '}
+        claimed the reward! Only {}
+        {rewardData.length &&
+          rewardData.map((item, index) => (
+            <span key={item.id}>
+              <b>{item.stock}</b>{' '}
+              {(index === rewardData.length - 2 && <>{item.name} and </>) || (
+                <>
+                  {(index === rewardData.length - 1 && (
+                    <>{item.name} left!</>
+                  )) || <>{item.name}, </>}
+                </>
+              )}
+            </span>
+          ))}
       </p>
     )}
   </TipBarWrapper>
@@ -172,13 +182,22 @@ const ProgressBar = ({
                 }}
                 key={item.milestone}
               >
-                <GiftImg
-                  src={item.img}
-                  style={{
-                    width: item.redeemed ? 32 : gotGifts ? 42 : '',
-                  }}
-                />
-                {gotGifts ? null : <p>{item.milestone} Flames</p>}
+                <div className="gift-img-content">
+                  <GiftImg
+                    src={item.img}
+                    style={{
+                      top: (item.redeemed && -10) || (gotGifts && -14) || -6,
+                      width: item.redeemed ? 32 : gotGifts ? 42 : '',
+                      filter: (item.redeemed && 'grayscale(100%)') || '',
+                      boxShadow:
+                        (gotGifts && '0px 2px 6px 0px rgba(0, 0, 0, 0.50)') ||
+                        '',
+                    }}
+                  />
+                </div>
+                {gotGifts ? null : (
+                  <p className="item-flames">{item.milestone} Flames</p>
+                )}
               </GiftItem>
             );
           })}
@@ -213,22 +232,16 @@ const ProgressContainer = ({
       </div>
     </FlameTotal>
     <FlameProgress>
+      <CornerBorderLeft src={Images.CornerBorderImg.src} />
+      <CornerBorderRight src={Images.CornerBorderImg.src} />
       <div className="content">
-        <CornerBorderLeft src={Images.CornerBorderImg.src} />
-        <CornerBorderRight src={Images.CornerBorderImg.src} />
         <ProgressBar
           current={currentFlamePoint}
           total={(_.last(giftList) && _.last(giftList)?.milestone) || 0}
-          gifts={giftList.map((item, index) => {
+          gifts={giftList.map((item) => {
             const getImg = () => {
               if (item.milestone <= currentFlamePoint) {
-                if (index === 0)
-                  return item.redeemed
-                    ? Images.GiftCheersDisabledImg.src
-                    : Images.GiftCheersImg.src;
-                return item.redeemed
-                  ? Images.GiftTicketDisabledImg.src
-                  : Images.GiftTicketImg.src;
+                return item.icon;
               }
               return Images.GiftDisabledImg.src;
             };
@@ -243,6 +256,17 @@ const ProgressContainer = ({
           isEnd={isEnd}
           lastGift={_.last(giftList) as GetRaveResponseRewardListProps}
         />
+      </div>
+      <div className="flame-items">
+        {giftList.map((item) => (
+          <div key={item.id} className="item">
+            <span className="item-flame">
+              {item.milestone}
+              <FireIcon src={Images.FireGifIcon.src} />
+            </span>
+            <span className="item-name">{item.name}</span>
+          </div>
+        ))}
       </div>
     </FlameProgress>
   </ProgressWrapper>
@@ -296,7 +320,7 @@ const RaveList = ({
 
   return (
     <Row gutter={[15, 15]} style={{ position: 'relative' }}>
-      {isEnd ? (
+      {/* {isEnd ? (
         <Ended>
           <div className="content">
             <img src={Images.ThankyouGifIcon.src} alt="thank-you" />
@@ -304,7 +328,7 @@ const RaveList = ({
             <p>Browse our other amazing events!</p>
           </div>
         </Ended>
-      ) : null}
+      ) : null} */}
 
       {list.map((item, index) => (
         <Col span={24} key={`${item.name}-${index}`} lg={12}>
@@ -316,7 +340,9 @@ const RaveList = ({
               </span>
               <span className="badge">
                 <span>{item.getTimes * item.flamePoint}</span>
-                <span>/{item.limitUser * item.flamePoint}</span>
+                {(item.limitUser === 0 && <span>/Unlimited</span>) || (
+                  <span>/{item.limitUser * item.flamePoint}</span>
+                )}
               </span>
             </div>
             <p className="description">{item.description}</p>
@@ -592,6 +618,7 @@ const Raves = ({
       milestone: 0,
       stock: 0,
       redeemed: false,
+      icon: '',
     });
   const { user, status } = raveData;
   const isEnd = status === RaveStatus.end;

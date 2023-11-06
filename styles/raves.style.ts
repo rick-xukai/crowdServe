@@ -90,15 +90,62 @@ export const FireIcon = styled.img`
 
 export const FlameProgress = styled.div`
   background: ${Colors.black};
-  height: 90px;
+  /* height: 100px; */
   margin-top: 14px;
   padding: 6px;
+  position: relative;
   .content {
     width: 100%;
     height: 100%;
     position: relative;
     user-select: none;
     user-drag: none;
+    border-bottom: 1px solid ${Colors.grayScale70};
+    padding-bottom: 40px;
+    margin-bottom: 20px;
+  }
+  .flame-items {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-around;
+    margin: auto;
+    width: 90%;
+    padding-bottom: 20px;
+    .item {
+      text-align: center;
+      .item-flame {
+        color: ${Colors.white};
+        font-size: 13px;
+        font-weight: 400;
+        margin-right: 10px;
+        img {
+          width: 12px;
+        }
+      }
+      .item-name {
+        color: ${Colors.white};
+        font-size: 12px;
+        font-weight: 700;
+      }
+    }
+    @media (min-width: 1200px) {
+      width: 70%;
+    }
+    @media (max-width: 768px) {
+      width: 80%;
+      padding-bottom: 40px;
+      > :last-child {
+        margin-bottom: 0px;
+      }
+      .item {
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+    @media (max-width: 576px) {
+      display: block;
+    }
   }
 `;
 
@@ -114,8 +161,8 @@ export const Border = styled.img`
 
 export const CornerBorderLeft = styled.img`
   position: absolute;
-  left: 0;
-  bottom: 0;
+  left: 10px;
+  bottom: 10px;
   width: 24px;
   user-select: none;
   user-drag: none;
@@ -123,8 +170,8 @@ export const CornerBorderLeft = styled.img`
 
 export const CornerBorderRight = styled.img`
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: 10px;
+  bottom: 10px;
   width: 24px;
   transform: rotate(-90deg);
   user-select: none;
@@ -172,6 +219,18 @@ export const GiftItem = styled.div`
   position: absolute;
   top: -6px;
   &.last-gift {
+    /* @media (min-width: 375px) {
+      left: 89% !important;
+    }
+    @media (min-width: 576px) {
+      left: 92.5% !important;
+    }
+    @media (min-width: 768px) {
+      left: 94.5% !important;
+    }
+    @media (max-width: 375px) {
+      left: 86% !important;
+    } */
     @media (max-width: 576px) {
       left: 90% !important;
     }
@@ -202,13 +261,19 @@ export const GiftItem = styled.div`
     line-height: 18px;
     text-transform: uppercase;
     white-space: nowrap;
+    text-align: center;
+  }
+  .item-flames {
+    margin-top: 5px;
   }
 `;
 
 export const GiftImg = styled.img`
   width: 28px;
+  min-height: 28px;
   display: block;
   margin: auto;
+  border-radius: 50%;
 `;
 
 export const SectionTitle = styled.h4`
@@ -233,6 +298,7 @@ export const RaveItem = styled.div`
   padding: 16px;
   background: ${Colors.black};
   border-radius: 6px;
+  height: 100%;
   .title {
     color: ${Colors.white};
     font-size: 18px;
@@ -275,6 +341,7 @@ export const RaveItem = styled.div`
     font-size: 15px;
     font-weight: 400;
     line-height: 21px;
+    padding-bottom: 25px;
   }
   .flame {
     color: ${Colors.white};
