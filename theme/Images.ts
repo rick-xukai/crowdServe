@@ -116,6 +116,14 @@ import RecallIcon from '../static/images/recall.svg';
 import ArrowDown from '../static/images/arrow-down.svg';
 import SuccessCongratulations from '../static/images/success-congratulations.svg';
 import ConfirmationNumber from '../static/images/confirmation-number.svg';
+import ProfileBackground from '../static/images/profile-background.svg';
+import MailIcon from '../static/images/mail.svg';
+import MoodIcon from '../static/images/mood.svg';
+import FlagIcon from '../static/images/flag.svg';
+import PhoneIcon from '../static/images/phone.svg';
+import CakeIcon from '../static/images/cake.svg';
+import CameraIcon from '../static/images/camera.svg';
+import EditProfileIcon from '../static/images/edit-profile.svg';
 
 const Images = {
   Safety,
@@ -236,6 +244,14 @@ const Images = {
   ArrowDown,
   SuccessCongratulations,
   ConfirmationNumber,
+  ProfileBackground,
+  MailIcon,
+  MoodIcon,
+  FlagIcon,
+  PhoneIcon,
+  CakeIcon,
+  CameraIcon,
+  EditProfileIcon,
 };
 
 export default Images;

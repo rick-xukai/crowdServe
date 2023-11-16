@@ -10,8 +10,8 @@ import Router from 'next/router';
 import { CookieKeys, RouterKeys } from '../../constants/Keys';
 // import UserService from '../../services/API/User/User.service';
 
-const AuthHoc = (AuthComponent: any) => (
-  class MyComponent extends Component <any, any> {
+const AuthHoc = (AuthComponent: any) =>
+  class MyComponent extends Component<any, any> {
     // constructor(props: any) {
     //   super(props);
     //   this.state = {
@@ -24,12 +24,41 @@ const AuthHoc = (AuthComponent: any) => (
       try {
         const { req, res } = ctx;
         const token = req.cookies[CookieKeys.userLoginToken];
+        const profileInfo = req.cookies[CookieKeys.userProfileInfo];
         if (!token) {
-          res.writeHead(302, { Location: `${RouterKeys.login}?redirect=${req.url}` });
+          res.writeHead(302, {
+            Location: `${RouterKeys.login}?redirect=${req.url}`,
+          });
           res.end();
           return {
-            token: ''
+            token: '',
           };
+        }
+        if (profileInfo && !req.url.includes('/profile') && token) {
+          const {
+            birthday,
+            country,
+            firstName,
+            lastName,
+            genderId,
+            phoneNumber,
+          } = JSON.parse(profileInfo);
+          if (
+            !birthday ||
+            !country ||
+            !firstName ||
+            !lastName ||
+            !genderId ||
+            !phoneNumber
+          ) {
+            res.writeHead(302, {
+              Location: `${RouterKeys.eventList}`,
+            });
+            res.end();
+            return {
+              props: {},
+            };
+          }
         }
         // const isApiMaintenance = await UserService.checkApiMaintenance();
         // if (isApiMaintenance === 1) {
@@ -37,23 +66,28 @@ const AuthHoc = (AuthComponent: any) => (
         //   res.end();
         //   return {};
         // }
-        const initialProps = AuthComponent.getInitialProps ? await AuthComponent.getInitialProps(ctx) : { token };
+        const initialProps = AuthComponent.getInitialProps
+          ? await AuthComponent.getInitialProps(ctx)
+          : { token };
         return {
-          ...initialProps
+          ...initialProps,
         };
       } catch (e) {
         return {
-          token: ''
+          token: '',
         };
       }
     }
 
     private readonly cookies = new Cookies();
 
-    async componentDidMount () {
+    async componentDidMount() {
       const token = this.cookies.get(CookieKeys.userLoginToken);
       if (!token) {
-        Router.push({ pathname: RouterKeys.login, query: `redirect=${window.location.pathname}` });
+        Router.push({
+          pathname: RouterKeys.login,
+          query: `redirect=${window.location.pathname}`,
+        });
         return;
       }
       // try {
@@ -96,7 +130,6 @@ const AuthHoc = (AuthComponent: any) => (
         // </>
       );
     }
-  }
-);
+  };
 
 export default AuthHoc;

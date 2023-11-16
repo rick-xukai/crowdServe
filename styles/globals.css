@@ -173,7 +173,29 @@ a {
 .ant-qrcode .ant-btn span {
   display: none;
 }
-
+.select-country {
+  min-width: 380px !important;
+  width: 380px !important;
+}
+@media (max-width: 576px) {
+  .select-country {
+    min-width: 280px !important;
+    width: 280px !important;
+  }
+}
+.select-country .country-code-label :first-child {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 21px;
+  margin-right: 10px;
+}
+.select-country .country-code-label :last-child {
+  color: #abacb6;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 21px;
+}
 .gender-select-dropdown
   .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
   color: #fff;
@@ -457,6 +479,18 @@ iframe {
   padding-top: 10px;
 }
 
+.ant-popover-placement-bottom .ant-popover-inner {
+  height: auto;
+  padding: 0 !important;
+  border-radius: 4px !important;
+  background: #f8f6f0;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ant-popover-placement-bottom .ant-popover-title {
+  min-width: unset;
+}
+
 .ant-popover-content {
   user-select: none;
   cursor: pointer;
@@ -486,12 +520,19 @@ iframe {
 }
 
 .logout-popover-title {
-  position: absolute;
+  /* position: absolute; */
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
   padding: 14px 12px !important;
+  color: #404047;
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+.logout-popover-title:hover {
+  background: #fff;
 }
 
 .ant-progress-bg {

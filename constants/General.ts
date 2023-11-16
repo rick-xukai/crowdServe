@@ -80,6 +80,10 @@ export const FirebaseTrackEventName = {
   joinRaveFailed: `webapp_join_rave_failed${FirebaseEventEnv}`,
   shareRaveButtonClick: `webapp_share_rave_button_click${FirebaseEventEnv}`,
 };
+export const UploadUserAvatarAccept = ['image/png', 'image/jpeg'];
+export const UploadUserAvatarSizeLimit =
+  'PNG or JPEG files only up to 10 MB in size';
+export const CompressorConvertSize = 1 * 1024 * 1024;
 export const TicketStatus = [
   {
     text: 'UPCOMING',
@@ -177,6 +181,8 @@ export const FormatTimeKeys = {
   hms: 'HH:mm:ss',
   hm: 'HH:mm',
   md: 'MMM dd',
+  YMD: 'YYYY-MM-DD',
+  yMd: 'yyyy-MM-dd',
 };
 export const CrowdFundStatus = {
   inProgress: 1,

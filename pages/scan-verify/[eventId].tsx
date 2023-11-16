@@ -23,6 +23,8 @@ interface ScannerCodeDetail {
     id: number;
     name: string;
     email: string;
+    firstName: string;
+    lastName: string;
   };
   ticket: {
     id: number;
@@ -262,7 +264,7 @@ const ScanQrCodeResult = ({
                       </div>
                       <div className="result-items">
                         <p className="items-title">Participant</p>
-                        <p className="items-value">{item.user.name}</p>
+                        <p className="items-value">{`${item.user.firstName} ${item.user.lastName}`}</p>
                       </div>
                       <div className="result-items">
                         <p className="items-title">Email</p>

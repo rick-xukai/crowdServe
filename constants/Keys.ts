@@ -22,6 +22,7 @@ export const CookieKeys = {
   userLoginId: 'userLoginId',
   appCallPlatform: 'appCallPlatform',
   appCallVersion: 'appCallVersion',
+  userProfileInfo: 'userProfileInfo',
 };
 
 export const RouterKeys = {
@@ -49,4 +50,5 @@ export const RouterKeys = {
   collectibleDetail: '/all-tickets/:orgname-slug/:slug',
   myRaves: '/my-raves',
   eventsScan: '/scan-event',
+  profile: '/profile',
 };

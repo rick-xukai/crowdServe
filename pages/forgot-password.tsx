@@ -50,6 +50,7 @@ import { RouterKeys, CookieKeys, LocalStorageKeys } from '@/constants/Keys';
 import Messages from '@/constants/Messages';
 import AuthPageHearder from '@/components/authPageHearder';
 import { resetMyRavesCache } from '@/slice/myRaves.slice';
+import { Images } from '@/theme';
 
 const ForgotPassword = ({
   defultEmail,
@@ -258,6 +259,11 @@ const ForgotPassword = ({
 
   return (
     <LoginContainer>
+      <img
+        className="page-background"
+        src={Images.AnimatedBackground.src}
+        alt=""
+      />
       <AuthPageHearder showSkip={false} />
       <div className="page-main">
         <div className="main-form-content">

@@ -8,7 +8,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { isMobile } from 'react-device-detect';
 
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { RouterKeys } from '../constants/Keys';
+import { RouterKeys, CookieKeys } from '../constants/Keys';
 import { formatTimeStrByTimeString, formatLocation } from '../utils/func';
 import {
   FormatTimeKeys,
@@ -16,6 +16,7 @@ import {
   DefaultEventListBannerPageSize,
   DefaultPage,
   ListPageScrollDifference,
+  TokenExpire,
 } from '../constants/General';
 import { Images } from '../theme';
 import {
@@ -29,6 +30,8 @@ import {
   selectEventListBanner,
   getEventListBannerAction,
   RaveStatus,
+  EventListResponseType,
+  EventListBanner,
 } from '../slice/event.slice';
 import {
   setEventDataForAll,
@@ -56,12 +59,24 @@ import PageHearderComponent from '../components/pageHearder';
 import OpenAppComponent from '../components/openAppComponent';
 import PageHearderResponsive from '../components/pageHearderResponsive';
 import PageBottomComponent from '../components/pageBottomComponent';
+import ShowUpdateProfilePopup from '@/components/showUpdateProfilePopup';
+import { useCookie } from '@/hooks';
+import {
+  reset as resetProfileDetail,
+  getLoginUserDetailAction,
+  selectProfileDetail,
+  ProfileDetailProps,
+} from '@/slice/profile.slice';
 
 const EventList = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const eventListRef = useRef<any>(null);
   const routers = useRouter();
+  const cookie = useCookie([
+    CookieKeys.userProfileInfo,
+    CookieKeys.userLoginToken,
+  ]);
 
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
@@ -74,6 +89,7 @@ const EventList = () => {
   const listScrollValue = useAppSelector(selectScrollValue);
   const eventDataForSearch = useAppSelector(selectEventDataForSearch);
   const eventListBanner = useAppSelector(selectEventListBanner);
+  const profileDetail = useAppSelector(selectProfileDetail);
 
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [menuState, setMenuState] = useState<boolean>(false);
@@ -84,6 +100,26 @@ const EventList = () => {
     useState<string>('Search events');
   const [showNotSameAccountModal, setShowNotSameAccountModal] =
     useState<boolean>(false);
+  const [showEditProfilePopup, setShowEditProfilePopup] = useState(false);
+
+  const checkFinishProfile = (detail: ProfileDetailProps) => {
+    if (detail && cookie.getCookie(CookieKeys.userLoginToken)) {
+      const { birthday, country, firstName, lastName, genderId, phoneNumber } =
+        detail;
+      if (
+        !birthday ||
+        !country ||
+        !firstName ||
+        !lastName ||
+        !genderId ||
+        !phoneNumber
+      ) {
+        setShowEditProfilePopup(true);
+        return false;
+      }
+    }
+    return true;
+  };
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -101,6 +137,9 @@ const EventList = () => {
   }, []);
 
   const searchInputChange = (value: string) => {
+    if (!checkFinishProfile(profileDetail)) {
+      return;
+    }
     if (!value) {
       setSearchInputPlaceholder('Search events');
       dispatch(setEventDataForAll([]));
@@ -218,8 +257,24 @@ const EventList = () => {
     }
   }, [eventDataForAll]);
 
+  const getProfile = async () => {
+    const currentDate = new Date();
+    const response: any = await dispatch(getLoginUserDetailAction());
+    if (response.type === getLoginUserDetailAction.fulfilled.toString()) {
+      checkFinishProfile(response.payload);
+      cookie.setCookie(CookieKeys.userProfileInfo, response.payload, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
+    }
+  };
+
   useEffect(() => {
     setIsFirstRender(false);
+    if (cookie.getCookie(CookieKeys.userLoginToken)) {
+      getProfile();
+    }
     if (!eventDataForAll.length) {
       dispatch(
         getEventListBannerAction({
@@ -232,6 +287,7 @@ const EventList = () => {
       eventListRef.current.addEventListener('scroll', scrollListener, true);
     }
     return () => {
+      dispatch(resetProfileDetail());
       dispatch(resetEventListData());
       dispatch(resetError());
       dispatch(resetEventDetailLoading());
@@ -283,14 +339,41 @@ const EventList = () => {
     return null;
   };
 
+  const eventItemClick = (eventItem: EventListResponseType) => {
+    if (!checkFinishProfile(profileDetail)) {
+      return;
+    }
+    Router.push(
+      RouterKeys.eventDetail.replace(
+        ':slug',
+        `${eventItem.slug}?previous=events`
+      )
+    );
+    dispatch(setIsDisableRequest(true));
+    dispatch(setScrollValue(eventListRef.current.scrollTop));
+  };
+
+  const toShopify = (item: EventListBanner) => {
+    if (!checkFinishProfile(profileDetail)) {
+      return;
+    }
+    window.open(item.link, '_blank');
+  };
+
   return (
     <EventListContainer ref={eventListRef}>
       <div className="container-wrap">
         <Col md={24} xs={0}>
-          <PageHearderResponsive saveScrollValue={saveScrollValue} />
+          <PageHearderResponsive
+            profileDetail={profileDetail}
+            setShowEditProfilePopup={setShowEditProfilePopup}
+            saveScrollValue={saveScrollValue}
+          />
         </Col>
         <Col md={0} xs={24}>
           <PageHearderComponent
+            profileDetail={profileDetail}
+            setShowEditProfilePopup={setShowEditProfilePopup}
             saveScrollValue={saveScrollValue}
             setMenuState={setMenuState}
           />
@@ -302,10 +385,12 @@ const EventList = () => {
                 <Carousel autoplay>
                   {eventListBanner &&
                     eventListBanner.map((item) => (
-                      <div key={item.link} className="banner-item">
-                        <a href={item.link} target="_blank">
-                          <img src={item.image} alt="" />
-                        </a>
+                      <div
+                        onClick={() => toShopify(item)}
+                        key={item.link}
+                        className="banner-item"
+                      >
+                        <img src={item.image} alt="" />
                       </div>
                     ))}
                 </Carousel>
@@ -353,18 +438,7 @@ const EventList = () => {
                   ).map((item) => (
                     <DesktopEventItemContainer
                       key={item.id}
-                      onClick={() => {
-                        Router.push(
-                          RouterKeys.eventDetail.replace(
-                            ':slug',
-                            `${item.slug}?previous=events`
-                          )
-                        );
-                        dispatch(setIsDisableRequest(true));
-                        dispatch(
-                          setScrollValue(eventListRef.current.scrollTop)
-                        );
-                      }}
+                      onClick={() => eventItemClick(item)}
                     >
                       <Row className="desktop-event-row">
                         <Col
@@ -486,11 +560,12 @@ const EventList = () => {
                   <Carousel autoplay>
                     {eventListBanner &&
                       eventListBanner.map((item: any) => (
-                        <div key={item.link} className="banner-item">
-                          <a href={item.link} target="_blank">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={item.image} alt="" />
-                          </a>
+                        <div
+                          onClick={() => toShopify(item)}
+                          key={item.link}
+                          className="banner-item"
+                        >
+                          <img src={item.image} alt="" />
                         </div>
                       ))}
                   </Carousel>
@@ -537,18 +612,7 @@ const EventList = () => {
                       {eventDataForSearch.map((item) => (
                         <EventItemContainer
                           key={item.id}
-                          onClick={() => {
-                            Router.push(
-                              RouterKeys.eventDetail.replace(
-                                ':slug',
-                                `${item.slug}?previous=events`
-                              )
-                            );
-                            dispatch(setIsDisableRequest(true));
-                            dispatch(
-                              setScrollValue(eventListRef.current.scrollTop)
-                            );
-                          }}
+                          onClick={() => eventItemClick(item)}
                         >
                           <div className="event-background">
                             <Image
@@ -648,18 +712,7 @@ const EventList = () => {
                       {eventDataForAll.map((item) => (
                         <EventItemContainer
                           key={item.id}
-                          onClick={() => {
-                            Router.push(
-                              RouterKeys.eventDetail.replace(
-                                ':slug',
-                                `${item.slug}?previous=events`
-                              )
-                            );
-                            dispatch(setIsDisableRequest(true));
-                            dispatch(
-                              setScrollValue(eventListRef.current.scrollTop)
-                            );
-                          }}
+                          onClick={() => eventItemClick(item)}
                         >
                           <div className="event-background">
                             <Image
@@ -773,6 +826,10 @@ const EventList = () => {
         >
           Ticket pending transfer does not match the email for this account.
         </Modal>
+        <ShowUpdateProfilePopup
+          showPopup={showEditProfilePopup}
+          setShowPopup={setShowEditProfilePopup}
+        />
         {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}
         {contextHolder}
         {!menuState && <PageBottomComponent />}

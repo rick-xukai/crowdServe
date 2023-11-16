@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Row,
@@ -16,9 +16,10 @@ import {
   EyeInvisibleOutlined,
   LoadingOutlined,
   CaretDownOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import { format } from 'date-fns';
-import { cloneDeep, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -27,9 +28,10 @@ import {
   isPassword,
   getErrorMessage,
   base64Encrypt,
-  isUserName,
   base64Decrypt,
   generateRandomString,
+  profileNameValidator,
+  checkPhoneNumber,
 } from '../utils/func';
 import {
   TermsConditionsLink,
@@ -39,7 +41,6 @@ import {
   BirthdayNotVaild,
   RegisterVerifyType,
   DefaultSelectCountry,
-  CountryItemProps,
   VerificationCodeLength,
 } from '../constants/General';
 import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
@@ -74,8 +75,10 @@ import OpenAppComponent from '../components/openAppComponent';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 import Messages from '../constants/Messages';
 import AuthPageHearder from '@/components/authPageHearder';
-import countryDataList from '@/utils/countrycode.data.json';
 import { resetMyRavesCache } from '@/slice/myRaves.slice';
+import CountrySelecter from '@/components/countrySelecter';
+import countryDataList from '@/utils/countrycode.data.json';
+import { Images } from '@/theme';
 
 const CreateAccount = ({
   redirectPage,
@@ -90,11 +93,10 @@ const CreateAccount = ({
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
     CookieKeys.userLoginId,
+    CookieKeys.userProfileInfo,
   ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const countryListSelect = useRef<any>(null);
-  const searchInputSelect = useRef<any>(null);
 
   const data = useAppSelector(selectData);
   const loading = useAppSelector(selectLoading);
@@ -128,18 +130,27 @@ const CreateAccount = ({
       password: '',
       birthday: '',
       genderId: '',
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      phoneShortCode: '',
       country: DefaultSelectCountry,
     });
-  const [sortCountryList, setSortCountryList] = useState<CountryItemProps[]>(
-    []
-  );
   const [showCountryItems, setShowCountryItems] = useState<boolean>(false);
+  const [currentSelectCountry, setCurrentSelectCountry] =
+    useState<string>(DefaultSelectCountry);
+  const [phoneNumberError, setPhoneNumberError] = useState<boolean>(false);
+  const [selectPhoneCode, setSelectPhoneCode] = useState<string>('');
 
   const onFinish = async (values: any) => {
     if (!isVerificationEmail) {
       if (checked) {
         const result = await dispatch(
-          verifyUserAction({ email: createAccountValue.email })
+          verifyUserAction({
+            email: createAccountValue.email,
+            firstName: createAccountValue.firstName,
+            lastName: createAccountValue.lastName,
+          })
         );
         if (result.type === verifyUserAction.fulfilled.toString()) {
           if (redirectPage || loginRedirectPage) {
@@ -200,41 +211,29 @@ const CreateAccount = ({
         });
         return;
       }
-      dispatch(registerAccountAction(createAccountValue));
+      if (
+        !checkPhoneNumber(
+          createAccountValue.phoneNumber,
+          createAccountValue.phoneShortCode
+        )
+      ) {
+        setPhoneNumberError(true);
+        return;
+      } else {
+        setPhoneNumberError(false);
+      }
+      dispatch(
+        registerAccountAction({
+          ...createAccountValue,
+          phoneNumber: `${selectPhoneCode}-${createAccountValue.phoneNumber}`,
+        })
+      );
     }
   };
 
   const checkGoogleDocAction = (link: string) => {
     setCheckGoogleDoc(true);
     setgoogleDocLink(link);
-  };
-
-  const sortData = (list: CountryItemProps[]) => {
-    const listSort: CountryItemProps[] = cloneDeep(list).sort(
-      (x: CountryItemProps, y: CountryItemProps) =>
-        x.country.localeCompare(y.country)
-    );
-    return listSort;
-  };
-
-  const searchCountryOnChange = (e: string) => {
-    const searchItems: CountryItemProps[] = [];
-    countryDataList.map((item: CountryItemProps) => {
-      if (item.country.toLowerCase().includes(e)) {
-        searchItems.push(item);
-      }
-    });
-    setSortCountryList(sortData(searchItems));
-  };
-
-  const clickCallback = (e: any) => {
-    if (
-      countryListSelect.current.contains(e.target) ||
-      searchInputSelect.current.contains(e.target)
-    ) {
-      return;
-    }
-    setShowCountryItems(false);
   };
 
   const handleResetPageCache = () => {
@@ -248,6 +247,13 @@ const CreateAccount = ({
     dispatch(setEventDataForSearch([]));
     dispatch(resetMyRavesCache());
   };
+
+  useEffect(() => {
+    setCreateAccountValue({
+      ...createAccountValue,
+      country: currentSelectCountry,
+    });
+  }, [currentSelectCountry]);
 
   useEffect(() => {
     if (userGender.length) {
@@ -276,6 +282,11 @@ const CreateAccount = ({
         domain: window.location.hostname,
       });
       cookies.setCookie(CookieKeys.userLoginId, data.user.userId, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
+      cookies.setCookie(CookieKeys.userProfileInfo, data.user, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
         domain: window.location.hostname,
@@ -331,23 +342,26 @@ const CreateAccount = ({
   }, [error]);
 
   useEffect(() => {
-    if (!showCountryItems) {
-      setSortCountryList(sortData(countryDataList));
-    } else {
-      document.addEventListener('click', clickCallback, false);
-    }
-    return () => {
-      document.removeEventListener('click', clickCallback, false);
-    };
-  }, [showCountryItems]);
-
-  useEffect(() => {
     dispatch(getUserGenderAction());
     setIsFirstRender(false);
     return () => {
       dispatch(reset());
     };
   }, []);
+
+  const selectCountryCodeChange = (e: string) => {
+    const country = e.split('-')[1];
+    const phoneCode = e.split('-')[0];
+    const countryCode = countryDataList.find(
+      (item) => item.country === country
+    );
+    setCreateAccountValue({
+      ...createAccountValue,
+      phoneShortCode: countryCode?.shortCode || '',
+    });
+    setSelectPhoneCode(phoneCode);
+    setPhoneNumberError(false);
+  };
 
   return (
     <>
@@ -369,6 +383,11 @@ const CreateAccount = ({
             ''
           }
         >
+          <img
+            className="page-background"
+            src={Images.AnimatedBackground.src}
+            alt=""
+          />
           <AuthPageHearder
             skipClick={() => router.push(RouterKeys.eventList)}
           />
@@ -406,23 +425,53 @@ const CreateAccount = ({
                           }
                         />
                       </Form.Item>
-                      <Form.Item>
+                      <Form.Item
+                        name="firstName"
+                        rules={[{ validator: profileNameValidator }]}
+                        getValueFromEvent={(e) => {
+                          const { value } = e.target;
+                          return value
+                            .replace(/[0-9]/g, '')
+                            .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
+                        }}
+                      >
                         <Input
                           className={`${
-                            (createAccountValue.username && 'border-white') ||
+                            (createAccountValue.firstName && 'border-white') ||
                             ''
                           }`}
-                          placeholder="User name (at least 3 chars)"
-                          value={createAccountValue.username}
+                          placeholder="First name (at least 2 characters)"
                           maxLength={20}
                           bordered={false}
                           onChange={(e) =>
                             setCreateAccountValue({
                               ...createAccountValue,
-                              username: e.target.value.replace(
-                                /[^a-zA-Z0-9\s]/g,
-                                ''
-                              ),
+                              firstName: e.target.value,
+                            })
+                          }
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="lastName"
+                        getValueFromEvent={(e) => {
+                          const { value } = e.target;
+                          return value
+                            .replace(/[0-9]/g, '')
+                            .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
+                        }}
+                      >
+                        <Input
+                          className={`${
+                            (createAccountValue.lastName && 'border-white') ||
+                            ''
+                          }`}
+                          placeholder="Last name (at least 1 character)"
+                          maxLength={20}
+                          bordered={false}
+                          onChange={(e) =>
+                            setCreateAccountValue({
+                              ...createAccountValue,
+                              lastName: e.target.value,
                             })
                           }
                         />
@@ -468,9 +517,10 @@ const CreateAccount = ({
                           className="signin-btn"
                           disabled={
                             !createAccountValue.email ||
-                            loading ||
-                            !isUserName(createAccountValue.username) ||
-                            createAccountValue.username.length < 3
+                            !createAccountValue.firstName ||
+                            !createAccountValue.lastName ||
+                            !checked ||
+                            loading
                           }
                           type="primary"
                           htmlType="submit"
@@ -568,6 +618,53 @@ const CreateAccount = ({
                           }
                         />
                       </Form.Item>
+                      <Form.Item
+                        className={
+                          (phoneNumberError && 'phone-number-item error') ||
+                          'phone-number-item'
+                        }
+                        name="phoneNumber"
+                        getValueFromEvent={(e) => {
+                          const { value } = e.target;
+                          return value.replace(/[^0-9]/g, '');
+                        }}
+                      >
+                        <Input
+                          placeholder="Phone number"
+                          className="phone-number-item-input"
+                          bordered={false}
+                          onChange={(e) => {
+                            setPhoneNumberError(false);
+                            setCreateAccountValue({
+                              ...createAccountValue,
+                              phoneNumber: e.target.value,
+                            });
+                          }}
+                          addonBefore={
+                            <Select
+                              showSearch
+                              placeholder="Country"
+                              popupClassName="gender-select-dropdown select-country"
+                              options={countryDataList.map((item) => ({
+                                value: `${item.code}-${item.country}`,
+                                label: (
+                                  <div className="country-code-label">
+                                    <span>{item.code}</span>
+                                    <span>{item.country}</span>
+                                  </div>
+                                ),
+                              }))}
+                              suffixIcon={<DownOutlined />}
+                              onChange={selectCountryCodeChange}
+                            />
+                          }
+                        />
+                      </Form.Item>
+                      {phoneNumberError && (
+                        <div className="phone-number-error">
+                          Invalid phone number
+                        </div>
+                      )}
                       <Form.Item name="genderId">
                         <Select
                           popupClassName="gender-select-dropdown"
@@ -577,7 +674,7 @@ const CreateAccount = ({
                             'gender-select'
                           }`}
                           defaultValue={undefined}
-                          placeholder="Gender"
+                          placeholder="Sex"
                           onChange={(e) =>
                             setCreateAccountValue({
                               ...createAccountValue,
@@ -615,80 +712,12 @@ const CreateAccount = ({
                         className="form-country"
                         style={{ marginBottom: 0 }}
                       >
-                        <>
-                          <div
-                            ref={countryListSelect}
-                            className="search-select-country"
-                            onClick={() =>
-                              setShowCountryItems(!showCountryItems)
-                            }
-                          >
-                            <div className="content">
-                              <span className="country-flag">
-                                {countryDataList.find(
-                                  (item) =>
-                                    item.country === createAccountValue.country
-                                )?.flag || ''}
-                              </span>
-                              <span className="country-name">
-                                {
-                                  countryDataList.find(
-                                    (item) =>
-                                      item.country ===
-                                      createAccountValue.country
-                                  )?.country
-                                }
-                              </span>
-                            </div>
-                            <CaretDownOutlined />
-                          </div>
-                          {showCountryItems && (
-                            <div className="country-items">
-                              <div
-                                ref={searchInputSelect}
-                                className="search-input-content"
-                              >
-                                <Input
-                                  placeholder="Search country"
-                                  onChange={(e) => {
-                                    searchCountryOnChange(
-                                      e.target.value.toLowerCase()
-                                    );
-                                  }}
-                                />
-                              </div>
-                              {(sortCountryList.length &&
-                                sortCountryList.map(
-                                  (item: CountryItemProps) => (
-                                    <div
-                                      key={`${item.code}-${item.country}`}
-                                      className="content"
-                                      onClick={() => {
-                                        setShowCountryItems(false);
-                                        setCreateAccountValue({
-                                          ...createAccountValue,
-                                          country: item.country,
-                                        });
-                                      }}
-                                    >
-                                      <span className="country-flag">
-                                        {item.flag}
-                                      </span>
-                                      <span className="country-name">
-                                        {item.country}
-                                      </span>
-                                    </div>
-                                  )
-                                )) || (
-                                <div className="content no-data">
-                                  <span className="country-name">
-                                    No data found
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </>
+                        <CountrySelecter
+                          showCountryItems={showCountryItems}
+                          currentCountry={createAccountValue.country}
+                          setShowCountryItems={setShowCountryItems}
+                          setCurrentSelectCountry={setCurrentSelectCountry}
+                        />
                       </Form.Item>
                       <Form.Item>
                         <Button
@@ -698,12 +727,15 @@ const CreateAccount = ({
                             !createAccountValue.password ||
                             !createAccountValue.birthday ||
                             !createAccountValue.genderId ||
+                            !createAccountValue.phoneNumber ||
+                            !createAccountValue.phoneShortCode ||
                             loading
                           }
                           type="primary"
                           htmlType="submit"
                         >
                           DONE
+                          {loading && <LoadingOutlined />}
                         </Button>
                       </Form.Item>
                     </Form>
