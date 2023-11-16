@@ -34,6 +34,7 @@ const EventListContainer = styled.div`
       height: 189px;
       position: relative;
       background: ${Colors.black};
+      cursor: pointer;
       img {
         max-width: 100%;
         max-height: 100%;
@@ -228,6 +229,7 @@ const EventListContainer = styled.div`
       height: 505px;
       position: relative;
       background: ${Colors.black};
+      cursor: pointer;
       img {
         max-width: 100%;
         max-height: 100%;

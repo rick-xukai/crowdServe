@@ -8,6 +8,7 @@ import { Images, Colors } from '../theme';
 import { useCookie } from '../hooks';
 import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { generateRandomString } from '@/utils/func';
+import { ProfileDetailProps } from '@/slice/profile.slice';
 
 const PageHearderResponsiveContainer = styled.div`
   padding-top: 18px;
@@ -114,6 +115,21 @@ const PageHearderResponsiveContainer = styled.div`
     right: 0;
     top: 50px;
   }
+  .show-img-avatar {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    .img-avatar {
+      width: 40px;
+      height: 40px;
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+  }
   @media (max-width: 1200px) {
     .header-menu {
       margin-left: 25px !important;
@@ -143,21 +159,55 @@ const PageHearderResponsiveContainer = styled.div`
 `;
 
 const PageHearderResponsive = ({
+  profileAvatar,
+  profileDetail,
   backgroundTransparent = false,
+  showBackgroundColor = true,
   saveScrollValue = () => {},
+  setShowEditProfilePopup = () => {},
 }: {
+  profileDetail?: ProfileDetailProps;
+  profileAvatar?: string;
   backgroundTransparent?: boolean;
+  showBackgroundColor?: boolean;
   saveScrollValue?: () => void;
+  setShowEditProfilePopup?: (status: boolean) => void;
 }) => {
   const router = useRouter();
   const cookie = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
+    CookieKeys.userProfileInfo,
   ]);
 
   const [isUserToken, setIsUserToken] = useState<boolean | null>(null);
   const [userLoginInitials, setUserLoginInitials] = useState<string>('');
   const [showLogout, setShowLogout] = useState<boolean>(false);
+  const [userAvatar, setUserAvatar] = useState<string>('');
+
+  const checkFinishProfile = (currentPath: string) => {
+    if (
+      currentPath === RouterKeys.profile ||
+      currentPath === RouterKeys.eventList
+    )
+      return true;
+    if (profileDetail && cookie.getCookie(CookieKeys.userLoginToken)) {
+      const { birthday, country, firstName, lastName, genderId, phoneNumber } =
+        profileDetail;
+      if (
+        !birthday ||
+        !country ||
+        !firstName ||
+        !lastName ||
+        !genderId ||
+        !phoneNumber
+      ) {
+        setShowEditProfilePopup(true);
+        return false;
+      }
+    }
+    return true;
+  };
 
   const userLogout = () => {
     setShowLogout(false);
@@ -173,6 +223,10 @@ const PageHearderResponsive = ({
       path: '/',
       domain: window.location.hostname,
     });
+    cookie.removeCookie(CookieKeys.userProfileInfo, {
+      path: '/',
+      domain: window.location.hostname,
+    });
     localStorage.setItem(
       LocalStorageKeys.pageViewTrackKeys,
       generateRandomString()
@@ -181,6 +235,7 @@ const PageHearderResponsive = ({
   };
 
   const hanldeMenuClick = (path: string) => {
+    if (!checkFinishProfile(path)) return;
     if (path !== router.pathname) {
       saveScrollValue();
       router.push(path);
@@ -190,6 +245,11 @@ const PageHearderResponsive = ({
   useEffect(() => {
     const token = cookie.getCookie(CookieKeys.userLoginToken);
     const email = cookie.getCookie(CookieKeys.userLoginEmail);
+    const userProfileInfo = cookie.getCookie(CookieKeys.userProfileInfo);
+    if (userProfileInfo) {
+      const { profileImage } = userProfileInfo;
+      setUserAvatar(profileImage);
+    }
     if (token) {
       setIsUserToken(true);
     } else {
@@ -203,6 +263,10 @@ const PageHearderResponsive = ({
   return (
     <PageHearderResponsiveContainer
       className={(backgroundTransparent && 'backgroundTransparent') || ''}
+      style={{
+        background:
+          (!showBackgroundColor && 'none') || 'rgba(39, 39, 42, 0.96)',
+      }}
     >
       <div className="header-main">
         <Row>
@@ -320,21 +384,59 @@ const PageHearderResponsive = ({
                     LOG IN
                   </Button>
                 )) || (
-                  <div>
+                  <div
+                    className={
+                      ((userAvatar || profileAvatar) && 'show-img-avatar') || ''
+                    }
+                  >
                     <Popover
                       title={
-                        <span
-                          className="logout-popover-title"
-                          onClick={userLogout}
-                        >
-                          LOG OUT
-                        </span>
+                        <div>
+                          <div
+                            className="logout-popover-title"
+                            onClick={() => hanldeMenuClick(RouterKeys.profile)}
+                          >
+                            PROFILE
+                          </div>
+                          <div
+                            className="logout-popover-title"
+                            onClick={userLogout}
+                          >
+                            LOG OUT
+                          </div>
+                        </div>
                       }
                       trigger="hover"
                       open={showLogout}
                       onOpenChange={(status) => setShowLogout(status)}
                     >
-                      <Avatar>{userLoginInitials}</Avatar>
+                      {(profileAvatar && (
+                        <div className="img-avatar">
+                          <img
+                            src={profileAvatar}
+                            alt=""
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = Images.BackgroundLogo.src;
+                            }}
+                          />
+                        </div>
+                      )) || (
+                        <>
+                          {(userAvatar && (
+                            <div className="img-avatar">
+                              <img
+                                src={userAvatar}
+                                alt=""
+                                onError={(e: any) => {
+                                  e.target.onerror = null;
+                                  e.target.src = Images.BackgroundLogo.src;
+                                }}
+                              />
+                            </div>
+                          )) || <Avatar>{userLoginInitials}</Avatar>}
+                        </>
+                      )}
                     </Popover>
                   </div>
                 )}

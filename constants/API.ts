@@ -130,6 +130,12 @@ const API = {
   redeemScanCode: {
     put: '/scanner/redeem/:redeemCode',
   },
+  getLoginUserDetail: {
+    get: '/api/v1/user',
+  },
+  updateLoginUserDetail: {
+    put: '/api/v1/user',
+  },
 };
 
 export default API;

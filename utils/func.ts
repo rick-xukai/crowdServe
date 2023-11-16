@@ -14,6 +14,8 @@ import {
 } from 'chart.js';
 import _ from 'lodash';
 import { getAnalytics, logEvent } from 'firebase/analytics';
+import Compressor from 'compressorjs';
+import libphonenumber from 'google-libphonenumber';
 
 import Messages from '../constants/Messages';
 import { Colors } from '../theme';
@@ -24,6 +26,8 @@ import {
   AppHost,
   PriceUnit,
   FormatTimeKeys,
+  UploadUserAvatarAccept,
+  CompressorConvertSize,
 } from '../constants/General';
 import firebaseApp from '@/firebase';
 
@@ -80,6 +84,13 @@ export const formatTimeStrByTimeString = (
 ) => {
   try {
     if (timeString) {
+      if (timeString.includes('T')) {
+        const formatTimeString = timeString.split('T')[0];
+        return format(
+          new Date(formatTimeString.replace(/-/g, '/')),
+          formatType
+        );
+      }
       return format(new Date(timeString.replace(/-/g, '/')), formatType);
     }
   } catch (_) {}
@@ -370,4 +381,36 @@ export const firebaseTrackMethod = (eventName: string, payload: any) => {
     ...payload,
     webTimestamp: format(new Date(), FormatTimeKeys.norm),
   });
+};
+
+export const profileNameValidator = (_: object, value: string) => {
+  if (!value) {
+    return Promise.reject(new Error('Required'));
+  }
+  if (value.length < 2) {
+    return Promise.reject(new Error('Must be greater than two characters'));
+  }
+  return Promise.resolve();
+};
+
+export const compressorImage = (compressorFile: File, qualitySize: number) => {
+  return new Promise((resolve) => {
+    new Compressor(compressorFile, {
+      quality: qualitySize,
+      convertTypes: UploadUserAvatarAccept,
+      convertSize: CompressorConvertSize,
+      success(result) {
+        resolve(result);
+      },
+      error() {
+        resolve(compressorFile);
+      },
+    });
+  });
+};
+
+export const checkPhoneNumber = (phoneNumber: string, countryCode: string) => {
+  const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance();
+  const number = phoneUtil.parseAndKeepRawInput(phoneNumber, countryCode);
+  return phoneUtil.isValidNumber(number);
 };

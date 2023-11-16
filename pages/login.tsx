@@ -44,6 +44,7 @@ import { resetMyCollectiblesCache } from '../slice/myCollectiblesCache.slice';
 import { resetCollectionDetailCache } from '../slice/collectionDetailCache.slice';
 import AuthPageHearder from '@/components/authPageHearder';
 import { resetMyRavesCache } from '@/slice/myRaves.slice';
+import { Images } from '@/theme';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 
 const Login = ({
@@ -63,6 +64,7 @@ const Login = ({
   const cookies = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
+    CookieKeys.userProfileInfo,
   ]);
 
   const error = useAppSelector(selectError);
@@ -140,6 +142,11 @@ const Login = ({
         path: '/',
         domain: window.location.hostname,
       });
+      cookies.setCookie(CookieKeys.userProfileInfo, data.user, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
       localStorage.setItem(
         LocalStorageKeys.pageViewTrackKeys,
         generateRandomString()
@@ -211,6 +218,11 @@ const Login = ({
 
   return (
     <LoginContainer>
+      <img
+        className="page-background"
+        src={Images.AnimatedBackground.src}
+        alt=""
+      />
       <AuthPageHearder skipClick={() => router.push(RouterKeys.eventList)} />
       <div className="page-main">
         <div className="main-form-content">

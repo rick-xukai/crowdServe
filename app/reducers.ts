@@ -19,6 +19,7 @@ import myRavesReducer from '../slice/myRaves.slice';
 import raveReducer from '../slice/rave.slice';
 import scannerReducer from '../slice/scanner.slice';
 import scannerCacheReducer from '../slice/scannerCache.slice';
+import profileReducer from '../slice/profile.slice';
 
 const createRootReducer = () =>
   combineReducers({
@@ -41,6 +42,7 @@ const createRootReducer = () =>
     rave: raveReducer,
     scanner: scannerReducer,
     scannerCache: scannerCacheReducer,
+    profile: profileReducer,
   });
 
 export default createRootReducer;

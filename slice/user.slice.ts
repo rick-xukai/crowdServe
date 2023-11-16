@@ -17,6 +17,10 @@ export interface LoginPayloadType {
   code?: string;
   birthday?: string;
   genderId?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  phoneShortCode?: string;
 }
 
 export interface LoginResponseType {
@@ -35,6 +39,8 @@ export interface ForgotPasswordResetPayload {
 
 export interface VerifyUserPayload {
   email: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface VerificationCodePayload {
@@ -51,6 +57,10 @@ export interface RegisterAccountPayload {
   birthday: string;
   genderId: string;
   country: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  phoneShortCode: string;
   externalChannel?: string;
   externalId?: string;
 }

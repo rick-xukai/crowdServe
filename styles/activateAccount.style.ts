@@ -6,23 +6,24 @@ const ActivateAccountContainer = styled.div`
   padding: 20px;
   height: 100%;
   position: relative;
-  background-image: url(${Images.AnimatedBackground.src});
+  /* background-image: url(${Images.AnimatedBackground.src});
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
-  overflow: auto;
+  background-size: cover; */
   ::-webkit-scrollbar {
     display: none;
   }
+  .page-background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+  }
   &.country-items-index {
     .page-main {
-      padding-bottom: 0 !important;
       z-index: 100;
-    }
-    .main-form-content {
-      &.country-items-show {
-        padding-bottom: 0;
-      }
     }
   }
   &.open-app-show {
@@ -30,9 +31,6 @@ const ActivateAccountContainer = styled.div`
       display: block;
       overflow-x: hidden;
       overflow-y: scroll;
-      .page-main {
-        padding-bottom: 100vh;
-      }
     }
   }
   .page-loading {
@@ -83,6 +81,9 @@ const ActivateAccountContainer = styled.div`
     .ant-select-selection-item,
     .ant-select-selection-placeholder {
       padding-top: 8px;
+      font-weight: 400;
+      font-size: 14px;
+      color: ${Colors.grayScale40};
     }
     .search-select-country {
       height: 44px;
@@ -229,6 +230,8 @@ const ActivateAccountContainer = styled.div`
       border-bottom-right-radius: 0;
       &::placeholder {
         color: ${Colors.grayScale40};
+        font-weight: 400;
+        font-size: 14px;
       }
     }
     .signin-btn {
@@ -253,6 +256,75 @@ const ActivateAccountContainer = styled.div`
       text-align: right;
       margin-top: 12px;
       margin-bottom: 0;
+    }
+  }
+  .phone-number-error {
+    color: ${Colors.branding};
+    font-size: 12px;
+    font-weight: 300;
+    margin-top: 5px;
+  }
+  .phone-number-item {
+    &.error {
+      margin-bottom: 0 !important;
+    }
+    .country-code-label {
+      > :last-child {
+        display: none;
+      }
+    }
+    .ant-input {
+      border: none;
+    }
+    .ant-input-wrapper {
+      > :last-child {
+        margin-left: -1px;
+      }
+    }
+    .ant-input-group-addon {
+      background-color: ${Colors.white};
+      border: none;
+      border-radius: 2px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      .ant-select-selection-placeholder {
+        padding-top: 0;
+        padding-inline-end: 30px;
+        font-weight: 400;
+        font-size: 14px;
+        color: ${Colors.grayScale40};
+      }
+    }
+    .ant-input-group
+      .ant-input-group-addon
+      .ant-select.ant-select-single:not(.ant-select-customize-input)
+      .ant-select-selector {
+      border: none;
+    }
+    .ant-select-single .ant-select-selector .ant-select-selection-item {
+      padding-left: 0;
+    }
+    .ant-select-single .ant-select-selector .ant-select-selection-item {
+      line-height: 35px;
+    }
+    .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
+      padding-inline-end: 35px;
+    }
+    .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
+      .ant-select-selector {
+      border: none;
+    }
+    .ant-input-group
+      .ant-input-group-addon
+      .ant-select-open
+      .ant-select-selector,
+    .ant-input-group
+      .ant-input-group-addon
+      .ant-select-focused
+      .ant-select-selector {
+      color: ${Colors.black};
+    }
+    .phone-number-item-input {
     }
   }
   .agreement-wrapper {
@@ -383,6 +455,8 @@ const ActivateAccountContainer = styled.div`
         background: ${Colors.white};
         &::placeholder {
           color: ${Colors.grayScale40};
+          font-weight: 400 !important;
+          font-size: 14px;
         }
       }
     }
@@ -431,7 +505,7 @@ const ActivateAccountContainer = styled.div`
     .ant-select-selection-placeholder {
       line-height: 44px;
       color: ${Colors.grayScale40};
-      font-weight: 300;
+      font-weight: 400;
       font-size: 14px;
       padding: 0px 12px;
     }

@@ -10,6 +10,7 @@ import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { Images, Colors } from '../theme';
 import ClientModalComponent from './clientModal';
 import { generateRandomString } from '@/utils/func';
+import { ProfileDetailProps } from '@/slice/profile.slice';
 
 const PageHearderContainer = styled(Row)`
   position: fixed;
@@ -160,21 +161,28 @@ const PageHearderContainer = styled(Row)`
 
 const PageHearderComponent = ({
   showTabs = false,
+  profileDetail,
   backgroundTransparent = false,
+  showBackgroundColor = true,
   setMenuState = () => {},
   setShowTabs = () => {},
   saveScrollValue = () => {},
+  setShowEditProfilePopup = () => {},
 }: {
+  profileDetail?: ProfileDetailProps;
   showTabs?: boolean;
   backgroundTransparent?: boolean;
+  showBackgroundColor?: boolean;
   setMenuState?: (status: boolean) => void;
   setShowTabs?: (status: boolean) => void;
   saveScrollValue?: () => void;
+  setShowEditProfilePopup?: (status: boolean) => void;
 }) => {
   const router = useRouter();
   const cookie = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
+    CookieKeys.userProfileInfo,
   ]);
   const [isUserToken, setIsUserToken] = useState<boolean | null>(null);
   const [showMenu, setShowMenu] = useState<boolean>(false);
@@ -193,6 +201,10 @@ const PageHearderComponent = ({
       path: '/',
       domain: window.location.hostname,
     });
+    cookie.removeCookie(CookieKeys.userProfileInfo, {
+      path: '/',
+      domain: window.location.hostname,
+    });
     localStorage.setItem(
       LocalStorageKeys.pageViewTrackKeys,
       generateRandomString()
@@ -200,7 +212,33 @@ const PageHearderComponent = ({
     router.push(RouterKeys.login);
   };
 
+  const checkFinishProfile = (currentPath: string) => {
+    if (
+      currentPath === RouterKeys.profile ||
+      currentPath === RouterKeys.eventList
+    )
+      return true;
+    if (profileDetail && cookie.getCookie(CookieKeys.userLoginToken)) {
+      const { birthday, country, firstName, lastName, genderId, phoneNumber } =
+        profileDetail;
+      if (
+        !birthday ||
+        !country ||
+        !firstName ||
+        !lastName ||
+        !genderId ||
+        !phoneNumber
+      ) {
+        setShowMenu(false);
+        setShowEditProfilePopup(true);
+        return false;
+      }
+    }
+    return true;
+  };
+
   const hanldeMenuClick = (path: string) => {
+    if (!checkFinishProfile(path)) return;
     if (path === window.location.pathname) {
       setShowMenu(false);
       if (path === RouterKeys.ticketsList) {
@@ -233,9 +271,12 @@ const PageHearderComponent = ({
 
   return (
     <PageHearderContainer
-      className={`${(showTabs && !showMenu && "show-tabs") || ""} ${
-        (showMenu && "show-menu") || ""
-      } ${(backgroundTransparent && "backgroundTransparent") || ""}`}
+      className={`${(showTabs && !showMenu && 'show-tabs') || ''} ${
+        (showMenu && 'show-menu') || ''
+      } ${(backgroundTransparent && 'backgroundTransparent') || ''}`}
+      style={{
+        background: (showBackgroundColor && Colors.backgorund) || 'none',
+      }}
     >
       <Col span={12} className="left-container">
         <div className="hearder-logo">
@@ -294,7 +335,7 @@ const PageHearderComponent = ({
               <Col span={24} className="info-name">
                 <span
                   className={`name ${
-                    (router.pathname === RouterKeys.eventList && "active") || ""
+                    (router.pathname === RouterKeys.eventList && 'active') || ''
                   }`}
                 >
                   EVENTS
@@ -324,7 +365,7 @@ const PageHearderComponent = ({
               <Col span={24} className="info-name">
                 <span
                   className={`name ${
-                    (router.pathname === RouterKeys.myTickets && "active") || ""
+                    (router.pathname === RouterKeys.myTickets && 'active') || ''
                   }`}
                 >
                   UPCOMING EVENTS
@@ -339,8 +380,8 @@ const PageHearderComponent = ({
                 <span
                   className={`name ${
                     (router.pathname === RouterKeys.myCollectibles &&
-                      "active") ||
-                    ""
+                      'active') ||
+                    ''
                   }`}
                 >
                   ALL TICKETS
@@ -354,7 +395,7 @@ const PageHearderComponent = ({
               <Col span={24} className="info-name">
                 <span
                   className={`name ${
-                    (router.pathname === RouterKeys.myRaves && "active") || ""
+                    (router.pathname === RouterKeys.myRaves && 'active') || ''
                   }`}
                 >
                   MY RAVES
@@ -383,10 +424,24 @@ const PageHearderComponent = ({
               <Col span={24} className="info-name">
                 <span
                   className={`name ${
-                    (router.pathname === RouterKeys.myWallet && "active") || ""
+                    (router.pathname === RouterKeys.myWallet && 'active') || ''
                   }`}
                 >
                   MY WALLET
+                </span>
+              </Col>
+            </Row>
+            <Row
+              className="menu-item-row"
+              onClick={() => hanldeMenuClick(RouterKeys.profile)}
+            >
+              <Col span={24} className="info-name">
+                <span
+                  className={`name ${
+                    (router.pathname === RouterKeys.profile && 'active') || ''
+                  }`}
+                >
+                  PROFILE
                 </span>
               </Col>
             </Row>

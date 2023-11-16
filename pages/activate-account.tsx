@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   Row,
@@ -16,9 +16,9 @@ import {
   EyeOutlined,
   CaretDownOutlined,
   LoadingOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import { format } from 'date-fns';
-import { cloneDeep } from 'lodash';
 
 import { useCookie } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -33,7 +33,13 @@ import {
   selectUserGender,
   selectGetUserGenderLoading,
 } from '../slice/user.slice';
-import { isPassword, base64Decrypt, getErrorMessage } from '../utils/func';
+import {
+  isPassword,
+  base64Decrypt,
+  getErrorMessage,
+  profileNameValidator,
+  checkPhoneNumber,
+} from '../utils/func';
 import {
   TokenExpire,
   PrivacyPolicyLink,
@@ -41,13 +47,14 @@ import {
   PasswordNotMatch,
   BirthdayNotVaild,
   DefaultSelectCountry,
-  CountryItemProps,
 } from '../constants/General';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
 import AuthPageHearder from '@/components/authPageHearder';
 import { ActivateAccountContainer } from '@/styles/activateAccount.style';
+import CountrySelecter from '@/components/countrySelecter';
 import countryDataList from '@/utils/countrycode.data.json';
+import { Images } from '@/theme';
 
 const ActivateAccount = ({
   redirectPage,
@@ -62,11 +69,12 @@ const ActivateAccount = ({
   currentTicketId: string;
   currentTicketEventSlug: string;
 }) => {
-  const cookies = useCookie([CookieKeys.userLoginToken]);
+  const cookies = useCookie([
+    CookieKeys.userLoginToken,
+    CookieKeys.userProfileInfo,
+  ]);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const countryListSelect = useRef<any>(null);
-  const searchInputSelect = useRef<any>(null);
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
@@ -82,9 +90,8 @@ const ActivateAccount = ({
   const [passwordValue, setPasswordValue] = useState<string>('');
   const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(false);
-  const [sortCountryList, setSortCountryList] = useState<CountryItemProps[]>(
-    []
-  );
+  const [currentSelectCountry, setCurrentSelectCountry] =
+    useState<string>(DefaultSelectCountry);
   const [showCountryItems, setShowCountryItems] = useState<boolean>(false);
   const [formatGenderData, setFormatGenderData] = useState<
     {
@@ -99,12 +106,19 @@ const ActivateAccount = ({
       password: '',
       birthday: '',
       genderId: '',
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      phoneShortCode: '',
       country: DefaultSelectCountry,
     }
   );
+  const [phoneNumberError, setPhoneNumberError] = useState<boolean>(false);
+  const [selectPhoneCode, setSelectPhoneCode] = useState<string>('');
+  const [passwordSuccess, setPasswordSuccess] = useState<boolean>(false);
 
   const onFinish = () => {
-    if (checked) {
+    if (!passwordSuccess) {
       if (activateAccountFormValue.password !== confirmPasswordValue) {
         setPasswordValue('');
         setConfirmPasswordValue('');
@@ -117,6 +131,22 @@ const ActivateAccount = ({
           className: 'error-message-event',
         });
         return;
+      } else {
+        setPasswordSuccess(true);
+      }
+      return;
+    }
+    if (checked) {
+      if (
+        !checkPhoneNumber(
+          activateAccountFormValue.phoneNumber,
+          activateAccountFormValue.phoneShortCode
+        )
+      ) {
+        setPhoneNumberError(true);
+        return;
+      } else {
+        setPhoneNumberError(false);
       }
       if (
         new Date(activateAccountFormValue.birthday).getTime() >
@@ -128,39 +158,23 @@ const ActivateAccount = ({
         });
         return;
       }
-      dispatch(loginAction(activateAccountFormValue));
+      dispatch(
+        loginAction({
+          ...activateAccountFormValue,
+          phoneNumber: `${selectPhoneCode}-${activateAccountFormValue.phoneNumber}`,
+        })
+      );
     } else {
       setTextShak(true);
     }
   };
 
-  const sortData = (list: CountryItemProps[]) => {
-    const listSort: CountryItemProps[] = cloneDeep(list).sort(
-      (x: CountryItemProps, y: CountryItemProps) =>
-        x.country.localeCompare(y.country)
-    );
-    return listSort;
-  };
-
-  const searchCountryOnChange = (e: string) => {
-    const searchItems: CountryItemProps[] = [];
-    countryDataList.map((item: CountryItemProps) => {
-      if (item.country.toLowerCase().includes(e)) {
-        searchItems.push(item);
-      }
+  useEffect(() => {
+    setActivateAccountFormValue({
+      ...activateAccountFormValue,
+      country: currentSelectCountry,
     });
-    setSortCountryList(sortData(searchItems));
-  };
-
-  const clickCallback = (e: any) => {
-    if (
-      countryListSelect.current.contains(e.target) ||
-      searchInputSelect.current.contains(e.target)
-    ) {
-      return;
-    }
-    setShowCountryItems(false);
-  };
+  }, [currentSelectCountry]);
 
   useEffect(() => {
     if (userGender.length) {
@@ -201,6 +215,11 @@ const ActivateAccount = ({
           domain: window.location.hostname,
         }
       );
+      cookies.setCookie(CookieKeys.userProfileInfo, data.user, {
+        expires: new Date(currentDate.getTime() + TokenExpire),
+        path: '/',
+        domain: window.location.hostname,
+      });
       if (currentTicketId && !currentTicketEventSlug) {
         router.push(RouterKeys.eventList);
         return;
@@ -232,23 +251,26 @@ const ActivateAccount = ({
   }, [error]);
 
   useEffect(() => {
-    if (!showCountryItems) {
-      setSortCountryList(sortData(countryDataList));
-    } else {
-      document.addEventListener('click', clickCallback, false);
-    }
-    return () => {
-      document.removeEventListener('click', clickCallback, false);
-    };
-  }, [showCountryItems]);
-
-  useEffect(() => {
     dispatch(getUserGenderAction());
     setIsFirstRender(false);
     return () => {
       dispatch(reset());
     };
   }, []);
+
+  const selectCountryCodeChange = (e: string) => {
+    const country = e.split('-')[1];
+    const phoneCode = e.split('-')[0];
+    const countryCode = countryDataList.find(
+      (item) => item.country === country
+    );
+    setActivateAccountFormValue({
+      ...activateAccountFormValue,
+      phoneShortCode: countryCode?.shortCode || '',
+    });
+    setSelectPhoneCode(phoneCode);
+    setPhoneNumberError(false);
+  };
 
   return (
     <>
@@ -269,6 +291,11 @@ const ActivateAccount = ({
             ''
           }
         >
+          <img
+            className="page-background"
+            src={Images.AnimatedBackground.src}
+            alt=""
+          />
           <AuthPageHearder
             skipClick={() => router.push(RouterKeys.eventList)}
           />
@@ -285,225 +312,295 @@ const ActivateAccount = ({
                     ACTIVATE YOUR ACCOUNT
                   </Col>
                 </Row>
-                <Form onFinish={onFinish}>
-                  <div className="tips">Signup with</div>
-                  <div className="tips signup-email">{defultEmail}</div>
-                  <Form.Item>
-                    <div>
+                {!passwordSuccess && (
+                  <Form onFinish={onFinish}>
+                    <div className="tips">Signup with</div>
+                    <div className="tips signup-email">{defultEmail}</div>
+                    <Form.Item>
+                      <div>
+                        <Input.Password
+                          value={passwordValue}
+                          className={`${
+                            (passwordValue && 'border-white') || ''
+                          }`}
+                          placeholder="Set your password (at least 8 characters)"
+                          bordered={false}
+                          maxLength={20}
+                          iconRender={(visible) =>
+                            visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                          }
+                          onChange={(e) => {
+                            setPasswordValue(e.target.value);
+                            setActivateAccountFormValue({
+                              ...activateAccountFormValue,
+                              password: e.target.value,
+                            });
+                          }}
+                        />
+                      </div>
+                    </Form.Item>
+                    {activateAccountFormValue.password &&
+                      !isPassword(activateAccountFormValue.password) && (
+                        <div className="tips password">
+                          Set your password (at least 8 characters)
+                        </div>
+                      )}
+                    <Form.Item>
                       <Input.Password
-                        value={passwordValue}
-                        className={`${(passwordValue && 'border-white') || ''}`}
-                        placeholder="Set your password (at least 8 characters)"
-                        bordered={false}
-                        maxLength={20}
+                        value={confirmPasswordValue}
+                        className={`${
+                          (confirmPasswordValue && 'border-white') || ''
+                        }`}
                         iconRender={(visible) =>
                           visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                         }
-                        onChange={(e) => {
-                          setPasswordValue(e.target.value);
+                        placeholder="Confirm your password"
+                        bordered={false}
+                        maxLength={20}
+                        onChange={(e) =>
+                          setConfirmPasswordValue(e.target.value)
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      className={(isTextShak && 'text-shak') || ''}
+                      style={{ marginBottom: 0 }}
+                    >
+                      <div className="agreement-wrapper">
+                        <Checkbox
+                          className={`${
+                            (!checked && 'checkbox-show-error') || ''
+                          }`}
+                          checked={checked}
+                          onChange={(e) => setChecked(e.target.checked)}
+                        />
+                        <div style={{ marginLeft: 8 }}>
+                          <span className="agreement-label">
+                            I agree to CrowdServe{' '}
+                            <span
+                              className="agreement-label-action"
+                              onClick={() => {
+                                setGoogleDocLink(TermsConditionsLink);
+                                setCheckGoogleDoc(true);
+                              }}
+                            >
+                              Terms&Conditions
+                            </span>
+                            and{' '}
+                            <span
+                              className="agreement-label-action"
+                              onClick={() => {
+                                setGoogleDocLink(PrivacyPolicyLink);
+                                setCheckGoogleDoc(true);
+                              }}
+                            >
+                              Privacy Policy.
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </Form.Item>
+                    <Form.Item>
+                      <Button
+                        className="signin-btn"
+                        disabled={
+                          !activateAccountFormValue.email ||
+                          !activateAccountFormValue.password ||
+                          !confirmPasswordValue ||
+                          !checked
+                        }
+                        type="primary"
+                        htmlType="submit"
+                        onClick={() => setTextShak(false)}
+                      >
+                        NEXT
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                )}
+                {passwordSuccess && (
+                  <Form onFinish={onFinish}>
+                    <Form.Item
+                      name="firstName"
+                      rules={[{ validator: profileNameValidator }]}
+                      getValueFromEvent={(e) => {
+                        const { value } = e.target;
+                        return value
+                          .replace(/[0-9]/g, '')
+                          .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
+                      }}
+                    >
+                      <Input
+                        className={`${
+                          (activateAccountFormValue.firstName &&
+                            'border-white') ||
+                          ''
+                        }`}
+                        placeholder="First name (at least 2 characters)"
+                        maxLength={20}
+                        bordered={false}
+                        onChange={(e) =>
                           setActivateAccountFormValue({
                             ...activateAccountFormValue,
-                            password: e.target.value,
+                            firstName: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="lastName"
+                      getValueFromEvent={(e) => {
+                        const { value } = e.target;
+                        return value
+                          .replace(/[0-9]/g, '')
+                          .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
+                      }}
+                    >
+                      <Input
+                        className={`${
+                          (activateAccountFormValue.lastName &&
+                            'border-white') ||
+                          ''
+                        }`}
+                        placeholder="Last name (at least 1 character)"
+                        maxLength={20}
+                        bordered={false}
+                        onChange={(e) =>
+                          setActivateAccountFormValue({
+                            ...activateAccountFormValue,
+                            lastName: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      className={
+                        (phoneNumberError && 'phone-number-item error') ||
+                        'phone-number-item'
+                      }
+                      name="phoneNumber"
+                      getValueFromEvent={(e) => {
+                        const { value } = e.target;
+                        return value.replace(/[^0-9]/g, '');
+                      }}
+                    >
+                      <Input
+                        placeholder="Phone number"
+                        className="phone-number-item-input"
+                        bordered={false}
+                        onChange={(e) => {
+                          setPhoneNumberError(false);
+                          setActivateAccountFormValue({
+                            ...activateAccountFormValue,
+                            phoneNumber: e.target.value,
                           });
                         }}
+                        addonBefore={
+                          <Select
+                            showSearch
+                            placeholder="Country"
+                            popupClassName="gender-select-dropdown select-country"
+                            options={countryDataList.map((item) => ({
+                              value: `${item.code}-${item.country}`,
+                              label: (
+                                <div className="country-code-label">
+                                  <span>{item.code}</span>
+                                  <span>{item.country}</span>
+                                </div>
+                              ),
+                            }))}
+                            suffixIcon={<DownOutlined />}
+                            onChange={selectCountryCodeChange}
+                          />
+                        }
                       />
-                    </div>
-                  </Form.Item>
-                  {activateAccountFormValue.password &&
-                    !isPassword(activateAccountFormValue.password) && (
-                      <div className="tips password">
-                        Set your password (at least 8 characters)
+                    </Form.Item>
+                    {phoneNumberError && (
+                      <div className="phone-number-error">
+                        Invalid phone number
                       </div>
                     )}
-                  <Form.Item>
-                    <Input.Password
-                      value={confirmPasswordValue}
-                      className={`${
-                        (confirmPasswordValue && 'border-white') || ''
-                      }`}
-                      iconRender={(visible) =>
-                        visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                      }
-                      placeholder="Confirm your password"
-                      bordered={false}
-                      maxLength={20}
-                      onChange={(e) => setConfirmPasswordValue(e.target.value)}
-                    />
-                  </Form.Item>
-                  <Form.Item name="genderId">
-                    <Select
-                      popupClassName="gender-select-dropdown"
-                      className={`${
-                        (activateAccountFormValue.genderId &&
-                          'gender-select border-white') ||
-                        'gender-select'
-                      }`}
-                      value={activateAccountFormValue.genderId}
-                      placeholder="Gender"
-                      onChange={(e) =>
-                        setActivateAccountFormValue({
-                          ...activateAccountFormValue,
-                          genderId: e,
-                        })
-                      }
-                      options={formatGenderData}
-                      suffixIcon={<CaretDownOutlined />}
-                    />
-                  </Form.Item>
-                  <Form.Item name="birthday">
-                    <DatePicker
-                      inputReadOnly
-                      className={`${
-                        (activateAccountFormValue.birthday && 'border-white') ||
-                        ''
-                      }`}
-                      format="MMM DD, YYYY"
-                      showToday={false}
-                      popupClassName="birth-picker-dropdown"
-                      allowClear={false}
-                      placeholder="Date of Birth"
-                      onChange={(_, dateString) =>
-                        setActivateAccountFormValue({
-                          ...activateAccountFormValue,
-                          birthday: format(new Date(dateString), 'yyyy-MM-dd'),
-                        })
-                      }
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    className="form-country"
-                    style={{ marginBottom: 0 }}
-                  >
-                    <>
-                      <div
-                        ref={countryListSelect}
-                        className="search-select-country"
-                        onClick={() => setShowCountryItems(!showCountryItems)}
-                      >
-                        <div className="content">
-                          <span className="country-flag">
-                            {countryDataList.find(
-                              (item) =>
-                                item.country ===
-                                activateAccountFormValue.country
-                            )?.flag || ''}
-                          </span>
-                          <span className="country-name">
-                            {
-                              countryDataList.find(
-                                (item) =>
-                                  item.country ===
-                                  activateAccountFormValue.country
-                              )?.country
-                            }
-                          </span>
-                        </div>
-                        <CaretDownOutlined />
-                      </div>
-                      {showCountryItems && (
-                        <div className="country-items">
-                          <div
-                            ref={searchInputSelect}
-                            className="search-input-content"
-                          >
-                            <Input
-                              placeholder="Search country"
-                              onChange={(e) => {
-                                searchCountryOnChange(
-                                  e.target.value.toLowerCase()
-                                );
-                              }}
-                            />
-                          </div>
-                          {(sortCountryList.length &&
-                            sortCountryList.map((item: CountryItemProps) => (
-                              <div
-                                key={`${item.code}-${item.country}`}
-                                className="content"
-                                onClick={() => {
-                                  setShowCountryItems(false);
-                                  setActivateAccountFormValue({
-                                    ...activateAccountFormValue,
-                                    country: item.country,
-                                  });
-                                }}
-                              >
-                                <span className="country-flag">
-                                  {item.flag}
-                                </span>
-                                <span className="country-name">
-                                  {item.country}
-                                </span>
-                              </div>
-                            ))) || (
-                            <div className="content no-data">
-                              <span className="country-name">
-                                No data found
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  </Form.Item>
-                  <Form.Item>
-                    <Button
-                      className="signin-btn"
-                      disabled={
-                        !isPassword(activateAccountFormValue.password) ||
-                        !isPassword(confirmPasswordValue) ||
-                        !activateAccountFormValue.email ||
-                        !activateAccountFormValue.genderId ||
-                        !activateAccountFormValue.birthday ||
-                        !checked ||
-                        loading
-                      }
-                      type="primary"
-                      htmlType="submit"
-                      onClick={() => setTextShak(false)}
-                    >
-                      ACTIVATE
-                    </Button>
-                  </Form.Item>
-                  <Form.Item
-                    className={(isTextShak && 'text-shak') || ''}
-                    style={{ marginBottom: 0 }}
-                  >
-                    <div className="agreement-wrapper">
-                      <Checkbox
+                    <Form.Item name="genderId">
+                      <Select
+                        popupClassName="gender-select-dropdown"
                         className={`${
-                          (!checked && 'checkbox-show-error') || ''
+                          (activateAccountFormValue.genderId &&
+                            'gender-select border-white') ||
+                          'gender-select'
                         }`}
-                        checked={checked}
-                        onChange={(e) => setChecked(e.target.checked)}
+                        value={activateAccountFormValue.genderId}
+                        placeholder="Sex"
+                        onChange={(e) =>
+                          setActivateAccountFormValue({
+                            ...activateAccountFormValue,
+                            genderId: e,
+                          })
+                        }
+                        options={formatGenderData}
+                        suffixIcon={<CaretDownOutlined />}
                       />
-                      <div style={{ marginLeft: 8 }}>
-                        <span className="agreement-label">
-                          I agree to CrowdServe{' '}
-                          <span
-                            className="agreement-label-action"
-                            onClick={() => {
-                              setGoogleDocLink(TermsConditionsLink);
-                              setCheckGoogleDoc(true);
-                            }}
-                          >
-                            Terms&Conditions
-                          </span>
-                          and{' '}
-                          <span
-                            className="agreement-label-action"
-                            onClick={() => {
-                              setGoogleDocLink(PrivacyPolicyLink);
-                              setCheckGoogleDoc(true);
-                            }}
-                          >
-                            Privacy Policy.
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-                  </Form.Item>
-                </Form>
+                    </Form.Item>
+                    <Form.Item name="birthday">
+                      <DatePicker
+                        inputReadOnly
+                        className={`${
+                          (activateAccountFormValue.birthday &&
+                            'border-white') ||
+                          ''
+                        }`}
+                        format="MMM DD, YYYY"
+                        showToday={false}
+                        popupClassName="birth-picker-dropdown"
+                        allowClear={false}
+                        placeholder="Date of Birth"
+                        onChange={(_, dateString) =>
+                          setActivateAccountFormValue({
+                            ...activateAccountFormValue,
+                            birthday: format(
+                              new Date(dateString),
+                              'yyyy-MM-dd'
+                            ),
+                          })
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      className="form-country"
+                      style={{ marginBottom: 0 }}
+                    >
+                      <CountrySelecter
+                        showCountryItems={showCountryItems}
+                        currentCountry={activateAccountFormValue.country}
+                        setShowCountryItems={setShowCountryItems}
+                        setCurrentSelectCountry={setCurrentSelectCountry}
+                      />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button
+                        className="signin-btn"
+                        disabled={
+                          !isPassword(activateAccountFormValue.password) ||
+                          !isPassword(confirmPasswordValue) ||
+                          !activateAccountFormValue.email ||
+                          !activateAccountFormValue.genderId ||
+                          !activateAccountFormValue.birthday ||
+                          !activateAccountFormValue.firstName ||
+                          !activateAccountFormValue.lastName ||
+                          !activateAccountFormValue.phoneNumber ||
+                          !activateAccountFormValue.phoneShortCode ||
+                          !activateAccountFormValue.country ||
+                          !checked ||
+                          loading
+                        }
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        ACTIVATE
+                        {loading && <LoadingOutlined />}
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                )}
               </div>
             </div>
           </div>
