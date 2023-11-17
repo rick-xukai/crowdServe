@@ -122,6 +122,7 @@ const PageHearderResponsiveContainer = styled.div`
     .img-avatar {
       width: 40px;
       height: 40px;
+      cursor: pointer;
       img {
         width: 100%;
         height: 100%;
