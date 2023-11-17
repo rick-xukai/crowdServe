@@ -343,15 +343,12 @@ const Profile = () => {
               <Row>
                 <Col
                   className={
-                    (profileDetails.firstName &&
-                      profileDetails.lastName &&
-                      'profile-name') ||
+                    (profileDetails.firstName && 'profile-name') ||
                     'profile-name no-filled'
                   }
                   span={24}
                 >
                   {(profileDetails.firstName &&
-                    profileDetails.lastName &&
                     `${profileDetails.firstName} ${profileDetails.lastName}`) ||
                     'To be filled'}
                 </Col>
