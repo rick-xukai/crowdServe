@@ -400,7 +400,6 @@ const CreateAccount = ({
         </LoginContainer>
       )) || (
         <LoginContainer
-          style={{ paddingBottom: showCountryItems ? '100vh' : '' }}
           className={
             (isOpenAppShow &&
               `${

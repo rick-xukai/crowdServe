@@ -157,7 +157,7 @@ const ActivateAccountContainer = styled.div`
         }
       }
       .ant-input {
-        background: transparent;
+        background: ${Colors.grayScale50} !important;
         border: none;
         color: ${Colors.white};
         padding: 8px 0;

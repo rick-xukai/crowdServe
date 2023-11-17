@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import { Colors } from '@/theme';
 
 const CountryCodePhoneNumberContainer = styled.div`
+  .addon-before-input {
+    input {
+      padding-left: 5px !important;
+    }
+  }
   .country-code {
     .phone-code-tigger {
       margin-right: 0;
@@ -94,7 +99,7 @@ const CountryCodePhoneNumberContainer = styled.div`
   }
   .phone-number-item {
     .phone-code-tigger {
-      margin-right: 30px;
+      margin-right: 0px;
       color: ${Colors.backgorund};
       font-size: 14px;
       cursor: pointer;
@@ -107,7 +112,7 @@ const CountryCodePhoneNumberContainer = styled.div`
         }
       }
       > :first-child {
-        margin-right: 30px;
+        margin-right: 15px;
       }
     }
     &.error {

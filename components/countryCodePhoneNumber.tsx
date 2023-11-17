@@ -34,6 +34,7 @@ const CountryCodePhoneNumber = ({
         }}
       >
         <Input
+          className="addon-before-input"
           placeholder="Phone number"
           onChange={(e) => inputOnChange(e.target.value)}
           addonBefore={
