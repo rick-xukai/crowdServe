@@ -5,7 +5,7 @@ import { Colors } from '@/theme';
 const CountryCodePhoneNumberContainer = styled.div`
   .country-code {
     .phone-code-tigger {
-      margin-right: 30px;
+      margin-right: 0;
       color: ${Colors.white};
       font-size: 17px;
       font-weight: 300;
@@ -20,7 +20,7 @@ const CountryCodePhoneNumberContainer = styled.div`
         }
       }
       > :first-child {
-        margin-right: 30px;
+        margin-right: 15px;
       }
     }
     &.error {
