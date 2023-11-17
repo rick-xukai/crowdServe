@@ -184,25 +184,6 @@ const ProfileContainer = styled.div`
       }
     }
   }
-  .phone-code-tigger {
-    margin-right: 30px;
-    color: ${Colors.white};
-    font-size: 17px;
-    font-weight: 300;
-    line-height: 24px;
-    padding-bottom: 5px;
-    cursor: pointer;
-    &.placeholder {
-      color: ${Colors.grayScale50};
-      font-size: 15px;
-      .anticon {
-        font-size: 17px;
-      }
-    }
-    > :first-child {
-      margin-right: 30px;
-    }
-  }
   .profile-background {
     height: 240px;
     img {
@@ -241,76 +222,6 @@ const ProfileContainer = styled.div`
     color: ${Colors.white};
     font-size: 17px;
     font-weight: 300;
-  }
-  .country-code {
-    &.error {
-      .ant-form-item-control-input-content {
-        border-bottom: 1px solid ${Colors.branding} !important;
-      }
-    }
-    .ant-form-item-control-input-content {
-      padding-bottom: 2.5px !important;
-      padding-right: 15px;
-    }
-    .ant-select-selection-search {
-      inset-inline-start: 0;
-      inset-inline-end: 0;
-    }
-    .country-code-label {
-      color: ${Colors.white};
-      font-size: 17px;
-      font-weight: 300;
-      line-height: 24px;
-      > :last-child {
-        display: none;
-      }
-    }
-    .ant-select-selection-item {
-      color: ${Colors.white};
-      font-size: 17px;
-      font-weight: 300;
-    }
-    .anticon {
-      margin-top: -5px;
-      font-size: 15px;
-    }
-    .ant-input-group-addon {
-      padding-left: 0;
-      padding-right: 20px;
-      border: none;
-    }
-    .ant-input-group .ant-input-group-addon .ant-select {
-      margin: 0;
-    }
-    .ant-select-selector {
-      border: none;
-    }
-    .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
-      padding-inline-end: 30px;
-    }
-    .ant-input-group
-      .ant-input-group-addon
-      .ant-select-open
-      .ant-select-selector,
-    .ant-input-group
-      .ant-input-group-addon
-      .ant-select-focused
-      .ant-select-selector {
-      color: ${Colors.white};
-    }
-    .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
-      .ant-select-selector {
-      border: none;
-    }
-    .ant-input-group
-      .ant-input-group-addon
-      .ant-select.ant-select-single:not(.ant-select-customize-input)
-      .ant-select-selector {
-      border: none;
-    }
-    .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder {
-      padding-inline-end: 30px;
-    }
   }
   .page-loading {
     width: 100%;

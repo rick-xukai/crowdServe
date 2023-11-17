@@ -13,6 +13,9 @@ const ActivateAccountContainer = styled.div`
   ::-webkit-scrollbar {
     display: none;
   }
+  .ant-input:focus {
+    box-shadow: unset;
+  }
   .page-background {
     position: fixed;
     width: 100%;
@@ -154,7 +157,7 @@ const ActivateAccountContainer = styled.div`
         }
       }
       .ant-input {
-        background: transparent;
+        background: ${Colors.grayScale50} !important;
         border: none;
         color: ${Colors.white};
         padding: 8px 0;
@@ -264,67 +267,55 @@ const ActivateAccountContainer = styled.div`
     font-weight: 300;
     margin-top: 5px;
   }
-  .phone-number-item {
-    &.error {
-      margin-bottom: 0 !important;
+  .phone-code-drawer {
+    .ant-drawer-content-wrapper {
+      box-shadow: unset;
     }
-    .country-code-label {
-      > :last-child {
+    .ant-drawer-content {
+      background: ${Colors.backgorund};
+    }
+    .ant-drawer-header {
+      display: none;
+    }
+    .ant-drawer-body {
+      padding: 15px !important;
+      ::-webkit-scrollbar {
         display: none;
       }
     }
     .ant-input {
+      height: 40px;
+      background: transparent;
       border: none;
-    }
-    .ant-input-wrapper {
-      > :last-child {
-        margin-left: -1px;
+      border-bottom: 1px solid ${Colors.grayScale90};
+      border-radius: 0;
+      color: ${Colors.white};
+      font-size: 17px;
+      font-weight: 300;
+      padding: 0;
+      &::placeholder {
+        color: ${Colors.grayScale50};
+        font-size: 15px;
       }
     }
-    .ant-input-group-addon {
-      background-color: ${Colors.white};
-      border: none;
-      border-radius: 2px;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      .ant-select-selection-placeholder {
-        padding-top: 0;
-        padding-inline-end: 30px;
+    .ant-input:focus {
+      box-shadow: unset;
+    }
+    .code-items {
+      margin-top: 16px;
+      > :first-child {
+        color: ${Colors.white};
+        font-size: 15px;
         font-weight: 400;
-        font-size: 14px;
-        color: ${Colors.grayScale40};
+        line-height: 21px;
+        margin-right: 10px;
       }
-    }
-    .ant-input-group
-      .ant-input-group-addon
-      .ant-select.ant-select-single:not(.ant-select-customize-input)
-      .ant-select-selector {
-      border: none;
-    }
-    .ant-select-single .ant-select-selector .ant-select-selection-item {
-      padding-left: 0;
-    }
-    .ant-select-single .ant-select-selector .ant-select-selection-item {
-      line-height: 35px;
-    }
-    .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
-      padding-inline-end: 35px;
-    }
-    .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
-      .ant-select-selector {
-      border: none;
-    }
-    .ant-input-group
-      .ant-input-group-addon
-      .ant-select-open
-      .ant-select-selector,
-    .ant-input-group
-      .ant-input-group-addon
-      .ant-select-focused
-      .ant-select-selector {
-      color: ${Colors.black};
-    }
-    .phone-number-item-input {
+      > :last-child {
+        color: ${Colors.grayScale40};
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 21px;
+      }
     }
   }
   .agreement-wrapper {

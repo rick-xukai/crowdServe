@@ -16,7 +16,6 @@ import {
   InfoCircleOutlined,
   CaretDownOutlined,
   LoadingOutlined,
-  DownOutlined,
 } from '@ant-design/icons';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
@@ -67,6 +66,7 @@ import { useCookie } from '@/hooks';
 import { CookieKeys } from '@/constants/Keys';
 import countryDataList from '@/utils/countrycode.data.json';
 import ShowUpdateProfilePopup from '@/components/showUpdateProfilePopup';
+import CountryCodePhoneNumber from '@/components/countryCodePhoneNumber';
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);
@@ -205,6 +205,16 @@ const Profile = () => {
     return null;
   };
 
+  const countryCodePhoneNumberProps = {
+    selectPhoneCode: selectPhoneCode,
+    selectDefaultValue: checkCountryCodeDefaultValue(),
+    inputOnChange: () => {
+      setPhoneNumberError(false);
+    },
+    selectCountryCodeChange: selectCountryCodeChange,
+    setDrawerOpen: setDrawerOpen,
+  };
+
   useEffect(() => {
     if (profileDetails.id !== 0) {
       const currentDate = new Date();
@@ -268,12 +278,10 @@ const Profile = () => {
       setPhoneCodeItems([]);
       setShowPhoneCodeItems(false);
     } else {
-      const items =
-        (selectPhoneCode &&
-          countryDataList.filter((item) =>
-            item.code.includes(selectPhoneCode)
-          )) ||
-        [];
+      const items = (selectPhoneCode &&
+        countryDataList.filter((item) =>
+          item.code.includes(selectPhoneCode)
+        )) || [...countryDataList];
       setPhoneCodeItems(items);
       if (items.length) {
         setShowPhoneCodeItems(true);
@@ -335,15 +343,12 @@ const Profile = () => {
               <Row>
                 <Col
                   className={
-                    (profileDetails.firstName &&
-                      profileDetails.lastName &&
-                      'profile-name') ||
+                    (profileDetails.firstName && 'profile-name') ||
                     'profile-name no-filled'
                   }
                   span={24}
                 >
                   {(profileDetails.firstName &&
-                    profileDetails.lastName &&
                     `${profileDetails.firstName} ${profileDetails.lastName}`) ||
                     'To be filled'}
                 </Col>
@@ -464,7 +469,7 @@ const Profile = () => {
             </div>
             {!menuState && <PageBottomComponent />}
           </div>
-          <PopupEditer open={showEditer}>
+          <PopupEditer open={showEditer} setShowEditer={setShowEditer}>
             <EditerContent>
               {(!getUserGenderLoading && (
                 <>
@@ -572,85 +577,26 @@ const Profile = () => {
                     <Row className="editer-row">
                       <Col span={24}>
                         <div className="editer-field">
-                          <div
-                            className="title"
-                            onClick={() => setDrawerOpen(true)}
-                          >
-                            Phone number
-                          </div>
+                          <div className="title">Phone number</div>
                           <Col xs={24} sm={0}>
-                            <Form.Item
-                              name="phoneNumber"
-                              className={
+                            <CountryCodePhoneNumber
+                              isMobile
+                              formItemClassName={
                                 (phoneNumberError && 'country-code error') ||
                                 'country-code'
                               }
-                              rules={[{ required: true, message: 'Required' }]}
-                              getValueFromEvent={(e) => {
-                                const { value } = e.target;
-                                return value.replace(/[^0-9]/g, '');
-                              }}
-                            >
-                              <Input
-                                placeholder="Phone number"
-                                onChange={() => setPhoneNumberError(false)}
-                                addonBefore={
-                                  <div
-                                    className={
-                                      (!selectPhoneCode &&
-                                        'phone-code-tigger placeholder') ||
-                                      'phone-code-tigger'
-                                    }
-                                    onClick={() => setDrawerOpen(true)}
-                                  >
-                                    <span className="placeholder">
-                                      {selectPhoneCode || 'Country'}
-                                    </span>
-                                    <span>
-                                      <DownOutlined />
-                                    </span>
-                                  </div>
-                                }
-                              />
-                            </Form.Item>
+                              {...countryCodePhoneNumberProps}
+                            />
                           </Col>
                           <Col xs={0} sm={24}>
-                            <Form.Item
-                              name="phoneNumber"
-                              className={
+                            <CountryCodePhoneNumber
+                              isMobile={false}
+                              formItemClassName={
                                 (phoneNumberError && 'country-code error') ||
                                 'country-code'
                               }
-                              rules={[{ required: true, message: 'Required' }]}
-                              getValueFromEvent={(e) => {
-                                const { value } = e.target;
-                                return value.replace(/[^0-9]/g, '');
-                              }}
-                            >
-                              <Input
-                                placeholder="Phone number"
-                                onChange={() => setPhoneNumberError(false)}
-                                addonBefore={
-                                  <Select
-                                    defaultValue={checkCountryCodeDefaultValue()}
-                                    showSearch
-                                    placeholder="Country"
-                                    popupClassName="gender-select-dropdown select-country"
-                                    options={countryDataList.map((item) => ({
-                                      value: `${item.code}-${item.country}`,
-                                      label: (
-                                        <div className="country-code-label">
-                                          <span>{item.code}</span>
-                                          <span>{item.country}</span>
-                                        </div>
-                                      ),
-                                    }))}
-                                    suffixIcon={<DownOutlined />}
-                                    onChange={selectCountryCodeChange}
-                                  />
-                                }
-                              />
-                            </Form.Item>
+                              {...countryCodePhoneNumberProps}
+                            />
                           </Col>
                         </div>
                         {phoneNumberError && (
@@ -773,16 +719,14 @@ const Profile = () => {
               placeholder="Country"
               defaultValue={checkCountryCodeDefaultValue() || ''}
               onChange={(e) => {
-                const items =
-                  (e.target.value &&
-                    countryDataList.filter(
-                      (item) =>
-                        item.code.includes(e.target.value) ||
-                        item.country
-                          .toLowerCase()
-                          .includes(e.target.value.toLowerCase())
-                    )) ||
-                  [];
+                const items = (e.target.value &&
+                  countryDataList.filter(
+                    (item) =>
+                      item.code.includes(e.target.value) ||
+                      item.country
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase())
+                  )) || [...countryDataList];
                 setPhoneCodeItems(items);
                 setShowPhoneCodeItems(true);
               }}
@@ -791,7 +735,7 @@ const Profile = () => {
               <>
                 {phoneCodeItems.map((item: any) => (
                   <div
-                    key={item.country}
+                    key={`${item.code}-${item.country}`}
                     className="code-items"
                     onClick={() => {
                       selectCountryCodeChange(`${item.code}-${item.country}`);

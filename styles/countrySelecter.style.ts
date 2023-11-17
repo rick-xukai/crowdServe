@@ -73,8 +73,8 @@ const CountrySelecterContainer = styled.div`
     }
     .ant-input {
       padding: 8px 0 !important;
-      background: transparent;
-      border: none;
+      background: ${Colors.grayScale50} !important;
+      border: none !important;
       &::placeholder {
         color: ${Colors.grayScale40};
       }

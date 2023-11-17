@@ -10,6 +10,9 @@ const LoginContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover; */
+  .ant-input:focus {
+    box-shadow: unset;
+  }
   .page-background {
     position: fixed;
     width: 100%;
@@ -35,6 +38,57 @@ const LoginContainer = styled.div`
     color: ${Colors.branding};
     .anticon {
       margin: auto;
+    }
+  }
+  .phone-code-drawer {
+    .ant-drawer-content-wrapper {
+      box-shadow: unset;
+    }
+    .ant-drawer-content {
+      background: ${Colors.backgorund};
+    }
+    .ant-drawer-header {
+      display: none;
+    }
+    .ant-drawer-body {
+      padding: 15px !important;
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .ant-input {
+      height: 40px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid ${Colors.grayScale90};
+      border-radius: 0;
+      color: ${Colors.white};
+      font-size: 17px;
+      font-weight: 300;
+      padding: 0;
+      &::placeholder {
+        color: ${Colors.grayScale50};
+        font-size: 15px;
+      }
+    }
+    .ant-input:focus {
+      box-shadow: unset;
+    }
+    .code-items {
+      margin-top: 16px;
+      > :first-child {
+        color: ${Colors.white};
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 21px;
+        margin-right: 10px;
+      }
+      > :last-child {
+        color: ${Colors.grayScale40};
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 21px;
+      }
     }
   }
   .page-main {
@@ -184,7 +238,7 @@ const LoginContainer = styled.div`
       transition: background-color 5000s ease-in-out 0s !important;
     }
     .ant-form {
-      padding: 0 60px;
+      /* padding: 0 60px; */
       .ant-form-item {
         margin-bottom: 16px;
       }
@@ -336,7 +390,7 @@ const LoginContainer = styled.div`
   }
   .code-sent {
     margin-bottom: 30px;
-    padding: 0 60px;
+    /* padding: 0 60px; */
     .title {
       font-weight: 300;
       font-size: 17px;
@@ -542,9 +596,9 @@ const LoginContainer = styled.div`
       .main-form-content {
         width: 580px;
         padding: 60px 60px;
-        .ant-form {
+        /* .ant-form {
           padding: 0 40px;
-        }
+        } */
       }
     }
   }

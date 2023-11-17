@@ -10,13 +10,13 @@ import {
   Checkbox,
   Select,
   DatePicker,
+  Drawer,
 } from 'antd';
 import {
   EyeInvisibleOutlined,
   EyeOutlined,
   CaretDownOutlined,
   LoadingOutlined,
-  DownOutlined,
 } from '@ant-design/icons';
 import { format } from 'date-fns';
 
@@ -55,6 +55,7 @@ import { ActivateAccountContainer } from '@/styles/activateAccount.style';
 import CountrySelecter from '@/components/countrySelecter';
 import countryDataList from '@/utils/countrycode.data.json';
 import { Images } from '@/theme';
+import CountryCodePhoneNumber from '@/components/countryCodePhoneNumber';
 
 const ActivateAccount = ({
   redirectPage,
@@ -116,6 +117,9 @@ const ActivateAccount = ({
   const [phoneNumberError, setPhoneNumberError] = useState<boolean>(false);
   const [selectPhoneCode, setSelectPhoneCode] = useState<string>('');
   const [passwordSuccess, setPasswordSuccess] = useState<boolean>(false);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
+  const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
 
   const onFinish = () => {
     if (!passwordSuccess) {
@@ -167,6 +171,27 @@ const ActivateAccount = ({
     } else {
       setTextShak(true);
     }
+  };
+
+  const selectCountryCodeChange = (e: string) => {
+    const country = e.split('-')[1];
+    const phoneCode = e.split('-')[0];
+    const countryCode = countryDataList.find(
+      (item) => item.country === country
+    );
+    setActivateAccountFormValue({
+      ...activateAccountFormValue,
+      phoneShortCode: countryCode?.shortCode || '',
+    });
+    setSelectPhoneCode(phoneCode);
+    setPhoneNumberError(false);
+  };
+
+  const countryCodePhoneNumberProps = {
+    selectPhoneCode: selectPhoneCode,
+    selectDefaultValue: null,
+    selectCountryCodeChange: selectCountryCodeChange,
+    setDrawerOpen: setDrawerOpen,
   };
 
   useEffect(() => {
@@ -258,19 +283,21 @@ const ActivateAccount = ({
     };
   }, []);
 
-  const selectCountryCodeChange = (e: string) => {
-    const country = e.split('-')[1];
-    const phoneCode = e.split('-')[0];
-    const countryCode = countryDataList.find(
-      (item) => item.country === country
-    );
-    setActivateAccountFormValue({
-      ...activateAccountFormValue,
-      phoneShortCode: countryCode?.shortCode || '',
-    });
-    setSelectPhoneCode(phoneCode);
-    setPhoneNumberError(false);
-  };
+  useEffect(() => {
+    if (!drawerOpen) {
+      setPhoneCodeItems([]);
+      setShowPhoneCodeItems(false);
+    } else {
+      const items = (selectPhoneCode &&
+        countryDataList.filter((item) =>
+          item.code.includes(selectPhoneCode)
+        )) || [...countryDataList];
+      setPhoneCodeItems(items);
+      if (items.length) {
+        setShowPhoneCodeItems(true);
+      }
+    }
+  }, [drawerOpen]);
 
   return (
     <>
@@ -473,48 +500,42 @@ const ActivateAccount = ({
                         }
                       />
                     </Form.Item>
-                    <Form.Item
-                      className={
-                        (phoneNumberError && 'phone-number-item error') ||
-                        'phone-number-item'
-                      }
-                      name="phoneNumber"
-                      getValueFromEvent={(e) => {
-                        const { value } = e.target;
-                        return value.replace(/[^0-9]/g, '');
-                      }}
-                    >
-                      <Input
-                        placeholder="Phone number"
-                        className="phone-number-item-input"
-                        bordered={false}
-                        onChange={(e) => {
-                          setPhoneNumberError(false);
-                          setActivateAccountFormValue({
-                            ...activateAccountFormValue,
-                            phoneNumber: e.target.value,
-                          });
-                        }}
-                        addonBefore={
-                          <Select
-                            showSearch
-                            placeholder="Country"
-                            popupClassName="gender-select-dropdown select-country"
-                            options={countryDataList.map((item) => ({
-                              value: `${item.code}-${item.country}`,
-                              label: (
-                                <div className="country-code-label">
-                                  <span>{item.code}</span>
-                                  <span>{item.country}</span>
-                                </div>
-                              ),
-                            }))}
-                            suffixIcon={<DownOutlined />}
-                            onChange={selectCountryCodeChange}
-                          />
-                        }
-                      />
-                    </Form.Item>
+                    <Row>
+                      <Col xs={24} sm={0}>
+                        <CountryCodePhoneNumber
+                          isMobile
+                          formItemClassName={
+                            (phoneNumberError && 'phone-number-item error') ||
+                            'phone-number-item'
+                          }
+                          inputOnChange={(value: string) => {
+                            setPhoneNumberError(false);
+                            setActivateAccountFormValue({
+                              ...activateAccountFormValue,
+                              phoneNumber: value,
+                            });
+                          }}
+                          {...countryCodePhoneNumberProps}
+                        />
+                      </Col>
+                      <Col xs={0} sm={24}>
+                        <CountryCodePhoneNumber
+                          isMobile={false}
+                          formItemClassName={
+                            (phoneNumberError && 'phone-number-item error') ||
+                            'phone-number-item'
+                          }
+                          inputOnChange={(value: string) => {
+                            setPhoneNumberError(false);
+                            setActivateAccountFormValue({
+                              ...activateAccountFormValue,
+                              phoneNumber: value,
+                            });
+                          }}
+                          {...countryCodePhoneNumberProps}
+                        />
+                      </Col>
+                    </Row>
                     {phoneNumberError && (
                       <div className="phone-number-error">
                         Invalid phone number
@@ -611,6 +632,49 @@ const ActivateAccount = ({
             />
           ) : null}
           <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
+          <Drawer
+            open={drawerOpen}
+            placement="bottom"
+            onClose={() => setDrawerOpen(false)}
+            getContainer={false}
+            rootClassName="phone-code-drawer"
+            destroyOnClose
+          >
+            <Input
+              defaultValue={selectPhoneCode}
+              placeholder="Country"
+              onChange={(e) => {
+                const items = (e.target.value &&
+                  countryDataList.filter(
+                    (item) =>
+                      item.code.includes(e.target.value) ||
+                      item.country
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase())
+                  )) || [...countryDataList];
+                setPhoneCodeItems(items);
+                setShowPhoneCodeItems(true);
+              }}
+            />
+            {(showPhoneCodeItems && phoneCodeItems.length && (
+              <>
+                {phoneCodeItems.map((item: any) => (
+                  <div
+                    key={`${item.code}-${item.country}`}
+                    className="code-items"
+                    onClick={() => {
+                      selectCountryCodeChange(`${item.code}-${item.country}`);
+                      setDrawerOpen(false);
+                    }}
+                  >
+                    <span>{item.code}</span>
+                    <span>{item.country}</span>
+                  </div>
+                ))}
+              </>
+            )) ||
+              null}
+          </Drawer>
         </ActivateAccountContainer>
       )}
     </>
