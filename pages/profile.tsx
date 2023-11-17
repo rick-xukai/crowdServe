@@ -268,12 +268,10 @@ const Profile = () => {
       setPhoneCodeItems([]);
       setShowPhoneCodeItems(false);
     } else {
-      const items =
-        (selectPhoneCode &&
-          countryDataList.filter((item) =>
-            item.code.includes(selectPhoneCode)
-          )) ||
-        [];
+      const items = (selectPhoneCode &&
+        countryDataList.filter((item) =>
+          item.code.includes(selectPhoneCode)
+        )) || [...countryDataList];
       setPhoneCodeItems(items);
       if (items.length) {
         setShowPhoneCodeItems(true);
@@ -773,16 +771,14 @@ const Profile = () => {
               placeholder="Country"
               defaultValue={checkCountryCodeDefaultValue() || ''}
               onChange={(e) => {
-                const items =
-                  (e.target.value &&
-                    countryDataList.filter(
-                      (item) =>
-                        item.code.includes(e.target.value) ||
-                        item.country
-                          .toLowerCase()
-                          .includes(e.target.value.toLowerCase())
-                    )) ||
-                  [];
+                const items = (e.target.value &&
+                  countryDataList.filter(
+                    (item) =>
+                      item.code.includes(e.target.value) ||
+                      item.country
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase())
+                  )) || [...countryDataList];
                 setPhoneCodeItems(items);
                 setShowPhoneCodeItems(true);
               }}
@@ -791,7 +787,7 @@ const Profile = () => {
               <>
                 {phoneCodeItems.map((item: any) => (
                   <div
-                    key={item.country}
+                    key={`${item.code}-${item.country}`}
                     className="code-items"
                     onClick={() => {
                       selectCountryCodeChange(`${item.code}-${item.country}`);
