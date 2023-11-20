@@ -6,7 +6,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Check NFT Ticket</title>
+    <title>Remind Event User</title>
     <link rel="stylesheet" href="../style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
   </head>
@@ -17,13 +17,13 @@
       </div>
       <div class="email-content">
         <div class="content-title">
-          Your Ticket for {{event_name}} Is Ready!
+          Are you ready for {{event_name}} tomorrow?
         </div>
         <div class="content-detail">
-          <div class="ticket-img" style="background-image: url({{ticket_image}});"></div>
+          <div class="ticket-img" style="background-image: url({{event_image}});"></div>
           <p class="detail-text">Dear {{user_name}},</p>
           <p class="detail-text">
-            You're one step closer to your event!
+            This is a friendly reminder that the event, {{event_name}}, will be taking place tomorrow!
           </p>
           <div class="ticket-info">
             <p class="title">
@@ -31,7 +31,7 @@
             </p>
             <p class="info-item">
               <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt="" />
-              {{event_date}}
+              {{event_time}}
             </p>
             <p class="info-item">
               <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt="" />
@@ -39,12 +39,9 @@
             </p>
             <p class="info-item">
               <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/organiser.08925b60.png" alt="" />
-              {{event_organizer}}
+              {{organizer_name}}
             </p>
           </div>
-          <p class="detail-text">
-            Your Smart ticket is now available on the CrowdServe App.
-          </p>
           <p class="detail-text">
             Simply click below to access your ticket<br />
             <span style="font-size: 12px; color: #717179">
@@ -52,8 +49,8 @@
             </span>
           </p>
           <button class="click-nft-ticket">
-            <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important;">
-              <span style="margin: auto;">MY SMART TICKET</span>
+            <a href="{{landingPage}}" target="_blank" style="color: #F8F6F0 !important;">
+              <span style="margin: auto;">MY TICKET</span>
             </a>
           </button>
           <p class="detail-text">
@@ -61,8 +58,8 @@
               If the button doesn't work, open this link in your preferred browser
             </span>
             <br />
-            <a href="{{url}}" target="_blank" style="word-break: break-word;">
-              {{url}}
+            <a href="{{landingPage}}" target="_blank" style="word-break: break-word;">
+              {{landingPage}}
             </a>
           </p>
           <p class="detail-text">

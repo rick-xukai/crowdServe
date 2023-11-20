@@ -5,7 +5,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     >
     <meta http-equiv="X-UA-Compatible" content="ie=edge" >
-    <title>Check NFT Ticket</title>
+    <title>Remind Event User</title>
     <link rel="stylesheet" href="../style.css" >
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
   </head>
@@ -16,13 +16,13 @@
       </div>
       <div class="email-content" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; padding-left: 30px;padding-right: 30px;padding-bottom: 30px;">
         <div class="content-title" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; padding-top: 20px;padding-bottom: 20px;border-bottom: 1px solid #dcdce1;font-weight: 700;font-size: 20px;color: #303034;">
-          Your Ticket for {{event_name}} Is Ready!
+          Are you ready for {{event_name}} tomorrow?
         </div>
         <div class="content-detail" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-top: 20px;">
-          <div class="ticket-img" style="background-image: url({{ticket_image}}); text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin: auto;margin-bottom: 20px;width: 200px;height: 200px;border-radius: 4px;background-position: center;background-repeat: no-repeat;background-size: cover;"></div>
+          <div class="ticket-img" style="background-image: url({{event_image}}); text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin: auto;margin-bottom: 20px;width: 200px;height: 200px;border-radius: 4px;background-position: center;background-repeat: no-repeat;background-size: cover;"></div>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">Dear {{user_name}},</p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            You're one step closer to your event!
+            This is a friendly reminder that the event, {{event_name}}, will be taking place tomorrow!
           </p>
           <div class="ticket-info" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;">
             <p class="title" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; font-weight: 700;font-size: 13px;color: #303034;margin-bottom: 6px;">
@@ -30,7 +30,7 @@
             </p>
             <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034;">
               <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt style="width: 14px;height: 14px;margin-right: 8px;margin-top: 3px;">
-              {{event_date}}
+              {{event_time}}
             </p>
             <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034;">
               <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt style="width: 14px;height: 14px;margin-right: 8px;margin-top: 3px;">
@@ -38,12 +38,9 @@
             </p>
             <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034;">
               <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/organiser.08925b60.png" alt style="width: 14px;height: 14px;margin-right: 8px;margin-top: 3px;">
-              {{event_organizer}}
+              {{organizer_name}}
             </p>
           </div>
-          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            Your Smart ticket is now available on the CrowdServe App.
-          </p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
             Simply click below to access your ticket<br>
             <span style="font-size: 12px; color: #717179">
@@ -51,8 +48,8 @@
             </span>
           </p>
           <button class="click-nft-ticket" style="padding-left: 0;padding-right: 0; width: 200px;height: 45px;background: #fc0006;border-radius: 2px;border: none;margin-bottom: 20px;font-weight: 700;font-size: 15px;color: #f8f6f0;">
-            <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important; color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; width: 100%;height: 100%;display: flex; text-decoration: none;color: #1974d2;">
-              <span style="margin: auto;">MY SMART TICKET</span>
+            <a href="{{landingPage}}" target="_blank" style="color: #F8F6F0 !important; color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; width: 100%;height: 100%;display: flex; text-decoration: none;color: #1974d2;">
+              <span style="margin: auto;">MY TICKET</span>
             </a>
           </button>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
@@ -60,8 +57,8 @@
               If the button doesn't work, open this link in your preferred browser
             </span>
             <br>
-            <a href="{{url}}" target="_blank" style="word-break: break-word; color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; text-decoration: none;color: #1974d2;">
-              {{url}}
+            <a href="{{landingPage}}" target="_blank" style="word-break: break-word; color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; text-decoration: none;color: #1974d2;">
+              {{landingPage}}
             </a>
           </p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
