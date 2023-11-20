@@ -158,7 +158,7 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
   }, [error]);
 
   useEffect(() => {
-    if (isSameAccount !== undefined) {
+    if (isSameAccount !== undefined && !loading) {
       if (!isSameAccount && !isFirstRender) {
         message.open({
           content: DifferentEmailErrorMessafe,
@@ -166,7 +166,7 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
         });
       }
     }
-  }, [isSameAccount]);
+  }, [loading]);
 
   useEffect(() => {
     setIsFirstRender(false);
