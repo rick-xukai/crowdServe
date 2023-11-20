@@ -135,9 +135,10 @@ LandingPage.getInitialProps = async (ctx: any) => {
   const { req, res, query } = ctx;
   if (!_.isEmpty(query)) {
     try {
-      const token = req.cookies[CookieKeys.userLoginToken];
-      const parameters = base64Decrypt(Object.keys(query)[0]);
-      if (token) {
+      const { token } = query;
+      const userLoginToken = req.cookies[CookieKeys.userLoginToken];
+      const parameters = base64Decrypt(token || Object.keys(query)[0]);
+      if (userLoginToken) {
         if (parameters.email === req.cookies[CookieKeys.userLoginEmail]) {
           if (parameters.eventSlug) {
             res.writeHead(302, {

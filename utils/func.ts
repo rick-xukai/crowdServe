@@ -147,14 +147,22 @@ export const openApp = () => {
 };
 
 export const base64Decrypt = (code: string) => {
-  const parsedWordArray = CryptoJS.enc.Base64.parse(code);
-  const parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
-  return JSON.parse(parsedStr);
+  try {
+    const parsedWordArray = CryptoJS.enc.Base64.parse(code);
+    const parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
+    return JSON.parse(parsedStr);
+  } catch (error) {
+    return '';
+  }
 };
 
 export const base64Encrypt = (parameters: {}) => {
-  const wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(parameters));
-  return CryptoJS.enc.Base64.stringify(wordArray);
+  try {
+    const wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(parameters));
+    return CryptoJS.enc.Base64.stringify(wordArray);
+  } catch (error) {
+    return '';
+  }
 };
 
 export const toPercent = (num: number, total: number) =>
