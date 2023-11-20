@@ -8,6 +8,7 @@ import countryDataList from '@/utils/countrycode.data.json';
 import { CountryItemProps } from '@/constants/General';
 
 const CountrySelecter = ({
+  isProfilePage = false,
   currentCountry,
   showCountryItems,
   setShowCountryItems,
@@ -17,6 +18,7 @@ const CountrySelecter = ({
   showCountryItems: boolean;
   setShowCountryItems: (status: boolean) => void;
   setCurrentSelectCountry: (country: string) => void;
+  isProfilePage?: boolean;
 }) => {
   const countryListSelect = useRef<any>(null);
   const searchInputSelect = useRef<any>(null);
@@ -99,7 +101,9 @@ const CountrySelecter = ({
             sortCountryList.map((item: CountryItemProps) => (
               <div
                 key={`${item.code}-${item.country}`}
-                className="content items-list"
+                className={
+                  (isProfilePage && 'content profile-page') || 'content'
+                }
                 onClick={() => {
                   setShowCountryItems(false);
                   setCurrentSelectCountry(item.country);

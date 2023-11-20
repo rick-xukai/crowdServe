@@ -25,7 +25,7 @@ const CountrySelecterContainer = styled.div`
     align-items: center;
     overflow: hidden;
     text-overflow: ellipsis;
-    &.items-list {
+    &.profile-page {
       .country-flag {
         line-height: unset;
       }
@@ -38,7 +38,6 @@ const CountrySelecterContainer = styled.div`
       width: 20px;
       height: 20px;
       font-size: 20px;
-      /* line-height: 20px; */
       line-height: 44px;
     }
     .country-name {

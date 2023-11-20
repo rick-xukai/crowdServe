@@ -667,6 +667,7 @@ const Profile = () => {
                           <div className="title">Country</div>
                           <Form.Item>
                             <CountrySelecter
+                              isProfilePage
                               showCountryItems={showCountryItems}
                               currentCountry={currentSelectCountry}
                               setShowCountryItems={setShowCountryItems}
