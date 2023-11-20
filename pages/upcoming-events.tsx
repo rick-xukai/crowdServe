@@ -166,7 +166,7 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
         });
       }
     }
-  }, [isSameAccount]);
+  }, [isFirstRender]);
 
   useEffect(() => {
     setIsFirstRender(false);
