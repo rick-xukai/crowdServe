@@ -21,10 +21,15 @@ const CountrySelecterContainer = styled.div`
   }
   .content {
     height: 100%;
-    display: flex;
+    /* display: flex; */
     align-items: center;
     overflow: hidden;
     text-overflow: ellipsis;
+    &.items-list {
+      .country-flag {
+        line-height: unset;
+      }
+    }
     &.no-data {
       justify-content: center;
       margin-top: 20px;
@@ -33,7 +38,8 @@ const CountrySelecterContainer = styled.div`
       width: 20px;
       height: 20px;
       font-size: 20px;
-      line-height: 20px;
+      /* line-height: 20px; */
+      line-height: 44px;
     }
     .country-name {
       margin-left: 10px;

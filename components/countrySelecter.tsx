@@ -21,7 +21,6 @@ const CountrySelecter = ({
   const countryListSelect = useRef<any>(null);
   const searchInputSelect = useRef<any>(null);
 
-//   const [showCountryItems, setShowCountryItems] = useState<boolean>(false);
   const [sortCountryList, setSortCountryList] = useState<CountryItemProps[]>(
     []
   );
@@ -100,7 +99,7 @@ const CountrySelecter = ({
             sortCountryList.map((item: CountryItemProps) => (
               <div
                 key={`${item.code}-${item.country}`}
-                className="content"
+                className="content items-list"
                 onClick={() => {
                   setShowCountryItems(false);
                   setCurrentSelectCountry(item.country);
