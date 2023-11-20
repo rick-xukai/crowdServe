@@ -398,6 +398,11 @@ const EditerContent = styled.div`
     padding-top: 8px;
     /* padding-bottom: 8px;
     border-bottom: 0.7px solid ${Colors.grayScale90}; */
+    &.country {
+      .ant-form-item-control-input-content {
+        padding-bottom: 0px !important;
+      }
+    }
     input {
       &::placeholder {
         color: ${Colors.grayScale50};

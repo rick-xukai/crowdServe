@@ -21,7 +21,6 @@ const CountrySelecter = ({
   const countryListSelect = useRef<any>(null);
   const searchInputSelect = useRef<any>(null);
 
-//   const [showCountryItems, setShowCountryItems] = useState<boolean>(false);
   const [sortCountryList, setSortCountryList] = useState<CountryItemProps[]>(
     []
   );
@@ -73,16 +72,16 @@ const CountrySelecter = ({
         onClick={() => setShowCountryItems(!showCountryItems)}
       >
         <div className="content">
-          <span className="country-flag">
+          <div className="country-flag">
             {countryDataList.find((item) => item.country === currentCountry)
               ?.flag || ''}
-          </span>
-          <span className="country-name">
+          </div>
+          <div className="country-name">
             {
               countryDataList.find((item) => item.country === currentCountry)
                 ?.country
             }
-          </span>
+          </div>
         </div>
         <CaretDownOutlined />
       </div>
@@ -106,8 +105,8 @@ const CountrySelecter = ({
                   setCurrentSelectCountry(item.country);
                 }}
               >
-                <span className="country-flag">{item.flag}</span>
-                <span className="country-name">{item.country}</span>
+                <div className="country-flag">{item.flag}</div>
+                <div className="country-name">{item.country}</div>
               </div>
             ))) || (
             <div className="content no-data">
