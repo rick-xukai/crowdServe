@@ -159,6 +159,7 @@ LandingPage.getInitialProps = async (ctx: any) => {
         }
         res.end();
       } else {
+        const eventSlug = token || Object.keys(query)[0];
         const response = await UserService.doVerificationCode({
           code: parameters.code,
           email: parameters.email,
@@ -166,11 +167,11 @@ LandingPage.getInitialProps = async (ctx: any) => {
         });
         if (response.code !== 1005) {
           res.writeHead(302, {
-            Location: `${RouterKeys.activateAccount}?${Object.keys(query)[0]}`,
+            Location: `${RouterKeys.activateAccount}?${eventSlug}`,
           });
         } else {
           res.writeHead(302, {
-            Location: `${RouterKeys.login}?${Object.keys(query)[0]}`,
+            Location: `${RouterKeys.login}?${eventSlug}`,
           });
         }
         res.end();

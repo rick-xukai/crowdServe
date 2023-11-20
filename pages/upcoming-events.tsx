@@ -159,7 +159,7 @@ const MyTicketsPage = ({ isSameAccount }: { isSameAccount: boolean }) => {
 
   useEffect(() => {
     if (isSameAccount !== undefined) {
-      if (!isSameAccount) {
+      if (!isSameAccount && !isFirstRender) {
         message.open({
           content: DifferentEmailErrorMessafe,
           className: 'error-message-tickets',
