@@ -663,11 +663,10 @@ const Profile = () => {
                     </Row>
                     <Row className="editer-row">
                       <Col span={24}>
-                        <div className="editer-field">
+                        <div className="editer-field country">
                           <div className="title">Country</div>
                           <Form.Item>
                             <CountrySelecter
-                              isProfilePage
                               showCountryItems={showCountryItems}
                               currentCountry={currentSelectCountry}
                               setShowCountryItems={setShowCountryItems}

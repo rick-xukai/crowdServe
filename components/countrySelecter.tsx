@@ -8,7 +8,6 @@ import countryDataList from '@/utils/countrycode.data.json';
 import { CountryItemProps } from '@/constants/General';
 
 const CountrySelecter = ({
-  isProfilePage = false,
   currentCountry,
   showCountryItems,
   setShowCountryItems,
@@ -18,7 +17,6 @@ const CountrySelecter = ({
   showCountryItems: boolean;
   setShowCountryItems: (status: boolean) => void;
   setCurrentSelectCountry: (country: string) => void;
-  isProfilePage?: boolean;
 }) => {
   const countryListSelect = useRef<any>(null);
   const searchInputSelect = useRef<any>(null);
@@ -74,16 +72,16 @@ const CountrySelecter = ({
         onClick={() => setShowCountryItems(!showCountryItems)}
       >
         <div className="content">
-          <span className="country-flag">
+          <div className="country-flag">
             {countryDataList.find((item) => item.country === currentCountry)
               ?.flag || ''}
-          </span>
-          <span className="country-name">
+          </div>
+          <div className="country-name">
             {
               countryDataList.find((item) => item.country === currentCountry)
                 ?.country
             }
-          </span>
+          </div>
         </div>
         <CaretDownOutlined />
       </div>
@@ -101,16 +99,14 @@ const CountrySelecter = ({
             sortCountryList.map((item: CountryItemProps) => (
               <div
                 key={`${item.code}-${item.country}`}
-                className={
-                  (isProfilePage && 'content profile-page') || 'content'
-                }
+                className="content"
                 onClick={() => {
                   setShowCountryItems(false);
                   setCurrentSelectCountry(item.country);
                 }}
               >
-                <span className="country-flag">{item.flag}</span>
-                <span className="country-name">{item.country}</span>
+                <div className="country-flag">{item.flag}</div>
+                <div className="country-name">{item.country}</div>
               </div>
             ))) || (
             <div className="content no-data">

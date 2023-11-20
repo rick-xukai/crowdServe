@@ -3,6 +3,14 @@ import styled from 'styled-components';
 import { Colors } from '@/theme';
 
 const CountrySelecterContainer = styled.div`
+  .country-name {
+    margin-left: 10px;
+    color: ${Colors.backgorund};
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .search-select-country {
     height: 44px;
     background: ${Colors.white};
@@ -18,35 +26,47 @@ const CountrySelecterContainer = styled.div`
       font-size: 20px;
       color: ${Colors.grayScale40};
     }
-  }
-  .content {
-    height: 100%;
-    /* display: flex; */
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    &.profile-page {
+    .content {
+      display: flex;
+      align-items: unset;
       .country-flag {
-        line-height: unset;
+        font-size: 20px;
+      }
+      .country-name {
+      }
+      .country-flag,
+      .country-name {
+        display: flex;
+        align-items: center;
       }
     }
-    &.no-data {
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .country-flag {
-      width: 20px;
-      height: 20px;
-      font-size: 20px;
-      line-height: 44px;
-    }
-    .country-name {
-      margin-left: 10px;
-      color: ${Colors.backgorund};
-      font-size: 14px;
-      white-space: nowrap;
+  }
+  .country-items {
+    .content {
+      display: flex;
+      height: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
+      padding: 2px 0 !important;
+      &.no-data {
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .country-flag {
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+      }
+      .country-name {
+        margin-left: 10px;
+        color: ${Colors.backgorund};
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+      }
     }
   }
   .country-items {
