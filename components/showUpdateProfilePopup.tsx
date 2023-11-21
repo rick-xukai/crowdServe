@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Row, Col, Modal, Button } from 'antd';
 import Image from 'next/image';
@@ -6,8 +6,7 @@ import { useRouter } from 'next/router';
 
 import { Colors, Images } from '@/theme';
 import { useAppDispatch } from '@/app/hooks';
-import { RouterKeys, CookieKeys } from '@/constants/Keys';
-import { useCookie } from '@/hooks';
+import { RouterKeys } from '@/constants/Keys';
 import { setDefaultShowEditProfilePopup } from '@/slice/profile.slice';
 
 const ShowUpdateProfilePopupContainer = styled.div`
@@ -41,6 +40,14 @@ const ShowUpdateProfilePopupContainer = styled.div`
       font-weight: 400;
       line-height: 21px;
       margin-top: 20px;
+      text-align: center;
+    }
+    .action-tips {
+      margin-top: 12px;
+      color: ${Colors.grayScale30};
+      font-size: 15px;
+      font-weight: 400;
+      text-align: center;
     }
     .action-button {
       margin-top: 40px;
@@ -79,17 +86,7 @@ const ShowUpdateProfilePopup = ({
   setShowEditer?: (status: boolean) => void;
 }) => {
   const router = useRouter();
-  const cookie = useCookie([CookieKeys.userProfileInfo]);
   const dispatch = useAppDispatch();
-
-  const [userFirstName, setUserFirstName] = useState<string>('');
-
-  useEffect(() => {
-    if (cookie.getCookie(CookieKeys.userProfileInfo)) {
-      const { firstName } = cookie.getCookie(CookieKeys.userProfileInfo);
-      setUserFirstName(firstName);
-    }
-  }, []);
 
   return (
     <ShowUpdateProfilePopupContainer>
@@ -103,26 +100,14 @@ const ShowUpdateProfilePopup = ({
       >
         <Row>
           <Col span={24} className="icon-content">
-            <img src={Images.EditProfileIcon.src} alt="" />
+            <img src={Images.ProfileIcon.src} alt="" />
           </Col>
           <Col span={24} className="title-content">
-            Update Your User Profile
-          </Col>
-          <Col span={24} className="first-name">
-            {`Dear ${userFirstName},`}
+            Complete Your Profile
           </Col>
           <Col span={24} className="description">
-            CrowdServe aims to provide a seamless experience for all event
-            attendees and organisers. In order to so, it is important for us to
-            have your updated contacted details.
-          </Col>
-          <Col span={24} className="description">
-            We kindly request your assistance to take one minute of your time to
-            update the missing or outdated information to ensure we can provide
-            you with better services.
-          </Col>
-          <Col span={24} className="description">
-            Thank you for your help in improving your experience on our app!
+            We want you to experience better. Help us understand you better by
+            completing your profile.
           </Col>
           <Col span={24} className="action-button">
             <Button
@@ -139,6 +124,10 @@ const ShowUpdateProfilePopup = ({
               GO
             </Button>
           </Col>
+          <Col
+            span={24}
+            className="action-tips"
+          >{`(It'll only take a second!)`}</Col>
         </Row>
         <div className="close-modal">
           <Image

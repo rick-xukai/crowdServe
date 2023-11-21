@@ -452,7 +452,7 @@ const Profile = () => {
                         <img src={Images.FlagIcon.src} alt="" />
                       </div>
                       <div className="info-value">
-                        <div className="title">Country</div>
+                        <div className="title">Country of Residence</div>
                         <div
                           className={
                             (profileDetails.country && 'value') ||
@@ -664,7 +664,7 @@ const Profile = () => {
                     <Row className="editer-row">
                       <Col span={24}>
                         <div className="editer-field country">
-                          <div className="title">Country</div>
+                          <div className="title">Country of Residence</div>
                           <Form.Item>
                             <CountrySelecter
                               showCountryItems={showCountryItems}
