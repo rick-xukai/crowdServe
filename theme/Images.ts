@@ -124,6 +124,7 @@ import PhoneIcon from '../static/images/phone.svg';
 import CakeIcon from '../static/images/cake.svg';
 import CameraIcon from '../static/images/camera.svg';
 import EditProfileIcon from '../static/images/edit-profile.svg';
+import ProfileIcon from '../static/images/profile-icon.svg';
 
 const Images = {
   Safety,
@@ -252,6 +253,7 @@ const Images = {
   CakeIcon,
   CameraIcon,
   EditProfileIcon,
+  ProfileIcon,
 };
 
 export default Images;
