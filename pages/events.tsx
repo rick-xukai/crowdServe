@@ -137,9 +137,6 @@ const EventList = () => {
   }, []);
 
   const searchInputChange = (value: string) => {
-    if (!checkFinishProfile(profileDetail)) {
-      return;
-    }
     if (!value) {
       setSearchInputPlaceholder('Search events');
       dispatch(setEventDataForAll([]));
@@ -421,7 +418,12 @@ const EventList = () => {
                         defaultValue={searchKeyword}
                         placeholder={searchInputPlaceholder}
                         prefix={<SearchOutlined />}
-                        onChange={handleSearch}
+                        onChange={(e) => {
+                          if (!checkFinishProfile(profileDetail)) {
+                            return;
+                          }
+                          handleSearch(e);
+                        }}
                         onFocus={() => setSearchInputPlaceholder('')}
                         onBlur={handleBlur}
                       />
@@ -597,7 +599,12 @@ const EventList = () => {
                         defaultValue={searchKeyword}
                         placeholder={searchInputPlaceholder}
                         prefix={<SearchOutlined />}
-                        onChange={handleSearch}
+                        onChange={(e) => {
+                          if (!checkFinishProfile(profileDetail)) {
+                            return;
+                          }
+                          handleSearch(e);
+                        }}
                         onFocus={() => setSearchInputPlaceholder('')}
                         onBlur={handleBlur}
                       />
