@@ -801,10 +801,10 @@ const Raves = ({
       >
         <RedeemSuccessModalContent>
           <Col className="title-img">
-            <img src={Images.CheersGifIcon.src} alt="" />
+            <img src={Images.RedeemRewardSuccess.src} alt="" />
           </Col>
           <Col className="title">
-            Congratulations, you have redeemed a free drink!
+            {`Congratulations, you have redeemed ${currentShowReward.name}`}
           </Col>
           <Col className="info">
             The reward will be sent to your CrowdServe wallet in several
