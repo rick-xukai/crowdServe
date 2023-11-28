@@ -125,6 +125,7 @@ import CakeIcon from '../static/images/cake.svg';
 import CameraIcon from '../static/images/camera.svg';
 import EditProfileIcon from '../static/images/edit-profile.svg';
 import ProfileIcon from '../static/images/profile-icon.svg';
+import RedeemRewardSuccess from '../static/images/redeem-reward-success.gif';
 
 const Images = {
   Safety,
@@ -254,6 +255,7 @@ const Images = {
   CameraIcon,
   EditProfileIcon,
   ProfileIcon,
+  RedeemRewardSuccess,
 };
 
 export default Images;

@@ -92,8 +92,10 @@ const TipBar = ({
     <TipBarIcon src={Images.SmileIcon.src} alt="" />
     {isEnd ? (
       <p>
-        The Rave already ended. {joinedUser} users participated in the rave and{' '}
-        {redeemedUser} ravers got the rewards.
+        The Rave already ended. {joinedUser}{' '}
+        {(joinedUser > 1 && 'users') || 'user'} participated in the rave and{' '}
+        {redeemedUser} {(redeemedUser > 1 && 'ravers') || 'raver'} got the
+        rewards.
       </p>
     ) : (
       <p>
@@ -801,10 +803,10 @@ const Raves = ({
       >
         <RedeemSuccessModalContent>
           <Col className="title-img">
-            <img src={Images.CheersGifIcon.src} alt="" />
+            <img src={Images.RedeemRewardSuccess.src} alt="" />
           </Col>
           <Col className="title">
-            Congratulations, you have redeemed a free drink!
+            {`Congratulations, you have redeemed ${currentShowReward.name}`}
           </Col>
           <Col className="info">
             The reward will be sent to your CrowdServe wallet in several
