@@ -271,6 +271,22 @@ const EventDetailContainer = styled.div`
       margin-top: 10px;
     }
   }
+  .items-skeleton {
+    .type-img {
+      > :first-child {
+        width: 100%;
+        height: 100%;
+        display: inline-block;
+        .react-loading-skeleton {
+          height: 100%;
+          line-height: unset;
+        }
+      }
+    }
+    .type-info-content-skeleton {
+      width: 100%;
+    }
+  }
   @media (min-width: 1200px) {
     padding-top: 0;
     .page-main {

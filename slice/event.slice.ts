@@ -298,6 +298,7 @@ export const getEventListBannerAction = createAsyncThunk<
 interface EventState {
   loading: boolean;
   eventDetailLoading: boolean;
+  eventTicketTypeLoading: boolean;
   eventDetailData: EventDetailResponseType;
   eventListData: EventListResponseType[];
   eventTicketTypeData: EventTicketTypeResponseType[];
@@ -324,6 +325,7 @@ interface EventState {
 const initialState: EventState = {
   loading: true,
   eventDetailLoading: true,
+  eventTicketTypeLoading: false,
   eventListData: [],
   eventTicketTypeData: [],
   eventListBanner: [],
@@ -422,6 +424,7 @@ export const eventSlice = createSlice({
         state.eventDetailLoading = true;
       })
       .addCase(getEventDetailAction.fulfilled, (state, action: any) => {
+        state.eventDetailLoading = false;
         state.eventDetailData = action.payload;
       })
       .addCase(getEventDetailAction.rejected, (state, action) => {
@@ -434,14 +437,14 @@ export const eventSlice = createSlice({
       })
       .addCase(getEventTicketTypeAction.pending, (state) => {
         state.eventTicketTypeData = [];
-        state.eventDetailLoading = true;
+        state.eventTicketTypeLoading = true;
       })
       .addCase(getEventTicketTypeAction.fulfilled, (state, action: any) => {
-        state.eventDetailLoading = false;
+        state.eventTicketTypeLoading = false;
         state.eventTicketTypeData = action.payload;
       })
       .addCase(getEventTicketTypeAction.rejected, (state, action) => {
-        state.eventDetailLoading = false;
+        state.eventTicketTypeLoading = false;
         if (action.payload) {
           state.eventDetailError = action.payload as ErrorType;
         } else {
@@ -508,5 +511,7 @@ export const selectJoinRaveLoading = (state: RootState) =>
   state.event.joinRaveLoading;
 export const selectCloseJoinModalItems = (state: RootState) =>
   state.event.closeJoinModalItems;
+export const selectEventTicketTypeLoading = (state: RootState) =>
+  state.event.eventTicketTypeLoading;
 
 export default eventSlice.reducer;

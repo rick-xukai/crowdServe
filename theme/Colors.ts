@@ -45,6 +45,7 @@ const Colors = {
   linearGradient4: `linear-gradient(270deg, #C5CAD2 10%, #EDEEF0 100%)`,
   orange: '#EB920D',
   greenRgb: 'rgba(0, 211, 135, 0.80)',
+  highlightColor: '#444',
 };
 
 export default Colors;

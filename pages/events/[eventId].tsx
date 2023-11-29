@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { last, remove, uniq } from 'lodash';
+import { last, remove, uniq, range } from 'lodash';
 import {
   Spin,
   Row,
@@ -73,6 +73,7 @@ import {
   RaveStatus,
   setCloseJoinModalItems,
   selectCloseJoinModalItems,
+  selectEventTicketTypeLoading,
 } from '../../slice/event.slice';
 import { TicketDetailResponseType } from '../../slice/tickets.slice';
 import {
@@ -100,6 +101,7 @@ import RavesDetail from '@/pages/raves-detail';
 import { setLoginRedirectPage } from '@/slice/user.slice';
 import { getRaveAction, selectRaveData, reset } from '@/slice/rave.slice';
 import ShowOpenAppModalComponent from '@/components/showOpenAppModal';
+import SkeletonComponent from '@/components/SkeletonComponent';
 
 interface CloseRavesPopUpProps {
   event: string;
@@ -137,6 +139,7 @@ const EventDetail = ({
   const eventMarket = useAppSelector(selectEventMarket);
   const raveData = useAppSelector(selectRaveData);
   const closeJoinModalItems = useAppSelector(selectCloseJoinModalItems);
+  const eventTicketTypeLoading = useAppSelector(selectEventTicketTypeLoading);
 
   const [id, setEventId] = useState<string>('');
   const [clickEventMarketModalOpen, setClickEventMarketModalOpen] =
@@ -202,6 +205,43 @@ const EventDetail = ({
       children: '',
     },
   ];
+
+  const TicketTypeSkeleton = () => (
+    <Row gutter={[16, 16]}>
+      {range(4).map((item) => (
+        <TicketTypeItem
+          xs={24}
+          sm={12}
+          md={12}
+          xl={12}
+          lg={12}
+          className="items-skeleton"
+          key={item}
+        >
+          <Row>
+            <Col className="type-img" xl={8} span={10}>
+              <SkeletonComponent />
+            </Col>
+            <Col xl={16} span={14} className="type-info">
+              <div className="line">
+                <img src={Images.VerticalLineIcon.src} alt="" />
+              </div>
+              <div className="type-info-content">
+                <div className="type-info-content-skeleton">
+                  <Col span={24} className="title">
+                    <SkeletonComponent />
+                  </Col>
+                  <Col span={24} className="price">
+                    <SkeletonComponent />
+                  </Col>
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </TicketTypeItem>
+      ))}
+    </Row>
+  );
 
   const onMapLoad = useCallback((map: any) => {
     if (map) {
@@ -827,101 +867,115 @@ const EventDetail = ({
                         <Col span={24} className="dividing-line" />
                       </Row>
                       {tabActiveKey === PrimaryMarket && (
-                        <Row gutter={[16, 16]}>
-                          {(eventTicketTypeFilter.length && (
-                            <>
-                              {eventTicketTypeFilter.map((item) => (
-                                <TicketTypeItem
-                                  xs={24}
-                                  sm={12}
-                                  md={12}
-                                  xl={12}
-                                  lg={12}
-                                  key={item.id}
-                                  onClick={() => toShopify(item)}
-                                  className={
-                                    ((!item.onSale || item.stock === 0) &&
-                                      'no-click') ||
-                                    ''
-                                  }
-                                >
-                                  <Row>
-                                    <Col className="type-img" xl={8} span={10}>
-                                      <img
-                                        src={item.thumbnailUrl}
-                                        alt=""
-                                        onError={(e: any) => {
-                                          e.target.onerror = null;
-                                          e.target.src =
-                                            Images.BackgroundLogo.src;
-                                        }}
-                                      />
-                                      {!item.onSale && (
-                                        <div className="out-stock-mask">
-                                          NOT ON SALE YET
-                                        </div>
-                                      )}
-                                      {item.stock === 0 && item.onSale && (
-                                        <div className="out-stock-mask">
-                                          OUT OF STOCK
-                                        </div>
-                                      )}
-                                    </Col>
-                                    <Col
-                                      xl={16}
-                                      span={14}
-                                      className="type-info"
-                                    >
-                                      <div className="line">
-                                        <img
-                                          src={Images.VerticalLineIcon.src}
-                                          alt=""
-                                        />
-                                      </div>
-                                      <div
-                                        className={
-                                          ((item.stock === 0 || !item.onSale) &&
-                                            'type-info-content opacity') ||
-                                          'type-info-content'
-                                        }
-                                      >
-                                        <div>
-                                          <Col
-                                            span={24}
-                                            title={item.name}
-                                            className="title"
-                                          >
-                                            {item.name}
-                                          </Col>
-                                          <Col
-                                            span={24}
-                                            className="description"
-                                          >
-                                            {item.description}
-                                          </Col>
-                                          <Col span={24} className="price">
-                                            {`${item.price.toFixed(
-                                              2
-                                            )} ${PriceUnit}`}
-                                          </Col>
-                                        </div>
-                                      </div>
-                                    </Col>
-                                  </Row>
-                                </TicketTypeItem>
-                              ))}
-                            </>
+                        <>
+                          {(eventTicketTypeLoading && (
+                            <TicketTypeSkeleton />
                           )) || (
-                            <Col span={24} className="all-ticket-sold">
-                              <div
-                                style={{ textAlign: 'center', marginTop: 20 }}
-                              >
-                                <Image src={Images.AllTicketSold} alt="" />
-                                <p>All tickets are sold.</p>
-                              </div>
-                            </Col>
+                            <Row gutter={[16, 16]}>
+                              {(eventTicketTypeFilter.length && (
+                                <>
+                                  {eventTicketTypeFilter.map((item) => (
+                                    <TicketTypeItem
+                                      xs={24}
+                                      sm={12}
+                                      md={12}
+                                      xl={12}
+                                      lg={12}
+                                      key={item.id}
+                                      onClick={() => toShopify(item)}
+                                      className={
+                                        ((!item.onSale || item.stock === 0) &&
+                                          'no-click') ||
+                                        ''
+                                      }
+                                    >
+                                      <Row>
+                                        <Col
+                                          className="type-img"
+                                          xl={8}
+                                          span={10}
+                                        >
+                                          <img
+                                            src={item.thumbnailUrl}
+                                            alt=""
+                                            onError={(e: any) => {
+                                              e.target.onerror = null;
+                                              e.target.src =
+                                                Images.BackgroundLogo.src;
+                                            }}
+                                          />
+                                          {!item.onSale && (
+                                            <div className="out-stock-mask">
+                                              NOT ON SALE YET
+                                            </div>
+                                          )}
+                                          {item.stock === 0 && item.onSale && (
+                                            <div className="out-stock-mask">
+                                              OUT OF STOCK
+                                            </div>
+                                          )}
+                                        </Col>
+                                        <Col
+                                          xl={16}
+                                          span={14}
+                                          className="type-info"
+                                        >
+                                          <div className="line">
+                                            <img
+                                              src={Images.VerticalLineIcon.src}
+                                              alt=""
+                                            />
+                                          </div>
+                                          <div
+                                            className={
+                                              ((item.stock === 0 ||
+                                                !item.onSale) &&
+                                                'type-info-content opacity') ||
+                                              'type-info-content'
+                                            }
+                                          >
+                                            <div>
+                                              <Col
+                                                span={24}
+                                                title={item.name}
+                                                className="title"
+                                              >
+                                                {item.name}
+                                              </Col>
+                                              <Col
+                                                span={24}
+                                                className="description"
+                                              >
+                                                {item.description}
+                                              </Col>
+                                              <Col span={24} className="price">
+                                                {`${item.price.toFixed(
+                                                  2
+                                                )} ${PriceUnit}`}
+                                              </Col>
+                                            </div>
+                                          </div>
+                                        </Col>
+                                      </Row>
+                                    </TicketTypeItem>
+                                  ))}
+                                </>
+                              )) || (
+                                <Col span={24} className="all-ticket-sold">
+                                  <div
+                                    style={{
+                                      textAlign: 'center',
+                                      marginTop: 20,
+                                    }}
+                                  >
+                                    <Image src={Images.AllTicketSold} alt="" />
+                                    <p>All tickets are sold.</p>
+                                  </div>
+                                </Col>
+                              )}
+                            </Row>
                           )}
-                        </Row>
+                        </>
                       )}
                       {tabActiveKey === PurchaseFromFan && (
                         <>
