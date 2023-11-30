@@ -823,22 +823,35 @@ const EventDetail = ({
                                     eventDetailData.descriptionImages || []
                                   }
                                 />
-                                <p
-                                  className="refund-info"
-                                  style={{
-                                    marginTop:
-                                      (eventDetailData.descriptionImages &&
-                                        eventDetailData.descriptionImages
-                                          .length &&
-                                        24) ||
-                                      0,
-                                  }}
-                                >
-                                  {(eventDetailData.refundPolicy ===
-                                    SetRefundKey.nonRefundable &&
-                                    '* Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
-                                    '*  To request a refund, please contact the event organizer.'}
-                                </p>
+                                {eventDetailData.contactEmail && (
+                                  <div className="collapse-bottom-info">
+                                    <p className="title">
+                                      Contact The Organiser
+                                    </p>
+                                    <p className="value">
+                                      {eventDetailData.contactEmail}
+                                    </p>
+                                  </div>
+                                )}
+                                <div className="collapse-bottom-info">
+                                  <p className="title">Refund Policy</p>
+                                  <p
+                                    className="refund-info"
+                                    style={{
+                                      marginTop:
+                                        (eventDetailData.descriptionImages &&
+                                          eventDetailData.descriptionImages
+                                            .length &&
+                                          24) ||
+                                        0,
+                                    }}
+                                  >
+                                    {(eventDetailData.refundPolicy ===
+                                      SetRefundKey.nonRefundable &&
+                                      '* Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
+                                      '*  To request a refund, please contact the event organizer.'}
+                                  </p>
+                                </div>
                               </div>
                             </Col>
                           </Col>
