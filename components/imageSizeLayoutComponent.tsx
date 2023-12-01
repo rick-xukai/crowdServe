@@ -6,6 +6,7 @@ import { EventDetailDescriptionImages } from '@/slice/myTickets.slice';
 import { DescriptionImagesSize } from '@/constants/General';
 
 const Container = styled(Row)`
+  margin-bottom: 24px;
   .image-item-content {
     .ant-image {
       width: 100%;
