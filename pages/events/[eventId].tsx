@@ -164,7 +164,7 @@ const EventDetail = ({
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
-    collapsedHeight: 75,
+    collapsedHeight: 80,
   });
 
   const tabsItem: TabsProps['items'] = [
@@ -842,14 +842,7 @@ const EventDetail = ({
                                   <p className="title">Refund Policy</p>
                                   <p
                                     className="refund-info"
-                                    style={{
-                                      marginTop:
-                                        (eventDetailData.descriptionImages &&
-                                          eventDetailData.descriptionImages
-                                            .length &&
-                                          24) ||
-                                        0,
-                                    }}
+                                    style={{ marginTop: 5 }}
                                   >
                                     {(eventDetailData.refundPolicy ===
                                       SetRefundKey.nonRefundable &&

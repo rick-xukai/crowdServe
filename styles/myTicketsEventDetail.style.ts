@@ -487,7 +487,6 @@ const EventDetailCard = styled(Col)`
         color: ${Colors.grayScale40};
         font-size: 13px;
         font-weight: 300;
-        line-height: 19px;
         margin-top: 15px;
         margin-bottom: 24px;
       }

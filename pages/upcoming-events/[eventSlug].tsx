@@ -354,7 +354,7 @@ const MyTicketsEventDetail = () => {
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
-    collapsedHeight: 75,
+    collapsedHeight: 80,
   });
 
   const handleNoTicketList = () => {
