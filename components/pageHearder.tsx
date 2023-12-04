@@ -28,6 +28,9 @@ const PageHearderContainer = styled(Row)`
   &.backgroundTransparent {
     background: rgba(39, 39, 42, 0.3);
   }
+  &.background-none {
+    background: none;
+  }
   .left-container,
   .hearder-logo,
   .right-container,
@@ -273,10 +276,9 @@ const PageHearderComponent = ({
     <PageHearderContainer
       className={`${(showTabs && !showMenu && 'show-tabs') || ''} ${
         (showMenu && 'show-menu') || ''
-      } ${(backgroundTransparent && 'backgroundTransparent') || ''}`}
-      style={{
-        background: (showBackgroundColor && Colors.backgorund) || 'none',
-      }}
+      } ${(backgroundTransparent && 'backgroundTransparent') || ''} ${
+        (!showBackgroundColor && 'background-none') || ''
+      }`}
     >
       <Col span={12} className="left-container">
         <div className="hearder-logo">

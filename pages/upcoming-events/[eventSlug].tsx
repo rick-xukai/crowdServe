@@ -752,16 +752,20 @@ const MyTicketsEventDetail = () => {
                           span={24}
                           className="event-detail-content"
                         >
-                          <Col
-                            span={24}
-                            className="detail-title"
-                            style={{
-                              marginBottom:
-                                (!eventDetail.description && 24) || 0,
-                            }}
-                          >
-                            Event Details
-                          </Col>
+                          {((eventDetail.description ||
+                            eventDetail.descriptionImages.length) && (
+                            <Col
+                              span={24}
+                              className="detail-title"
+                              style={{
+                                marginBottom:
+                                  (!eventDetail.description && 24) || 0,
+                              }}
+                            >
+                              Event Details
+                            </Col>
+                          )) ||
+                            null}
                           <Col span={24} className="detail-show-more-box">
                             {needShowMore && (
                               <div
@@ -811,24 +815,34 @@ const MyTicketsEventDetail = () => {
                                     }}
                                   />
                                 )}
-                                <ImageSizeLayoutComponent
-                                  images={eventDetail.descriptionImages || []}
-                                />
-                                <p
-                                  className="refund-info"
-                                  style={{
-                                    marginTop:
-                                      (eventDetail.descriptionImages &&
-                                        eventDetail.descriptionImages.length &&
-                                        24) ||
-                                      0,
-                                  }}
-                                >
-                                  {(eventDetail.refundPolicy ===
-                                    SetRefundKey.nonRefundable &&
-                                    '* Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
-                                    '*  To request a refund, please contact the event organizer.'}
-                                </p>
+                                {(eventDetail.descriptionImages.length && (
+                                  <ImageSizeLayoutComponent
+                                    images={eventDetail.descriptionImages || []}
+                                  />
+                                )) ||
+                                  null}
+                                {eventDetail.contactEmail && (
+                                  <div className="collapse-bottom-info">
+                                    <p className="title">
+                                      Contact The Organiser
+                                    </p>
+                                    <p className="value">
+                                      {eventDetail.contactEmail}
+                                    </p>
+                                  </div>
+                                )}
+                                <div className="collapse-bottom-info">
+                                  <p className="title">Refund Policy</p>
+                                  <p
+                                    className="refund-info"
+                                    style={{ marginTop: 5 }}
+                                  >
+                                    {(eventDetail.refundPolicy ===
+                                      SetRefundKey.nonRefundable &&
+                                      'Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
+                                      'To request a refund, please contact the event organizer.'}
+                                  </p>
+                                </div>
                               </div>
                             </Col>
                           </Col>

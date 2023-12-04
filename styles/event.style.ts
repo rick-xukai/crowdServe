@@ -125,7 +125,7 @@ const EventListContainer = styled.div`
   }
   .page-main {
     padding: 0px 20px 70px 20px;
-    margin-top: 50px;
+    margin-top: 45px;
     .event-list {
       .load-more {
         color: ${Colors.white};
