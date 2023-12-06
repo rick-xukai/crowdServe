@@ -164,7 +164,7 @@ const EventDetail = ({
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
-    collapsedHeight: 75,
+    collapsedHeight: 80,
   });
 
   const tabsItem: TabsProps['items'] = [
@@ -759,16 +759,20 @@ const EventDetail = ({
                           span={24}
                           className="event-detail-content"
                         >
-                          <Col
-                            span={24}
-                            className="detail-title"
-                            style={{
-                              marginBottom:
-                                (!eventDetailData.description && 24) || 0,
-                            }}
-                          >
-                            Event Details
-                          </Col>
+                          {((eventDetailData.description ||
+                            eventDetailData.descriptionImages.length) && (
+                            <Col
+                              span={24}
+                              className="detail-title"
+                              style={{
+                                marginBottom:
+                                  (!eventDetailData.description && 24) || 0,
+                              }}
+                            >
+                              Event Details
+                            </Col>
+                          )) ||
+                            null}
                           <Col span={24} className="detail-show-more-box">
                             {needShowMore && (
                               <div
@@ -818,27 +822,34 @@ const EventDetail = ({
                                     }}
                                   />
                                 )}
-                                <ImageSizeLayoutComponent
-                                  images={
-                                    eventDetailData.descriptionImages || []
-                                  }
-                                />
-                                <p
-                                  className="refund-info"
-                                  style={{
-                                    marginTop:
-                                      (eventDetailData.descriptionImages &&
-                                        eventDetailData.descriptionImages
-                                          .length &&
-                                        24) ||
-                                      0,
-                                  }}
-                                >
-                                  {(eventDetailData.refundPolicy ===
-                                    SetRefundKey.nonRefundable &&
-                                    '* Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
-                                    '*  To request a refund, please contact the event organizer.'}
-                                </p>
+                                {(eventDetailData.descriptionImages.length && (
+                                  <ImageSizeLayoutComponent
+                                    images={eventDetailData.descriptionImages}
+                                  />
+                                )) ||
+                                  null}
+                                {eventDetailData.contactEmail && (
+                                  <div className="collapse-bottom-info">
+                                    <p className="title">
+                                      Contact The Organiser
+                                    </p>
+                                    <p className="value">
+                                      {eventDetailData.contactEmail}
+                                    </p>
+                                  </div>
+                                )}
+                                <div className="collapse-bottom-info">
+                                  <p className="title">Refund Policy</p>
+                                  <p
+                                    className="refund-info"
+                                    style={{ marginTop: 5 }}
+                                  >
+                                    {(eventDetailData.refundPolicy ===
+                                      SetRefundKey.nonRefundable &&
+                                      'Tickets are non-refundable. Please ensure your availability before making a purchase.') ||
+                                      'To request a refund, please contact the event organizer.'}
+                                  </p>
+                                </div>
                               </div>
                             </Col>
                           </Col>

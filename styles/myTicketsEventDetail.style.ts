@@ -487,13 +487,29 @@ const EventDetailCard = styled(Col)`
         color: ${Colors.grayScale40};
         font-size: 13px;
         font-weight: 300;
-        line-height: 19px;
         margin-top: 15px;
         margin-bottom: 24px;
       }
       .refund-info {
         margin-top: 24px;
         margin-bottom: 0px;
+      }
+      .collapse-bottom-info {
+        margin-bottom: 24px;
+        .title {
+          color: ${Colors.white};
+          font-size: 16px;
+          font-weight: 700;
+          margin-top: 0;
+          margin-bottom: 0;
+        }
+        .value {
+          color: ${Colors.grayScale40};
+          font-size: 13px;
+          font-weight: 400;
+          margin-top: 5px;
+          margin-bottom: 0;
+        }
       }
     }
   }

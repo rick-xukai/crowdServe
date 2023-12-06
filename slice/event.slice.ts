@@ -72,6 +72,7 @@ export interface EventDetailResponseType {
   descriptionShort: string;
   raveSet: boolean;
   raveStatus: number;
+  contactEmail: string;
 }
 
 export interface EventTicketTypeResponseType {
@@ -352,6 +353,7 @@ const initialState: EventState = {
     descriptionShort: '',
     raveSet: false,
     raveStatus: 0,
+    contactEmail: '',
   },
   eventMarket: [],
   tabActiveKey: PrimaryMarket,
@@ -382,6 +384,7 @@ export const eventSlice = createSlice({
         descriptionShort: '',
         raveSet: false,
         raveStatus: 0,
+        contactEmail: '',
       };
     },
     resetError: (state) => {

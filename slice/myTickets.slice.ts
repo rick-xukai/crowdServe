@@ -26,6 +26,7 @@ const defaultMyTicketUserEventDetail = {
   descriptionImages: [],
   descriptionShort: '',
   refundPolicy: 0,
+  contactEmail: '',
 };
 
 const defaultMyEventTicketDetail = {
@@ -108,6 +109,7 @@ export interface MyTicketUserEventDetailResponseType {
   descriptionImages: EventDetailDescriptionImages[];
   descriptionShort: string;
   refundPolicy: number;
+  contactEmail: string;
 }
 
 export interface MyEventTicketListResponseType {
