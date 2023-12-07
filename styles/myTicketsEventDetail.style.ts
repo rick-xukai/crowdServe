@@ -429,6 +429,14 @@ const MyTicketItemContainer = styled.div`
 
 const EventDetailCard = styled(Col)`
   margin-top: 32px;
+  .show-box {
+    z-index: auto !important;
+  }
+  &.expanded {
+    .show-box {
+      z-index: 1 !important;
+    }
+  }
   .detail-title {
     color: ${Colors.white};
     font-size: 18px;
