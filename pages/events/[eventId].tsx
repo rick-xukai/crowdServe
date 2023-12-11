@@ -1169,22 +1169,20 @@ const EventDetail = ({
 
 EventDetail.getInitialProps = async (ctx: any) => {
   const { query, req } = ctx;
-  const { ticket, source, eventId } = query;
+  const { eventId } = query;
   if (eventId) {
     const parameterArr = eventId.split('-');
-    if (ticket && source === 'sharing') {
-      try {
-        const response = await EventService.getEventDetail(
-          last(parameterArr) as string
-        );
-        if (response.code === 200) {
-          return { openGraphDetail: { ...response.data, shareUrl: req.url } };
-        }
-      } catch (error) {
-        return {
-          props: {},
-        };
+    try {
+      const response = await EventService.getEventDetail(
+        last(parameterArr) as string
+      );
+      if (response.code === 200) {
+        return { openGraphDetail: { ...response.data, shareUrl: req.url } };
       }
+    } catch (error) {
+      return {
+        props: {},
+      };
     }
   }
   return {
