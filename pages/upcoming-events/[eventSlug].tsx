@@ -750,7 +750,10 @@ const MyTicketsEventDetail = () => {
                         )}
                         <EventDetailCard
                           span={24}
-                          className="event-detail-content"
+                          className={
+                            (isExpanded && 'event-detail-content expanded') ||
+                            'event-detail-content'
+                          }
                         >
                           {((eventDetail.description ||
                             eventDetail.descriptionImages.length) && (

@@ -44,6 +44,7 @@ function MyApp({ Component, ...rest }: AppProps) {
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
         <meta name="referrer" content="no-referrer" />
+        <meta name="description" content="Crowdserve web app" />
         <title>CrowdServe</title>
       </Head>
       {/* <GoogleOAuthProvider clientId='crowdserve_test'>
