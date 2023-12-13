@@ -290,10 +290,12 @@ const ActivateAccountNormalFlow = ({
           )
         );
       } else {
-        const currentRedirectPage =
-          redirectPage ||
-          (loginRedirectPage && loginRedirectPage) ||
-          RouterKeys.eventList;
+        let currentRedirectPage = RouterKeys.eventList;
+        if (redirectPage) {
+          currentRedirectPage = redirectPage;
+        } else if (loginRedirectPage) {
+          currentRedirectPage = loginRedirectPage;
+        }
         if (router.query.raves) {
           router.push({
             pathname: redirectPage || currentRedirectPage,
