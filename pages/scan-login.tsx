@@ -40,6 +40,10 @@ const ScanLogin = ({ currentEventId }: { currentEventId: string }) => {
       if (error.code === Messages.invalidPassword.code) {
         errorMessage = Messages.invalidPassword.text;
       }
+      if (error.code === Messages.activateAccountUserDosentExist1001.code) {
+        errorMessage =
+          'This is an inactive account, please login to another account or contact your admin.';
+      }
       message.open({
         content: errorMessage,
         className: 'error-message-event',
