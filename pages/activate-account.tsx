@@ -41,6 +41,7 @@ import {
   getErrorMessage,
   profileNameValidator,
   checkPhoneNumber,
+  verificationCodeValidator,
 } from '../utils/func';
 import {
   TokenExpire,
@@ -403,7 +404,10 @@ const ActivateAccount = ({
                     <div className="tips signup-email">{defultEmail}</div>
                     {showCodeExpiredRequestButton && (
                       <>
-                        <Form.Item>
+                        <Form.Item
+                          name="code"
+                          rules={[{ validator: verificationCodeValidator }]}
+                        >
                           <Row>
                             <Col span={24}>
                               <div className="request-code-content">

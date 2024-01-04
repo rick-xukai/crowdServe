@@ -456,6 +456,12 @@ const ActivateAccountContainer = styled.div`
     opacity: 0;
     z-index: -1;
   }
+  .ant-form-item-explain-error {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+  }
   @media (max-width: 768px) {
     .page-main {
       .main-form-content {
