@@ -166,9 +166,15 @@ LandingPage.getInitialProps = async (ctx: any) => {
           type: 1,
         });
         if (response.code !== 1005) {
-          res.writeHead(302, {
-            Location: `${RouterKeys.activateAccount}?${eventSlug}`,
-          });
+          if (response.code === 1004) {
+            res.writeHead(302, {
+              Location: `${RouterKeys.activateAccount}?${eventSlug}&codeStatus=expired`,
+            });
+          } else {
+            res.writeHead(302, {
+              Location: `${RouterKeys.activateAccount}?${eventSlug}`,
+            });
+          }
         } else {
           res.writeHead(302, {
             Location: `${RouterKeys.login}?${eventSlug}`,

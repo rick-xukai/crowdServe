@@ -7,6 +7,7 @@ export const Encrypt = 'encrypt';
 export const Decrypt = 'decrypt';
 export const DefaultPage = 1;
 export const DefaultPageSize = 10;
+export const DefaultPageSizeMore = 20;
 export const DefaultCodeRefreshTime = 30;
 export const TokenExpire = 7 * 24 * 60 * 60 * 1000;
 export const ListPageScrollDifference = 80;
@@ -84,6 +85,8 @@ export const UploadUserAvatarAccept = ['image/png', 'image/jpeg'];
 export const UploadUserAvatarSizeLimit =
   'PNG or JPEG files only up to 10 MB in size';
 export const CompressorConvertSize = 1 * 1024 * 1024;
+export const CodeExpired =
+  'This verification code has expired. Please use the latest email link or request a new one.';
 export const TicketStatus = [
   {
     text: 'UPCOMING',

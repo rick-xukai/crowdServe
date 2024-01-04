@@ -423,6 +423,45 @@ const ActivateAccountContainer = styled.div`
       padding: 0px 12px;
     }
   }
+  .request-code-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    input {
+      border-right: none;
+    }
+  }
+  .request-code-button {
+    margin-left: -1px;
+    .button {
+      font-size: 15px;
+      font-weight: 400;
+      height: 42px;
+      color: ${Colors.branding};
+      background: ${Colors.white};
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    &.show-count-number {
+      .button {
+        color: ${Colors.grayScale40};
+      }
+    }
+  }
+  .auto-complete-hidden {
+    position: fixed;
+    opacity: 0;
+    z-index: -1;
+  }
+  .ant-form-item-explain-error {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+  }
   @media (max-width: 768px) {
     .page-main {
       .main-form-content {
@@ -475,6 +514,14 @@ const ActivateAccountContainer = styled.div`
     }
     .ant-picker {
       height: 35px;
+    }
+    .request-code-button {
+      margin-left: -1px;
+      .button {
+        font-size: 14px;
+        height: 33px;
+        user-select: none;
+      }
     }
   }
   @media (max-width: 375px) {

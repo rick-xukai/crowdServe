@@ -422,3 +422,10 @@ export const checkPhoneNumber = (phoneNumber: string, countryCode: string) => {
   const number = phoneUtil.parseAndKeepRawInput(phoneNumber, countryCode);
   return phoneUtil.isValidNumber(number);
 };
+
+export const verificationCodeValidator = (_: object, value: string) => {
+  if (value.length < 6) {
+    return Promise.reject(new Error('Not less than six characters'));
+  }
+  return Promise.resolve();
+};
