@@ -451,6 +451,11 @@ const ActivateAccountContainer = styled.div`
       }
     }
   }
+  .auto-complete-hidden {
+    position: fixed;
+    opacity: 0;
+    z-index: -1;
+  }
   @media (max-width: 768px) {
     .page-main {
       .main-form-content {

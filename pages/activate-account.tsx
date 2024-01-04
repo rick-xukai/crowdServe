@@ -32,6 +32,7 @@ import {
   getUserGenderAction,
   selectUserGender,
   selectGetUserGenderLoading,
+  verificationCodeAction,
 } from '../slice/user.slice';
 import { verifyUserAction } from '../slice/user.slice';
 import {
@@ -132,7 +133,7 @@ const ActivateAccount = ({
     number | ((prevTime: number) => void)
   >(0);
 
-  const onFinish = () => {
+  const onFinish = async () => {
     if (!passwordSuccess) {
       if (activateAccountFormValue.password !== confirmPasswordValue) {
         setPasswordValue('');
@@ -147,7 +148,20 @@ const ActivateAccount = ({
         });
         return;
       } else {
-        setPasswordSuccess(true);
+        if (showCodeExpiredRequestButton) {
+          const response = await dispatch(
+            verificationCodeAction({
+              code: activateAccountFormValue.code,
+              email: activateAccountFormValue.email,
+              type: 1,
+            })
+          );
+          if (response.type === verificationCodeAction.fulfilled.toString()) {
+            setPasswordSuccess(true);
+          }
+        } else {
+          setPasswordSuccess(true);
+        }
       }
       return;
     }
@@ -388,49 +402,50 @@ const ActivateAccount = ({
                     <div className="tips">Signup with</div>
                     <div className="tips signup-email">{defultEmail}</div>
                     {showCodeExpiredRequestButton && (
-                      <Form.Item>
-                        <Row>
-                          <Col span={24}>
-                            <div className="request-code-content">
-                              <Input.Password
-                                className={`${
-                                  (passwordValue && 'border-white') || ''
-                                }`}
-                                placeholder="Verification code"
-                                bordered={false}
-                                maxLength={6}
-                                iconRender={(visible) =>
-                                  visible ? (
-                                    <EyeOutlined />
-                                  ) : (
-                                    <EyeInvisibleOutlined />
-                                  )
-                                }
-                                onChange={(e) => {
-                                  setActivateAccountFormValue({
-                                    ...activateAccountFormValue,
-                                    code: e.target.value,
-                                  });
-                                }}
-                              />
-                              {(countdownNumber > 0 && (
-                                <div className="request-code-button show-count-number">
-                                  <div className="button">
-                                    {`(${countdownNumber}s)`}
+                      <>
+                        <Form.Item>
+                          <Row>
+                            <Col span={24}>
+                              <div className="request-code-content">
+                                <Input
+                                  className={`${
+                                    (passwordValue && 'border-white') || ''
+                                  }`}
+                                  placeholder="Verification code"
+                                  bordered={false}
+                                  maxLength={6}
+                                  onChange={(e) => {
+                                    setActivateAccountFormValue({
+                                      ...activateAccountFormValue,
+                                      code: e.target.value,
+                                    });
+                                  }}
+                                />
+                                {(countdownNumber > 0 && (
+                                  <div className="request-code-button show-count-number">
+                                    <div className="button">
+                                      {`(${countdownNumber}s)`}
+                                    </div>
                                   </div>
-                                </div>
-                              )) || (
-                                <div
-                                  className="request-code-button"
-                                  onClick={requestNewCode}
-                                >
-                                  <div className="button">REQUEST</div>
-                                </div>
-                              )}
-                            </div>
-                          </Col>
-                        </Row>
-                      </Form.Item>
+                                )) || (
+                                  <div
+                                    className="request-code-button"
+                                    onClick={requestNewCode}
+                                  >
+                                    <div className="button">REQUEST</div>
+                                  </div>
+                                )}
+                              </div>
+                            </Col>
+                          </Row>
+                        </Form.Item>
+                        <Form.Item className="auto-complete-hidden">
+                          <Input />
+                        </Form.Item>
+                        <Form.Item className="auto-complete-hidden">
+                          <Input.Password />
+                        </Form.Item>
+                      </>
                     )}
                     <Form.Item>
                       <div>
@@ -522,6 +537,7 @@ const ActivateAccount = ({
                         disabled={
                           !activateAccountFormValue.email ||
                           !activateAccountFormValue.password ||
+                          !activateAccountFormValue.code ||
                           !confirmPasswordValue ||
                           !checked
                         }
