@@ -314,8 +314,6 @@ const ActivateAccount = ({
 
   useEffect(() => {
     if (error && !isFirstRender) {
-      setCountdownNumber(0);
-      clearInterval(Number(timer));
       message.open({
         content: getErrorMessage(error.code),
         className: 'error-message-login',
