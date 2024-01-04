@@ -36,7 +36,7 @@ import {
   setScannerEventListForAll,
 } from '@/slice/scannerCache.slice';
 import Messages from '@/constants/Messages';
-import { DefaultPageSize } from '@/constants/General';
+import { DefaultPageSizeMore } from '@/constants/General';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -162,7 +162,7 @@ const EventsScan = () => {
       if (response.type === getScannerEventListAction.fulfilled.toString()) {
         if (
           !response.payload.length ||
-          response.payload.length < DefaultPageSize
+          response.payload.length < DefaultPageSizeMore
         ) {
           dispatch(setIsGetAllData(true));
           dispatch(setIsDisableRequest(true));

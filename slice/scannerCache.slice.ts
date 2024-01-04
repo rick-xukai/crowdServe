@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { verificationApi } from '../utils/func';
 import ScannerService from '@/services/API/Scanner/Scanner.service';
-import { DefaultPage, DefaultPageSize } from '@/constants/General';
+import { DefaultPage, DefaultPageSizeMore } from '@/constants/General';
 import { ScannerEventListProps } from './scanner.slice';
 
 /* eslint-disable no-param-reassign, complexity */
@@ -21,7 +21,7 @@ const initialState: ScannerCacheState = {
   loading: false,
   isGetAllData: false,
   page: DefaultPage,
-  size: DefaultPageSize,
+  size: DefaultPageSizeMore,
   isDisableRequest: false,
   scannerEventListForAll: [],
 };
