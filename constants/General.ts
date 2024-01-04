@@ -84,6 +84,8 @@ export const UploadUserAvatarAccept = ['image/png', 'image/jpeg'];
 export const UploadUserAvatarSizeLimit =
   'PNG or JPEG files only up to 10 MB in size';
 export const CompressorConvertSize = 1 * 1024 * 1024;
+export const CodeExpired =
+  'This verification code has expired. Please use the latest email link or request a new one.';
 export const TicketStatus = [
   {
     text: 'UPCOMING',

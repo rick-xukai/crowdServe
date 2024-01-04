@@ -33,6 +33,7 @@ import {
   selectUserGender,
   selectGetUserGenderLoading,
 } from '../slice/user.slice';
+import { verifyUserAction } from '../slice/user.slice';
 import {
   isPassword,
   base64Decrypt,
@@ -47,6 +48,7 @@ import {
   PasswordNotMatch,
   BirthdayNotVaild,
   DefaultSelectCountry,
+  CodeExpired,
 } from '../constants/General';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
@@ -57,18 +59,22 @@ import countryDataList from '@/utils/countrycode.data.json';
 import { Images } from '@/theme';
 import CountryCodePhoneNumber from '@/components/countryCodePhoneNumber';
 
+let timer: NodeJS.Timer | null = null;
+
 const ActivateAccount = ({
   redirectPage,
   defultEmail,
   activateCode,
   currentTicketId,
   currentTicketEventSlug,
+  codeStatusExpired,
 }: {
   redirectPage: string;
   defultEmail: string;
   activateCode: string;
   currentTicketId: string;
   currentTicketEventSlug: string;
+  codeStatusExpired: boolean;
 }) => {
   const cookies = useCookie([
     CookieKeys.userLoginToken,
@@ -120,6 +126,11 @@ const ActivateAccount = ({
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
   const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
+  const [showCodeExpiredRequestButton, setShowCodeExpiredRequestButton] =
+    useState<boolean>(false);
+  const [countdownNumber, setCountdownNumber] = useState<
+    number | ((prevTime: number) => void)
+  >(0);
 
   const onFinish = () => {
     if (!passwordSuccess) {
@@ -192,6 +203,26 @@ const ActivateAccount = ({
     selectDefaultValue: null,
     selectCountryCodeChange: selectCountryCodeChange,
     setDrawerOpen: setDrawerOpen,
+  };
+
+  const timeMethod = () => {
+    setCountdownNumber(60);
+    if (timer) {
+      clearInterval(timer);
+    }
+    timer = setInterval(() => {
+      setCountdownNumber((prevTime: number) => {
+        if (prevTime > 0) {
+          return prevTime - 1;
+        }
+        return 0;
+      });
+    }, 1000);
+  };
+
+  const requestNewCode = () => {
+    dispatch(verifyUserAction({ email: activateAccountFormValue.email }));
+    timeMethod();
   };
 
   useEffect(() => {
@@ -268,6 +299,8 @@ const ActivateAccount = ({
 
   useEffect(() => {
     if (error && !isFirstRender) {
+      setCountdownNumber(0);
+      clearInterval(Number(timer));
       message.open({
         content: getErrorMessage(error.code),
         className: 'error-message-login',
@@ -280,8 +313,19 @@ const ActivateAccount = ({
     setIsFirstRender(false);
     return () => {
       dispatch(reset());
+      clearInterval(Number(timer));
     };
   }, []);
+
+  useEffect(() => {
+    if (codeStatusExpired) {
+      message.open({
+        content: CodeExpired,
+        className: 'error-message-event',
+      });
+      setShowCodeExpiredRequestButton(true);
+    }
+  }, [codeStatusExpired]);
 
   useEffect(() => {
     if (!drawerOpen) {
@@ -343,6 +387,51 @@ const ActivateAccount = ({
                   <Form onFinish={onFinish}>
                     <div className="tips">Signup with</div>
                     <div className="tips signup-email">{defultEmail}</div>
+                    {showCodeExpiredRequestButton && (
+                      <Form.Item>
+                        <Row>
+                          <Col span={24}>
+                            <div className="request-code-content">
+                              <Input.Password
+                                className={`${
+                                  (passwordValue && 'border-white') || ''
+                                }`}
+                                placeholder="Verification code"
+                                bordered={false}
+                                maxLength={6}
+                                iconRender={(visible) =>
+                                  visible ? (
+                                    <EyeOutlined />
+                                  ) : (
+                                    <EyeInvisibleOutlined />
+                                  )
+                                }
+                                onChange={(e) => {
+                                  setActivateAccountFormValue({
+                                    ...activateAccountFormValue,
+                                    code: e.target.value,
+                                  });
+                                }}
+                              />
+                              {(countdownNumber > 0 && (
+                                <div className="request-code-button show-count-number">
+                                  <div className="button">
+                                    {`(${countdownNumber}s)`}
+                                  </div>
+                                </div>
+                              )) || (
+                                <div
+                                  className="request-code-button"
+                                  onClick={requestNewCode}
+                                >
+                                  <div className="button">REQUEST</div>
+                                </div>
+                              )}
+                            </div>
+                          </Col>
+                        </Row>
+                      </Form.Item>
+                    )}
                     <Form.Item>
                       <div>
                         <Input.Password
@@ -688,13 +777,18 @@ ActivateAccount.getInitialProps = async (ctx: any) => {
   let activateCode = '';
   let currentTicketId = '';
   let currentTicketEventSlug = '';
+  let codeStatusExpired = false;
   try {
     if (query.redirect && query.userEmail && query.activateCode) {
       defultEmail = query.userEmail;
       redirectPage = query.redirect;
       activateCode = query.activateCode;
     } else {
+      const { codeStatus } = query;
       const parameters = base64Decrypt(Object.keys(query)[0]);
+      if (codeStatus && codeStatus === 'expired') {
+        codeStatusExpired = true;
+      }
       defultEmail = parameters.email;
       activateCode = parameters.code;
       currentTicketId = parameters.ticketId;
@@ -707,6 +801,7 @@ ActivateAccount.getInitialProps = async (ctx: any) => {
     currentTicketId,
     currentTicketEventSlug,
     redirectPage,
+    codeStatusExpired,
   };
 };
 
