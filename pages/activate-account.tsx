@@ -806,9 +806,10 @@ ActivateAccount.getInitialProps = async (ctx: any) => {
       const parameters = base64Decrypt(Object.keys(query)[0]);
       if (codeStatus && codeStatus === 'expired') {
         codeStatusExpired = true;
+      } else {
+        activateCode = parameters.code;
       }
       defultEmail = parameters.email;
-      activateCode = parameters.code;
       currentTicketId = parameters.ticketId;
       currentTicketEventSlug = parameters.eventSlug;
     }
