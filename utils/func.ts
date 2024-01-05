@@ -425,7 +425,7 @@ export const checkPhoneNumber = (phoneNumber: string, countryCode: string) => {
 
 export const verificationCodeValidator = (_: object, value: string) => {
   if (value.length < 6) {
-    return Promise.reject(new Error('Not less than six characters'));
+    return Promise.reject(new Error('Invalid code'));
   }
   return Promise.resolve();
 };
