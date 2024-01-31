@@ -384,6 +384,11 @@ const ScanQrCodeResult = ({
                           LAUNCH APP
                         </a>
                       </button>
+                      <div
+                        onClick={() => (window.location.href = GlownetDeepLink)}
+                      >
+                        Test
+                      </div>
                     </div>
                   )}
                 <div className="button-action" style={{ textAlign: 'center' }}>
