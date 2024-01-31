@@ -383,18 +383,6 @@ const ScanQrCodeResult = ({
                           LAUNCH APP
                         </a>
                       </button>
-                      <div
-                        onClick={() => {
-                          if (redeemResponse.ticket.glownetTicketId) {
-                            window.location.href = GlownetDeepLink.replace(
-                              '{:ticketReference}',
-                              redeemResponse.ticket.glownetTicketId.toString()
-                            );
-                          }
-                        }}
-                      >
-                        Test
-                      </div>
                     </div>
                   )}
                 <div className="button-action" style={{ textAlign: 'center' }}>
