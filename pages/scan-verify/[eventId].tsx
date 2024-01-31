@@ -375,10 +375,11 @@ const ScanQrCodeResult = ({
                             height: '100%',
                             lineHeight: '48px',
                           }}
-                          href={GlownetDeepLink.replace(
-                            '{:ticketReference}',
-                            redeemResponse.ticket.glownetTicketId.toString()
-                          )}
+                          // href={GlownetDeepLink.replace(
+                          //   '{:ticketReference}',
+                          //   redeemResponse.ticket.glownetTicketId.toString()
+                          // )}
+                          href={GlownetDeepLink}
                         >
                           LAUNCH APP
                         </a>
