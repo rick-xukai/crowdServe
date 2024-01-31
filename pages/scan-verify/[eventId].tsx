@@ -8,7 +8,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 
 import { RouterKeys, CookieKeys } from '../../constants/Keys';
-import { PriceUnit } from '../../constants/General';
+import { PriceUnit, GlownetDeepLink } from '../../constants/General';
 import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
 import { Images } from '../../theme';
 import { verificationApi, base64Decrypt } from '../../utils/func';
@@ -60,6 +60,7 @@ interface RedeemResponse {
     total: number;
     redeemed: number;
     eventName: string;
+    glownetTicketId?: number;
   };
 }
 
@@ -359,6 +360,31 @@ const ScanQrCodeResult = ({
                     </p>
                   </div>
                 )}
+                {redeemResponse &&
+                  redeemResponse.ticket &&
+                  redeemResponse.ticket.glownetTicketId && (
+                    <div
+                      className="button-action"
+                      style={{ textAlign: 'center', marginBottom: 20 }}
+                    >
+                      <button>
+                        <a
+                          style={{
+                            width: '100%',
+                            display: 'block',
+                            height: '100%',
+                            lineHeight: '48px',
+                          }}
+                          href={GlownetDeepLink.replace(
+                            '{:ticketReference}',
+                            redeemResponse.ticket.glownetTicketId.toString()
+                          )}
+                        >
+                          LAUNCH APP
+                        </a>
+                      </button>
+                    </div>
+                  )}
                 <div className="button-action" style={{ textAlign: 'center' }}>
                   <button onClick={() => setResult('')}>
                     {(verifyMessage.success && 'CONTINUE TO SCAN') ||
