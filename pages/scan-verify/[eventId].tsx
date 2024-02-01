@@ -236,7 +236,7 @@ const ScanQrCodeResult = ({
     handleGetScanQrCodeDetail(result);
   }, [result]);
 
-  const handleOpenGlownetApp = () => {
+  const handleOpenGlownetApp = (ticketReference: any) => {
     const CallApp = require('callapp-lib');
     const packageName = 'com.glownet.next.attended';
     const options = {
@@ -250,7 +250,9 @@ const ScanQrCodeResult = ({
       },
     };
     const callLib = new CallApp(options);
-    callLib.open({ path: '' });
+    callLib.open({
+      path: `action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;S.ticket_reference=${ticketReference}`,
+    });
   };
 
   return (
@@ -384,7 +386,13 @@ const ScanQrCodeResult = ({
                       className="button-action"
                       style={{ textAlign: 'center', marginBottom: 20 }}
                     >
-                      <button onClick={handleOpenGlownetApp}>
+                      <button
+                        onClick={() =>
+                          handleOpenGlownetApp(
+                            redeemResponse.ticket.glownetTicketId
+                          )
+                        }
+                      >
                         LAUNCH APP
                         {/* <a
                           style={{
