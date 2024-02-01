@@ -236,6 +236,23 @@ const ScanQrCodeResult = ({
     handleGetScanQrCodeDetail(result);
   }, [result]);
 
+  const handleOpenGlownetApp = () => {
+    const CallApp = require('callapp-lib');
+    const packageName = 'com.glownet.next.attended';
+    const options = {
+      scheme: {
+        protocol: 'glownetapp',
+        host: 'launcher',
+      },
+      intent: {
+        package: packageName,
+        scheme: 'glownetapp',
+      },
+    };
+    const callLib = new CallApp(options);
+    callLib.open({ path: '' });
+  };
+
   return (
     <div className="scan-result">
       {scannerCodeDetail && (
@@ -367,8 +384,9 @@ const ScanQrCodeResult = ({
                       className="button-action"
                       style={{ textAlign: 'center', marginBottom: 20 }}
                     >
-                      <button>
-                        <a
+                      <button onClick={handleOpenGlownetApp}>
+                        LAUNCH APP
+                        {/* <a
                           style={{
                             width: '100%',
                             display: 'block',
@@ -381,7 +399,7 @@ const ScanQrCodeResult = ({
                           )}
                         >
                           LAUNCH APP
-                        </a>
+                        </a> */}
                       </button>
                     </div>
                   )}
