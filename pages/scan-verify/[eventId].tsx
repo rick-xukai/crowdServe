@@ -236,24 +236,36 @@ const ScanQrCodeResult = ({
     handleGetScanQrCodeDetail(result);
   }, [result]);
 
-  // const handleOpenGlownetApp = (ticketReference: any) => {
-  //   const CallApp = require('callapp-lib');
-  //   const packageName = 'com.glownet.next.attended';
-  //   const options = {
-  //     scheme: {
-  //       protocol: 'glownetapp',
-  //       host: 'launcher',
-  //     },
-  //     intent: {
-  //       package: packageName,
-  //       scheme: 'glownetapp',
-  //     },
-  //   };
-  //   const callLib = new CallApp(options);
-  //   callLib.open({
-  //     path: `action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;S.ticket_reference=${ticketReference}`,
-  //   });
-  // };
+  const handleOpenGlownetApp = (ticketReference: any) => {
+    if (ticketReference) {
+      const deepLink =
+        'intent://launcher/#Intent;' +
+        'scheme=glownetapp;' +
+        'package=com.glownet.next.attended;' +
+        'action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;' +
+        'component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;' +
+        'S.ticket_reference=' +
+        ticketReference +
+        ';end';
+      window.location.href = deepLink;
+    }
+    // const CallApp = require('callapp-lib');
+    // const packageName = 'com.glownet.next.attended';
+    // const options = {
+    //   scheme: {
+    //     protocol: 'glownetapp',
+    //     host: 'launcher',
+    //   },
+    //   intent: {
+    //     package: packageName,
+    //     scheme: 'glownetapp',
+    //   },
+    // };
+    // const callLib = new CallApp(options);
+    // callLib.open({
+    //   path: `action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;S.ticket_reference=${ticketReference}`,
+    // });
+  };
 
   return (
     <div className="scan-result">
@@ -387,14 +399,14 @@ const ScanQrCodeResult = ({
                       style={{ textAlign: 'center', marginBottom: 20 }}
                     >
                       <button
-                        // onClick={() =>
-                        //   handleOpenGlownetApp(
-                        //     redeemResponse.ticket.glownetTicketId
-                        //   )
-                        // }
+                        onClick={() =>
+                          handleOpenGlownetApp(
+                            redeemResponse.ticket.glownetTicketId?.toString()
+                          )
+                        }
                       >
-                        {/* LAUNCH APP */}
-                        <a
+                        LAUNCH APP
+                        {/* <a
                           style={{
                             width: '100%',
                             display: 'block',
@@ -407,7 +419,7 @@ const ScanQrCodeResult = ({
                           )}
                         >
                           LAUNCH APP
-                        </a>
+                        </a> */}
                       </button>
                     </div>
                   )}
