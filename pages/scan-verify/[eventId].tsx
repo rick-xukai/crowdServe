@@ -249,22 +249,6 @@ const ScanQrCodeResult = ({
         ';end';
       window.location.href = deepLink;
     }
-    // const CallApp = require('callapp-lib');
-    // const packageName = 'com.glownet.next.attended';
-    // const options = {
-    //   scheme: {
-    //     protocol: 'glownetapp',
-    //     host: 'launcher',
-    //   },
-    //   intent: {
-    //     package: packageName,
-    //     scheme: 'glownetapp',
-    //   },
-    // };
-    // const callLib = new CallApp(options);
-    // callLib.open({
-    //   path: `action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;S.ticket_reference=${ticketReference}`,
-    // });
   };
 
   return (
@@ -406,20 +390,6 @@ const ScanQrCodeResult = ({
                         }
                       >
                         LAUNCH APP
-                        {/* <a
-                          style={{
-                            width: '100%',
-                            display: 'block',
-                            height: '100%',
-                            lineHeight: '48px',
-                          }}
-                          href={GlownetDeepLink.replace(
-                            '{:ticketReference}',
-                            redeemResponse.ticket.glownetTicketId.toString()
-                          )}
-                        >
-                          LAUNCH APP
-                        </a> */}
                       </button>
                     </div>
                   )}
