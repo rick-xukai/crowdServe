@@ -360,7 +360,7 @@ const TicketTypeItem = styled(Col)`
     cursor: default;
   }
   .type-img {
-    height: 140px;
+    height: 144px;
     padding: 6px;
     border-radius: 6px;
     background: ${Colors.black10};
@@ -464,13 +464,13 @@ const TicketTypeItem = styled(Col)`
   }
   @media (min-width: 1200px) {
     .type-img {
-      height: 162px;
+      min-height: 163px;
     }
     cursor: pointer;
   }
   @media (min-width: 768px) and (max-width: 1200px) {
     .type-img {
-      height: 140px;
+      min-height: 163px;
     }
     .type-info {
       .description {
