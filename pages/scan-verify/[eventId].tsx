@@ -389,7 +389,7 @@ const ScanQrCodeResult = ({
                           )
                         }
                       >
-                        LAUNCH APP
+                        LAUNCH GLOWNET APP
                       </button>
                     </div>
                   )}
