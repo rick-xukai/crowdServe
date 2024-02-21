@@ -87,6 +87,7 @@ export const UploadUserAvatarSizeLimit =
 export const CompressorConvertSize = 1 * 1024 * 1024;
 export const CodeExpired =
   'This verification code has expired. Please use the latest email link or request a new one.';
+export const GlownetDeepLink = 'intent://launcher/#Intent;scheme=glownetapp;package=com.glownet.next.attended;action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;S.ticket_reference={:ticketReference};end'
 export const TicketStatus = [
   {
     text: 'UPCOMING',

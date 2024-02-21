@@ -8,7 +8,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { message } from 'antd';
 
 import { RouterKeys, CookieKeys } from '../../constants/Keys';
-import { PriceUnit } from '../../constants/General';
+import { PriceUnit, GlownetDeepLink } from '../../constants/General';
 import { ScanQrCodePageContainers } from '../../styles/scanQrCode.style';
 import { Images } from '../../theme';
 import { verificationApi, base64Decrypt } from '../../utils/func';
@@ -60,6 +60,7 @@ interface RedeemResponse {
     total: number;
     redeemed: number;
     eventName: string;
+    glownetTicketId?: number;
   };
 }
 
@@ -235,6 +236,21 @@ const ScanQrCodeResult = ({
     handleGetScanQrCodeDetail(result);
   }, [result]);
 
+  const handleOpenGlownetApp = (ticketReference: any) => {
+    if (ticketReference) {
+      const deepLink =
+        'intent://launcher/#Intent;' +
+        'scheme=glownetapp;' +
+        'package=com.glownet.next.attended;' +
+        'action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;' +
+        'component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;' +
+        'S.ticket_reference=' +
+        ticketReference +
+        ';end';
+      window.location.href = deepLink;
+    }
+  };
+
   return (
     <div className="scan-result">
       {scannerCodeDetail && (
@@ -359,6 +375,24 @@ const ScanQrCodeResult = ({
                     </p>
                   </div>
                 )}
+                {redeemResponse &&
+                  redeemResponse.ticket &&
+                  redeemResponse.ticket.glownetTicketId && (
+                    <div
+                      className="button-action"
+                      style={{ textAlign: 'center', marginBottom: 20 }}
+                    >
+                      <button
+                        onClick={() =>
+                          handleOpenGlownetApp(
+                            redeemResponse.ticket.glownetTicketId?.toString()
+                          )
+                        }
+                      >
+                        LAUNCH GLOWNET APP
+                      </button>
+                    </div>
+                  )}
                 <div className="button-action" style={{ textAlign: 'center' }}>
                   <button onClick={() => setResult('')}>
                     {(verifyMessage.success && 'CONTINUE TO SCAN') ||
