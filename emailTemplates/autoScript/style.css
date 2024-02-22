@@ -128,6 +128,12 @@ a {
   background-size: cover;
 }
 
+.supalapa {
+  aspect-ratio: 16 / 9;
+  width: auto;
+  height: auto;
+}
+
 .event-publish {
   margin: initial;
   width: 100%;
