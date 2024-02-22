@@ -128,10 +128,16 @@ a {
   background-size: cover;
 }
 
-.supalapa {
+.supalapa-banner {
   aspect-ratio: 16 / 9;
-  width: auto;
-  height: auto;
+  min-width: 200px;
+  min-height: 200px;
+  margin: auto;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .event-publish {
