@@ -1,0 +1,88 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>CrowdServeスマートチケット</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+  </head>
+  <body style="margin: auto;">
+    <div class="email-container-nft">
+      <div class="email-header">
+        <img src="https://static.wixstatic.com/media/8bf0ac_92df1da1bb4c457b90dd8fa00ed5221c~mv2.png/v1/fill/w_360,h_142,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/CROWDSERVE_LOGO_LONG_WHT.png" alt="" class="email-logo">
+      </div>
+      <div class="email-content">
+        <div class="content-title">
+          {{event_name}} のチケットのご用意ができました！
+        </div>
+        <div class="content-detail">
+          <div class="ticket-img" style="background-image: url({{ticket_image}});"></div>
+          <p class="detail-text">{{user_name}} 様</p>
+          <p class="detail-text">
+            イベントまであと一歩！
+          </p>
+          <div class="ticket-info">
+            <p class="title">
+              {{event_name}}
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt="" />
+              {{event_date}}
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt="" />
+              {{event_location}}
+            </p>
+            <p class="info-item">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/organiser.08925b60.png" alt="" />
+              {{event_organizer}}
+            </p>
+          </div>
+          <p class="detail-text">
+            スマートチケットは、CrowdServeアプリからご利用いただけます。
+          </p>
+          <p class="detail-text">
+            以下をクリックしてチケットにアクセスしてください。<br />
+            <span style="font-size: 12px; color: #717179">
+              (まだアプリをインストールしていない場合は、ダウンロードをお願いします)
+            </span>
+          </p>
+          <button class="click-nft-ticket">
+            <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important;">
+              <span style="margin: auto;">スマートチケット</span>
+            </a>
+          </button>
+          <p class="detail-text">
+            <span style="color: #303034 !important;">
+              ボタンが作動しない場合は、お好きなブラウザでこのリンクを開いてください。
+            </span>
+            <br />
+            <a href="{{url}}" target="_blank" style="word-break: break-word;">
+              {{url}}
+            </a>
+          </p>
+          <p class="detail-text">
+            <span class="note">注意：</span>
+            登録がスムーズに行えるよう、イベント前にアプリのインストールとアカウントの有効化を完了してください。
+          </p>
+          <p class="detail-text">
+            このメールアドレスは、初回ログイン時にCrowdServeアカウントを有効化する際に使用されます。
+          </p>
+          <p class="detail-text">
+            CrowdServe
+          </p>
+          <p class="detail-text">
+            CrowdServeは、お客様、お客様のチケット、アーティスト、ファンの皆様の安全を守ります。
+          </p>
+          <p class="unsubscribe">
+            今後、このようなメールを希望しない場合は、<a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank">配信停止をお願いします</a>。
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

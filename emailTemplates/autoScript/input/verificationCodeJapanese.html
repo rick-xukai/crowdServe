@@ -1,0 +1,47 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>CrowdServe認証コード</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+  </head>
+  <body style="margin: auto;">
+    <div class="email-container-code" style="height: unset; max-height: unset;">
+      <div class="email-header">
+        <img src="https://static.wixstatic.com/media/8bf0ac_92df1da1bb4c457b90dd8fa00ed5221c~mv2.png/v1/fill/w_360,h_142,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/CROWDSERVE_LOGO_LONG_WHT.png" alt="" class="email-logo">
+      </div>
+      <div class="email-content" style="padding-bottom: 30px;">
+        <div class="content-title" style="text-align: center; display: flex; align-items: center; line-height: normal;">
+          CrowdServe認証コード
+        </div>
+        <div class="content-detail">
+          <p class="detail-text">{{user_name}} 様</p>
+          <p class="detail-text" style="margin-bottom: 0;">
+            アカウントの有効化リクエストを受け取りました。認証コードは：
+          </p>
+          <p class="detail-code">
+            {{code}}
+          </p>
+          <p class="detail-text">
+            このコードをリクエストしていない場合、誰かがあなたのアカウントにアクセスしようとしている可能性があります。<br />
+            <strong>このコードは誰にも教えないでください。</strong>
+          </p>
+          <p class="detail-text">
+            CrowdServe
+          </p>
+          <p class="detail-text">
+            CrowdServeは、お客様、お客様のチケット、アーティスト、ファンの皆様の安全を守ります。
+          </p>
+          <p class="unsubscribe">
+            今後、このようなメールを希望しない場合は、<a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank">配信停止をお願いします</a>。
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
