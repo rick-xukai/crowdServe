@@ -1,0 +1,87 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" >
+    <meta name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    >
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" >
+    <title>CrowdServeスマートチケット</title>
+    <link rel="stylesheet" href="../style.css" >
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+  </head>
+  <body style="margin: auto;">
+    <div class="email-container-nft" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin: auto;background: #f8f6f0;max-width: 640px;">
+      <div class="email-header" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; height: 95px;background: #27272a;display: flex;align-items: center;">
+        <img src="https://static.wixstatic.com/media/8bf0ac_92df1da1bb4c457b90dd8fa00ed5221c~mv2.png/v1/fill/w_360,h_142,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/CROWDSERVE_LOGO_LONG_WHT.png" alt class="email-logo" style="width: 180px;height: 70px;margin: auto;">
+      </div>
+      <div class="email-content" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; padding-left: 30px;padding-right: 30px;padding-bottom: 30px;">
+        <div class="content-title" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; padding-top: 20px;padding-bottom: 20px;border-bottom: 1px solid #dcdce1;font-weight: 700;font-size: 20px;color: #303034;">
+          {{event_name}} のチケットのご用意ができました！
+        </div>
+        <div class="content-detail" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-top: 20px;">
+          <div class="ticket-img" style="background-image: url({{ticket_image}}); text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin: auto;margin-bottom: 20px;width: 200px;height: 200px;border-radius: 4px;background-position: center;background-repeat: no-repeat;background-size: cover;"></div>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">{{user_name}} 様</p>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            イベントまであと一歩！
+          </p>
+          <div class="ticket-info" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;">
+            <p class="title" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; font-weight: 700;font-size: 13px;color: #303034;margin-bottom: 6px;">
+              {{event_name}}
+            </p>
+            <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034;">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt style="width: 14px;height: 14px;margin-right: 8px;margin-top: 3px;">
+              {{event_date}}
+            </p>
+            <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034;">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt style="width: 14px;height: 14px;margin-right: 8px;margin-top: 3px;">
+              {{event_location}}
+            </p>
+            <p class="info-item" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; display: flex;margin-bottom: 6px;margin-top: 0;font-weight: 300;font-size: 13px;color: #303034;">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/organiser.08925b60.png" alt style="width: 14px;height: 14px;margin-right: 8px;margin-top: 3px;">
+              {{event_organizer}}
+            </p>
+          </div>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            スマートチケットは、CrowdServeアプリからご利用いただけます。
+          </p>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            以下をクリックしてチケットにアクセスしてください。<br>
+            <span style="font-size: 12px; color: #717179">
+              (まだアプリをインストールしていない場合は、ダウンロードをお願いします)
+            </span>
+          </p>
+          <button class="click-nft-ticket" style="padding-left: 0;padding-right: 0; width: 200px;height: 45px;background: #fc0006;border-radius: 2px;border: none;margin-bottom: 20px;font-weight: 700;font-size: 15px;color: #f8f6f0;">
+            <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important; color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; width: 100%;height: 100%;display: flex; text-decoration: none;color: #1974d2;">
+              <span style="margin: auto;">スマートチケット</span>
+            </a>
+          </button>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            <span style="color: #303034 !important;">
+              ボタンが作動しない場合は、お好きなブラウザでこのリンクを開いてください。
+            </span>
+            <br>
+            <a href="{{url}}" target="_blank" style="word-break: break-word; color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; text-decoration: none;color: #1974d2;">
+              {{url}}
+            </a>
+          </p>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            <span class="note" style="font-weight: 700;font-size: 15px;color: #303034;">注意：</span>
+            登録がスムーズに行えるよう、イベント前にアプリのインストールとアカウントの有効化を完了してください。
+          </p>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            このメールアドレスは、初回ログイン時にCrowdServeアカウントを有効化する際に使用されます。
+          </p>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            CrowdServe
+          </p>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            CrowdServeは、お客様、お客様のチケット、アーティスト、ファンの皆様の安全を守ります。
+          </p>
+          <p class="unsubscribe" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; font-weight: 400;font-size: 13px;color: #abacb6;border-top: 1px solid #dcdce1;padding-top: 20px;margin-top: 20px;margin-bottom: 0;">
+            今後、このようなメールを希望しない場合は、<a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank" style="color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; color: #abacb6 !important;text-decoration: underline !important; text-decoration: none;color: #1974d2;">配信停止をお願いします</a>。
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
