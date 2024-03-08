@@ -6,7 +6,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Check NFT Ticket</title>
+    <title>查看智能门票</title>
     <link rel="stylesheet" href="../style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
   </head>
@@ -17,31 +17,31 @@
       </div>
       <div class="email-content">
         <div class="content-title">
-          Your Ticket for {{event_name}} Is Ready!
+          {{event_name}}的智能门票已经准备就绪 🫡！
         </div>
         <div class="content-detail">
           <div class="ticket-img" style="background-image: url({{ticket_image}});"></div>
-          <p class="detail-text">Dear {{user_name}},</p>
+          <p class="detail-text">亲爱的用户 {{user_name}},</p>
           <p class="detail-text">
-            You're one step closer to your event!
+            距离激动人心的活动只有一步之遥啦 😍！
           </p>
           <p class="detail-text" style="margin-bottom: 5px;">
-            Your Smart ticket is now available on the CrowdServe App.
+            您的智能门票现已在CrowdServe上可用
           </p>
           <p class="detail-text">
             <b>{{event_name}} - {{ticket_type_name}}</b>
           </p>
           <p class="detail-text">
-            Click here to access your ticket.
+            点击👇按钮查看您的门票
           </p>
           <button class="click-nft-ticket">
             <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important;">
-              <span style="margin: auto;">MY SMART TICKET</span>
+              <span style="margin: auto;">查看智能门票</span>
             </a>
           </button>
           <p class="detail-text">
             <span style="color: #303034 !important;">
-              If the button doesn't work, open this link in your preferred browser
+              如果按钮被禁用，请在浏览器中打开链接：
             </span>
             <br />
             <a href="{{url}}" target="_blank" style="word-break: break-word;">
@@ -49,11 +49,11 @@
             </a>
           </p>
           <p class="detail-text">
-            <span class="note">NOTE:</span>
-            Please use this email address to activate your CrowdServe account when you login for the first time. Kindly contact <b style="text-decoration: underline;">support@crowdserve.xyz</b> if you face any issues retrieving your ticket.
+            <span class="note">温馨提示：</span>
+            首次登录时，请使用此收件电子邮件地址激活您的CrowdServe帐户。如果您在查看门票时遇到任何问题，请联系<b style="text-decoration: underline;">support@crowdserve.xyz</b>。
           </p>
           <p class="detail-text">
-            <span class="note">Download the CrowdServe app</span>
+            <span class="note">下载CrowdServe App</span>
           </p>
           <div class="download-app-image">
             <a href="https://apps.apple.com/us/app/crowdserve/id6444015643" target="_blank">
@@ -64,15 +64,14 @@
             </a>
           </div>
           <p class="detail-text">
-            Yours Sincerely,<br />
             CrowdServe
           </p>
           <p class="detail-text">
-            CrowdServe is here to protect you, your ticket, the artistes and other fans.
+            CrowdServe致力于保护您、您的门票、艺人和所有粉丝
           </p>
           <p class="unsubscribe">
-            If you don't want to receive this type of email in the future, please
-            <a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank">unsubscribe</a>.
+            如果您以后不想收到此类电子邮件，请
+            <a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank">取消订阅</a>。
           </p>
         </div>
       </div>

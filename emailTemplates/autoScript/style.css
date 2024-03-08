@@ -297,3 +297,18 @@ a {
   margin-right: 8px;
   margin-top: 3px;
 }
+
+.download-app-image {
+  display: flex;
+  margin-bottom: 24px;
+}
+
+.download-app-image a {
+  margin-right: 15px;
+  height: 50px;
+}
+
+.download-app-image a img {
+  width: 100%;
+  height: 100%;
+}

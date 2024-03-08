@@ -25,31 +25,14 @@
           <p class="detail-text">
             イベントまであと一歩！
           </p>
-          <div class="ticket-info">
-            <p class="title">
-              {{event_name}}
-            </p>
-            <p class="info-item">
-              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt="" />
-              {{event_date}}
-            </p>
-            <p class="info-item">
-              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt="" />
-              {{event_location}}
-            </p>
-            <p class="info-item">
-              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/organiser.08925b60.png" alt="" />
-              {{event_organizer}}
-            </p>
-          </div>
           <p class="detail-text">
             スマートチケットは、CrowdServeアプリからご利用いただけます。
           </p>
           <p class="detail-text">
-            以下をクリックしてチケットにアクセスしてください。<br />
-            <span style="font-size: 12px; color: #717179">
-              (まだアプリをインストールしていない場合は、ダウンロードをお願いします)
-            </span>
+            <b>{{event_name}} - {{ticket_type_name}}</b>
+          </p>
+          <p class="detail-text">
+            以下をクリックしてチケットにアクセスしてください。
           </p>
           <button class="click-nft-ticket">
             <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important;">
@@ -67,8 +50,20 @@
           </p>
           <p class="detail-text">
             <span class="note">注意：</span>
-            登録がスムーズに行えるよう、イベント前にアプリのインストールとアカウントの有効化を完了してください。
+            このメールアドレスを利用頂いて初回ログイン時にCrowdServeアカウントを有効化にしてください。<br />
+            何か問題がございましたら、<b style="text-decoration: underline;">support@crowdserve.xyz</b> までお気軽にお問い合わせくだいませ。
           </p>
+          <p class="detail-text">
+            <span class="note">CrowdServeアプリをダウンロードしてください。</span>
+          </p>
+          <div class="download-app-image">
+            <a href="https://apps.apple.com/us/app/crowdserve/id6444015643" target="_blank">
+              <img src="https://app.ticket-crowdserve.com/_next/static/media/app-store.7fc78eeb.svg" alt="" />
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.crowdserve.mobile" target="_blank">
+              <img src="https://app.ticket-crowdserve.com/_next/static/media/google-play.68a5ec27.png" alt="" />
+            </a>
+          </div>
           <p class="detail-text">
             このメールアドレスは、初回ログイン時にCrowdServeアカウントを有効化する際に使用されます。
           </p>
