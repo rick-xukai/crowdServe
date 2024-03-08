@@ -62,7 +62,6 @@ const LandingPageContainer = styled.div`
           margin-right: 16px;
         }
         .google-play-link {
-          width: 168px;
           height: 50px;
           display: inline-block;
           span, img {
