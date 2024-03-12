@@ -5,7 +5,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     >
     <meta http-equiv="X-UA-Compatible" content="ie=edge" >
-    <title>CrowdServeスマートチケット</title>
+    <title>查看智能门票</title>
     <link rel="stylesheet" href="../style.css" >
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
   </head>
@@ -16,31 +16,31 @@
       </div>
       <div class="email-content" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; padding-left: 30px;padding-right: 30px;padding-bottom: 30px;">
         <div class="content-title" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; padding-top: 20px;padding-bottom: 20px;border-bottom: 1px solid #dcdce1;font-weight: 700;font-size: 20px;color: #303034;">
-          {{event_name}} のスマートチケットのご用意ができました！
+          {{event_name}}的智能门票已经准备就绪！
         </div>
         <div class="content-detail" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-top: 20px;">
           <div class="ticket-img" style="background-image: url({{ticket_image}}); text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin: auto;margin-bottom: 20px;width: 200px;height: 200px;border-radius: 4px;background-position: center;background-repeat: no-repeat;background-size: cover;"></div>
-          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">{{user_name}} 様</p>
+          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">亲爱的{{user_name}},</p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            イベントまであと一歩！
+            距离激动人心的活动只有一步之遥啦 😍！
           </p>
-          <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            スマートチケットは、CrowdServeアプリからご利用いただけます。
+          <p class="detail-text" style="margin-bottom: 5px; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
+            您的智能门票现已在CrowdServe上可用
           </p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
             <b>{{event_name}} - {{ticket_type_name}}</b>
           </p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            以下をクリックしてチケットにアクセスしてください。
+            点击👇按钮查看您的门票
           </p>
           <button class="click-nft-ticket" style="padding-left: 0;padding-right: 0; width: 200px;height: 45px;background: #fc0006;border-radius: 2px;border: none;margin-bottom: 20px;font-weight: 700;font-size: 15px;color: #f8f6f0;">
             <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important; color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; width: 100%;height: 100%;display: flex; text-decoration: none;color: #1974d2;">
-              <span style="margin: auto;">スマートチケット</span>
+              <span style="margin: auto;">查看智能门票</span>
             </a>
           </button>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
             <span style="color: #303034 !important;">
-              ボタンが作動しない場合は、お好きなブラウザでこのリンクを開いてください。
+              如果按钮被禁用，请在浏览器中打开链接：
             </span>
             <br>
             <a href="{{url}}" target="_blank" style="word-break: break-word; color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; text-decoration: none;color: #1974d2;">
@@ -48,12 +48,11 @@
             </a>
           </p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            <span class="note" style="font-weight: 700;font-size: 15px;color: #303034;">注意：</span>
-            このメールアドレスを利用頂いて初回ログイン時にCrowdServeアカウントを有効化にしてください。<br>
-            何か問題がございましたら、<b style="text-decoration: underline;">support@crowdserve.xyz</b> までお気軽にお問い合わせくだいませ。
+            <span class="note" style="font-weight: 700;font-size: 15px;color: #303034;">温馨提示：</span>
+            首次登录时，请使用此收件电子邮件地址激活您的CrowdServe帐户。如果您在查看门票时遇到任何问题，请联系<b style="text-decoration: underline;">support@crowdserve.xyz</b>。
           </p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            <span class="note" style="font-weight: 700;font-size: 15px;color: #303034;">CrowdServeアプリをダウンロードしてください。</span>
+            <span class="note" style="font-weight: 700;font-size: 15px;color: #303034;">下载CrowdServe App</span>
           </p>
           <div class="download-app-image" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; width: 100%;display: flex;flex-wrap: wrap;margin-bottom: 24px;">
             <a href="https://apps.apple.com/us/app/crowdserve/id6444015643" target="_blank" style="color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; text-decoration: none;color: #1974d2; margin-right: 15px;height: 50px;margin-bottom: 10px;">
@@ -67,10 +66,11 @@
             CrowdServe
           </p>
           <p class="detail-text" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; margin-bottom: 20px;margin-top: 0;font-weight: 400;font-size: 15px;color: #303034;word-break: break-word;">
-            CrowdServeは、お客様、お客様のチケット、アーティスト、ファンの皆様の安全を守ります。
+            CrowdServe致力于保护您、您的门票、艺人和所有粉丝
           </p>
           <p class="unsubscribe" style="text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; font-weight: 400;font-size: 13px;color: #abacb6;border-top: 1px solid #dcdce1;padding-top: 20px;margin-top: 20px;margin-bottom: 0;">
-            今後、このようなメールを希望しない場合は、<a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank" style="color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; color: #abacb6 !important;text-decoration: underline !important; text-decoration: none;color: #1974d2;">配信停止をお願いします</a>。
+            如果您以后不想收到此类电子邮件，请
+            <a class="unsubscribe-btn" href="%unsubscribe_url%" target="_blank" style="color: #1d6bcb; text-rendering: optimizeLegibility !important;-webkit-font-smoothing: antialiased !important;-moz-osx-font-smoothing: grayscale;font-family: Heebo, sans-serif; color: #abacb6 !important;text-decoration: underline !important; text-decoration: none;color: #1974d2;">取消订阅</a>。
           </p>
         </div>
       </div>

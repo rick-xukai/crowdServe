@@ -17,7 +17,7 @@
       </div>
       <div class="email-content">
         <div class="content-title">
-          Your Ticket for {{event_name}} Is Ready!
+          Your Smart Ticket for {{event_name}} Is Ready!
         </div>
         <div class="content-detail">
           <div class="ticket-img" style="background-image: url({{ticket_image}});"></div>
@@ -25,31 +25,14 @@
           <p class="detail-text">
             You're one step closer to your event!
           </p>
-          <div class="ticket-info">
-            <p class="title">
-              {{event_name}}
-            </p>
-            <p class="info-item">
-              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/calendar.73468b28.png" alt="" />
-              {{event_date}}
-            </p>
-            <p class="info-item">
-              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/location.58a4e887.png" alt="" />
-              {{event_location}}
-            </p>
-            <p class="info-item">
-              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/organiser.08925b60.png" alt="" />
-              {{event_organizer}}
-            </p>
-          </div>
-          <p class="detail-text">
-            Your Smart ticket is now available on the CrowdServe App.
+          <p class="detail-text" style="margin-bottom: 5px;">
+            Your Smart Ticket is now available on the CrowdServe.
           </p>
           <p class="detail-text">
-            Simply click below to access your ticket<br />
-            <span style="font-size: 12px; color: #717179">
-              (You'll be prompted to download the app if you have not installed it yet.)
-            </span>
+            <b>{{event_name}} - {{ticket_type_name}}</b>
+          </p>
+          <p class="detail-text">
+            Click below to access your ticket.
           </p>
           <button class="click-nft-ticket">
             <a href="{{url}}" target="_blank" style="color: #F8F6F0 !important;">
@@ -67,11 +50,19 @@
           </p>
           <p class="detail-text">
             <span class="note">NOTE:</span>
-            Please ensure you have installed the app and activated your account before the event to ensure a smooth experience at registration.
+            Please use this email address to activate your CrowdServe account when you login for the first time. Kindly contact <b style="text-decoration: underline;">support@crowdserve.xyz</b> if you face any issues retrieving your ticket.
           </p>
           <p class="detail-text">
-            This email address will be used to activate your CrowdServe account when you login for the first time.
+            <span class="note">Download the CrowdServe app</span>
           </p>
+          <div class="download-app-image">
+            <a href="https://apps.apple.com/us/app/crowdserve/id6444015643" target="_blank">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/app-store.911407b8.png" alt="" />
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.crowdserve.mobile" target="_blank" class="google-play">
+              <img src="https://app-dev.ticket-crowdserve.com/_next/static/media/google-play.ce4bf8b0.png" alt="" />
+            </a>
+          </div>
           <p class="detail-text">
             Yours Sincerely,<br />
             CrowdServe
