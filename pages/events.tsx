@@ -841,6 +841,11 @@ const EventList = () => {
         {contextHolder}
         {!menuState && <PageBottomComponent />}
       </div>
+      <div style={{ display: 'none' }}>
+        <img src={Images.FacebookIcon.src} alt="" />
+        <img src={Images.InsIcon.src} alt="" />
+        <img src={Images.WebsiteIcon.src} alt="" />
+      </div>
     </EventListContainer>
   );
 };
