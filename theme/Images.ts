@@ -129,6 +129,7 @@ import RedeemRewardSuccess from '../static/images/redeem-reward-success.gif';
 import FacebookIcon from '../static/images/facebook.png';
 import InsIcon from '../static/images/ins.png';
 import WebsiteIcon from '../static/images/website.png';
+import AppStorePng from '../static/images/app-store.png';
 
 const Images = {
   Safety,
@@ -142,6 +143,7 @@ const Images = {
   ButtonVerify,
   AppStore,
   GooglePlay,
+  AppStorePng,
   LandingPageBackground,
   PhoneDetail,
   LoginBackground,

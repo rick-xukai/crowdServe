@@ -94,10 +94,15 @@ const LandingPage = ({ needLoading }: { needLoading: boolean | undefined }) => {
                     through blockchain
                   </p>
                   <div className="download-link">
-                    <a href={AppleStoreLink} target="_blank" title="App Store">
+                    <a
+                      href={AppleStoreLink}
+                      target="_blank"
+                      title="App Store"
+                      className="google-play-link"
+                    >
                       <Image
                         className="app-store"
-                        src={Images.AppStore}
+                        src={Images.AppStorePng}
                         alt=""
                       />
                     </a>
