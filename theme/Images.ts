@@ -126,9 +126,9 @@ import CameraIcon from '../static/images/camera.svg';
 import EditProfileIcon from '../static/images/edit-profile.svg';
 import ProfileIcon from '../static/images/profile-icon.svg';
 import RedeemRewardSuccess from '../static/images/redeem-reward-success.gif';
-import FacebookIcon from '../static/images/facebook.png';
-import InsIcon from '../static/images/ins.png';
-import WebsiteIcon from '../static/images/website.png';
+import FacebookIcon from '../static/images/facebook.jpg';
+import InsIcon from '../static/images/ins.jpg';
+import WebsiteIcon from '../static/images/website.jpg';
 import AppStorePng from '../static/images/app-store.png';
 
 const Images = {
