@@ -10,6 +10,11 @@ const LoginContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover; */
+  .ant-form-item-explain-error {
+    font-size: 12px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+  }
   .ant-input:focus {
     box-shadow: unset;
   }

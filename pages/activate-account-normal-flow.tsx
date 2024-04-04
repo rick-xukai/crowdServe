@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Row,
   Col,
@@ -93,6 +93,7 @@ const ActivateAccountNormalFlow = ({
   ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const inputRefs = useRef<any>({});
 
   const data = useAppSelector(selectData);
   const loading = useAppSelector(selectLoading);
@@ -134,6 +135,17 @@ const ActivateAccountNormalFlow = ({
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
   const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
+
+  const onFinishFailed = (error: any) => {
+    const firstErrorField = error.errorFields[0];
+    if (firstErrorField) {
+      const { name } = firstErrorField;
+      const inputElement = inputRefs.current[name[0]];
+      if (inputElement) {
+        inputElement.focus();
+      }
+    }
+  };
 
   const onFinish = async (values: any) => {
     if (!verificationCodeSuccess) {
@@ -504,7 +516,7 @@ const ActivateAccountNormalFlow = ({
                   </Form>
                 )}
                 {verificationCodeSuccess && passwordSuccess && (
-                  <Form onFinish={onFinish}>
+                  <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
                     <Form.Item
                       name="firstName"
                       rules={[{ validator: profileNameValidator }]}
@@ -516,6 +528,7 @@ const ActivateAccountNormalFlow = ({
                       }}
                     >
                       <Input
+                        ref={(input) => (inputRefs.current.firstName = input)}
                         className={`${
                           (activateAccountValue.firstName && 'border-white') ||
                           ''
@@ -533,6 +546,12 @@ const ActivateAccountNormalFlow = ({
                     </Form.Item>
                     <Form.Item
                       name="lastName"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Required!',
+                        },
+                      ]}
                       getValueFromEvent={(e) => {
                         const { value } = e.target;
                         return value
@@ -541,6 +560,7 @@ const ActivateAccountNormalFlow = ({
                       }}
                     >
                       <Input
+                        ref={(input) => (inputRefs.current.lastName = input)}
                         className={`${
                           (activateAccountValue.lastName && 'border-white') ||
                           ''
@@ -597,7 +617,15 @@ const ActivateAccountNormalFlow = ({
                         Invalid phone number
                       </div>
                     )}
-                    <Form.Item name="genderId">
+                    <Form.Item
+                      name="genderId"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Required!',
+                        },
+                      ]}
+                    >
                       <Select
                         popupClassName="gender-select-dropdown"
                         className={`${
@@ -617,7 +645,15 @@ const ActivateAccountNormalFlow = ({
                         suffixIcon={<CaretDownOutlined />}
                       />
                     </Form.Item>
-                    <Form.Item name="birthday">
+                    <Form.Item
+                      name="birthday"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Required!',
+                        },
+                      ]}
+                    >
                       <DatePicker
                         inputReadOnly
                         className={`${
@@ -654,15 +690,7 @@ const ActivateAccountNormalFlow = ({
                     <Form.Item style={{ marginBottom: 25 }}>
                       <Button
                         className="signin-btn"
-                        disabled={
-                          !activateAccountValue.birthday ||
-                          !activateAccountValue.genderId ||
-                          !activateAccountValue.firstName ||
-                          !activateAccountValue.lastName ||
-                          !activateAccountValue.phoneNumber ||
-                          !activateAccountValue.phoneShortCode ||
-                          loading
-                        }
+                        disabled={loading}
                         type="primary"
                         htmlType="submit"
                       >
