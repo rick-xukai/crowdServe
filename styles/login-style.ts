@@ -102,6 +102,8 @@ const LoginContainer = styled.div`
     position: relative;
     display: flex;
     align-items: center;
+    overflow: auto;
+    padding-bottom: 20px;
     .ant-select-selection-item,
     .ant-select-selection-placeholder {
       padding-top: 8px;

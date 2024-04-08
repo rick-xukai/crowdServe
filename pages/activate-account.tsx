@@ -136,6 +136,8 @@ const ActivateAccount = ({
   const [countdownNumber, setCountdownNumber] = useState<
     number | ((prevTime: number) => void)
   >(0);
+  const [showPhoneShortCodeError, setShowPhoneShortCodeError] =
+    useState<boolean>(false);
 
   const onFinishFailed = (error: any) => {
     const firstErrorField = error.errorFields[0];
@@ -221,6 +223,7 @@ const ActivateAccount = ({
   };
 
   const selectCountryCodeChange = (e: string) => {
+    setShowPhoneShortCodeError(false);
     const country = e.split('-')[1];
     const phoneCode = e.split('-')[0];
     const countryCode = countryDataList.find(
@@ -485,30 +488,25 @@ const ActivateAccount = ({
                       name="password"
                       rules={[{ validator: passwordValidator }]}
                     >
-                      <div>
-                        <Input.Password
-                          ref={(input) => (inputRefs.current.password = input)}
-                          className={`${
-                            (passwordValue && 'border-white') || ''
-                          }`}
-                          placeholder="Set your password (at least 8 characters)"
-                          bordered={false}
-                          maxLength={20}
-                          iconRender={(visible) =>
-                            visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                          }
-                          onChange={(e) => {
-                            setPasswordValue(e.target.value);
-                            setActivateAccountFormValue({
-                              ...activateAccountFormValue,
-                              password:
-                                (isPassword(e.target.value) &&
-                                  e.target.value) ||
-                                '',
-                            });
-                          }}
-                        />
-                      </div>
+                      <Input.Password
+                        ref={(input) => (inputRefs.current.password = input)}
+                        className={`${(passwordValue && 'border-white') || ''}`}
+                        placeholder="Set your password (at least 8 characters)"
+                        bordered={false}
+                        maxLength={20}
+                        iconRender={(visible) =>
+                          visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                        }
+                        onChange={(e) => {
+                          setPasswordValue(e.target.value);
+                          setActivateAccountFormValue({
+                            ...activateAccountFormValue,
+                            password:
+                              (isPassword(e.target.value) && e.target.value) ||
+                              '',
+                          });
+                        }}
+                      />
                     </Form.Item>
                     <Form.Item
                       name="passwordConfirm"
@@ -617,7 +615,7 @@ const ActivateAccount = ({
                       rules={[
                         {
                           required: true,
-                          message: 'Required!',
+                          message: 'Last name is required',
                         },
                       ]}
                       getValueFromEvent={(e) => {
@@ -681,6 +679,20 @@ const ActivateAccount = ({
                         />
                       </Col>
                     </Row>
+                    {showPhoneShortCodeError && (
+                      <div
+                        className="phone-number-error"
+                        style={{
+                          marginTop: '-5px',
+                          marginBottom: '10px',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          color: '#ff4d4f',
+                        }}
+                      >
+                        Country is required
+                      </div>
+                    )}
                     {phoneNumberError && (
                       <div className="phone-number-error">
                         Invalid phone number
@@ -691,7 +703,7 @@ const ActivateAccount = ({
                       rules={[
                         {
                           required: true,
-                          message: 'Required!',
+                          message: 'Sex is required',
                         },
                       ]}
                     >
@@ -719,7 +731,7 @@ const ActivateAccount = ({
                       rules={[
                         {
                           required: true,
-                          message: 'Required!',
+                          message: 'Birthday is required',
                         },
                       ]}
                     >
@@ -760,11 +772,17 @@ const ActivateAccount = ({
                     <Form.Item>
                       <Button
                         className="signin-btn"
-                        disabled={
-                          loading
-                        }
+                        disabled={loading}
                         type="primary"
                         htmlType="submit"
+                        onClick={() => {
+                          if (
+                            activateAccountFormValue.phoneNumber &&
+                            !activateAccountFormValue.phoneShortCode
+                          ) {
+                            setShowPhoneShortCodeError(true);
+                          }
+                        }}
                       >
                         ACTIVATE
                         {loading && <LoadingOutlined />}

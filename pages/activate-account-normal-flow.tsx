@@ -135,6 +135,8 @@ const ActivateAccountNormalFlow = ({
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
   const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
+  const [showPhoneShortCodeError, setShowPhoneShortCodeError] =
+    useState<boolean>(false);
 
   const onFinishFailed = (error: any) => {
     const firstErrorField = error.errorFields[0];
@@ -209,6 +211,7 @@ const ActivateAccountNormalFlow = ({
   };
 
   const selectCountryCodeChange = (e: string) => {
+    setShowPhoneShortCodeError(false);
     const country = e.split('-')[1];
     const phoneCode = e.split('-')[0];
     const countryCode = countryDataList.find(
@@ -549,7 +552,7 @@ const ActivateAccountNormalFlow = ({
                       rules={[
                         {
                           required: true,
-                          message: 'Required!',
+                          message: 'Last name is required',
                         },
                       ]}
                       getValueFromEvent={(e) => {
@@ -612,6 +615,20 @@ const ActivateAccountNormalFlow = ({
                         />
                       </Col>
                     </Row>
+                    {showPhoneShortCodeError && (
+                      <div
+                        className="phone-number-error"
+                        style={{
+                          marginTop: '-5px',
+                          marginBottom: '10px',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          color: '#ff4d4f',
+                        }}
+                      >
+                        Country is required
+                      </div>
+                    )}
                     {phoneNumberError && (
                       <div className="phone-number-error">
                         Invalid phone number
@@ -622,7 +639,7 @@ const ActivateAccountNormalFlow = ({
                       rules={[
                         {
                           required: true,
-                          message: 'Required!',
+                          message: 'Sex is required',
                         },
                       ]}
                     >
@@ -650,7 +667,7 @@ const ActivateAccountNormalFlow = ({
                       rules={[
                         {
                           required: true,
-                          message: 'Required!',
+                          message: 'Birthday is required',
                         },
                       ]}
                     >
@@ -693,6 +710,14 @@ const ActivateAccountNormalFlow = ({
                         disabled={loading}
                         type="primary"
                         htmlType="submit"
+                        onClick={() => {
+                          if (
+                            activateAccountValue.phoneNumber &&
+                            !activateAccountValue.phoneShortCode
+                          ) {
+                            setShowPhoneShortCodeError(true);
+                          }
+                        }}
                       >
                         DONE
                         {loading && <LoadingOutlined />}
