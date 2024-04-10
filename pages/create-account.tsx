@@ -212,19 +212,6 @@ const CreateAccount = ({
     }
     if (isVerificationEmail && isVerificationCode) {
       if (createAccountValue.password !== confirmPasswordValue) {
-        if (formRef && formRef.current) {
-          const { setFieldsValue } = formRef.current;
-          setFieldsValue({
-            password: '',
-            passwordConfirm: '',
-          });
-        }
-        setPasswordValue('');
-        setConfirmPasswordValue('');
-        setCreateAccountValue({
-          ...createAccountValue,
-          password: '',
-        });
         message.open({
           content: PasswordNotMatch,
           className: 'error-message-event',

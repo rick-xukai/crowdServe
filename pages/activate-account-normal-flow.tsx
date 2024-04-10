@@ -165,12 +165,6 @@ const ActivateAccountNormalFlow = ({
     }
     if (verificationCodeSuccess && !passwordSuccess) {
       if (activateAccountValue.password !== confirmPasswordValue) {
-        setPasswordValue('');
-        setConfirmPasswordValue('');
-        setActivateAccountValue({
-          ...activateAccountValue,
-          password: '',
-        });
         message.open({
           content: PasswordNotMatch,
           className: 'error-message-event',

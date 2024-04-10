@@ -153,19 +153,6 @@ const ActivateAccount = ({
   const onFinish = async () => {
     if (!passwordSuccess && checked) {
       if (activateAccountFormValue.password !== confirmPasswordValue) {
-        if (formRef && formRef.current) {
-          const { setFieldsValue } = formRef.current;
-          setFieldsValue({
-            password: '',
-            passwordConfirm: '',
-          });
-        }
-        setPasswordValue('');
-        setConfirmPasswordValue('');
-        setActivateAccountFormValue({
-          ...activateAccountFormValue,
-          password: '',
-        });
         message.open({
           content: PasswordNotMatch,
           className: 'error-message-event',
