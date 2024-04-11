@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Row,
   Col,
@@ -93,6 +93,7 @@ const ActivateAccountNormalFlow = ({
   ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const inputRefs = useRef<any>({});
 
   const data = useAppSelector(selectData);
   const loading = useAppSelector(selectLoading);
@@ -134,6 +135,19 @@ const ActivateAccountNormalFlow = ({
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
   const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
+  const [showPhoneShortCodeError, setShowPhoneShortCodeError] =
+    useState<boolean>(false);
+
+  const onFinishFailed = (error: any) => {
+    const firstErrorField = error.errorFields[0];
+    if (firstErrorField) {
+      const { name } = firstErrorField;
+      const inputElement = inputRefs.current[name[0]];
+      if (inputElement) {
+        inputElement.focus();
+      }
+    }
+  };
 
   const onFinish = async (values: any) => {
     if (!verificationCodeSuccess) {
@@ -151,12 +165,6 @@ const ActivateAccountNormalFlow = ({
     }
     if (verificationCodeSuccess && !passwordSuccess) {
       if (activateAccountValue.password !== confirmPasswordValue) {
-        setPasswordValue('');
-        setConfirmPasswordValue('');
-        setActivateAccountValue({
-          ...activateAccountValue,
-          password: '',
-        });
         message.open({
           content: PasswordNotMatch,
           className: 'error-message-event',
@@ -197,6 +205,7 @@ const ActivateAccountNormalFlow = ({
   };
 
   const selectCountryCodeChange = (e: string) => {
+    setShowPhoneShortCodeError(false);
     const country = e.split('-')[1];
     const phoneCode = e.split('-')[0];
     const countryCode = countryDataList.find(
@@ -504,7 +513,7 @@ const ActivateAccountNormalFlow = ({
                   </Form>
                 )}
                 {verificationCodeSuccess && passwordSuccess && (
-                  <Form onFinish={onFinish}>
+                  <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
                     <Form.Item
                       name="firstName"
                       rules={[{ validator: profileNameValidator }]}
@@ -516,6 +525,7 @@ const ActivateAccountNormalFlow = ({
                       }}
                     >
                       <Input
+                        ref={(input) => (inputRefs.current.firstName = input)}
                         className={`${
                           (activateAccountValue.firstName && 'border-white') ||
                           ''
@@ -533,6 +543,12 @@ const ActivateAccountNormalFlow = ({
                     </Form.Item>
                     <Form.Item
                       name="lastName"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Last name is required',
+                        },
+                      ]}
                       getValueFromEvent={(e) => {
                         const { value } = e.target;
                         return value
@@ -541,6 +557,7 @@ const ActivateAccountNormalFlow = ({
                       }}
                     >
                       <Input
+                        ref={(input) => (inputRefs.current.lastName = input)}
                         className={`${
                           (activateAccountValue.lastName && 'border-white') ||
                           ''
@@ -592,12 +609,34 @@ const ActivateAccountNormalFlow = ({
                         />
                       </Col>
                     </Row>
+                    {showPhoneShortCodeError && (
+                      <div
+                        className="phone-number-error"
+                        style={{
+                          marginTop: '-5px',
+                          marginBottom: '10px',
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          color: '#ff4d4f',
+                        }}
+                      >
+                        Country is required
+                      </div>
+                    )}
                     {phoneNumberError && (
                       <div className="phone-number-error">
                         Invalid phone number
                       </div>
                     )}
-                    <Form.Item name="genderId">
+                    <Form.Item
+                      name="genderId"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Sex is required',
+                        },
+                      ]}
+                    >
                       <Select
                         popupClassName="gender-select-dropdown"
                         className={`${
@@ -617,7 +656,15 @@ const ActivateAccountNormalFlow = ({
                         suffixIcon={<CaretDownOutlined />}
                       />
                     </Form.Item>
-                    <Form.Item name="birthday">
+                    <Form.Item
+                      name="birthday"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Birthday is required',
+                        },
+                      ]}
+                    >
                       <DatePicker
                         inputReadOnly
                         className={`${
@@ -654,17 +701,17 @@ const ActivateAccountNormalFlow = ({
                     <Form.Item style={{ marginBottom: 25 }}>
                       <Button
                         className="signin-btn"
-                        disabled={
-                          !activateAccountValue.birthday ||
-                          !activateAccountValue.genderId ||
-                          !activateAccountValue.firstName ||
-                          !activateAccountValue.lastName ||
-                          !activateAccountValue.phoneNumber ||
-                          !activateAccountValue.phoneShortCode ||
-                          loading
-                        }
+                        disabled={loading}
                         type="primary"
                         htmlType="submit"
+                        onClick={() => {
+                          if (
+                            activateAccountValue.phoneNumber &&
+                            !activateAccountValue.phoneShortCode
+                          ) {
+                            setShowPhoneShortCodeError(true);
+                          }
+                        }}
                       >
                         DONE
                         {loading && <LoadingOutlined />}

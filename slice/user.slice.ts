@@ -55,7 +55,7 @@ export interface RegisterAccountPayload {
   username: string;
   password: string;
   birthday: string;
-  genderId: string;
+  genderId: string | null;
   country: string;
   firstName: string;
   lastName: string;
@@ -63,6 +63,7 @@ export interface RegisterAccountPayload {
   phoneShortCode: string;
   externalChannel?: string;
   externalId?: string;
+  passwordConfirm?: string;
 }
 
 export interface UserGenderResponseType {

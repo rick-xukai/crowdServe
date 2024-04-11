@@ -393,7 +393,7 @@ export const firebaseTrackMethod = (eventName: string, payload: any) => {
 
 export const profileNameValidator = (_: object, value: string) => {
   if (!value) {
-    return Promise.reject(new Error('Required'));
+    return Promise.reject(new Error('First name is required'));
   }
   if (value.length < 2) {
     return Promise.reject(new Error('Must be greater than two characters'));
@@ -426,6 +426,26 @@ export const checkPhoneNumber = (phoneNumber: string, countryCode: string) => {
 export const verificationCodeValidator = (_: object, value: string) => {
   if (value.length < 6) {
     return Promise.reject(new Error('Invalid code'));
+  }
+  return Promise.resolve();
+};
+
+export const emailValidator = (_: object, value: string) => {
+  if (!value) {
+    return Promise.reject(new Error('Email is required'));
+  }
+  if (!isEmail(value)) {
+    return Promise.reject(new Error('Please enter a valid email address'));
+  }
+  return Promise.resolve();
+};
+
+export const passwordValidator = (_: object, value: string) => {
+  if (!value) {
+    return Promise.reject(new Error('Password is required'));
+  }
+  if (value.length < 8) {
+    return Promise.reject(new Error('Must be greater than eight characters'));
   }
   return Promise.resolve();
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import {
   Row,
@@ -42,6 +42,7 @@ import {
   profileNameValidator,
   checkPhoneNumber,
   verificationCodeValidator,
+  passwordValidator,
 } from '../utils/func';
 import {
   TokenExpire,
@@ -84,6 +85,8 @@ const ActivateAccount = ({
   ]);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const inputRefs = useRef<any>({});
+  const formRef = useRef<any>(null);
 
   const error = useAppSelector(selectError);
   const loading = useAppSelector(selectLoading);
@@ -133,16 +136,23 @@ const ActivateAccount = ({
   const [countdownNumber, setCountdownNumber] = useState<
     number | ((prevTime: number) => void)
   >(0);
+  const [showPhoneShortCodeError, setShowPhoneShortCodeError] =
+    useState<boolean>(false);
+
+  const onFinishFailed = (error: any) => {
+    const firstErrorField = error.errorFields[0];
+    if (firstErrorField) {
+      const { name } = firstErrorField;
+      const inputElement = inputRefs.current[name[0]];
+      if (inputElement) {
+        inputElement.focus();
+      }
+    }
+  };
 
   const onFinish = async () => {
-    if (!passwordSuccess) {
+    if (!passwordSuccess && checked) {
       if (activateAccountFormValue.password !== confirmPasswordValue) {
-        setPasswordValue('');
-        setConfirmPasswordValue('');
-        setActivateAccountFormValue({
-          ...activateAccountFormValue,
-          password: '',
-        });
         message.open({
           content: PasswordNotMatch,
           className: 'error-message-event',
@@ -200,6 +210,7 @@ const ActivateAccount = ({
   };
 
   const selectCountryCodeChange = (e: string) => {
+    setShowPhoneShortCodeError(false);
     const country = e.split('-')[1];
     const phoneCode = e.split('-')[0];
     const countryCode = countryDataList.find(
@@ -397,7 +408,15 @@ const ActivateAccount = ({
                   </Col>
                 </Row>
                 {!passwordSuccess && (
-                  <Form onFinish={onFinish}>
+                  <Form
+                    ref={formRef}
+                    initialValues={{
+                      ...activateAccountFormValue,
+                      passwordConfirm: confirmPasswordValue,
+                    }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                  >
                     <div className="tips">Signup with</div>
                     <div className="tips signup-email">{defultEmail}</div>
                     {showCodeExpiredRequestButton && (
@@ -410,6 +429,9 @@ const ActivateAccount = ({
                             <Col span={24}>
                               <div className="request-code-content">
                                 <Input
+                                  ref={(input) =>
+                                    (inputRefs.current.code = input)
+                                  }
                                   className={`${
                                     (passwordValue && 'border-white') || ''
                                   }`}
@@ -423,7 +445,7 @@ const ActivateAccount = ({
                                     });
                                   }}
                                 />
-                                {(countdownNumber > 0 && (
+                                {((countdownNumber as number) > 0 && (
                                   <div className="request-code-button show-count-number">
                                     <div className="button">
                                       {`(${countdownNumber}s)`}
@@ -449,38 +471,38 @@ const ActivateAccount = ({
                         </Form.Item>
                       </>
                     )}
-                    <Form.Item>
-                      <div>
-                        <Input.Password
-                          value={passwordValue}
-                          className={`${
-                            (passwordValue && 'border-white') || ''
-                          }`}
-                          placeholder="Set your password (at least 8 characters)"
-                          bordered={false}
-                          maxLength={20}
-                          iconRender={(visible) =>
-                            visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                          }
-                          onChange={(e) => {
-                            setPasswordValue(e.target.value);
-                            setActivateAccountFormValue({
-                              ...activateAccountFormValue,
-                              password: e.target.value,
-                            });
-                          }}
-                        />
-                      </div>
-                    </Form.Item>
-                    {activateAccountFormValue.password &&
-                      !isPassword(activateAccountFormValue.password) && (
-                        <div className="tips password">
-                          Set your password (at least 8 characters)
-                        </div>
-                      )}
-                    <Form.Item>
+                    <Form.Item
+                      name="password"
+                      rules={[{ validator: passwordValidator }]}
+                    >
                       <Input.Password
-                        value={confirmPasswordValue}
+                        ref={(input) => (inputRefs.current.password = input)}
+                        className={`${(passwordValue && 'border-white') || ''}`}
+                        placeholder="Set your password (at least 8 characters)"
+                        bordered={false}
+                        maxLength={20}
+                        iconRender={(visible) =>
+                          visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                        }
+                        onChange={(e) => {
+                          setPasswordValue(e.target.value);
+                          setActivateAccountFormValue({
+                            ...activateAccountFormValue,
+                            password:
+                              (isPassword(e.target.value) && e.target.value) ||
+                              '',
+                          });
+                        }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="passwordConfirm"
+                      rules={[{ validator: passwordValidator }]}
+                    >
+                      <Input.Password
+                        ref={(input) =>
+                          (inputRefs.current.passwordConfirm = input)
+                        }
                         className={`${
                           (confirmPasswordValue && 'border-white') || ''
                         }`}
@@ -536,13 +558,6 @@ const ActivateAccount = ({
                     <Form.Item>
                       <Button
                         className="signin-btn"
-                        disabled={
-                          !activateAccountFormValue.email ||
-                          !activateAccountFormValue.password ||
-                          !activateAccountFormValue.code ||
-                          !confirmPasswordValue ||
-                          !checked
-                        }
                         type="primary"
                         htmlType="submit"
                         onClick={() => setTextShak(false)}
@@ -553,7 +568,7 @@ const ActivateAccount = ({
                   </Form>
                 )}
                 {passwordSuccess && (
-                  <Form onFinish={onFinish}>
+                  <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
                     <Form.Item
                       name="firstName"
                       rules={[{ validator: profileNameValidator }]}
@@ -565,6 +580,7 @@ const ActivateAccount = ({
                       }}
                     >
                       <Input
+                        ref={(input) => (inputRefs.current.firstName = input)}
                         className={`${
                           (activateAccountFormValue.firstName &&
                             'border-white') ||
@@ -583,6 +599,12 @@ const ActivateAccount = ({
                     </Form.Item>
                     <Form.Item
                       name="lastName"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Last name is required',
+                        },
+                      ]}
                       getValueFromEvent={(e) => {
                         const { value } = e.target;
                         return value
@@ -591,6 +613,7 @@ const ActivateAccount = ({
                       }}
                     >
                       <Input
+                        ref={(input) => (inputRefs.current.lastName = input)}
                         className={`${
                           (activateAccountFormValue.lastName &&
                             'border-white') ||
@@ -643,12 +666,34 @@ const ActivateAccount = ({
                         />
                       </Col>
                     </Row>
+                    {showPhoneShortCodeError && (
+                      <div
+                        className="phone-number-error"
+                        style={{
+                          marginTop: '-5px',
+                          marginBottom: '10px',
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          color: '#ff4d4f',
+                        }}
+                      >
+                        Country is required
+                      </div>
+                    )}
                     {phoneNumberError && (
                       <div className="phone-number-error">
                         Invalid phone number
                       </div>
                     )}
-                    <Form.Item name="genderId">
+                    <Form.Item
+                      name="genderId"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Sex is required',
+                        },
+                      ]}
+                    >
                       <Select
                         popupClassName="gender-select-dropdown"
                         className={`${
@@ -668,7 +713,15 @@ const ActivateAccount = ({
                         suffixIcon={<CaretDownOutlined />}
                       />
                     </Form.Item>
-                    <Form.Item name="birthday">
+                    <Form.Item
+                      name="birthday"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Birthday is required',
+                        },
+                      ]}
+                    >
                       <DatePicker
                         inputReadOnly
                         className={`${
@@ -706,22 +759,17 @@ const ActivateAccount = ({
                     <Form.Item>
                       <Button
                         className="signin-btn"
-                        disabled={
-                          !isPassword(activateAccountFormValue.password) ||
-                          !isPassword(confirmPasswordValue) ||
-                          !activateAccountFormValue.email ||
-                          !activateAccountFormValue.genderId ||
-                          !activateAccountFormValue.birthday ||
-                          !activateAccountFormValue.firstName ||
-                          !activateAccountFormValue.lastName ||
-                          !activateAccountFormValue.phoneNumber ||
-                          !activateAccountFormValue.phoneShortCode ||
-                          !activateAccountFormValue.country ||
-                          !checked ||
-                          loading
-                        }
+                        disabled={loading}
                         type="primary"
                         htmlType="submit"
+                        onClick={() => {
+                          if (
+                            activateAccountFormValue.phoneNumber &&
+                            !activateAccountFormValue.phoneShortCode
+                          ) {
+                            setShowPhoneShortCodeError(true);
+                          }
+                        }}
                       >
                         ACTIVATE
                         {loading && <LoadingOutlined />}

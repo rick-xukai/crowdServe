@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import {
   Row,
@@ -32,6 +32,8 @@ import {
   generateRandomString,
   profileNameValidator,
   checkPhoneNumber,
+  emailValidator,
+  passwordValidator,
 } from '../utils/func';
 import {
   TermsConditionsLink,
@@ -98,6 +100,8 @@ const CreateAccount = ({
   ]);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const inputRefs = useRef<any>({});
+  const formRef = useRef<any>(null);
 
   const data = useAppSelector(selectData);
   const loading = useAppSelector(selectLoading);
@@ -130,12 +134,13 @@ const CreateAccount = ({
       code: '',
       password: '',
       birthday: '',
-      genderId: '',
+      genderId: null,
       firstName: '',
       lastName: '',
       phoneNumber: '',
       phoneShortCode: '',
       country: DefaultSelectCountry,
+      passwordConfirm: '',
     });
   const [showCountryItems, setShowCountryItems] = useState<boolean>(false);
   const [currentSelectCountry, setCurrentSelectCountry] =
@@ -145,6 +150,19 @@ const CreateAccount = ({
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
   const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
+  const [showPhoneShortCodeError, setShowPhoneShortCodeError] =
+    useState<boolean>(false);
+
+  const onFinishFailed = (error: any) => {
+    const firstErrorField = error.errorFields[0];
+    if (firstErrorField) {
+      const { name } = firstErrorField;
+      const inputElement = inputRefs.current[name[0]];
+      if (inputElement) {
+        inputElement.focus();
+      }
+    }
+  };
 
   const onFinish = async (values: any) => {
     if (!isVerificationEmail) {
@@ -194,12 +212,6 @@ const CreateAccount = ({
     }
     if (isVerificationEmail && isVerificationCode) {
       if (createAccountValue.password !== confirmPasswordValue) {
-        setPasswordValue('');
-        setConfirmPasswordValue('');
-        setCreateAccountValue({
-          ...createAccountValue,
-          password: '',
-        });
         message.open({
           content: PasswordNotMatch,
           className: 'error-message-event',
@@ -236,6 +248,7 @@ const CreateAccount = ({
   };
 
   const selectCountryCodeChange = (e: string) => {
+    setShowPhoneShortCodeError(false);
     const country = e.split('-')[1];
     const phoneCode = e.split('-')[0];
     const countryCode = countryDataList.find(
@@ -435,9 +448,13 @@ const CreateAccount = ({
                     </Col>
                   </Row>
                   {!isVerificationEmail && (
-                    <Form onFinish={onFinish}>
-                      <Form.Item name="email">
+                    <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
+                      <Form.Item
+                        name="email"
+                        rules={[{ validator: emailValidator }]}
+                      >
                         <Input
+                          ref={(input) => (inputRefs.current.email = input)}
                           className={`${
                             (createAccountValue.email && 'border-white') || ''
                           }`}
@@ -464,6 +481,7 @@ const CreateAccount = ({
                         }}
                       >
                         <Input
+                          ref={(input) => (inputRefs.current.firstName = input)}
                           className={`${
                             (createAccountValue.firstName && 'border-white') ||
                             ''
@@ -481,6 +499,12 @@ const CreateAccount = ({
                       </Form.Item>
                       <Form.Item
                         name="lastName"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Last name is required',
+                          },
+                        ]}
                         getValueFromEvent={(e) => {
                           const { value } = e.target;
                           return value
@@ -489,6 +513,7 @@ const CreateAccount = ({
                         }}
                       >
                         <Input
+                          ref={(input) => (inputRefs.current.lastName = input)}
                           className={`${
                             (createAccountValue.lastName && 'border-white') ||
                             ''
@@ -543,13 +568,7 @@ const CreateAccount = ({
                       <Form.Item>
                         <Button
                           className="signin-btn"
-                          disabled={
-                            !createAccountValue.email ||
-                            !createAccountValue.firstName ||
-                            !createAccountValue.lastName ||
-                            !checked ||
-                            loading
-                          }
+                          disabled={loading}
                           type="primary"
                           htmlType="submit"
                           onClick={() => setTextShak(false)}
@@ -604,10 +623,21 @@ const CreateAccount = ({
                     </>
                   )}
                   {isVerificationCode && isVerificationEmail && (
-                    <Form onFinish={onFinish}>
-                      <Form.Item>
+                    <Form
+                      ref={formRef}
+                      initialValues={{
+                        ...createAccountValue,
+                        passwordConfirm: confirmPasswordValue,
+                      }}
+                      onFinish={onFinish}
+                      onFinishFailed={onFinishFailed}
+                    >
+                      <Form.Item
+                        name="password"
+                        rules={[{ validator: passwordValidator }]}
+                      >
                         <Input.Password
-                          value={passwordValue}
+                          ref={(input) => (inputRefs.current.password = input)}
                           className={`${
                             (passwordValue && 'border-white') || ''
                           }`}
@@ -629,9 +659,14 @@ const CreateAccount = ({
                           }}
                         />
                       </Form.Item>
-                      <Form.Item>
+                      <Form.Item
+                        name="passwordConfirm"
+                        rules={[{ validator: passwordValidator }]}
+                      >
                         <Input.Password
-                          value={confirmPasswordValue}
+                          ref={(input) =>
+                            (inputRefs.current.passwordConfirm = input)
+                          }
                           className={`${
                             (confirmPasswordValue && 'border-white') || ''
                           }`}
@@ -682,12 +717,34 @@ const CreateAccount = ({
                           />
                         </Col>
                       </Row>
+                      {showPhoneShortCodeError && (
+                        <div
+                          className="phone-number-error"
+                          style={{
+                            marginTop: '-5px',
+                            marginBottom: '10px',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                            color: '#ff4d4f',
+                          }}
+                        >
+                          Country is required
+                        </div>
+                      )}
                       {phoneNumberError && (
                         <div className="phone-number-error">
                           Invalid phone number
                         </div>
                       )}
-                      <Form.Item name="genderId">
+                      <Form.Item
+                        name="genderId"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Sex is required',
+                          },
+                        ]}
+                      >
                         <Select
                           popupClassName="gender-select-dropdown"
                           className={`${
@@ -695,7 +752,6 @@ const CreateAccount = ({
                               'gender-select border-white') ||
                             'gender-select'
                           }`}
-                          defaultValue={undefined}
                           placeholder="Sex"
                           onChange={(e) =>
                             setCreateAccountValue({
@@ -707,7 +763,15 @@ const CreateAccount = ({
                           suffixIcon={<CaretDownOutlined />}
                         />
                       </Form.Item>
-                      <Form.Item name="birthday">
+                      <Form.Item
+                        name="birthday"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Birthday is required',
+                          },
+                        ]}
+                      >
                         <DatePicker
                           inputReadOnly
                           className={`${
@@ -744,17 +808,17 @@ const CreateAccount = ({
                       <Form.Item>
                         <Button
                           className="signin-btn"
-                          disabled={
-                            !isPassword(confirmPasswordValue) ||
-                            !createAccountValue.password ||
-                            !createAccountValue.birthday ||
-                            !createAccountValue.genderId ||
-                            !createAccountValue.phoneNumber ||
-                            !createAccountValue.phoneShortCode ||
-                            loading
-                          }
+                          disabled={loading}
                           type="primary"
                           htmlType="submit"
+                          onClick={() => {
+                            if (
+                              createAccountValue.phoneNumber &&
+                              !createAccountValue.phoneShortCode
+                            ) {
+                              setShowPhoneShortCodeError(true);
+                            }
+                          }}
                         >
                           DONE
                           {loading && <LoadingOutlined />}

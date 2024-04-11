@@ -71,6 +71,8 @@ const ActivateAccountContainer = styled.div`
     position: relative;
     display: flex;
     align-items: center;
+    overflow: auto;
+    padding-bottom: 20px;
     .main-logo {
       .logo {
         display: flex;
