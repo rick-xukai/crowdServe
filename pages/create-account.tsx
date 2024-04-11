@@ -723,7 +723,7 @@ const CreateAccount = ({
                           style={{
                             marginTop: '-5px',
                             marginBottom: '10px',
-                            fontSize: '14px',
+                            fontSize: '12px',
                             fontWeight: 500,
                             color: '#ff4d4f',
                           }}
