@@ -151,15 +151,22 @@ const ActivateAccountNormalFlow = ({
 
   const onFinish = async (values: any) => {
     if (!verificationCodeSuccess) {
-      const result = await dispatch(
-        verificationCodeAction({
-          ...values,
-          email: activateAccountValue.email,
-          type: RegisterVerifyType,
-        })
-      );
-      if (result.type === verificationCodeAction.fulfilled.toString()) {
-        setVerificationCodeSuccess(true);
+      if (activateAccountValue.email) {
+        const result = await dispatch(
+          verificationCodeAction({
+            ...values,
+            email: activateAccountValue.email,
+            type: RegisterVerifyType,
+          })
+        );
+        if (result.type === verificationCodeAction.fulfilled.toString()) {
+          setVerificationCodeSuccess(true);
+        }
+      } else {
+        message.open({
+          content: 'Email is required.',
+          className: 'error-message-event',
+        });
       }
       return;
     }
@@ -195,12 +202,19 @@ const ActivateAccountNormalFlow = ({
       } else {
         setPhoneNumberError(false);
       }
-      dispatch(
-        loginAction({
-          ...activateAccountValue,
-          phoneNumber: `${selectPhoneCode}-${activateAccountValue.phoneNumber}`,
-        })
-      );
+      if (activateAccountValue.email) {
+        dispatch(
+          loginAction({
+            ...activateAccountValue,
+            phoneNumber: `${selectPhoneCode}-${activateAccountValue.phoneNumber}`,
+          })
+        );
+      } else {
+        message.open({
+          content: 'Email is required.',
+          className: 'error-message-event',
+        });
+      }
     }
   };
 

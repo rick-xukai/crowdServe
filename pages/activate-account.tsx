@@ -160,15 +160,22 @@ const ActivateAccount = ({
         return;
       } else {
         if (showCodeExpiredRequestButton) {
-          const response = await dispatch(
-            verificationCodeAction({
-              code: activateAccountFormValue.code,
-              email: activateAccountFormValue.email,
-              type: 1,
-            })
-          );
-          if (response.type === verificationCodeAction.fulfilled.toString()) {
-            setPasswordSuccess(true);
+          if (activateAccountFormValue.email) {
+            const response = await dispatch(
+              verificationCodeAction({
+                code: activateAccountFormValue.code,
+                email: activateAccountFormValue.email,
+                type: 1,
+              })
+            );
+            if (response.type === verificationCodeAction.fulfilled.toString()) {
+              setPasswordSuccess(true);
+            }
+          } else {
+            message.open({
+              content: 'Email is required.',
+              className: 'error-message-event',
+            });
           }
         } else {
           setPasswordSuccess(true);
@@ -198,12 +205,19 @@ const ActivateAccount = ({
         });
         return;
       }
-      dispatch(
-        loginAction({
-          ...activateAccountFormValue,
-          phoneNumber: `${selectPhoneCode}-${activateAccountFormValue.phoneNumber}`,
-        })
-      );
+      if (activateAccountFormValue.email) {
+        dispatch(
+          loginAction({
+            ...activateAccountFormValue,
+            phoneNumber: `${selectPhoneCode}-${activateAccountFormValue.phoneNumber}`,
+          })
+        );
+      } else {
+        message.open({
+          content: 'Email is required.',
+          className: 'error-message-event',
+        });
+      }
     } else {
       setTextShak(true);
     }

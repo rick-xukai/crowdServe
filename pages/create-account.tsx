@@ -198,15 +198,22 @@ const CreateAccount = ({
       return;
     }
     if (!isVerificationCode) {
-      const result = await dispatch(
-        verificationCodeAction({
-          ...values,
-          email: createAccountValue.email,
-          type: RegisterVerifyType,
-        })
-      );
-      if (result.type === verificationCodeAction.fulfilled.toString()) {
-        setIsVerificationCode(true);
+      if (createAccountValue.email) {
+        const result = await dispatch(
+          verificationCodeAction({
+            ...values,
+            email: createAccountValue.email,
+            type: RegisterVerifyType,
+          })
+        );
+        if (result.type === verificationCodeAction.fulfilled.toString()) {
+          setIsVerificationCode(true);
+        }
+      } else {
+        message.open({
+          content: 'Email is required.',
+          className: 'error-message-event',
+        });
       }
       return;
     }
@@ -238,12 +245,19 @@ const CreateAccount = ({
       } else {
         setPhoneNumberError(false);
       }
-      dispatch(
-        registerAccountAction({
-          ...createAccountValue,
-          phoneNumber: `${selectPhoneCode}-${createAccountValue.phoneNumber}`,
-        })
-      );
+      if (createAccountValue.email) {
+        dispatch(
+          registerAccountAction({
+            ...createAccountValue,
+            phoneNumber: `${selectPhoneCode}-${createAccountValue.phoneNumber}`,
+          })
+        );
+      } else {
+        message.open({
+          content: 'Email is required.',
+          className: 'error-message-event',
+        });
+      }
     }
   };
 
