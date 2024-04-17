@@ -12,6 +12,7 @@ export interface ErrorType {
 }
 
 export const defaultCollectibleDetail = {
+  id: '',
   name: '',
   organizerName: '',
   description: '',
@@ -93,6 +94,7 @@ export interface CollectibleEventDetailResponseType {
 }
 
 export interface CollectibleDetailResponseType {
+  id: string;
   name: string;
   organizerName: string;
   description: string;
