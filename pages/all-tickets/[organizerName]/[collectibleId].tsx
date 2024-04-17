@@ -369,7 +369,9 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
 
   useEffect(() => {
     if (requestId && !showTransferStatusModal) {
-      dispatch(getCollectibleDetailAction(requestId));
+      if (!collectibleDetail.id) {
+        dispatch(getCollectibleDetailAction(requestId));
+      }
       dispatch(getConnectedEventsAction(requestId));
       dispatch(getPriceChartDataAction(requestId));
     }
