@@ -165,24 +165,30 @@ LandingPage.getInitialProps = async (ctx: any) => {
         res.end();
       } else {
         const eventSlug = token || Object.keys(query)[0];
-        const response = await UserService.doVerificationCode({
-          code: parameters.code,
-          email: parameters.email,
-          type: 1,
-        });
-        if (response.code !== 1005) {
-          if (response.code === 1004) {
-            res.writeHead(302, {
-              Location: `${RouterKeys.activateAccount}?${eventSlug}&codeStatus=expired`,
-            });
+        if (parameters.email && parameters.code) {
+          const response = await UserService.doVerificationCode({
+            code: parameters.code,
+            email: parameters.email,
+            type: 1,
+          });
+          if (response.code !== 1005) {
+            if (response.code === 1004) {
+              res.writeHead(302, {
+                Location: `${RouterKeys.activateAccount}?${eventSlug}&codeStatus=expired`,
+              });
+            } else {
+              res.writeHead(302, {
+                Location: `${RouterKeys.activateAccount}?${eventSlug}`,
+              });
+            }
           } else {
             res.writeHead(302, {
-              Location: `${RouterKeys.activateAccount}?${eventSlug}`,
+              Location: `${RouterKeys.login}?${eventSlug}`,
             });
           }
         } else {
           res.writeHead(302, {
-            Location: `${RouterKeys.login}?${eventSlug}`,
+            Location: RouterKeys.login,
           });
         }
         res.end();
