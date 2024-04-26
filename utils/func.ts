@@ -30,6 +30,8 @@ import {
   CompressorConvertSize,
 } from '../constants/General';
 import firebaseApp from '@/firebase';
+import { LoginResponseType } from '@/slice/user.slice';
+import { CookieKeys } from '@/constants/Keys';
 
 Chart.register(
   LineController,
@@ -449,3 +451,25 @@ export const passwordValidator = (_: object, value: string) => {
   }
   return Promise.resolve();
 };
+
+export const renderAuthCookiesField = (
+  fieldValues: LoginResponseType,
+  formValues: any
+) => [
+  {
+    name: CookieKeys.userLoginToken,
+    value: fieldValues.token,
+  },
+  {
+    name: CookieKeys.userLoginEmail,
+    value: formValues.email,
+  },
+  {
+    name: CookieKeys.userLoginId,
+    value: fieldValues.user.userId,
+  },
+  {
+    name: CookieKeys.userProfileInfo,
+    value: fieldValues.user,
+  },
+];

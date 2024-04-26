@@ -43,6 +43,7 @@ import {
   checkPhoneNumber,
   verificationCodeValidator,
   passwordValidator,
+  renderAuthCookiesField,
 } from '../utils/func';
 import {
   TokenExpire,
@@ -288,33 +289,12 @@ const ActivateAccount = ({
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
-      cookies.setCookie(CookieKeys.userLoginToken, data.token, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(
-        CookieKeys.userLoginEmail,
-        activateAccountFormValue.email,
-        {
+      renderAuthCookiesField(data, activateAccountFormValue).forEach((item) => {
+        cookies.setCookie(item.name, item.value, {
           expires: new Date(currentDate.getTime() + TokenExpire),
           path: '/',
           domain: window.location.hostname,
-        }
-      );
-      cookies.setCookie(
-        CookieKeys.userLoginEmail,
-        activateAccountFormValue.email,
-        {
-          expires: new Date(currentDate.getTime() + TokenExpire),
-          path: '/',
-          domain: window.location.hostname,
-        }
-      );
-      cookies.setCookie(CookieKeys.userProfileInfo, data.user, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
+        });
       });
       if (currentTicketId && !currentTicketEventSlug) {
         router.push(RouterKeys.eventList);

@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect';
 import { Row, Col, Form, Input, Button, message } from 'antd';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
-import { useCookie } from '../hooks';
+import { useCookie, useResetPageCache } from '../hooks';
 import Messages from '../constants/Messages';
 import { CookieKeys, LocalStorageKeys, RouterKeys } from '../constants/Keys';
 import { TokenExpire } from '../constants/General';
@@ -16,6 +16,7 @@ import {
   base64Decrypt,
   base64Encrypt,
   generateRandomString,
+  renderAuthCookiesField,
 } from '../utils/func';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -32,18 +33,7 @@ import {
 } from '../slice/user.slice';
 import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
-import { resetTicketsCache } from '../slice/ticketsCache.slice';
-import { resetTicketsListData } from '../slice/tickets.slice';
-import { resetCrowdFundCache } from '../slice/crowdFundCache.slice';
-import {
-  resetEventCache,
-  setEventDataForSearch,
-} from '../slice/eventCache.slice';
-import { resetMyTicketsCache } from '../slice/myTicketsCache.slice';
-import { resetMyCollectiblesCache } from '../slice/myCollectiblesCache.slice';
-import { resetCollectionDetailCache } from '../slice/collectionDetailCache.slice';
 import AuthPageHearder from '@/components/authPageHearder';
-import { resetMyRavesCache } from '@/slice/myRaves.slice';
 import { Images } from '@/theme';
 // import GoogleLoginComponent from '../components/googleLoginComponent';
 
@@ -61,6 +51,7 @@ const Login = ({
   const router: any = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
+  const resetPageCache = useResetPageCache();
   const cookies = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
@@ -112,46 +103,21 @@ const Login = ({
     }
   };
 
-  const handleResetPageCache = () => {
-    dispatch(resetTicketsListData());
-    dispatch(resetTicketsCache());
-    dispatch(resetEventCache());
-    dispatch(resetMyTicketsCache());
-    dispatch(resetMyCollectiblesCache());
-    dispatch(resetCollectionDetailCache());
-    dispatch(resetCrowdFundCache());
-    dispatch(setEventDataForSearch([]));
-    dispatch(resetMyRavesCache());
-  };
-
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
-      cookies.setCookie(CookieKeys.userLoginToken, data.token, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(CookieKeys.userLoginEmail, loginFormValue.email, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(CookieKeys.userLoginId, data.user.userId, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(CookieKeys.userProfileInfo, data.user, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
+      renderAuthCookiesField(data, loginFormValue).forEach((item) => {
+        cookies.setCookie(item.name, item.value, {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+          domain: window.location.hostname,
+        });
       });
       localStorage.setItem(
         LocalStorageKeys.pageViewTrackKeys,
         generateRandomString()
       );
-      handleResetPageCache();
+      resetPageCache.handleResetPageCache();
       dispatch(resetLoginRedirectPage());
       if (ticketIdFormEmailLink && !currentTicketEventSlug) {
         router.push(RouterKeys.myTickets);
@@ -210,7 +176,6 @@ const Login = ({
     }
   }, [router.isReady]);
 
-  // eslint-disable-next-line
   useEffect(() => {
     setIsFirstRender(false);
     return () => {
