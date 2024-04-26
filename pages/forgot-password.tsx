@@ -12,7 +12,7 @@ import {
   VerificationCodeLength,
   ForgotPasswordAccountNotActivate,
 } from '@/constants/General';
-import { useCookie } from '@/hooks';
+import { useCookie, useResetPageCache } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import {
   isPassword,
@@ -20,6 +20,7 @@ import {
   isEmail,
   base64Encrypt,
   generateRandomString,
+  renderAuthCookiesField,
 } from '@/utils/func';
 import { verifyUserAction } from '@/slice/user.slice';
 import {
@@ -35,21 +36,10 @@ import {
   selectLoginRedirectPage,
   resetLoginRedirectPage,
 } from '@/slice/user.slice';
-import { resetTicketsCache } from '@/slice/ticketsCache.slice';
-import { resetTicketsListData } from '@/slice/tickets.slice';
-import { resetCrowdFundCache } from '@/slice/crowdFundCache.slice';
-import {
-  resetEventCache,
-  setEventDataForSearch,
-} from '@/slice/eventCache.slice';
-import { resetMyTicketsCache } from '@/slice/myTicketsCache.slice';
-import { resetMyCollectiblesCache } from '@/slice/myCollectiblesCache.slice';
-import { resetCollectionDetailCache } from '@/slice/collectionDetailCache.slice';
 import { LoginContainer } from '@/styles/login-style';
 import { RouterKeys, CookieKeys, LocalStorageKeys } from '@/constants/Keys';
 import Messages from '@/constants/Messages';
 import AuthPageHearder from '@/components/authPageHearder';
-import { resetMyRavesCache } from '@/slice/myRaves.slice';
 import { Images } from '@/theme';
 
 const ForgotPassword = ({
@@ -63,6 +53,7 @@ const ForgotPassword = ({
   currentTicketEventSlug: string;
   ticketIdFormEmailLink: string;
 }) => {
+  const resetPageCache = useResetPageCache();
   const cookies = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
@@ -143,41 +134,21 @@ const ForgotPassword = ({
     }
   };
 
-  const handleResetPageCache = () => {
-    dispatch(resetTicketsListData());
-    dispatch(resetTicketsCache());
-    dispatch(resetEventCache());
-    dispatch(resetMyTicketsCache());
-    dispatch(resetMyCollectiblesCache());
-    dispatch(resetCollectionDetailCache());
-    dispatch(resetCrowdFundCache());
-    dispatch(setEventDataForSearch([]));
-    dispatch(resetMyRavesCache());
-  };
-
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
-      cookies.setCookie(CookieKeys.userLoginToken, data.token, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(CookieKeys.userLoginEmail, forgotPasswordValue.email, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(CookieKeys.userLoginId, data.user.userId, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
+      renderAuthCookiesField(data, forgotPasswordValue).forEach((item) => {
+        cookies.setCookie(item.name, item.value, {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+          domain: window.location.hostname,
+        });
       });
       localStorage.setItem(
         LocalStorageKeys.pageViewTrackKeys,
         generateRandomString()
       );
-      handleResetPageCache();
+      resetPageCache.handleResetPageCache();
       dispatch(reset());
       dispatch(resetLoginRedirectPage());
       if (ticketIdFormEmailLink && !currentTicketEventSlug) {

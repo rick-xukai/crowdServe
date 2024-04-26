@@ -20,7 +20,7 @@ import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import { isEmpty } from 'lodash';
 
-import { useCookie } from '../hooks';
+import { useCookie, useResetPageCache } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   isPassword,
@@ -29,6 +29,7 @@ import {
   generateRandomString,
   profileNameValidator,
   checkPhoneNumber,
+  renderAuthCookiesField,
 } from '../utils/func';
 import {
   TokenExpire,
@@ -57,18 +58,7 @@ import {
   selectLoginRedirectPage,
   resetLoginRedirectPage,
 } from '../slice/user.slice';
-import { resetTicketsCache } from '../slice/ticketsCache.slice';
-import { resetTicketsListData } from '../slice/tickets.slice';
-import { resetCrowdFundCache } from '../slice/crowdFundCache.slice';
-import {
-  resetEventCache,
-  setEventDataForSearch,
-} from '../slice/eventCache.slice';
-import { resetMyTicketsCache } from '../slice/myTicketsCache.slice';
-import { resetMyCollectiblesCache } from '../slice/myCollectiblesCache.slice';
-import { resetCollectionDetailCache } from '../slice/collectionDetailCache.slice';
 import AuthPageHearder from '@/components/authPageHearder';
-import { resetMyRavesCache } from '@/slice/myRaves.slice';
 import CountrySelecter from '@/components/countrySelecter';
 import countryDataList from '@/utils/countrycode.data.json';
 import { Images } from '@/theme';
@@ -85,6 +75,7 @@ const ActivateAccountNormalFlow = ({
   currentTicketEventSlug: string;
   ticketIdFormEmailLink: string;
 }) => {
+  const resetPageCache = useResetPageCache();
   const cookies = useCookie([
     CookieKeys.userLoginToken,
     CookieKeys.userLoginEmail,
@@ -240,18 +231,6 @@ const ActivateAccountNormalFlow = ({
     setDrawerOpen: setDrawerOpen,
   };
 
-  const handleResetPageCache = () => {
-    dispatch(resetTicketsListData());
-    dispatch(resetTicketsCache());
-    dispatch(resetEventCache());
-    dispatch(resetMyTicketsCache());
-    dispatch(resetMyCollectiblesCache());
-    dispatch(resetCollectionDetailCache());
-    dispatch(resetCrowdFundCache());
-    dispatch(setEventDataForSearch([]));
-    dispatch(resetMyRavesCache());
-  };
-
   useEffect(() => {
     setActivateAccountValue({
       ...activateAccountValue,
@@ -275,31 +254,18 @@ const ActivateAccountNormalFlow = ({
   useEffect(() => {
     if (data.token) {
       const currentDate = new Date();
-      cookies.setCookie(CookieKeys.userLoginToken, data.token, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(CookieKeys.userLoginEmail, activateAccountValue.email, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(CookieKeys.userLoginId, data.user.userId, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
-      });
-      cookies.setCookie(CookieKeys.userProfileInfo, data.user, {
-        expires: new Date(currentDate.getTime() + TokenExpire),
-        path: '/',
-        domain: window.location.hostname,
+      renderAuthCookiesField(data, activateAccountValue).forEach((item) => {
+        cookies.setCookie(item.name, item.value, {
+          expires: new Date(currentDate.getTime() + TokenExpire),
+          path: '/',
+          domain: window.location.hostname,
+        });
       });
       localStorage.setItem(
         LocalStorageKeys.pageViewTrackKeys,
         generateRandomString()
       );
-      handleResetPageCache();
+      resetPageCache.handleResetPageCache();
       dispatch(resetLoginRedirectPage());
       if (ticketIdFormEmailLink && !currentTicketEventSlug) {
         router.push(RouterKeys.myTickets);
