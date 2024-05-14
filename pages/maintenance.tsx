@@ -38,7 +38,9 @@ const Maintenance = () => (
         <Image src={Images.BlockAppIcon} alt="" />
       </div>
       <p className="title">{`We'll be back soon`}</p>
-      <p>We are building something new for you, <br /> please come back later~</p>
+      <p>
+        We are building something new for you, <br /> please come back later~
+      </p>
     </div>
   </MaintenancePageContainer>
 );

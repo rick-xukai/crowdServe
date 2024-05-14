@@ -139,7 +139,7 @@ const ActivateAccountContainer = styled.div`
       transition: background-color 5000s ease-in-out 0s !important;
     }
     .ant-form {
-      padding: 0 60px;
+      /* padding: 0 60px; */
       .ant-form-item {
         margin-bottom: 16px;
       }
@@ -464,6 +464,47 @@ const ActivateAccountContainer = styled.div`
     margin-bottom: 10px;
     margin-top: 5px;
   }
+  .code-sent {
+    margin-bottom: 30px;
+    .title {
+      font-weight: 300;
+      font-size: 17px;
+      color: ${Colors.grayScale20};
+      text-align: center;
+    }
+    .value {
+      font-weight: 500;
+      font-size: 17px;
+      color: ${Colors.grayScale20};
+      margin-top: 10px;
+      text-align: center;
+    }
+  }
+  .resend-content {
+    display: flex;
+    justify-content: center;
+    .registered {
+      font-weight: 300;
+      font-size: 16px;
+      color: ${Colors.white};
+      margin: 0 5px 0 0;
+      line-height: 22px;
+    }
+    .resend-count-down {
+      color: ${Colors.grayScale40} !important;
+    }
+    .activate {
+      font-weight: 400;
+      font-size: 16px;
+      color: ${Colors.branding};
+      margin: 0;
+      line-height: 22px;
+      @media (min-width: 1024px) {
+        cursor: pointer;
+      }
+    }
+  }
+
   @media (max-width: 768px) {
     .page-main {
       .main-form-content {

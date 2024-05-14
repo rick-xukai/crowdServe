@@ -25,7 +25,6 @@ const ShowUpdateProfilePopupContainer = styled.div`
       font-size: 20px;
       font-weight: 700;
       line-height: 28px;
-      margin-top: 20px;
     }
     .first-name {
       color: ${Colors.white};
@@ -50,7 +49,7 @@ const ShowUpdateProfilePopupContainer = styled.div`
       text-align: center;
     }
     .action-button {
-      margin-top: 40px;
+      margin-top: 32px;
       .ant-btn {
         height: 45px;
         border: none;
@@ -61,6 +60,15 @@ const ShowUpdateProfilePopupContainer = styled.div`
         font-size: 15px;
         font-weight: 700;
         line-height: 21px;
+        text-transform: uppercase;
+      }
+      &.remind-later {
+        margin-top: 15px;
+        .ant-btn {
+          background: transparent;
+          text-transform: uppercase;
+          border: 1px solid ${Colors.grayScale30};
+        }
       }
     }
   }
@@ -99,35 +107,38 @@ const ShowUpdateProfilePopup = ({
         className="profile-popup-content"
       >
         <Row>
-          <Col span={24} className="icon-content">
-            <img src={Images.ProfileIcon.src} alt="" />
-          </Col>
           <Col span={24} className="title-content">
             Complete Your Profile
           </Col>
           <Col span={24} className="description">
-            We want you to experience better. Help us understand you better by
-            completing your profile.
+            The event organizer requires more of your personal details to ensure
+            a smooth experience. Please complete them now. Failure to do so may
+            affect your ability to enter events or purchase tickets.
           </Col>
           <Col span={24} className="action-button">
             <Button
               onClick={() => {
+                setShowPopup(false);
                 if (!isProfilePage) {
                   dispatch(setDefaultShowEditProfilePopup(true));
                   router.push(RouterKeys.profile);
                 } else {
-                  setShowPopup(false);
                   setShowEditer(true);
                 }
               }}
             >
-              GO
+              Complete now
             </Button>
           </Col>
-          <Col
-            span={24}
-            className="action-tips"
-          >{`(It'll only take a second!)`}</Col>
+          <Col span={24} className="action-button remind-later">
+            <Button
+              onClick={() => {
+                setShowPopup(false);
+              }}
+            >
+              remind me later
+            </Button>
+          </Col>
         </Row>
         <div className="close-modal">
           <Image

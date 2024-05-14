@@ -1,24 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Button,
-  message,
-  Select,
-  DatePicker,
-  Drawer,
-} from 'antd';
+import { Row, Col, Form, Input, Button, message } from 'antd';
 import {
   EyeOutlined,
   EyeInvisibleOutlined,
-  CaretDownOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
 import { useRouter } from 'next/router';
-import { format } from 'date-fns';
-import { isEmpty } from 'lodash';
+import _, { isEmpty } from 'lodash';
 
 import { useCookie, useResetPageCache } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -28,19 +16,15 @@ import {
   base64Decrypt,
   generateRandomString,
   profileNameValidator,
-  checkPhoneNumber,
   renderAuthCookiesField,
+  isFinishProfile,
 } from '../utils/func';
 import {
   TokenExpire,
-  PasswordNotMatch,
-  BirthdayNotVaild,
-  RegisterVerifyType,
   VerificationCodeLength,
   ForgotPasswordAccountNotActivate,
   ActivateAccountFirst,
   AccountNotActivate,
-  DefaultSelectCountry,
 } from '../constants/General';
 import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { LoginContainer } from '../styles/login-style';
@@ -48,32 +32,38 @@ import OpenAppComponent from '../components/openAppComponent';
 import {
   selectData,
   loginAction,
-  verificationCodeAction,
   selectError,
   selectLoading,
   reset,
   getUserGenderAction,
-  selectUserGender,
   selectGetUserGenderLoading,
   selectLoginRedirectPage,
   resetLoginRedirectPage,
+  setShowCompeledProfileAfterLogin,
+  LoginType,
+  verifyUserAction,
 } from '../slice/user.slice';
 import AuthPageHearder from '@/components/authPageHearder';
-import CountrySelecter from '@/components/countrySelecter';
-import countryDataList from '@/utils/countrycode.data.json';
 import { Images } from '@/theme';
-import CountryCodePhoneNumber from '@/components/countryCodePhoneNumber';
+import CustomOTPInput from '@/components/CustomOTPInput';
+import useCountdown from '@/hooks/useCountDown';
 
 const ActivateAccountNormalFlow = ({
   accountEmail,
   redirectPage,
   currentTicketEventSlug,
   ticketIdFormEmailLink,
+  accountFirstName,
+  accountLastName,
+  accountPassword,
 }: {
   accountEmail: string;
   redirectPage: string;
   currentTicketEventSlug: string;
   ticketIdFormEmailLink: string;
+  accountFirstName: string;
+  accountLastName: string;
+  accountPassword: string;
 }) => {
   const resetPageCache = useResetPageCache();
   const cookies = useCookie([
@@ -90,69 +80,39 @@ const ActivateAccountNormalFlow = ({
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const getUserGenderLoading = useAppSelector(selectGetUserGenderLoading);
-  const userGender = useAppSelector(selectUserGender);
   const loginRedirectPage = useAppSelector(selectLoginRedirectPage);
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
   const [passwordValue, setPasswordValue] = useState<string>('');
-  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
-  const [verificationCodeSuccess, setVerificationCodeSuccess] =
-    useState<boolean>(false);
-  const [passwordSuccess, setPasswordSuccess] = useState<boolean>(false);
-  const [formatGenderData, setFormatGenderData] = useState<
-    {
-      value: number;
-      label: string;
-    }[]
-  >([]);
+  const [passwordSuccess, setPasswordSuccess] = useState<boolean>(
+    !!accountPassword
+  );
   const [activateAccountValue, setActivateAccountValue] = useState({
     email: accountEmail,
     code: '',
-    password: '',
-    birthday: '',
-    genderId: '',
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    phoneShortCode: '',
-    country: DefaultSelectCountry,
+    password: accountPassword,
+    firstName: accountFirstName,
+    lastName: accountLastName,
   });
-  const [showCountryItems, setShowCountryItems] = useState<boolean>(false);
-  const [currentSelectCountry, setCurrentSelectCountry] =
-    useState<string>(DefaultSelectCountry);
-  const [phoneNumberError, setPhoneNumberError] = useState<boolean>(false);
-  const [selectPhoneCode, setSelectPhoneCode] = useState<string>('');
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
-  const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
-  const [showPhoneShortCodeError, setShowPhoneShortCodeError] =
-    useState<boolean>(false);
-
-  const onFinishFailed = (error: any) => {
-    const firstErrorField = error.errorFields[0];
-    if (firstErrorField) {
-      const { name } = firstErrorField;
-      const inputElement = inputRefs.current[name[0]];
-      if (inputElement) {
-        inputElement.focus();
-      }
-    }
-  };
+  const totalCount = 60;
+  const { seconds, startTheCountdown } = useCountdown({ count: totalCount });
 
   const onFinish = async (values: any) => {
-    if (!verificationCodeSuccess) {
+    if (!passwordSuccess) {
+      setPasswordSuccess(true);
+      dispatch(verifyUserAction({ email: activateAccountValue.email }));
+      return;
+    }
+    if (passwordSuccess) {
       if (activateAccountValue.email) {
-        const result = await dispatch(
-          verificationCodeAction({
+        dispatch(
+          loginAction({
+            ...activateAccountValue,
+            externalChannel: LoginType.email,
             ...values,
-            email: activateAccountValue.email,
-            type: RegisterVerifyType,
           })
         );
-        if (result.type === verificationCodeAction.fulfilled.toString()) {
-          setVerificationCodeSuccess(true);
-        }
       } else {
         message.open({
           content: 'Email is required.',
@@ -161,95 +121,7 @@ const ActivateAccountNormalFlow = ({
       }
       return;
     }
-    if (verificationCodeSuccess && !passwordSuccess) {
-      if (activateAccountValue.password !== confirmPasswordValue) {
-        message.open({
-          content: PasswordNotMatch,
-          className: 'error-message-event',
-        });
-        return;
-      } else {
-        setPasswordSuccess(true);
-      }
-    }
-    if (verificationCodeSuccess && passwordSuccess) {
-      if (
-        new Date(activateAccountValue.birthday).getTime() > new Date().getTime()
-      ) {
-        message.open({
-          content: BirthdayNotVaild,
-          className: 'error-message-event',
-        });
-        return;
-      }
-      if (
-        !checkPhoneNumber(
-          activateAccountValue.phoneNumber,
-          activateAccountValue.phoneShortCode
-        )
-      ) {
-        setPhoneNumberError(true);
-        return;
-      } else {
-        setPhoneNumberError(false);
-      }
-      if (activateAccountValue.email) {
-        dispatch(
-          loginAction({
-            ...activateAccountValue,
-            phoneNumber: `${selectPhoneCode}-${activateAccountValue.phoneNumber}`,
-          })
-        );
-      } else {
-        message.open({
-          content: 'Email is required.',
-          className: 'error-message-event',
-        });
-      }
-    }
   };
-
-  const selectCountryCodeChange = (e: string) => {
-    setShowPhoneShortCodeError(false);
-    const country = e.split('-')[1];
-    const phoneCode = e.split('-')[0];
-    const countryCode = countryDataList.find(
-      (item) => item.country === country
-    );
-    setActivateAccountValue({
-      ...activateAccountValue,
-      phoneShortCode: countryCode?.shortCode || '',
-    });
-    setSelectPhoneCode(phoneCode);
-    setPhoneNumberError(false);
-  };
-
-  const countryCodePhoneNumberProps = {
-    selectPhoneCode: selectPhoneCode,
-    selectDefaultValue: null,
-    selectCountryCodeChange: selectCountryCodeChange,
-    setDrawerOpen: setDrawerOpen,
-  };
-
-  useEffect(() => {
-    setActivateAccountValue({
-      ...activateAccountValue,
-      country: currentSelectCountry,
-    });
-  }, [currentSelectCountry]);
-
-  useEffect(() => {
-    if (userGender.length) {
-      const genderOptions: any = [];
-      userGender.forEach((item) => {
-        genderOptions.push({
-          value: item.id,
-          label: item.label,
-        });
-      });
-      setFormatGenderData(genderOptions);
-    }
-  }, [userGender]);
 
   useEffect(() => {
     if (data.token) {
@@ -269,6 +141,9 @@ const ActivateAccountNormalFlow = ({
       dispatch(resetLoginRedirectPage());
       if (ticketIdFormEmailLink && !currentTicketEventSlug) {
         router.push(RouterKeys.myTickets);
+        if (!isFinishProfile(data.user)) {
+          dispatch(setShowCompeledProfileAfterLogin(true));
+        }
         return;
       }
       if (currentTicketEventSlug) {
@@ -293,6 +168,9 @@ const ActivateAccountNormalFlow = ({
         } else {
           router.push(redirectPage || currentRedirectPage);
         }
+      }
+      if (!isFinishProfile(data.user)) {
+        dispatch(setShowCompeledProfileAfterLogin(true));
       }
     }
   }, [data]);
@@ -339,21 +217,16 @@ const ActivateAccountNormalFlow = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (!drawerOpen) {
-      setPhoneCodeItems([]);
-      setShowPhoneCodeItems(false);
-    } else {
-      const items = (selectPhoneCode &&
-        countryDataList.filter((item) =>
-          item.code.includes(selectPhoneCode)
-        )) || [...countryDataList];
-      setPhoneCodeItems(items);
-      if (items.length) {
-        setShowPhoneCodeItems(true);
-      }
+  const initEmailFormValues = {
+    email: activateAccountValue.email,
+  };
+
+  const resendOtp = _.debounce(() => {
+    if (passwordSuccess && seconds >= totalCount) {
+      dispatch(verifyUserAction({ email: activateAccountValue.email }));
+      startTheCountdown();
     }
-  }, [drawerOpen]);
+  }, 1000);
 
   return (
     <>
@@ -364,16 +237,7 @@ const ActivateAccountNormalFlow = ({
           </div>
         </LoginContainer>
       )) || (
-        <LoginContainer
-          className={
-            (isOpenAppShow &&
-              `${
-                (showCountryItems && 'open-app-show country-items-index') ||
-                'open-app-show'
-              }`) ||
-            ''
-          }
-        >
+        <LoginContainer className={isOpenAppShow ? 'open-app-show' : ''}>
           <img
             className="page-background"
             src={Images.AnimatedBackground.src}
@@ -383,64 +247,109 @@ const ActivateAccountNormalFlow = ({
             skipClick={() => router.push(RouterKeys.eventList)}
           />
           <div className="page-main">
-            <div
-              className={
-                (showCountryItems && 'main-form-content country-items-show') ||
-                'main-form-content'
-              }
-            >
+            <div className="main-form-content">
               <div>
                 <Row className="main-title">
                   <Col span={24} className="title">
                     ACTIVATE YOUR ACCOUNT
                   </Col>
                 </Row>
-                {!verificationCodeSuccess && (
-                  <>
-                    <Row className="code-sent">
-                      <Col span={24} className="title">
-                        Verification code has been sent to
+                {!passwordSuccess && (
+                  <Form
+                    onFinish={onFinish}
+                    initialValues={initEmailFormValues}
+                    autoComplete="off"
+                  >
+                    <Form.Item
+                      className="only-read-item"
+                      name="email"
+                      label="Signup with"
+                      colon={false}
+                      labelCol={{ span: 24 }}
+                    >
+                      <Input
+                        autoComplete="off"
+                        placeholder="Email"
+                        bordered={false}
+                        disabled
+                      />
+                    </Form.Item>
+                    <Row gutter={10}>
+                      <Col span={12}>
+                        <Form.Item
+                          name="firstName"
+                          rules={[{ validator: profileNameValidator }]}
+                          getValueFromEvent={(e) => {
+                            const { value } = e.target;
+                            return value
+                              .replace(/[0-9]/g, '')
+                              .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
+                          }}
+                        >
+                          <Input
+                            ref={(input) =>
+                              (inputRefs.current.firstName = input)
+                            }
+                            autoComplete="off"
+                            className={`${
+                              (activateAccountValue.firstName &&
+                                'border-white') ||
+                              ''
+                            }`}
+                            placeholder="First name (at least 2 characters)"
+                            maxLength={20}
+                            bordered={false}
+                            onChange={(e) =>
+                              setActivateAccountValue({
+                                ...activateAccountValue,
+                                firstName: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Item>
                       </Col>
-                      <Col span={24} className="value">
-                        {activateAccountValue.email}
+                      <Col span={12}>
+                        <Form.Item
+                          name="lastName"
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Last name is required',
+                            },
+                          ]}
+                          getValueFromEvent={(e) => {
+                            const { value } = e.target;
+                            return value
+                              .replace(/[0-9]/g, '')
+                              .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
+                          }}
+                        >
+                          <Input
+                            ref={(input) =>
+                              (inputRefs.current.lastName = input)
+                            }
+                            autoComplete="off"
+                            className={`${
+                              (activateAccountValue.lastName &&
+                                'border-white') ||
+                              ''
+                            }`}
+                            placeholder="Last name (at least 1 character)"
+                            maxLength={20}
+                            bordered={false}
+                            onChange={(e) =>
+                              setActivateAccountValue({
+                                ...activateAccountValue,
+                                lastName: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Item>
                       </Col>
                     </Row>
-                    <Form onFinish={onFinish}>
-                      <Form.Item name="code">
-                        <Input
-                          className={`${
-                            (activateAccountValue.code && 'border-white') || ''
-                          }`}
-                          placeholder="Enter verification code"
-                          bordered={false}
-                          onChange={(e) =>
-                            setActivateAccountValue({
-                              ...activateAccountValue,
-                              code: e.target.value,
-                            })
-                          }
-                        />
-                      </Form.Item>
-                      <Form.Item>
-                        <Button
-                          className="signin-btn"
-                          disabled={
-                            activateAccountValue.code.length <
-                              VerificationCodeLength || loading
-                          }
-                          type="primary"
-                          htmlType="submit"
-                        >
-                          NEXT
-                        </Button>
-                      </Form.Item>
-                    </Form>
-                  </>
-                )}
-                {verificationCodeSuccess && !passwordSuccess && (
-                  <Form onFinish={onFinish}>
                     <Form.Item>
                       <Input.Password
+                        autoComplete="new-password"
                         value={passwordValue}
                         className={`${(passwordValue && 'border-white') || ''}`}
                         placeholder="Set your password (at least 8 characters)"
@@ -461,243 +370,56 @@ const ActivateAccountNormalFlow = ({
                       />
                     </Form.Item>
                     <Form.Item>
-                      <Input.Password
-                        value={confirmPasswordValue}
-                        className={`${
-                          (confirmPasswordValue && 'border-white') || ''
-                        }`}
-                        iconRender={(visible) =>
-                          visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                        }
-                        placeholder="Confirm your password"
-                        bordered={false}
-                        maxLength={20}
-                        onChange={(e) =>
-                          setConfirmPasswordValue(e.target.value)
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item>
                       <Button
                         className="signin-btn"
-                        disabled={
-                          !activateAccountValue.password ||
-                          !isPassword(confirmPasswordValue)
-                        }
                         type="primary"
                         htmlType="submit"
                       >
-                        NEXT
+                        CONTINUE
                       </Button>
                     </Form.Item>
                   </Form>
                 )}
-                {verificationCodeSuccess && passwordSuccess && (
-                  <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
-                    <Form.Item
-                      name="firstName"
-                      rules={[{ validator: profileNameValidator }]}
-                      getValueFromEvent={(e) => {
-                        const { value } = e.target;
-                        return value
-                          .replace(/[0-9]/g, '')
-                          .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
-                      }}
-                    >
-                      <Input
-                        ref={(input) => (inputRefs.current.firstName = input)}
-                        className={`${
-                          (activateAccountValue.firstName && 'border-white') ||
-                          ''
-                        }`}
-                        placeholder="First name (at least 2 characters)"
-                        maxLength={20}
-                        bordered={false}
-                        onChange={(e) =>
-                          setActivateAccountValue({
-                            ...activateAccountValue,
-                            firstName: e.target.value,
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      name="lastName"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Last name is required',
-                        },
-                      ]}
-                      getValueFromEvent={(e) => {
-                        const { value } = e.target;
-                        return value
-                          .replace(/[0-9]/g, '')
-                          .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
-                      }}
-                    >
-                      <Input
-                        ref={(input) => (inputRefs.current.lastName = input)}
-                        className={`${
-                          (activateAccountValue.lastName && 'border-white') ||
-                          ''
-                        }`}
-                        placeholder="Last name (at least 1 character)"
-                        maxLength={20}
-                        bordered={false}
-                        onChange={(e) =>
-                          setActivateAccountValue({
-                            ...activateAccountValue,
-                            lastName: e.target.value,
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Row>
-                      <Col xs={24} sm={0}>
-                        <CountryCodePhoneNumber
-                          isMobile
-                          formItemClassName={
-                            (phoneNumberError && 'phone-number-item error') ||
-                            'phone-number-item'
-                          }
-                          inputOnChange={(value: string) => {
-                            setPhoneNumberError(false);
-                            setActivateAccountValue({
-                              ...activateAccountValue,
-                              phoneNumber: value,
-                            });
-                          }}
-                          {...countryCodePhoneNumberProps}
-                        />
+                {passwordSuccess && (
+                  <>
+                    <Row className="code-sent" justify="center">
+                      <Col span={24} className="title">
+                        Verification code has been sent to
                       </Col>
-                      <Col xs={0} sm={24}>
-                        <CountryCodePhoneNumber
-                          isMobile={false}
-                          formItemClassName={
-                            (phoneNumberError && 'phone-number-item error') ||
-                            'phone-number-item'
-                          }
-                          inputOnChange={(value: string) => {
-                            setPhoneNumberError(false);
-                            setActivateAccountValue({
-                              ...activateAccountValue,
-                              phoneNumber: value,
-                            });
-                          }}
-                          {...countryCodePhoneNumberProps}
-                        />
+                      <Col span={24} className="value">
+                        {activateAccountValue.email}
                       </Col>
                     </Row>
-                    {showPhoneShortCodeError && (
-                      <div
-                        className="phone-number-error"
-                        style={{
-                          marginTop: '-5px',
-                          marginBottom: '10px',
-                          fontSize: '12px',
-                          fontWeight: 500,
-                          color: '#ff4d4f',
-                        }}
-                      >
-                        Country is required
-                      </div>
-                    )}
-                    {phoneNumberError && (
-                      <div className="phone-number-error">
-                        Invalid phone number
-                      </div>
-                    )}
-                    <Form.Item
-                      name="genderId"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Sex is required',
-                        },
-                      ]}
-                    >
-                      <Select
-                        popupClassName="gender-select-dropdown"
-                        className={`${
-                          (activateAccountValue.genderId &&
-                            'gender-select border-white') ||
-                          'gender-select'
-                        }`}
-                        defaultValue={undefined}
-                        placeholder="Sex"
-                        onChange={(e) =>
-                          setActivateAccountValue({
-                            ...activateAccountValue,
-                            genderId: e || '',
-                          })
-                        }
-                        options={formatGenderData}
-                        suffixIcon={<CaretDownOutlined />}
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      name="birthday"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Birthday is required',
-                        },
-                      ]}
-                    >
-                      <DatePicker
-                        inputReadOnly
-                        className={`${
-                          (activateAccountValue.birthday && 'border-white') ||
-                          ''
-                        }`}
-                        format="MMM DD, YYYY"
-                        showToday={false}
-                        popupClassName="birth-picker-dropdown"
-                        allowClear={false}
-                        placeholder="Date of Birth"
-                        onChange={(_, dateString) =>
-                          setActivateAccountValue({
-                            ...activateAccountValue,
-                            birthday: format(
-                              new Date(dateString),
-                              'yyyy-MM-dd'
-                            ),
-                          })
-                        }
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      className="form-country"
-                      style={{ marginBottom: 0 }}
-                    >
-                      <CountrySelecter
-                        showCountryItems={showCountryItems}
-                        currentCountry={activateAccountValue.country}
-                        setShowCountryItems={setShowCountryItems}
-                        setCurrentSelectCountry={setCurrentSelectCountry}
-                      />
-                    </Form.Item>
-                    <Form.Item style={{ marginBottom: 25 }}>
-                      <Button
-                        className="signin-btn"
-                        disabled={loading}
-                        type="primary"
-                        htmlType="submit"
-                        onClick={() => {
-                          if (
-                            activateAccountValue.phoneNumber &&
-                            !activateAccountValue.phoneShortCode
-                          ) {
-                            setShowPhoneShortCodeError(true);
+                    <Form onFinish={onFinish}>
+                      <Row justify="center">
+                        <Col>
+                          <Form.Item name="code">
+                            <CustomOTPInput
+                              onChange={(value) =>
+                                setActivateAccountValue({
+                                  ...activateAccountValue,
+                                  code: value,
+                                })
+                              }
+                            />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                      <Form.Item>
+                        <Button
+                          className="signin-btn"
+                          disabled={
+                            activateAccountValue.code.length <
+                              VerificationCodeLength || loading
                           }
-                        }}
-                      >
-                        DONE
-                        {loading && <LoadingOutlined />}
-                      </Button>
-                    </Form.Item>
-                  </Form>
+                          type="primary"
+                          htmlType="submit"
+                        >
+                          COMPLETE
+                        </Button>
+                      </Form.Item>
+                    </Form>
+                  </>
                 )}
               </div>
               <div
@@ -705,69 +427,48 @@ const ActivateAccountNormalFlow = ({
                   (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
                 }
               >
-                <p className="registered">Already have an account?</p>
-                <p
-                  className="activate"
-                  onClick={() => {
-                    if (redirectPage || loginRedirectPage) {
-                      router.push({
-                        pathname: RouterKeys.login,
-                        query: `redirect=${redirectPage || loginRedirectPage}`,
-                      });
-                    } else {
-                      router.push(RouterKeys.login);
-                    }
-                  }}
-                >
-                  LOGIN
-                </p>
+                {passwordSuccess ? (
+                  <>
+                    <>
+                      <p className="registered">Didn’t receive the code?</p>
+                      <p
+                        className={
+                          seconds < totalCount
+                            ? 'activate resend-count-down'
+                            : 'activate'
+                        }
+                        onClick={resendOtp}
+                      >
+                        {seconds < totalCount ? `${seconds}s` : 'Resend'}
+                      </p>
+                    </>
+                  </>
+                ) : (
+                  <>
+                    <p className="registered">Already have an account?</p>
+                    <p
+                      className="activate"
+                      onClick={() => {
+                        if (redirectPage || loginRedirectPage) {
+                          router.push({
+                            pathname: RouterKeys.login,
+                            query: `redirect=${
+                              redirectPage || loginRedirectPage
+                            }`,
+                          });
+                        } else {
+                          router.push(RouterKeys.login);
+                        }
+                      }}
+                    >
+                      Sign in
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>
           <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
-          <Drawer
-            open={drawerOpen}
-            placement="bottom"
-            onClose={() => setDrawerOpen(false)}
-            getContainer={false}
-            rootClassName="phone-code-drawer"
-            destroyOnClose
-          >
-            <Input
-              defaultValue={selectPhoneCode}
-              placeholder="Country"
-              onChange={(e) => {
-                const items = (e.target.value &&
-                  countryDataList.filter(
-                    (item) =>
-                      item.code.includes(e.target.value) ||
-                      item.country
-                        .toLowerCase()
-                        .includes(e.target.value.toLowerCase())
-                  )) || [...countryDataList];
-                setPhoneCodeItems(items);
-                setShowPhoneCodeItems(true);
-              }}
-            />
-            {(showPhoneCodeItems && phoneCodeItems.length && (
-              <>
-                {phoneCodeItems.map((item: any) => (
-                  <div
-                    key={`${item.code}-${item.country}`}
-                    className="code-items"
-                    onClick={() => {
-                      selectCountryCodeChange(`${item.code}-${item.country}`);
-                      setDrawerOpen(false);
-                    }}
-                  >
-                    <span>{item.code}</span>
-                    <span>{item.country}</span>
-                  </div>
-                ))}
-              </>
-            )) ||
-              null}
-          </Drawer>
         </LoginContainer>
       )}
     </>
@@ -780,28 +481,44 @@ ActivateAccountNormalFlow.getInitialProps = async (ctx: any) => {
   let currentTicketEventSlug = '';
   let ticketIdFormEmailLink = '';
   let redirectPage = '';
+  let accountFirstName = '';
+  let accountLastName = '';
+  let accountPassword = '';
   try {
     if (!isEmpty(query)) {
       const { redirect, raves, email } = query;
       if (raves && redirect) {
         redirectPage = `${redirect}&raves=${raves}`;
-        const { email: currentEmail } =
-          base64Decrypt(email.replaceAll('=', '')) || {};
+        const {
+          email: currentEmail,
+          firstName: currentFirstName,
+          lastName: currentLastName,
+          password: currentPassword,
+        } = base64Decrypt(email.replaceAll('=', '')) || {};
         accountEmail = currentEmail || '';
+        accountFirstName = currentFirstName || '';
+        accountLastName = currentLastName || '';
+        accountPassword = currentPassword || '';
       } else {
         const parameters = base64Decrypt(Object.keys(query)[0]);
         currentTicketEventSlug = parameters.eventSlug;
         ticketIdFormEmailLink = parameters.ticketId;
         redirectPage = query.redirect || '';
         accountEmail = parameters.email;
+        accountFirstName = parameters.firstName || '';
+        accountLastName = parameters.lastName || '';
+        accountPassword = parameters.password || '';
       }
     }
-  } catch (_) {}
+  } catch {}
   return {
     accountEmail,
     redirectPage,
     currentTicketEventSlug,
     ticketIdFormEmailLink,
+    accountFirstName,
+    accountLastName,
+    accountPassword,
   };
 };
 

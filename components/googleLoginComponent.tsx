@@ -18,11 +18,11 @@ const GoogleLoginContainer = styled.div`
     font-size: 15px;
     height: 45px;
     border: 1px solid ${Colors.white};
-    position: relative;
-    > :first-child {
-      position: absolute !important;
-      left: 15px;
-      top: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    > span:first-of-type {
+      margin-right: 20px !important;
     }
     > :last-child {
       padding-top: 5px;
@@ -37,22 +37,36 @@ const GoogleLoginContainer = styled.div`
     }
     &.ant-btn-default:not(:disabled):hover {
       color: ${Colors.grayScale10};
-      border-color: ${Colors.white}; 
+      border-color: ${Colors.white};
     }
   }
 `;
 
-const GoogleLoginComponent = ({ buttonText }: { buttonText: string }) => {
+interface GoogleAuthComponentProps {
+  buttonText: string;
+  onSuccess: (code: string) => void;
+  onError?: () => void;
+}
+
+const GoogleAuthComponent = ({
+  buttonText,
+  onSuccess,
+  onError,
+}: GoogleAuthComponentProps) => {
   const googleLogin = useGoogleLogin({
-    onSuccess: tokenResponse => console.log(tokenResponse),
+    onSuccess: async (tokenResponse) => {
+      onSuccess(tokenResponse.access_token);
+    },
+    onError: () => {
+      if (onError) {
+        onError();
+      }
+    },
   });
 
   return (
     <GoogleLoginContainer>
-      <Button
-        className="google-login-btn"
-        onClick={() => googleLogin()}
-      >
+      <Button className="google-login-btn" onClick={() => googleLogin()}>
         <Image src={Images.GoogleIcon} alt="" />
         {buttonText}
       </Button>
@@ -60,4 +74,4 @@ const GoogleLoginComponent = ({ buttonText }: { buttonText: string }) => {
   );
 };
 
-export default GoogleLoginComponent;
+export default GoogleAuthComponent;

@@ -282,6 +282,7 @@ a {
   color: #eeeef3;
   opacity: 0.9;
   border-radius: 4px !important;
+  max-width: 500px;
 }
 
 .rave-end .ant-message-notice-content {

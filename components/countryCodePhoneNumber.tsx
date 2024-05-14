@@ -27,7 +27,6 @@ const CountryCodePhoneNumber = ({
       <Form.Item
         name="phoneNumber"
         className={formItemClassName}
-        rules={[{ required: true, message: 'Phone number is required' }]}
         getValueFromEvent={(e) => {
           const { value } = e.target;
           return value.replace(/[^0-9]/g, '');
@@ -59,7 +58,6 @@ const CountryCodePhoneNumber = ({
       <Form.Item
         name="phoneNumber"
         className={formItemClassName}
-        rules={[{ required: true, message: 'Phone number is required' }]}
         getValueFromEvent={(e) => {
           const { value } = e.target;
           return value.replace(/[^0-9]/g, '');
@@ -72,6 +70,7 @@ const CountryCodePhoneNumber = ({
             <Select
               defaultValue={selectDefaultValue}
               showSearch
+              allowClear
               placeholder="Country"
               popupClassName="gender-select-dropdown select-country"
               options={countryDataList.map((item) => ({

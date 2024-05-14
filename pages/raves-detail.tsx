@@ -296,7 +296,7 @@ const RavesDetail = ({
         // getRaveData={fetchData}
       />
       {loading && !eventId && (
-        <div className='page-loading'>
+        <div className="page-loading">
           <LoadingOutlined />
         </div>
       )}

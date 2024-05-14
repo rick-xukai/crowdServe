@@ -10,7 +10,6 @@ import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { Images, Colors } from '../theme';
 import ClientModalComponent from './clientModal';
 import { generateRandomString } from '@/utils/func';
-import { ProfileDetailProps } from '@/slice/profile.slice';
 
 const PageHearderContainer = styled(Row)`
   position: fixed;
@@ -164,22 +163,18 @@ const PageHearderContainer = styled(Row)`
 
 const PageHearderComponent = ({
   showTabs = false,
-  profileDetail,
   backgroundTransparent = false,
   showBackgroundColor = true,
   setMenuState = () => {},
   setShowTabs = () => {},
   saveScrollValue = () => {},
-  setShowEditProfilePopup = () => {},
 }: {
-  profileDetail?: ProfileDetailProps;
   showTabs?: boolean;
   backgroundTransparent?: boolean;
   showBackgroundColor?: boolean;
   setMenuState?: (status: boolean) => void;
   setShowTabs?: (status: boolean) => void;
   saveScrollValue?: () => void;
-  setShowEditProfilePopup?: (status: boolean) => void;
 }) => {
   const router = useRouter();
   const cookie = useCookie([
@@ -215,33 +210,7 @@ const PageHearderComponent = ({
     router.push(RouterKeys.login);
   };
 
-  const checkFinishProfile = (currentPath: string) => {
-    if (
-      currentPath === RouterKeys.profile ||
-      currentPath === RouterKeys.eventList
-    )
-      return true;
-    if (profileDetail && cookie.getCookie(CookieKeys.userLoginToken)) {
-      const { birthday, country, firstName, lastName, genderId, phoneNumber } =
-        profileDetail;
-      if (
-        !birthday ||
-        !country ||
-        !firstName ||
-        !lastName ||
-        !genderId ||
-        !phoneNumber
-      ) {
-        setShowMenu(false);
-        setShowEditProfilePopup(true);
-        return false;
-      }
-    }
-    return true;
-  };
-
   const hanldeMenuClick = (path: string) => {
-    if (!checkFinishProfile(path)) return;
     if (path === window.location.pathname) {
       setShowMenu(false);
       if (path === RouterKeys.ticketsList) {

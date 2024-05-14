@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { isAndroid, isDesktop } from 'react-device-detect';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import { base64Decrypt } from '../utils/func';
+import { base64Decrypt, base64Encrypt } from '../utils/func';
 import { useAppDispatch } from '../app/hooks';
 import { CookieKeys, RouterKeys } from '../constants/Keys';
 import { AppleStoreLink, GooglePlayLink, AppHost } from '../constants/General';
@@ -171,19 +171,32 @@ LandingPage.getInitialProps = async (ctx: any) => {
             email: parameters.email,
             type: 1,
           });
+          const { data } = response;
+          let activatePayload = eventSlug;
+          if (data && !_.isEmpty(data)) {
+            activatePayload = base64Encrypt({
+              email: parameters.email,
+              code: parameters.code,
+              firstName: data.firstName || '',
+              lastName: data.lastName || '',
+              phoneNumber: data.phoneNumber || '',
+              ticketId: parameters.ticketId,
+              eventSlug: parameters.eventSlug,
+            });
+          }
           if (response.code !== 1005) {
             if (response.code === 1004) {
               res.writeHead(302, {
-                Location: `${RouterKeys.activateAccount}?${eventSlug}&codeStatus=expired`,
+                Location: `${RouterKeys.activateAccount}?${activatePayload}&codeStatus=expired`,
               });
             } else {
               res.writeHead(302, {
-                Location: `${RouterKeys.activateAccount}?${eventSlug}`,
+                Location: `${RouterKeys.activateAccount}?${activatePayload}`,
               });
             }
           } else {
             res.writeHead(302, {
-              Location: `${RouterKeys.login}?${eventSlug}`,
+              Location: `${RouterKeys.login}?${activatePayload}`,
             });
           }
         } else {

@@ -101,19 +101,25 @@ const Profile = () => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
   const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
+  const [countryPhoneCode, setCountryPhoneCode] = useState<string>('');
 
   const onFinish = async (values: UpdateProfileProps) => {
     const { phoneNumber } = values;
-    if (selectCountryShortCode) {
+    if (phoneNumber && !selectPhoneCode) {
+      setPhoneNumberError(true);
+      return;
+    }
+    if (selectPhoneCode && !phoneNumber) {
+      setPhoneNumberError(true);
+      return;
+    }
+    if (selectCountryShortCode && phoneNumber && selectPhoneCode) {
       if (!checkPhoneNumber(phoneNumber, selectCountryShortCode)) {
         setPhoneNumberError(true);
         return;
       } else {
         setPhoneNumberError(false);
       }
-    } else {
-      setPhoneNumberError(true);
-      return;
     }
     const formData = new FormData();
     const payload = {
@@ -122,8 +128,9 @@ const Profile = () => {
       country: currentSelectCountry,
       phoneShortCode: selectCountryShortCode,
       phoneNumber:
-        (selectPhoneCode && `${selectPhoneCode}-${values.phoneNumber}`) ||
-        values.phoneNumber,
+        selectPhoneCode && phoneNumber
+          ? `${selectPhoneCode}-${values.phoneNumber}`
+          : '',
     };
     if (uploadFile) {
       formData.append('profile', uploadFile);
@@ -185,13 +192,15 @@ const Profile = () => {
   };
 
   const selectCountryCodeChange = (e: string) => {
-    const country = e.split('-')[1];
-    const phoneCode = e.split('-')[0];
-    const countryCode = countryDataList.find(
-      (item) => item.country === country
-    );
-    setSelectPhoneCode(phoneCode);
-    setSelectCountryShortCode(countryCode?.shortCode || '');
+    if (e) {
+      const country = e.split('-')[1];
+      const phoneCode = e.split('-')[0];
+      const countryCode = countryDataList.find(
+        (item) => item.country === country
+      );
+      setSelectPhoneCode(phoneCode);
+      setSelectCountryShortCode(countryCode?.shortCode || '');
+    }
     setPhoneNumberError(false);
   };
 
@@ -263,6 +272,7 @@ const Profile = () => {
   useEffect(() => {
     if (!showEditer) {
       setSelectPhoneCode('');
+      setPhoneNumberError(false);
     } else {
       if (profileDetails.phoneShortCode) {
         const phoneCode = profileDetails.phoneNumber.split('-')[0];
@@ -289,6 +299,12 @@ const Profile = () => {
     }
   }, [drawerOpen]);
 
+  useEffect(() => {
+    if (!countryPhoneCode || countryPhoneCode === '+') {
+      setSelectPhoneCode('');
+    }
+  }, [countryPhoneCode]);
+
   return (
     <>
       {(!loading && (
@@ -296,18 +312,14 @@ const Profile = () => {
           <div className="container-wrap">
             <Col md={24} xs={0}>
               <PageHearderResponsive
-                profileDetail={profileDetails}
                 profileAvatar={profileDetails.profileImage}
                 showBackgroundColor={false}
-                setShowEditProfilePopup={setShowUpdateProfilePopup}
               />
             </Col>
             <Col md={0} xs={24}>
               <PageHearderComponent
-                profileDetail={profileDetails}
                 setMenuState={setMenuState}
                 showBackgroundColor={false}
-                setShowEditProfilePopup={setShowUpdateProfilePopup}
               />
             </Col>
             <div className="profile-background">
@@ -389,7 +401,7 @@ const Profile = () => {
                         <img src={Images.PhoneIcon.src} alt="" />
                       </div>
                       <div className="info-value">
-                        <div className="title">Phone number</div>
+                        <div className="title">Phone Number</div>
                         <div
                           className={
                             (profileDetails.phoneNumber && 'value') ||
@@ -427,7 +439,7 @@ const Profile = () => {
                         <img src={Images.CakeIcon.src} alt="" />
                       </div>
                       <div className="info-value">
-                        <div className="title">Date of birth</div>
+                        <div className="title">Date of Birth</div>
                         <div
                           className={
                             (profileDetails.birthday && 'value') ||
@@ -577,7 +589,7 @@ const Profile = () => {
                     <Row className="editer-row">
                       <Col span={24}>
                         <div className="editer-field">
-                          <div className="title">Phone number</div>
+                          <div className="title">Phone Number (Optional)</div>
                           <Col xs={24} sm={0}>
                             <CountryCodePhoneNumber
                               isMobile
@@ -601,9 +613,7 @@ const Profile = () => {
                         </div>
                         {phoneNumberError && (
                           <div className="phone-number-error">
-                            {(selectCountryShortCode &&
-                              'Invalid phone number') ||
-                              'Required'}
+                            Invalid phone number
                           </div>
                         )}
                         <div className="phone-number-info">
@@ -644,13 +654,13 @@ const Profile = () => {
                     <Row className="editer-row">
                       <Col span={24}>
                         <div className="editer-field">
-                          <div className="title">Date of birth</div>
+                          <div className="title">Date of Birth</div>
                           <Form.Item
                             name="birthday"
                             rules={[{ required: true, message: 'Required' }]}
                           >
                             <DatePicker
-                              placeholder="Date of birth"
+                              placeholder="Date of Birth"
                               inputReadOnly
                               format="MMM DD, YYYY"
                               showToday={false}
@@ -728,6 +738,7 @@ const Profile = () => {
                         .includes(e.target.value.toLowerCase())
                   )) || [...countryDataList];
                 setPhoneCodeItems(items);
+                setCountryPhoneCode(e.target.value);
                 setShowPhoneCodeItems(true);
               }}
             />
@@ -739,6 +750,7 @@ const Profile = () => {
                     className="code-items"
                     onClick={() => {
                       selectCountryCodeChange(`${item.code}-${item.country}`);
+                      setCountryPhoneCode(item.code);
                       setDrawerOpen(false);
                     }}
                   >

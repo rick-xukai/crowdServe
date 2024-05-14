@@ -119,6 +119,28 @@ const LoginContainer = styled.div`
       background: rgba(39, 39, 42, 0.3);
       backdrop-filter: blur(10px);
       padding: 80px 100px;
+      .only-read-item {
+        line-height: 19px;
+        .ant-form-item-label {
+          padding: 0;
+          > label {
+            height: auto;
+            font-size: 13px;
+            color: ${Colors.grayScale50};
+            line-height: 19px;
+            height: auto;
+          }
+        }
+        .ant-form-item-control-input-content > input {
+          height: 24px;
+          padding: 1px;
+          background: transparent;
+          border: none;
+          color: red;
+          font-size: 17px;
+          color: ${Colors.white};
+        }
+      }
     }
     .main-logo {
       .logo {
@@ -236,14 +258,17 @@ const LoginContainer = styled.div`
     width: 100%;
     .registered {
       font-weight: 300;
-      font-size: 15px;
-      color: ${Colors.grayScale40};
+      font-size: 16px;
+      color: ${Colors.white};
       margin: 0 5px 0 0;
       line-height: 22px;
     }
+    .resend-count-down {
+      color: ${Colors.grayScale40} !important;
+    }
     .activate {
       font-weight: 400;
-      font-size: 13px;
+      font-size: 16px;
       color: ${Colors.branding};
       margin: 0;
       line-height: 22px;
@@ -324,12 +349,14 @@ const LoginContainer = styled.div`
       font-weight: 300;
       font-size: 17px;
       color: ${Colors.grayScale20};
+      text-align: center;
     }
     .value {
       font-weight: 500;
       font-size: 17px;
       color: ${Colors.grayScale20};
       margin-top: 10px;
+      text-align: center;
     }
   }
   .ant-divider-horizontal.ant-divider-with-text {

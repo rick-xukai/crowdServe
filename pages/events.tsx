@@ -59,13 +59,10 @@ import PageHearderComponent from '../components/pageHearder';
 import OpenAppComponent from '../components/openAppComponent';
 import PageHearderResponsive from '../components/pageHearderResponsive';
 import PageBottomComponent from '../components/pageBottomComponent';
-import ShowUpdateProfilePopup from '@/components/showUpdateProfilePopup';
 import { useCookie } from '@/hooks';
 import {
   reset as resetProfileDetail,
   getLoginUserDetailAction,
-  selectProfileDetail,
-  ProfileDetailProps,
 } from '@/slice/profile.slice';
 
 const EventList = () => {
@@ -89,7 +86,6 @@ const EventList = () => {
   const listScrollValue = useAppSelector(selectScrollValue);
   const eventDataForSearch = useAppSelector(selectEventDataForSearch);
   const eventListBanner = useAppSelector(selectEventListBanner);
-  const profileDetail = useAppSelector(selectProfileDetail);
 
   const [isPageBottom, setIsPageBottom] = useState<boolean>(false);
   const [menuState, setMenuState] = useState<boolean>(false);
@@ -100,26 +96,6 @@ const EventList = () => {
     useState<string>('Search events');
   const [showNotSameAccountModal, setShowNotSameAccountModal] =
     useState<boolean>(false);
-  const [showEditProfilePopup, setShowEditProfilePopup] = useState(false);
-
-  const checkFinishProfile = (detail: ProfileDetailProps) => {
-    if (detail && cookie.getCookie(CookieKeys.userLoginToken)) {
-      const { birthday, country, firstName, lastName, genderId, phoneNumber } =
-        detail;
-      if (
-        !birthday ||
-        !country ||
-        !firstName ||
-        !lastName ||
-        !genderId ||
-        !phoneNumber
-      ) {
-        setShowEditProfilePopup(true);
-        return false;
-      }
-    }
-    return true;
-  };
 
   const handleScroll = (event: any) => {
     const { clientHeight, scrollHeight, scrollTop } = event.target;
@@ -258,7 +234,6 @@ const EventList = () => {
     const currentDate = new Date();
     const response: any = await dispatch(getLoginUserDetailAction());
     if (response.type === getLoginUserDetailAction.fulfilled.toString()) {
-      checkFinishProfile(response.payload);
       cookie.setCookie(CookieKeys.userProfileInfo, response.payload, {
         expires: new Date(currentDate.getTime() + TokenExpire),
         path: '/',
@@ -337,9 +312,6 @@ const EventList = () => {
   };
 
   const eventItemClick = (eventItem: EventListResponseType) => {
-    if (!checkFinishProfile(profileDetail)) {
-      return;
-    }
     Router.push(
       RouterKeys.eventDetail.replace(
         ':slug',
@@ -351,26 +323,17 @@ const EventList = () => {
   };
 
   const toShopify = (item: EventListBanner) => {
-    if (!checkFinishProfile(profileDetail)) {
-      return;
-    }
     window.open(item.link, '_blank');
   };
 
   return (
-    <EventListContainer ref={eventListRef}>
+    <EventListContainer>
       <div className="container-wrap">
         <Col md={24} xs={0}>
-          <PageHearderResponsive
-            profileDetail={profileDetail}
-            setShowEditProfilePopup={setShowEditProfilePopup}
-            saveScrollValue={saveScrollValue}
-          />
+          <PageHearderResponsive saveScrollValue={saveScrollValue} />
         </Col>
         <Col md={0} xs={24}>
           <PageHearderComponent
-            profileDetail={profileDetail}
-            setShowEditProfilePopup={setShowEditProfilePopup}
             saveScrollValue={saveScrollValue}
             setMenuState={setMenuState}
           />
@@ -419,9 +382,6 @@ const EventList = () => {
                         placeholder={searchInputPlaceholder}
                         prefix={<SearchOutlined />}
                         onChange={(e) => {
-                          if (!checkFinishProfile(profileDetail)) {
-                            return;
-                          }
                           handleSearch(e);
                         }}
                         onFocus={() => setSearchInputPlaceholder('')}
@@ -433,7 +393,7 @@ const EventList = () => {
               </div>
               {(((searchKeyword && eventDataForSearch) || eventDataForAll)
                 .length && (
-                <div className="event-list-container event-list-container-responsive">
+                <div ref={eventListRef} className="event-list-container event-list-container-responsive">
                   {(
                     (searchKeyword && eventDataForSearch) ||
                     eventDataForAll
@@ -600,9 +560,6 @@ const EventList = () => {
                         placeholder={searchInputPlaceholder}
                         prefix={<SearchOutlined />}
                         onChange={(e) => {
-                          if (!checkFinishProfile(profileDetail)) {
-                            return;
-                          }
                           handleSearch(e);
                         }}
                         onFocus={() => setSearchInputPlaceholder('')}
@@ -833,10 +790,6 @@ const EventList = () => {
         >
           Ticket pending transfer does not match the email for this account.
         </Modal>
-        <ShowUpdateProfilePopup
-          showPopup={showEditProfilePopup}
-          setShowPopup={setShowEditProfilePopup}
-        />
         {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}
         {contextHolder}
         {!menuState && <PageBottomComponent />}

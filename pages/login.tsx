@@ -8,7 +8,7 @@ import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { useCookie, useResetPageCache } from '../hooks';
 import Messages from '../constants/Messages';
 import { CookieKeys, LocalStorageKeys, RouterKeys } from '../constants/Keys';
-import { TokenExpire } from '../constants/General';
+import { DefaultEmail, TokenExpire } from '../constants/General';
 import {
   isEmail,
   getErrorMessage,
@@ -17,12 +17,12 @@ import {
   base64Encrypt,
   generateRandomString,
   renderAuthCookiesField,
+  isFinishProfile,
 } from '../utils/func';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
   loginAction,
   LoginPayloadType,
-  verifyUserAction,
   selectError,
   selectLoading,
   selectData,
@@ -30,12 +30,14 @@ import {
   setLoginRedirectPage,
   selectLoginRedirectPage,
   resetLoginRedirectPage,
+  LoginType,
+  setShowCompeledProfileAfterLogin,
 } from '../slice/user.slice';
 import OpenAppComponent from '../components/openAppComponent';
 import { LoginContainer } from '../styles/login-style';
 import AuthPageHearder from '@/components/authPageHearder';
 import { Images } from '@/theme';
-// import GoogleLoginComponent from '../components/googleLoginComponent';
+import GoogleAuthComponent from '@/components/googleLoginComponent';
 
 const Login = ({
   defultLoginEmail,
@@ -70,6 +72,7 @@ const Login = ({
   const [loginFormValue, setLoginFormValue] = useState<LoginPayloadType>({
     email: defultLoginEmail || '',
     password: '',
+    externalChannel: LoginType.email,
   });
   const [isOpenAppShow, setIsOpenAppShow] = useState<boolean>(true);
 
@@ -85,22 +88,27 @@ const Login = ({
     }
   }, [router.isReady]);
 
-  const onFinish = async (values: LoginPayloadType) => {
-    const response: any = await dispatch(
-      loginAction((defultLoginEmail && loginFormValue) || values)
-    );
+  const doTheLogin = async (values: LoginPayloadType) => {
+    const response: any = await dispatch(loginAction(values));
     if (
       response &&
       response.payload &&
       response.payload.code === Messages.activateAccountUserDosentExist1001.code
     ) {
-      dispatch(verifyUserAction({ email: loginFormValue.email }));
       router.push(
         `${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({
           email: loginFormValue.email,
         })}`
       );
     }
+  };
+
+  const onFinish = async (values: LoginPayloadType) => {
+    let payload: LoginPayloadType = {
+      ...((defultLoginEmail && loginFormValue) || values),
+      externalChannel: LoginType.email,
+    };
+    doTheLogin(payload);
   };
 
   useEffect(() => {
@@ -121,6 +129,9 @@ const Login = ({
       dispatch(resetLoginRedirectPage());
       if (ticketIdFormEmailLink && !currentTicketEventSlug) {
         router.push(RouterKeys.myTickets);
+        if (!isFinishProfile(data.user)) {
+          dispatch(setShowCompeledProfileAfterLogin(true));
+        }
         return;
       }
       if (currentTicketEventSlug) {
@@ -139,12 +150,15 @@ const Login = ({
         }
         if (router.query.raves) {
           router.push({
-            pathname: redirectPage || currentRedirectPage,
+            pathname: currentRedirectPage,
             query: `raves=${router.query.raves}`,
           });
         } else {
-          router.push(redirectPage || currentRedirectPage);
+          router.push(currentRedirectPage);
         }
+      }
+      if (!isFinishProfile(data.user)) {
+        dispatch(setShowCompeledProfileAfterLogin(true));
       }
     }
   }, [data]);
@@ -196,7 +210,7 @@ const Login = ({
           <div>
             <Row className="main-title">
               <Col span={24} className="title">
-                LOGIN TO YOUR ACCOUNT
+                SIGN IN TO YOUR ACCOUNT
               </Col>
             </Row>
             <Form onFinish={onFinish}>
@@ -276,7 +290,7 @@ const Login = ({
                         }
                       }}
                     >
-                      FORGOT PASSWORD?
+                      Forgot password?
                     </span>
                   </p>
                 </div>
@@ -286,7 +300,7 @@ const Login = ({
                   className="signin-btn"
                   disabled={
                     !loginFormValue.email ||
-                    !isPassword(loginFormValue.password) ||
+                    !isPassword(loginFormValue.password || '') ||
                     loading
                   }
                   type="primary"
@@ -295,8 +309,16 @@ const Login = ({
                   SIGN IN
                 </Button>
               </Form.Item>
-              {/* <Divider>OR</Divider>
-                <GoogleLoginComponent buttonText="CONTINUE WITH GOOGLE" /> */}
+              <GoogleAuthComponent
+                buttonText="SIGN IN WITH GOOGLE"
+                onSuccess={(code) =>
+                  doTheLogin({
+                    email: DefaultEmail,
+                    externalId: code,
+                    externalChannel: LoginType.google,
+                  })
+                }
+              />
             </Form>
           </div>
           <div
@@ -304,7 +326,7 @@ const Login = ({
               (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
             }
           >
-            <p className="registered">{`Don't have an account?`}</p>
+            <p className="registered">{`New to CrowdServe?`}</p>
             <p
               className="activate"
               onClick={() => {
@@ -318,7 +340,7 @@ const Login = ({
                 }
               }}
             >
-              REGISTER NOW
+              Create an account
             </p>
           </div>
         </div>

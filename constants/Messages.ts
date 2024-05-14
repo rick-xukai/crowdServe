@@ -77,7 +77,7 @@ const Messages = {
   },
   alreadyUserGoogleRegister: {
     code: 1043,
-    text: 'This email address has been registered via a Google account. Please log in with your Google account or use a different email address to create a new account.',
+    text: 'This email address has been registered via a Google account. Please sign in with your Google account or use a different email address to create a new account.',
   },
   continueToRegister: {
     code: 1044,

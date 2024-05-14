@@ -472,7 +472,6 @@ const EditerContent = styled.div`
       box-shadow: unset;
     }
     .ant-select-arrow {
-      right: 0;
       font-size: 20px;
       color: ${Colors.grayScale50};
     }

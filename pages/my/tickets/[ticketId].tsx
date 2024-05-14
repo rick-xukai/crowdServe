@@ -620,7 +620,8 @@ const TicketDetail = ({ notFound }: { notFound: boolean }) => {
                           <p className="code-refreshes">
                             QR Code refreshes in:{' '}
                             {`${
-                              (countdownNumber < 10 && '00:0') || '00:'
+                              ((countdownNumber as number) < 10 && '00:0') ||
+                              '00:'
                             }${countdownNumber}`}
                           </p>
                           <p className="code-info">

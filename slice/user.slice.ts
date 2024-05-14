@@ -11,9 +11,13 @@ export interface ErrorType {
   message: string;
 }
 
+export enum LoginType {
+  google = 'google',
+  email = 'email',
+}
 export interface LoginPayloadType {
   email: string;
-  password: string;
+  password?: string;
   code?: string;
   birthday?: string;
   genderId?: string;
@@ -21,13 +25,26 @@ export interface LoginPayloadType {
   lastName?: string;
   phoneNumber?: string;
   phoneShortCode?: string;
+  externalChannel?: LoginType;
+  externalId?: string;
+}
+export interface User {
+  id: number;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  profileImage?: string;
+  phoneNumber?: string;
+  genderId?: number;
+  birthday?: string;
+  country?: string;
+  isActivated?: boolean;
+  createdAt?: string;
+  phoneShortCode?: string;
 }
 
 export interface LoginResponseType {
-  user: {
-    userId: number;
-    email: string;
-  };
+  user: User;
   token: string;
 }
 
@@ -51,19 +68,12 @@ export interface VerificationCodePayload {
 
 export interface RegisterAccountPayload {
   email: string;
-  code: string;
-  username: string;
-  password: string;
-  birthday: string;
-  genderId: string | null;
-  country: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  phoneShortCode: string;
+  code?: string;
+  password?: string;
+  firstName?: string;
+  lastName?: string;
   externalChannel?: string;
   externalId?: string;
-  passwordConfirm?: string;
 }
 
 export interface UserGenderResponseType {
@@ -378,6 +388,7 @@ interface UserState {
       }
     | undefined
     | null;
+  showCompeledProfilePopup: boolean;
 }
 
 const initialState: UserState = {
@@ -400,7 +411,7 @@ const initialState: UserState = {
   userGender: [],
   data: {
     user: {
-      userId: 0,
+      id: 0,
       email: '',
     },
     token: '',
@@ -408,6 +419,7 @@ const initialState: UserState = {
   error: null,
   forgotPasswordError: null,
   loginRedirectPage: '',
+  showCompeledProfilePopup: false,
 };
 
 export const userSlice = createSlice({
@@ -421,7 +433,7 @@ export const userSlice = createSlice({
       state.userGender = [];
       state.data = {
         user: {
-          userId: 0,
+          id: 0,
           email: '',
         },
         token: '',
@@ -452,6 +464,9 @@ export const userSlice = createSlice({
           status: 0,
         },
       };
+    },
+    setShowCompeledProfileAfterLogin: (state, action) => {
+      state.showCompeledProfilePopup = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -593,6 +608,7 @@ export const {
   setLoginRedirectPage,
   resetLoginRedirectPage,
   resetScannerLoginResponse,
+  setShowCompeledProfileAfterLogin,
 } = userSlice.actions;
 
 export const selectLoading = (state: RootState) => state.user.loading;
@@ -611,5 +627,7 @@ export const selectScannerLoginLoading = (state: RootState) =>
   state.user.scannerLoginLoading;
 export const selectScannerLoginResponse = (state: RootState) =>
   state.user.scannerLoginResponse;
+export const selectShowCompeledProfilePopup = (state: RootState) =>
+  state.user.showCompeledProfilePopup;
 
 export default userSlice.reducer;

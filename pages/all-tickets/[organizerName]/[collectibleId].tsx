@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import { Row, Col, Button, message, Modal, Drawer } from 'antd';
 import { LoadingOutlined, LoginOutlined } from '@ant-design/icons';
 import Image from 'next/image';
@@ -18,6 +24,7 @@ import {
   formatChartLabelDate,
   bodyOverflow,
   base64Decrypt,
+  isFinishProfile,
 } from '../../../utils/func';
 import {
   CopyLink,
@@ -70,6 +77,12 @@ import PageNotFound from '../../404';
 import { CookieKeys, RouterKeys } from '@/constants/Keys';
 import ShowOpenAppModalComponent from '@/components/showOpenAppModal';
 import MyCollectiblesService from '@/services/API/MyCollectibles/MyCollectibles.service';
+import { useCookie } from '@/hooks';
+import {
+  getLoginUserDetailAction,
+  selectProfileDetail,
+} from '@/slice/profile.slice';
+import { setShowCompeledProfileAfterLogin } from '@/slice/user.slice';
 
 const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -86,6 +99,7 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
   const priceChartData = useAppSelector(selectPriceChartData);
   const claimTransferLoading = useAppSelector(selectClaimTransferLoading);
   const claimTransferError = useAppSelector(selectClaimTransferError);
+  const profileDetail = useAppSelector(selectProfileDetail);
 
   const [requestId, setRequestId] = useState<string>('');
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
@@ -108,6 +122,16 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
     useState<boolean>(false);
   const [claimTransferErrorMessage, setClaimTransferErrorMessage] =
     useState<string>('');
+
+  const cookie = useCookie([CookieKeys.userLoginToken]);
+
+  const isCompletedProfile = useMemo(() => {
+    if (profileDetail && cookie.getCookie(CookieKeys.userLoginToken)) {
+      const isFinish = isFinishProfile(profileDetail);
+      return isFinish;
+    }
+    return true;
+  }, [profileDetail]);
 
   const copyUrl = () => {
     setShowShareMenu(false);
@@ -296,6 +320,10 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
   };
 
   const handleClaimTransfer = async () => {
+    if (!isCompletedProfile) {
+      dispatch(setShowCompeledProfileAfterLogin(true));
+      return;
+    }
     const response: any = await dispatch(
       claimTransferAction(collectibleDetail.transfer.code || '')
     );
@@ -456,6 +484,7 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
       );
     }
     setIsFirstRender(false);
+    dispatch(getLoginUserDetailAction());
     return () => {
       dispatch(reset());
       handleScrollHiddenChartTooltip();
@@ -926,6 +955,10 @@ const CollectibleDetail = ({ transferStatus }: { transferStatus: number }) => {
                       <div className="page-bottom">
                         <Button
                           onClick={() => {
+                            if (!isCompletedProfile) {
+                              dispatch(setShowCompeledProfileAfterLogin(true));
+                              return;
+                            }
                             if (window.innerWidth <= 576) {
                               setShowQrCodeDrawer(true);
                             } else {

@@ -195,12 +195,12 @@ const MyRaves = () => {
   return (
     <>
       {(loading && (
-        <div className='page-loading' ref={listRef}>
+        <div className="page-loading" ref={listRef}>
           <LoadingOutlined />
         </div>
       )) || (
         <PageContainer>
-          <div className='container-wrap'>
+          <div className="container-wrap">
             <Col md={24} xs={0}>
               <PageHearderResponsive saveScrollValue={saveScrollValue} />
             </Col>
@@ -210,13 +210,13 @@ const MyRaves = () => {
                 setMenuState={setMenuState}
               />
             </Col>
-            <Col className='page-main'>
+            <Col className="page-main">
               <PageTitle>Upcoming Raves</PageTitle>
               <Carousel autoplay>
                 {imgList.map((item) => (
-                  <a href={item.link} key={item.link} target='_blank'>
+                  <a href={item.link} key={item.link} target="_blank">
                     <CarouselItem>
-                      <CarouselItemImg src={item.img} alt='' />
+                      <CarouselItemImg src={item.img} alt="" />
                     </CarouselItem>
                   </a>
                 ))}
@@ -226,7 +226,7 @@ const MyRaves = () => {
               {isEmpty(data) ? (
                 <div ref={listRef}>
                   <Empty>
-                    <img src={Images.MyRavesEmptyIcon.src} alt='empty' />
+                    <img src={Images.MyRavesEmptyIcon.src} alt="empty" />
                     <p>
                       {`You haven't joined any raves yet. Click `}
                       <a onClick={() => router.push(RouterKeys.eventList)}>
@@ -244,14 +244,14 @@ const MyRaves = () => {
                         status={matchStatus[item.status]}
                         onClick={goToRaveDetail(item.eventSlug)}
                       >
-                        <div className='head'>
-                          <span className='title'>{item.name}</span>
-                          <span className='badge'>
+                        <div className="head">
+                          <span className="title">{item.name}</span>
+                          <span className="badge">
                             {matchStatus[item.status]}
                           </span>
                         </div>
-                        <p className='description'>{item.description}</p>
-                        <div className='flame'>
+                        <p className="description">{item.description}</p>
+                        <div className="flame">
                           {item.status === RaveStatus.inProgress ? (
                             <FireIcon src={Images.FireGifIcon.src} />
                           ) : (

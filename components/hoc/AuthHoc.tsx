@@ -34,32 +34,32 @@ const AuthHoc = (AuthComponent: any) =>
             token: '',
           };
         }
-        if (profileInfo && !req.url.includes('/profile') && token) {
-          const {
-            birthday,
-            country,
-            firstName,
-            lastName,
-            genderId,
-            phoneNumber,
-          } = JSON.parse(profileInfo);
-          if (
-            !birthday ||
-            !country ||
-            !firstName ||
-            !lastName ||
-            !genderId ||
-            !phoneNumber
-          ) {
-            res.writeHead(302, {
-              Location: `${RouterKeys.eventList}`,
-            });
-            res.end();
-            return {
-              props: {},
-            };
-          }
-        }
+        // if (profileInfo && !req.url.includes('/profile') && token) {
+        //   const {
+        //     birthday,
+        //     country,
+        //     firstName,
+        //     lastName,
+        //     genderId,
+        //     phoneNumber,
+        //   } = JSON.parse(profileInfo);
+        //   if (
+        //     !birthday ||
+        //     !country ||
+        //     !firstName ||
+        //     !lastName ||
+        //     !genderId ||
+        //     !phoneNumber
+        //   ) {
+        //     res.writeHead(302, {
+        //       Location: `${RouterKeys.eventList}`,
+        //     });
+        //     res.end();
+        //     return {
+        //       props: {},
+        //     };
+        //   }
+        // }
         // const isApiMaintenance = await UserService.checkApiMaintenance();
         // if (isApiMaintenance === 1) {
         //   res.writeHead(302, { Location: RouterKeys.maintenance });
