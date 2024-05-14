@@ -7,7 +7,7 @@ const IndexPage: NextPage = () => {
     const { publicRuntimeConfig } = getConfig();
     console.log(publicRuntimeConfig?.buildTime.toLocaleString());
   });
-  return (<div />);
+  return <div />;
 };
 
 export default IndexPage;

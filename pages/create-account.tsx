@@ -1,25 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Button,
-  message,
-  Checkbox,
-  Select,
-  DatePicker,
-  Drawer,
-} from 'antd';
+import { Row, Col, Form, Input, Button, message, Checkbox } from 'antd';
 import {
   EyeOutlined,
   EyeInvisibleOutlined,
   LoadingOutlined,
-  CaretDownOutlined,
 } from '@ant-design/icons';
-import { format } from 'date-fns';
-import { isEmpty } from 'lodash';
+import _, { isEmpty } from 'lodash';
 
 import { useCookie, useResetPageCache } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -31,20 +18,19 @@ import {
   base64Decrypt,
   generateRandomString,
   profileNameValidator,
-  checkPhoneNumber,
   emailValidator,
   passwordValidator,
   renderAuthCookiesField,
+  isFinishProfile,
 } from '../utils/func';
 import {
   TermsConditionsLink,
   PrivacyPolicyLink,
   TokenExpire,
-  PasswordNotMatch,
-  BirthdayNotVaild,
   RegisterVerifyType,
-  DefaultSelectCountry,
   VerificationCodeLength,
+  DefaultEmail,
+  CountdownSeconds,
 } from '../constants/General';
 import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { LoginContainer } from '../styles/login-style';
@@ -56,22 +42,21 @@ import {
   verifyUserAction,
   registerAccountAction,
   RegisterAccountPayload,
-  verificationCodeAction,
   getUserGenderAction,
-  selectUserGender,
   selectGetUserGenderLoading,
   selectLoginRedirectPage,
   resetLoginRedirectPage,
+  LoginType,
+  setShowCompeledProfileAfterLogin,
 } from '../slice/user.slice';
 import GoogleDocComponent from '../components/googleDocComponent';
 import OpenAppComponent from '../components/openAppComponent';
-// import GoogleLoginComponent from '../components/googleLoginComponent';
 import Messages from '../constants/Messages';
 import AuthPageHearder from '@/components/authPageHearder';
-import CountrySelecter from '@/components/countrySelecter';
-import countryDataList from '@/utils/countrycode.data.json';
 import { Images } from '@/theme';
-import CountryCodePhoneNumber from '@/components/countryCodePhoneNumber';
+import GoogleAuthComponent from '@/components/googleLoginComponent';
+import CustomOTPInput from '@/components/CustomOTPInput';
+import useCountdown from '@/hooks/useCountDown';
 
 const CreateAccount = ({
   redirectPage,
@@ -92,13 +77,11 @@ const CreateAccount = ({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const inputRefs = useRef<any>({});
-  const formRef = useRef<any>(null);
 
   const data = useAppSelector(selectData);
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
   const getUserGenderLoading = useAppSelector(selectGetUserGenderLoading);
-  const userGender = useAppSelector(selectUserGender);
   const loginRedirectPage = useAppSelector(selectLoginRedirectPage);
 
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
@@ -111,41 +94,18 @@ const CreateAccount = ({
     useState<boolean>(false);
   const [isVerificationCode, setIsVerificationCode] = useState<boolean>(false);
   const [passwordValue, setPasswordValue] = useState<string>('');
-  const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
-  const [formatGenderData, setFormatGenderData] = useState<
-    {
-      value: number;
-      label: string;
-    }[]
-  >([]);
   const [createAccountValue, setCreateAccountValue] =
     useState<RegisterAccountPayload>({
       email: '',
-      username: '',
       code: '',
       password: '',
-      birthday: '',
-      genderId: null,
       firstName: '',
       lastName: '',
-      phoneNumber: '',
-      phoneShortCode: '',
-      country: DefaultSelectCountry,
-      passwordConfirm: '',
     });
-  const [showCountryItems, setShowCountryItems] = useState<boolean>(false);
-  const [currentSelectCountry, setCurrentSelectCountry] =
-    useState<string>(DefaultSelectCountry);
-  const [phoneNumberError, setPhoneNumberError] = useState<boolean>(false);
-  const [selectPhoneCode, setSelectPhoneCode] = useState<string>('');
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [showPhoneCodeItems, setShowPhoneCodeItems] = useState<boolean>(false);
-  const [phoneCodeItems, setPhoneCodeItems] = useState<any[]>([]);
-  const [showPhoneShortCodeError, setShowPhoneShortCodeError] =
-    useState<boolean>(false);
+  const { seconds, startTheCountdown } = useCountdown({ count: CountdownSeconds });
 
-  const onFinishFailed = (error: any) => {
-    const firstErrorField = error.errorFields[0];
+  const onFinishFailed = (errors: any) => {
+    const firstErrorField = errors.errorFields[0];
     if (firstErrorField) {
       const { name } = firstErrorField;
       const inputElement = inputRefs.current[name[0]];
@@ -153,6 +113,29 @@ const CreateAccount = ({
         inputElement.focus();
       }
     }
+  };
+
+  const resendOtp = _.debounce(() => {
+    if (isVerificationEmail && seconds >= CountdownSeconds) {
+      dispatch(
+        verifyUserAction({
+          email: createAccountValue.email,
+          firstName: createAccountValue.firstName,
+          lastName: createAccountValue.lastName,
+        })
+      );
+      startTheCountdown();
+    }
+  }, 1000);
+
+  const onGoogleSuccess = (googleCode: string) => {
+    dispatch(
+      registerAccountAction({
+        email: DefaultEmail,
+        externalChannel: LoginType.google,
+        externalId: googleCode,
+      })
+    );
   };
 
   const onFinish = async (values: any) => {
@@ -173,12 +156,18 @@ const CreateAccount = ({
                 redirectPage || loginRedirectPage
               }&email=${base64Encrypt({
                 email: createAccountValue.email,
+                firstName: createAccountValue.firstName,
+                lastName: createAccountValue.lastName,
+                password: createAccountValue.password,
               })}`,
             });
           } else {
             router.push(
               `${RouterKeys.activateAccountNormalFlow}?${base64Encrypt({
                 email: createAccountValue.email,
+                firstName: createAccountValue.firstName,
+                lastName: createAccountValue.lastName,
+                password: createAccountValue.password,
               })}`
             );
           }
@@ -191,13 +180,15 @@ const CreateAccount = ({
     if (!isVerificationCode) {
       if (createAccountValue.email) {
         const result = await dispatch(
-          verificationCodeAction({
+          registerAccountAction({
+            ...createAccountValue,
             ...values,
             email: createAccountValue.email,
             type: RegisterVerifyType,
+            externalChannel: LoginType.email,
           })
         );
-        if (result.type === verificationCodeAction.fulfilled.toString()) {
+        if (result.type === registerAccountAction.fulfilled.toString()) {
           setIsVerificationCode(true);
         }
       } else {
@@ -208,96 +199,12 @@ const CreateAccount = ({
       }
       return;
     }
-    if (isVerificationEmail && isVerificationCode) {
-      if (createAccountValue.password !== confirmPasswordValue) {
-        message.open({
-          content: PasswordNotMatch,
-          className: 'error-message-event',
-        });
-        return;
-      }
-      if (
-        new Date(createAccountValue.birthday).getTime() > new Date().getTime()
-      ) {
-        message.open({
-          content: BirthdayNotVaild,
-          className: 'error-message-event',
-        });
-        return;
-      }
-      if (
-        !checkPhoneNumber(
-          createAccountValue.phoneNumber,
-          createAccountValue.phoneShortCode
-        )
-      ) {
-        setPhoneNumberError(true);
-        return;
-      } else {
-        setPhoneNumberError(false);
-      }
-      if (createAccountValue.email) {
-        dispatch(
-          registerAccountAction({
-            ...createAccountValue,
-            phoneNumber: `${selectPhoneCode}-${createAccountValue.phoneNumber}`,
-          })
-        );
-      } else {
-        message.open({
-          content: 'Email is required.',
-          className: 'error-message-event',
-        });
-      }
-    }
-  };
-
-  const selectCountryCodeChange = (e: string) => {
-    setShowPhoneShortCodeError(false);
-    const country = e.split('-')[1];
-    const phoneCode = e.split('-')[0];
-    const countryCode = countryDataList.find(
-      (item) => item.country === country
-    );
-    setCreateAccountValue({
-      ...createAccountValue,
-      phoneShortCode: countryCode?.shortCode || '',
-    });
-    setSelectPhoneCode(phoneCode);
-    setPhoneNumberError(false);
-  };
-
-  const countryCodePhoneNumberProps = {
-    selectPhoneCode: selectPhoneCode,
-    selectDefaultValue: null,
-    selectCountryCodeChange: selectCountryCodeChange,
-    setDrawerOpen: setDrawerOpen,
   };
 
   const checkGoogleDocAction = (link: string) => {
     setCheckGoogleDoc(true);
     setgoogleDocLink(link);
   };
-
-  useEffect(() => {
-    setCreateAccountValue({
-      ...createAccountValue,
-      country: currentSelectCountry,
-    });
-  }, [currentSelectCountry]);
-
-  useEffect(() => {
-    if (userGender.length) {
-      const genderOptions: any = [];
-      userGender.forEach((item) => {
-        genderOptions.push({
-          value: item.id,
-          label: item.label,
-        });
-      });
-      setFormatGenderData(genderOptions);
-    }
-  }, [userGender]);
 
   useEffect(() => {
     if (data.token) {
@@ -317,6 +224,9 @@ const CreateAccount = ({
       dispatch(resetLoginRedirectPage());
       if (ticketIdFormEmailLink && !currentTicketEventSlug) {
         router.push(RouterKeys.myTickets);
+        if (!isFinishProfile(data.user)) {
+          dispatch(setShowCompeledProfileAfterLogin(true));
+        }
         return;
       }
       if (currentTicketEventSlug) {
@@ -341,6 +251,9 @@ const CreateAccount = ({
         } else {
           router.push(redirectPage || currentRedirectPage);
         }
+      }
+      if (!isFinishProfile(data.user)) {
+        dispatch(setShowCompeledProfileAfterLogin(true));
       }
     }
   }, [data]);
@@ -369,22 +282,6 @@ const CreateAccount = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (!drawerOpen) {
-      setPhoneCodeItems([]);
-      setShowPhoneCodeItems(false);
-    } else {
-      const items = (selectPhoneCode &&
-        countryDataList.filter((item) =>
-          item.code.includes(selectPhoneCode)
-        )) || [...countryDataList];
-      setPhoneCodeItems(items);
-      if (items.length) {
-        setShowPhoneCodeItems(true);
-      }
-    }
-  }, [drawerOpen]);
-
   return (
     <>
       {(getUserGenderLoading && (
@@ -394,16 +291,7 @@ const CreateAccount = ({
           </div>
         </LoginContainer>
       )) || (
-        <LoginContainer
-          className={
-            (isOpenAppShow &&
-              `${
-                (showCountryItems && 'open-app-show country-items-index') ||
-                'open-app-show'
-              }`) ||
-            ''
-          }
-        >
+        <LoginContainer className={isOpenAppShow ? 'open-app-show' : ''}>
           <img
             className="page-background"
             src={Images.AnimatedBackground.src}
@@ -414,13 +302,7 @@ const CreateAccount = ({
           />
           {(!checkGoogleDoc && (
             <div className="page-main">
-              <div
-                className={
-                  (showCountryItems &&
-                    'main-form-content country-items-show') ||
-                  'main-form-content'
-                }
-              >
+              <div className="main-form-content">
                 <div>
                   <Row className="main-title">
                     <Col span={24} className="title">
@@ -428,7 +310,11 @@ const CreateAccount = ({
                     </Col>
                   </Row>
                   {!isVerificationEmail && (
-                    <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
+                    <Form
+                      autoComplete="off"
+                      onFinish={onFinish}
+                      onFinishFailed={onFinishFailed}
+                    >
                       <Form.Item
                         name="email"
                         rules={[{ validator: emailValidator }]}
@@ -450,63 +336,103 @@ const CreateAccount = ({
                           }
                         />
                       </Form.Item>
+                      <Row gutter={10}>
+                        <Col span={12}>
+                          <Form.Item
+                            name="firstName"
+                            rules={[{ validator: profileNameValidator }]}
+                            getValueFromEvent={(e) => {
+                              const { value } = e.target;
+                              return value
+                                .replace(/[0-9]/g, '')
+                                .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
+                            }}
+                          >
+                            <Input
+                              ref={(input) =>
+                                (inputRefs.current.firstName = input)
+                              }
+                              className={`${
+                                (createAccountValue.firstName &&
+                                  'border-white') ||
+                                ''
+                              }`}
+                              placeholder="First name (at least 2 characters)"
+                              maxLength={20}
+                              bordered={false}
+                              onChange={(e) =>
+                                setCreateAccountValue({
+                                  ...createAccountValue,
+                                  firstName: e.target.value,
+                                })
+                              }
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                          <Form.Item
+                            name="lastName"
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Last name is required',
+                              },
+                            ]}
+                            getValueFromEvent={(e) => {
+                              const { value } = e.target;
+                              return value
+                                .replace(/[0-9]/g, '')
+                                .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
+                            }}
+                          >
+                            <Input
+                              ref={(input) =>
+                                (inputRefs.current.lastName = input)
+                              }
+                              className={`${
+                                (createAccountValue.lastName &&
+                                  'border-white') ||
+                                ''
+                              }`}
+                              placeholder="Last name (at least 1 character)"
+                              maxLength={20}
+                              bordered={false}
+                              onChange={(e) =>
+                                setCreateAccountValue({
+                                  ...createAccountValue,
+                                  lastName: e.target.value,
+                                })
+                              }
+                            />
+                          </Form.Item>
+                        </Col>
+                      </Row>
                       <Form.Item
-                        name="firstName"
-                        rules={[{ validator: profileNameValidator }]}
-                        getValueFromEvent={(e) => {
-                          const { value } = e.target;
-                          return value
-                            .replace(/[0-9]/g, '')
-                            .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
-                        }}
+                        name="password"
+                        rules={[{ validator: passwordValidator }]}
                       >
-                        <Input
-                          ref={(input) => (inputRefs.current.firstName = input)}
+                        <Input.Password
+                          autoComplete="new-password"
+                          ref={(input) => (inputRefs.current.password = input)}
                           className={`${
-                            (createAccountValue.firstName && 'border-white') ||
-                            ''
+                            (passwordValue && 'border-white') || ''
                           }`}
-                          placeholder="First name (at least 2 characters)"
-                          maxLength={20}
+                          placeholder="Set your password (at least 8 characters)"
                           bordered={false}
-                          onChange={(e) =>
+                          maxLength={20}
+                          iconRender={(visible) =>
+                            visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                          }
+                          onChange={(e) => {
+                            setPasswordValue(e.target.value);
                             setCreateAccountValue({
                               ...createAccountValue,
-                              firstName: e.target.value,
-                            })
-                          }
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        name="lastName"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Last name is required',
-                          },
-                        ]}
-                        getValueFromEvent={(e) => {
-                          const { value } = e.target;
-                          return value
-                            .replace(/[0-9]/g, '')
-                            .replace(/[^\w^\s^\u4e00-\u9fa5]/gi, '');
-                        }}
-                      >
-                        <Input
-                          ref={(input) => (inputRefs.current.lastName = input)}
-                          className={`${
-                            (createAccountValue.lastName && 'border-white') ||
-                            ''
-                          }`}
-                          placeholder="Last name (at least 1 character)"
-                          maxLength={20}
-                          bordered={false}
-                          onChange={(e) =>
-                            setCreateAccountValue({
-                              ...createAccountValue,
-                              lastName: e.target.value,
-                            })
-                          }
+                              password:
+                                (isPassword(e.target.value) &&
+                                  e.target.value) ||
+                                '',
+                            });
+                          }}
                         />
                       </Form.Item>
                       <Form.Item
@@ -556,8 +482,10 @@ const CreateAccount = ({
                           CONTINUE
                         </Button>
                       </Form.Item>
-                      {/* <Divider>OR</Divider>
-                <GoogleLoginComponent buttonText="CONTINUE WITH GOOGLE" /> */}
+                      <GoogleAuthComponent
+                        buttonText="SIGN IN WITH GOOGLE"
+                        onSuccess={onGoogleSuccess}
+                      />
                     </Form>
                   )}
                   {!isVerificationCode && isVerificationEmail && (
@@ -571,240 +499,38 @@ const CreateAccount = ({
                         </Col>
                       </Row>
                       <Form onFinish={onFinish}>
-                        <Form.Item name="code">
-                          <Input
-                            className={`${
-                              (createAccountValue.code && 'border-white') || ''
-                            }`}
-                            placeholder="Enter verification code"
-                            bordered={false}
-                            onChange={(e) =>
-                              setCreateAccountValue({
-                                ...createAccountValue,
-                                code: e.target.value,
-                              })
-                            }
-                          />
-                        </Form.Item>
+                        <Row justify="center">
+                          <Col>
+                            <Form.Item name="code">
+                              <CustomOTPInput
+                                onChange={(value) =>
+                                  setCreateAccountValue({
+                                    ...createAccountValue,
+                                    code: value,
+                                  })
+                                }
+                              />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+
                         <Form.Item>
                           <Button
                             className="signin-btn"
                             disabled={
+                              !createAccountValue.code ||
                               createAccountValue.code.length <
-                                VerificationCodeLength || loading
+                                VerificationCodeLength ||
+                              loading
                             }
                             type="primary"
                             htmlType="submit"
                           >
-                            NEXT
+                            COMPLETE
                           </Button>
                         </Form.Item>
                       </Form>
                     </>
-                  )}
-                  {isVerificationCode && isVerificationEmail && (
-                    <Form
-                      ref={formRef}
-                      initialValues={{
-                        ...createAccountValue,
-                        passwordConfirm: confirmPasswordValue,
-                      }}
-                      onFinish={onFinish}
-                      onFinishFailed={onFinishFailed}
-                    >
-                      <Form.Item
-                        name="password"
-                        rules={[{ validator: passwordValidator }]}
-                      >
-                        <Input.Password
-                          ref={(input) => (inputRefs.current.password = input)}
-                          className={`${
-                            (passwordValue && 'border-white') || ''
-                          }`}
-                          placeholder="Set your password (at least 8 characters)"
-                          bordered={false}
-                          maxLength={20}
-                          iconRender={(visible) =>
-                            visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                          }
-                          onChange={(e) => {
-                            setPasswordValue(e.target.value);
-                            setCreateAccountValue({
-                              ...createAccountValue,
-                              password:
-                                (isPassword(e.target.value) &&
-                                  e.target.value) ||
-                                '',
-                            });
-                          }}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        name="passwordConfirm"
-                        rules={[{ validator: passwordValidator }]}
-                      >
-                        <Input.Password
-                          ref={(input) =>
-                            (inputRefs.current.passwordConfirm = input)
-                          }
-                          className={`${
-                            (confirmPasswordValue && 'border-white') || ''
-                          }`}
-                          iconRender={(visible) =>
-                            visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                          }
-                          placeholder="Confirm your password"
-                          bordered={false}
-                          maxLength={20}
-                          onChange={(e) =>
-                            setConfirmPasswordValue(e.target.value)
-                          }
-                        />
-                      </Form.Item>
-                      <Row>
-                        <Col xs={24} sm={0}>
-                          <CountryCodePhoneNumber
-                            isMobile
-                            formItemClassName={
-                              (phoneNumberError && 'phone-number-item error') ||
-                              'phone-number-item'
-                            }
-                            inputOnChange={(value: string) => {
-                              setPhoneNumberError(false);
-                              setCreateAccountValue({
-                                ...createAccountValue,
-                                phoneNumber: value,
-                              });
-                            }}
-                            {...countryCodePhoneNumberProps}
-                          />
-                        </Col>
-                        <Col xs={0} sm={24}>
-                          <CountryCodePhoneNumber
-                            isMobile={false}
-                            formItemClassName={
-                              (phoneNumberError && 'phone-number-item error') ||
-                              'phone-number-item'
-                            }
-                            inputOnChange={(value: string) => {
-                              setPhoneNumberError(false);
-                              setCreateAccountValue({
-                                ...createAccountValue,
-                                phoneNumber: value,
-                              });
-                            }}
-                            {...countryCodePhoneNumberProps}
-                          />
-                        </Col>
-                      </Row>
-                      {showPhoneShortCodeError && (
-                        <div
-                          className="phone-number-error"
-                          style={{
-                            marginTop: '-5px',
-                            marginBottom: '10px',
-                            fontSize: '12px',
-                            fontWeight: 500,
-                            color: '#ff4d4f',
-                          }}
-                        >
-                          Country is required
-                        </div>
-                      )}
-                      {phoneNumberError && (
-                        <div className="phone-number-error">
-                          Invalid phone number
-                        </div>
-                      )}
-                      <Form.Item
-                        name="genderId"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Sex is required',
-                          },
-                        ]}
-                      >
-                        <Select
-                          popupClassName="gender-select-dropdown"
-                          className={`${
-                            (createAccountValue.genderId &&
-                              'gender-select border-white') ||
-                            'gender-select'
-                          }`}
-                          placeholder="Sex"
-                          onChange={(e) =>
-                            setCreateAccountValue({
-                              ...createAccountValue,
-                              genderId: e || '',
-                            })
-                          }
-                          options={formatGenderData}
-                          suffixIcon={<CaretDownOutlined />}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        name="birthday"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Birthday is required',
-                          },
-                        ]}
-                      >
-                        <DatePicker
-                          inputReadOnly
-                          className={`${
-                            (createAccountValue.birthday && 'border-white') ||
-                            ''
-                          }`}
-                          format="MMM DD, YYYY"
-                          showToday={false}
-                          popupClassName="birth-picker-dropdown"
-                          allowClear={false}
-                          placeholder="Date of Birth"
-                          onChange={(_, dateString) =>
-                            setCreateAccountValue({
-                              ...createAccountValue,
-                              birthday: format(
-                                new Date(dateString),
-                                'yyyy-MM-dd'
-                              ),
-                            })
-                          }
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        className="form-country"
-                        style={{ marginBottom: 0 }}
-                      >
-                        <CountrySelecter
-                          showCountryItems={showCountryItems}
-                          currentCountry={createAccountValue.country}
-                          setShowCountryItems={setShowCountryItems}
-                          setCurrentSelectCountry={setCurrentSelectCountry}
-                        />
-                      </Form.Item>
-                      <Form.Item>
-                        <Button
-                          className="signin-btn"
-                          disabled={loading}
-                          type="primary"
-                          htmlType="submit"
-                          onClick={() => {
-                            if (
-                              createAccountValue.phoneNumber &&
-                              !createAccountValue.phoneShortCode
-                            ) {
-                              setShowPhoneShortCodeError(true);
-                            }
-                          }}
-                        >
-                          DONE
-                          {loading && <LoadingOutlined />}
-                        </Button>
-                      </Form.Item>
-                    </Form>
                   )}
                 </div>
                 <div
@@ -812,24 +538,44 @@ const CreateAccount = ({
                     (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
                   }
                 >
-                  <p className="registered">Already have an account?</p>
-                  <p
-                    className="activate"
-                    onClick={() => {
-                      if (redirectPage || loginRedirectPage) {
-                        router.push({
-                          pathname: RouterKeys.login,
-                          query: `redirect=${
-                            redirectPage || loginRedirectPage
-                          }`,
-                        });
-                      } else {
-                        router.push(RouterKeys.login);
-                      }
-                    }}
-                  >
-                    LOGIN
-                  </p>
+                  {isVerificationEmail ? (
+                    <>
+                      <>
+                        <p className="registered">Didn’t receive the code?</p>
+                        <p
+                          className={
+                            seconds < CountdownSeconds
+                              ? 'activate resend-count-down'
+                              : 'activate'
+                          }
+                          onClick={resendOtp}
+                        >
+                          {seconds < CountdownSeconds ? `${seconds}s` : 'Resend'}
+                        </p>
+                      </>
+                    </>
+                  ) : (
+                    <>
+                      <p className="registered">Already have an account?</p>
+                      <p
+                        className="activate"
+                        onClick={() => {
+                          if (redirectPage || loginRedirectPage) {
+                            router.push({
+                              pathname: RouterKeys.login,
+                              query: `redirect=${
+                                redirectPage || loginRedirectPage
+                              }`,
+                            });
+                          } else {
+                            router.push(RouterKeys.login);
+                          }
+                        }}
+                      >
+                        Sign in
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -840,49 +586,6 @@ const CreateAccount = ({
             />
           )}
           <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />
-          <Drawer
-            open={drawerOpen}
-            placement="bottom"
-            onClose={() => setDrawerOpen(false)}
-            getContainer={false}
-            rootClassName="phone-code-drawer"
-            destroyOnClose
-          >
-            <Input
-              defaultValue={selectPhoneCode}
-              placeholder="Country"
-              onChange={(e) => {
-                const items = (e.target.value &&
-                  countryDataList.filter(
-                    (item) =>
-                      item.code.includes(e.target.value) ||
-                      item.country
-                        .toLowerCase()
-                        .includes(e.target.value.toLowerCase())
-                  )) || [...countryDataList];
-                setPhoneCodeItems(items);
-                setShowPhoneCodeItems(true);
-              }}
-            />
-            {(showPhoneCodeItems && phoneCodeItems.length && (
-              <>
-                {phoneCodeItems.map((item: any) => (
-                  <div
-                    key={`${item.code}-${item.country}`}
-                    className="code-items"
-                    onClick={() => {
-                      selectCountryCodeChange(`${item.code}-${item.country}`);
-                      setDrawerOpen(false);
-                    }}
-                  >
-                    <span>{item.code}</span>
-                    <span>{item.country}</span>
-                  </div>
-                ))}
-              </>
-            )) ||
-              null}
-          </Drawer>
         </LoginContainer>
       )}
     </>
@@ -906,7 +609,7 @@ CreateAccount.getInitialProps = async (ctx: any) => {
         redirectPage = query.redirect || '';
       }
     }
-  } catch (_) {}
+  } catch {}
   return {
     currentTicketEventSlug,
     redirectPage,

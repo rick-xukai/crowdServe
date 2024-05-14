@@ -11,6 +11,7 @@ export const DefaultPageSizeMore = 20;
 export const DefaultCodeRefreshTime = 30;
 export const TokenExpire = 7 * 24 * 60 * 60 * 1000;
 export const ListPageScrollDifference = 80;
+export const CountdownSeconds = 60;
 export const PriceUnit = 'SGD';
 export const PrivacyPolicyLink =
   'https://docs.google.com/document/d/1M1ay69Paa9vi7YWTbKUawmn8cqOYROTNT3JnQ0MOMgg/mobilebasic';
@@ -47,7 +48,7 @@ export const BirthdayNotVaild = 'Please enter a valid birthday.';
 export const UserNotExist = `User doesn't exist`;
 export const ActivateAccountFirst = 'Please activate your account first.';
 export const AccountNotActivate =
-  'Your account has not been activated yet. Please activate your account to continue.';
+  'Your account has not been activated yet. Please complete your account creation to continue.';
 export const InviteVerifyType = 0;
 export const RegisterVerifyType = 1;
 export const ForgotPasswordVerifyType = 2;
@@ -87,7 +88,8 @@ export const UploadUserAvatarSizeLimit =
 export const CompressorConvertSize = 1 * 1024 * 1024;
 export const CodeExpired =
   'This verification code has expired. Please use the latest email link or request a new one.';
-export const GlownetDeepLink = 'intent://launcher/#Intent;scheme=glownetapp;package=com.glownet.next.attended;action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;S.ticket_reference={:ticketReference};end'
+export const GlownetDeepLink =
+  'intent://launcher/#Intent;scheme=glownetapp;package=com.glownet.next.attended;action=com.glownet.next.checkin.ACTION_SEARCH_ADMISSION;component=com.glownet.next.presentation.android.ui.stations.checkin.BarcodeReceiverActivity;S.ticket_reference={:ticketReference};end';
 export const TicketStatus = [
   {
     text: 'UPCOMING',
@@ -232,3 +234,5 @@ export const TransferStatus = {
   RECEIVING: 2,
   RECEIVED: 3,
 };
+
+export const DefaultEmail = 'support@ticket-crowdserve.com';

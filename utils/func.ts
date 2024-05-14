@@ -30,8 +30,9 @@ import {
   CompressorConvertSize,
 } from '../constants/General';
 import firebaseApp from '@/firebase';
-import { LoginResponseType } from '@/slice/user.slice';
+import { LoginResponseType, User } from '@/slice/user.slice';
 import { CookieKeys } from '@/constants/Keys';
+import { ProfileDetailProps } from '@/slice/profile.slice';
 
 Chart.register(
   LineController,
@@ -466,10 +467,18 @@ export const renderAuthCookiesField = (
   },
   {
     name: CookieKeys.userLoginId,
-    value: fieldValues.user.userId,
+    value: fieldValues.user.id,
   },
   {
     name: CookieKeys.userProfileInfo,
     value: fieldValues.user,
   },
 ];
+
+export const isFinishProfile = (detail: ProfileDetailProps | User) => {
+  const { birthday, country, firstName, lastName, genderId } = detail;
+  if (!birthday || !country || !firstName || !lastName || !genderId) {
+    return false;
+  }
+  return true;
+};

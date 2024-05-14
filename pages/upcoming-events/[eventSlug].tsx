@@ -31,6 +31,7 @@ import {
   bodyOverflow,
   formatLocation,
   formatDescription,
+  isFinishProfile,
 } from '../../utils/func';
 import PageHearderComponent from '../../components/pageHearder';
 import PageHearderResponsive from '../../components/pageHearderResponsive';
@@ -59,9 +60,15 @@ import PageNotFound from '../404';
 import TicketQRCodeComponent from '../../components/ticketQRCode';
 import ClientModalComponent from '../../components/clientModal';
 import ShowQRCodeElementComponent from '../../components/showQRCodeElement';
-import { RouterKeys } from '../../constants/Keys';
+import { CookieKeys, RouterKeys } from '../../constants/Keys';
 import ImageSizeLayoutComponent from '@/components/imageSizeLayoutComponent';
 import ShowOpenAppModalComponent from '@/components/showOpenAppModal';
+import {
+  getLoginUserDetailAction,
+  selectProfileDetail,
+} from '@/slice/profile.slice';
+import { useCookie } from '@/hooks';
+import { setShowCompeledProfileAfterLogin } from '@/slice/user.slice';
 
 const libraries: ('places' | 'drawing' | 'geometry' | 'visualization')[] = [
   'places',
@@ -305,6 +312,7 @@ const MyTicketsEventDetail = () => {
   const eventDetail = useAppSelector(selectTicketUserEventDetail);
   const errorForEventDetail = useAppSelector(selectEventDetailError);
   const ticketList = useAppSelector(selectMyEventTicketList);
+  const profileDetail = useAppSelector(selectProfileDetail);
 
   const [noTicketListModalShow, setNoTicketListModalShow] =
     useState<boolean>(false);
@@ -351,6 +359,19 @@ const MyTicketsEventDetail = () => {
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const [needShowMore, setNeedShowMore] = useState<boolean>(false);
   const [showOpenAppModal, setShowOpenAppModal] = useState<boolean>(false);
+
+  const cookie = useCookie([CookieKeys.userLoginToken]);
+
+  const checkFinishProfile = () => {
+    if (profileDetail && cookie.getCookie(CookieKeys.userLoginToken)) {
+      const isFinish = isFinishProfile(profileDetail);
+      if (!isFinish) {
+        dispatch(setShowCompeledProfileAfterLogin(true));
+      }
+      return isFinish;
+    }
+    return true;
+  };
 
   const { getCollapseProps, getToggleProps } = useCollapse({
     isExpanded,
@@ -462,9 +483,13 @@ const MyTicketsEventDetail = () => {
               src={Images.QrCodeButton.src}
               alt=""
               onClick={() => {
-                setCurrentCheckTicketId(currentShowPopupTicket.id);
-                setShowTicketItemDetailModal(false);
-                setShowQrCodeModal(true);
+                if (checkFinishProfile()) {
+                  setCurrentCheckTicketId(currentShowPopupTicket.id);
+                  setShowTicketItemDetailModal(false);
+                  setShowQrCodeModal(true);
+                } else {
+                  setShowTicketItemDetailModal(false);
+                }
               }}
             />
           </div>
@@ -561,6 +586,7 @@ const MyTicketsEventDetail = () => {
     }
     setIsFirstRender(false);
     window.addEventListener('resize', screenResize);
+    dispatch(getLoginUserDetailAction());
     return () => {
       dispatch(resetMyTicketEventDetail());
       window.removeEventListener('resize', screenResize);
@@ -961,6 +987,11 @@ const MyTicketsEventDetail = () => {
                                                       alt=""
                                                       onClick={(e) => {
                                                         e.stopPropagation();
+                                                        if (
+                                                          !checkFinishProfile()
+                                                        ) {
+                                                          return;
+                                                        }
                                                         setCurrentCheckTicketId(
                                                           item.id
                                                         );
@@ -1005,6 +1036,11 @@ const MyTicketsEventDetail = () => {
                                                       alt=""
                                                       onClick={(e) => {
                                                         e.stopPropagation();
+                                                        if (
+                                                          !checkFinishProfile()
+                                                        ) {
+                                                          return;
+                                                        }
                                                         setCurrentCheckTicketId(
                                                           item.id
                                                         );
@@ -1381,9 +1417,15 @@ const MyTicketsEventDetail = () => {
                             setShowOpenAppModal(true);
                           }}
                           buttonAction={() => {
-                            setCurrentCheckTicketId(currentShowPopupTicket.id);
-                            setShowTicketItemDetailModal(false);
-                            setShowQrCodeModal(true);
+                            if (checkFinishProfile()) {
+                              setCurrentCheckTicketId(
+                                currentShowPopupTicket.id
+                              );
+                              setShowTicketItemDetailModal(false);
+                              setShowQrCodeModal(true);
+                            } else {
+                              setShowTicketItemDetailModal(false);
+                            }
                           }}
                         />
                       </Col>
@@ -1420,9 +1462,13 @@ const MyTicketsEventDetail = () => {
                           setShowOpenAppModal(true);
                         }}
                         buttonAction={() => {
-                          setCurrentCheckTicketId(currentShowPopupTicket.id);
-                          setShowTicketItemDetailDrawer(false);
-                          setShowQrCodeDrawer(true);
+                          if (checkFinishProfile()) {
+                            setCurrentCheckTicketId(currentShowPopupTicket.id);
+                            setShowTicketItemDetailDrawer(false);
+                            setShowQrCodeDrawer(true);
+                          } else {
+                            setShowTicketItemDetailDrawer(false);
+                          }
                         }}
                       />
                     </Col>

@@ -8,7 +8,6 @@ import { Images, Colors } from '../theme';
 import { useCookie } from '../hooks';
 import { RouterKeys, CookieKeys, LocalStorageKeys } from '../constants/Keys';
 import { generateRandomString } from '@/utils/func';
-import { ProfileDetailProps } from '@/slice/profile.slice';
 
 const PageHearderResponsiveContainer = styled.div`
   padding-top: 18px;
@@ -161,18 +160,14 @@ const PageHearderResponsiveContainer = styled.div`
 
 const PageHearderResponsive = ({
   profileAvatar,
-  profileDetail,
   backgroundTransparent = false,
   showBackgroundColor = true,
   saveScrollValue = () => {},
-  setShowEditProfilePopup = () => {},
 }: {
-  profileDetail?: ProfileDetailProps;
   profileAvatar?: string;
   backgroundTransparent?: boolean;
   showBackgroundColor?: boolean;
   saveScrollValue?: () => void;
-  setShowEditProfilePopup?: (status: boolean) => void;
 }) => {
   const router = useRouter();
   const cookie = useCookie([
@@ -185,30 +180,6 @@ const PageHearderResponsive = ({
   const [userLoginInitials, setUserLoginInitials] = useState<string>('');
   const [showLogout, setShowLogout] = useState<boolean>(false);
   const [userAvatar, setUserAvatar] = useState<string>('');
-
-  const checkFinishProfile = (currentPath: string) => {
-    if (
-      currentPath === RouterKeys.profile ||
-      currentPath === RouterKeys.eventList
-    )
-      return true;
-    if (profileDetail && cookie.getCookie(CookieKeys.userLoginToken)) {
-      const { birthday, country, firstName, lastName, genderId, phoneNumber } =
-        profileDetail;
-      if (
-        !birthday ||
-        !country ||
-        !firstName ||
-        !lastName ||
-        !genderId ||
-        !phoneNumber
-      ) {
-        setShowEditProfilePopup(true);
-        return false;
-      }
-    }
-    return true;
-  };
 
   const userLogout = () => {
     setShowLogout(false);
@@ -236,7 +207,6 @@ const PageHearderResponsive = ({
   };
 
   const hanldeMenuClick = (path: string) => {
-    if (!checkFinishProfile(path)) return;
     if (path !== router.pathname) {
       saveScrollValue();
       router.push(path);

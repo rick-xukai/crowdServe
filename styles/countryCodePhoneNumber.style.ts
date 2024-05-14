@@ -71,7 +71,7 @@ const CountryCodePhoneNumberContainer = styled.div`
       border: none;
     }
     .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
-      padding-inline-end: 30px;
+      padding-inline-end: 50px;
     }
     .ant-input-group
       .ant-input-group-addon
@@ -94,7 +94,17 @@ const CountryCodePhoneNumberContainer = styled.div`
       border: none;
     }
     .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder {
-      padding-inline-end: 30px;
+      padding-inline-end: 50px;
+    }
+    .ant-select:hover .ant-select-clear {
+      color: ${Colors.white};
+      background: transparent;
+    }
+    .ant-select .ant-select-clear {
+      width: 15px;
+      height: 15px;
+      margin-top: -8px;
+      transition: unset;
     }
   }
   .phone-number-item {
@@ -139,7 +149,7 @@ const CountryCodePhoneNumberContainer = styled.div`
       border-bottom-right-radius: 0;
       .ant-select-selection-placeholder {
         padding-top: 0;
-        padding-inline-end: 30px;
+        padding-inline-end: 50px;
         font-weight: 400;
         font-size: 14px;
         color: ${Colors.grayScale40};
@@ -158,7 +168,7 @@ const CountryCodePhoneNumberContainer = styled.div`
       line-height: 35px;
     }
     .ant-select-single.ant-select-show-arrow .ant-select-selection-item {
-      padding-inline-end: 35px;
+      padding-inline-end: 50px;
     }
     .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover
       .ant-select-selector {

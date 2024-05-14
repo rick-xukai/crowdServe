@@ -225,6 +225,13 @@ const EventListContainer = styled.div`
     }
   }
   @media (min-width: 1200px) {
+    .event-list-container {
+      overflow: auto;
+      height: 679px;
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    }
     .banner-item {
       height: 505px;
       position: relative;
