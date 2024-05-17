@@ -412,7 +412,10 @@ const Profile = () => {
                             'value no-filled'
                           }
                         >
-                          {profileDetails.phoneNumber || 'To be filled'}
+                          {profileDetails.phoneShortCode
+                            ? profileDetails.phoneNumber
+                            : profileDetails.phoneNumber.replace('-', '') ||
+                              'To be filled'}
                         </div>
                       </div>
                     </div>
