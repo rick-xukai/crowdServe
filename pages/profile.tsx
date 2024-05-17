@@ -200,6 +200,8 @@ const Profile = () => {
       );
       setSelectPhoneCode(phoneCode);
       setSelectCountryShortCode(countryCode?.shortCode || '');
+    } else {
+      setSelectPhoneCode('');
     }
     setPhoneNumberError(false);
   };
@@ -216,7 +218,9 @@ const Profile = () => {
 
   const countryCodePhoneNumberProps = {
     selectPhoneCode: selectPhoneCode,
-    selectDefaultValue: checkCountryCodeDefaultValue(),
+    selectDefaultValue: profileDetails.phoneNumber
+      ? checkCountryCodeDefaultValue()
+      : null,
     inputOnChange: () => {
       setPhoneNumberError(false);
     },
