@@ -364,7 +364,7 @@ const EventList = () => {
               span={24}
               style={{
                 marginTop:
-                  !eventListBanner || (!eventListBanner.length && 20) || 0,
+                  !eventListBanner || (!eventListBanner.length && 50) || 0,
               }}
             >
               <div className="page-title">
@@ -542,7 +542,7 @@ const EventList = () => {
               span={24}
               style={{
                 paddingTop:
-                  (eventListBanner && eventListBanner.length && 215) || 0,
+                  (eventListBanner && eventListBanner.length && 215) || 10,
               }}
             >
               <div className="page-title">
