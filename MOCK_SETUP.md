@@ -218,4 +218,32 @@ The mock system covers all major API endpoints:
 4. **Try Raves**: Engage with social features and earn flame points
 5. **Admin Access**: Use `admin@crowdserve.com` / `admin123` for scanner features
 
-The mock system provides a complete, realistic experience of the CrowdServe platform without requiring any backend infrastructure. 
+The mock system provides a complete, realistic experience of the CrowdServe platform without requiring any backend infrastructure.
+
+## Quick Start Guide
+
+### 1. 安装依赖
+```bash
+yarn install
+```
+
+### 2. 启动开发服务器
+```bash
+yarn dev
+```
+
+### 3. 在生产环境中启用Mock（Vercel部署）
+
+如果你需要在Vercel等生产环境中启用Mock API，需要设置环境变量：
+
+**在Vercel Dashboard中添加环境变量：**
+- Name: `NEXT_PUBLIC_ENABLE_MOCKS`
+- Value: `true`
+- Environment: Production, Preview, Development
+
+**或者在本地.env文件中添加：**
+```
+NEXT_PUBLIC_ENABLE_MOCKS=true
+```
+
+⚠️ **注意**: 这个设置仅用于演示目的。在真实的生产环境中，应该连接到实际的API服务器。 

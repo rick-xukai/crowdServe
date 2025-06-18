@@ -276,7 +276,9 @@ const EventList = () => {
   }, []);
 
   const saveScrollValue = () => {
-    dispatch(setScrollValue(eventListRef.current.scrollTop));
+    if (eventListRef && eventListRef.current) {
+      dispatch(setScrollValue(eventListRef.current.scrollTop));
+    }
   };
 
   if (loading && !eventDataForAll.length) {
@@ -321,7 +323,9 @@ const EventList = () => {
       )
     );
     dispatch(setIsDisableRequest(true));
-    dispatch(setScrollValue(eventListRef.current.scrollTop));
+    if (eventListRef && eventListRef.current) {
+      dispatch(setScrollValue(eventListRef.current.scrollTop));
+    }
   };
 
   const toShopify = (item: EventListBanner) => {

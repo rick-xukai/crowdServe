@@ -17,7 +17,7 @@ const mockTickets = [
       'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop&crop=center',
     blockchainUrl: 'https://polygonscan.com/tx/0x123...',
     name: 'Summer Festival GA Ticket',
-    saleStatus: 1, // 1: on sale, 2: sold out
+    saleStatus: 0, // 1: on sale, 2: sold out
     slug: 'summer-festival-ga-ticket-abc123',
     organizerSlug: 'event-masters',
     description: 'General admission ticket to Summer Music Festival 2024',

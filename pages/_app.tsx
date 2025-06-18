@@ -14,7 +14,7 @@ import { GOOLE_CLIENT_ID } from '@/constants/predicates';
 import RootLayout from '@/components/RootLayout';
 
 // 初始化MSW
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+if (typeof window !== 'undefined') {
   import('../mocks/browser').then(async ({ worker }) => {
     await worker.start({
       onUnhandledRequest: 'bypass',
