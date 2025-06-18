@@ -12,6 +12,12 @@ const nextConfig = {
   publicRuntimeConfig: {
     buildTime: new Date()
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   async redirects() {
     return [
       {

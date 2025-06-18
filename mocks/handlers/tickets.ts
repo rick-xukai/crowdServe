@@ -481,7 +481,7 @@ export const ticketHandlers = [
     console.log('🔍 Debug: 处理的eventId:', eventId);
 
     // 查找事件 - 支持通过ID或slug查找
-    let targetEvent = null;
+    let targetEvent: typeof mockMyEvents[0] | undefined = undefined;
     
     // 首先尝试通过ID查找
     targetEvent = mockMyEvents.find((e) => e.id === eventId);
@@ -507,7 +507,7 @@ export const ticketHandlers = [
 
     // 使用事件的ID来查找票务数据
     const eventTickets = mockTickets.filter(
-      (t) => t.eventId === targetEvent.id
+      (t) => t.eventId === targetEvent!.id
     );
     
     console.log('🔍 Debug: 找到的票务数量:', eventTickets.length);
