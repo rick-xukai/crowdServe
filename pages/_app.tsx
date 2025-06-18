@@ -13,6 +13,16 @@ import Maintenance from '../pages/maintenance';
 import { GOOLE_CLIENT_ID } from '@/constants/predicates';
 import RootLayout from '@/components/RootLayout';
 
+// 初始化MSW
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  import('../mocks/browser').then(async ({ worker }) => {
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+    });
+    console.log('🔶 Mock Service Worker started');
+  });
+}
+
 function MyApp({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;

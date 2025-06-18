@@ -313,7 +313,7 @@ const PageHearderComponent = ({
                 </span>
               </Col>
             </Row>
-            {/* <Row
+            <Row
               className="menu-item-row"
               onClick={() => hanldeMenuClick(RouterKeys.crowdFundList)}
             >
@@ -328,7 +328,7 @@ const PageHearderComponent = ({
                   CROWDFUND
                 </span>
               </Col>
-            </Row> */}
+            </Row>
             <Row
               className="menu-item-row"
               onClick={() => hanldeMenuClick(RouterKeys.myTickets)}

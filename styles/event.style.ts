@@ -227,7 +227,7 @@ const EventListContainer = styled.div`
   @media (min-width: 1200px) {
     .event-list-container {
       overflow: auto;
-      height: 679px;
+      /* height: 679px; */
       ::-webkit-scrollbar {
         display: none;
       }

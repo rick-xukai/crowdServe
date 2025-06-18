@@ -264,7 +264,7 @@ const PageHearderResponsive = ({
                     EVENTS
                   </span>
                 </div>
-                {/* <div
+                <div
                   className="menu-item"
                   onClick={() => hanldeMenuClick(RouterKeys.crowdFundList)}
                 >
@@ -277,7 +277,7 @@ const PageHearderResponsive = ({
                   >
                     CROWDFUND
                   </span>
-                </div> */}
+                </div>
                 <div
                   className="menu-item"
                   onClick={() => hanldeMenuClick(RouterKeys.myTickets)}

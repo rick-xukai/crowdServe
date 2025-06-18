@@ -117,7 +117,9 @@ const EventList = () => {
       setSearchInputPlaceholder('Search events');
       dispatch(setEventDataForAll([]));
     }
-    eventListRef.current.addEventListener('scroll', scrollListener, true);
+    if (eventListRef && eventListRef.current) {
+      eventListRef.current.addEventListener('scroll', scrollListener, true);
+    }
     dispatch(resetEventRelatedState());
     dispatch(setSearchKeyword(value));
   };
@@ -393,7 +395,10 @@ const EventList = () => {
               </div>
               {(((searchKeyword && eventDataForSearch) || eventDataForAll)
                 .length && (
-                <div ref={eventListRef} className="event-list-container event-list-container-responsive">
+                <div
+                  ref={eventListRef}
+                  className="event-list-container event-list-container-responsive"
+                >
                   {(
                     (searchKeyword && eventDataForSearch) ||
                     eventDataForAll

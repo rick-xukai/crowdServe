@@ -48,7 +48,9 @@ Chart.register(
 const encryptionKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY as string;
 
 export const verificationApi = (response: any) =>
-  response.code === 200 && response.message === 'OK';
+  response.code === 200 &&
+  (response.message === 'OK' ||
+    response.message.toLowerCase().includes('success'));
 
 export const qs = <T extends { [k: string]: string | boolean }>(
   search: string = globalThis.location

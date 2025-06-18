@@ -256,7 +256,7 @@ const Login = ({
                       })
                     }
                   />
-                  <p className="forgot-password">
+                  {/* <p className="forgot-password">
                     <span
                       onClick={() => {
                         if (redirectPage || loginRedirectPage) {
@@ -292,7 +292,7 @@ const Login = ({
                     >
                       Forgot password?
                     </span>
-                  </p>
+                  </p> */}
                 </div>
               </Form.Item>
               <Form.Item>
@@ -309,7 +309,7 @@ const Login = ({
                   SIGN IN
                 </Button>
               </Form.Item>
-              <GoogleAuthComponent
+              {/* <GoogleAuthComponent
                 buttonText="SIGN IN WITH GOOGLE"
                 onSuccess={(code) =>
                   doTheLogin({
@@ -318,10 +318,10 @@ const Login = ({
                     externalChannel: LoginType.google,
                   })
                 }
-              />
+              /> */}
             </Form>
           </div>
-          <div
+          {/* <div
             className={
               (isOpenAppShow && 'page-bottom open-app') || 'page-bottom'
             }
@@ -342,7 +342,7 @@ const Login = ({
             >
               Create an account
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
       {isMobile && <OpenAppComponent setIsOpenAppShow={setIsOpenAppShow} />}

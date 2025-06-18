@@ -140,7 +140,7 @@ export const getEventListAction = createAsyncThunk<
  * Get event detail
  */
 export const getEventDetailAction = createAsyncThunk<
-  EventDetailResponseType[],
+  EventDetailResponseType,
   string,
   {
     rejectValue: ErrorType;
@@ -172,7 +172,7 @@ export const getEventDetailAction = createAsyncThunk<
  * Get event ticket type
  */
 export const getEventTicketTypeAction = createAsyncThunk<
-  EventListResponseType[],
+  EventTicketTypeResponseType[],
   string,
   {
     rejectValue: ErrorType;
@@ -423,7 +423,6 @@ export const eventSlice = createSlice({
         }
       })
       .addCase(getEventDetailAction.pending, (state) => {
-        state.eventDetailData = {} as EventDetailResponseType;
         state.eventDetailLoading = true;
       })
       .addCase(getEventDetailAction.fulfilled, (state, action: any) => {
